@@ -372,6 +372,14 @@
   .status-constrained { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(227,179,65,0.25); }
   .status-available { background: var(--green-bg); color: var(--green); border: 1px solid rgba(63,185,80,0.25); }
 
+  /* KEY PLAYERS WAITING */
+  .kp-list { list-style: none; padding: 0; margin: 0; min-width: 190px; max-width: 270px; }
+  .kp-item { font-size: 11px; color: var(--text-secondary); padding: 3px 0; border-bottom: 1px solid rgba(45,55,72,0.4); line-height: 1.45; }
+  .kp-item:last-child { border-bottom: none; }
+  .kp-item strong { color: var(--text-primary); font-weight: 600; }
+  .kp-mw { color: var(--accent-blue); font-weight: 700; font-size: 10px; }
+  .kp-alert { color: var(--red); font-size: 10px; font-weight: 700; }
+
   /* TREND */
   .trend-up { color: var(--red); font-size: 16px; font-weight: 900; }
   .trend-flat { color: var(--yellow); font-size: 16px; font-weight: 900; }
@@ -691,7 +699,8 @@
             <th onclick="sortTable(4)">Est. Wait Time <span class="sort-arrow">&#9650;</span></th>
             <th onclick="sortTable(5)">Power Constraint <span class="sort-arrow">&#9650;</span></th>
             <th>Key Developments</th>
-            <th onclick="sortTable(7)">Trend <span class="sort-arrow">&#9650;</span></th>
+            <th>Key Players Waiting</th>
+            <th onclick="sortTable(8)">Trend <span class="sort-arrow">&#9650;</span></th>
           </tr>
         </thead>
         <tbody id="tableBody">
@@ -701,10 +710,10 @@
             <td class="market-name">Northern Virginia<span class="sub">Ashburn, Loudoun Co., Prince William Co.</span></td>
             <td class="utility">Dominion Energy / PJM</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
-            <td><span class="queue-stat">70 GW total</span><br><span class="wait-time">25 GW assigned dates thru 2031; 45 GW under study</span></td>
+            <td><span class="queue-stat">70 GW total (47.1 GW contracted)</span><br><span class="wait-time">25 GW assigned dates thru 2031; 45 GW under study w/ no date</span></td>
             <td><span style="color:var(--red);font-weight:700;">5&ndash;7 Years</span></td>
             <td><span class="status-pill status-critical">Critical</span></td>
-            <td class="key-dev">Queue is ~3x system peak of 24.7 GW. SCC approved GS-5 rate class for 25+ MW (Jan 2027). New batched queue: 300 MW max per request, groups of ~10 projects. Dominion served 933 MW of new DCs in 2023. ~450 data centers in Virginia total. Contracted capacity up 185% in 2023&ndash;2025. Informal freeze on new requests over 100 MW without queue position.</td>
+            <td class="key-dev">Queue is ~3x system peak of 24.7 GW (Jan 2025 record: 24,678 MW). SCC approved GS-5 rate class for 25+ MW (Jan 2027). Batched queue: 300 MW max per request. Contracted capacity grew from ~40 GW (early 2025) to 47.1 GW (Oct 2025). <strong>Key tenants waiting:</strong> <em>Microsoft</em> — filed Feb 2026 confirming "plans for expansion" in VA; estimated $80B Azure backlog constrained by power. <em>Google</em> &amp; <em>Amazon</em> — entering binding Dominion contracts; AWS partnership on 300 MW SMR. <em>Meta</em> &amp; <em>Digital Realty</em> — expanding Ashburn campus. Digital Realty's Ashburn platform: 632 MW operational IT load; 100 MW blocks routinely pre-reserved. Active hyperscaler cluster (AWS+Microsoft+Google = 38% of NOVA active IT load). 25 GW has assigned connection dates through 2031; 45 GW under study with no date set. ~10 new large-load requests per month at 200–300 MW each. Informal freeze on new requests over 100 MW without queue position.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -715,7 +724,7 @@
             <td><span class="queue-stat">200 GW (Oncor)</span><br><span class="wait-time">600+ active requests; 186 GW from data centers</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">1&ndash;3 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">ERCOT connect-and-manage allows faster approvals vs. PJM (~1 yr for committed projects). Oncor $36B 5-year capital plan. ERCOT full large-load queue: 233 GW (+300% YoY). Batch Study process proposed to PUC Feb 2026. 72.9% of ERCOT queue is data centers. N. Texas / I-35 corridor is global hyperscale hotspot. Crypto &amp; oil/gas adding pressure.</td>
+            <td class="key-dev">ERCOT connect-and-manage allows faster approvals vs. PJM (~1 yr for committed projects). Oncor $36B 5-year capital plan. ERCOT full large-load queue: 233 GW (+300% YoY); Oncor alone carries 200+ GW with 600+ active requests. Average Oncor DC request: now ~700 MW (was &lt;100 MW historically). Batch Study process ("Batch Zero") filed with PUC Jan 2026 — Google, Amazon, Meta, Microsoft cited as wanting batch approach. 72.9% of ERCOT queue is data centers. <strong>Key companies in queue:</strong> <em>Google</em>, <em>Amazon Web Services</em>, <em>Meta</em>, <em>Microsoft</em> — all confirmed in "Batch Zero" discussions. N. Texas / I-35 corridor (Allen, Lewisville, Irving) is global hyperscale hotspot. Crypto &amp; oil/gas adding pressure. ~128 GW haven't submitted studies yet; ~90 GW under review or approved. TX Gov. Abbott signed law requiring DCs pay grid infrastructure share; PUC rulemaking due Dec 2026.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -726,7 +735,7 @@
             <td><span class="queue-stat">30+ GW (APS)</span><br><span class="wait-time">4.5 GW committed; 20 GW uncommitted; APS turning customers away</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">APS: "We do not have the energy and transmission infrastructure to support the amount being requested." APS planning 2 GW gas subscription plant for DCs. SRP doubling generation capacity; issued 2,900 MW RFP in 2026. Arizona utilities securing Transwestern gas pipeline capacity. Heat + load = grid stress at summer peaks. WECC risk assessment flags Western constraints.</td>
+            <td class="key-dev">APS: "We can serve you, but just not now." APS turning away customers; 30+ GW in queue (18 GW from ~30 DC projects) vs. 8,200 MW peak demand (2025 record). 4.5 GW committed/high-confidence; ~20 GW uncommitted — approval cycles up to 3 years. APS planning 2 GW gas subscription plant for DCs (Phase 1 ~2030, Phase 2 ~2031–33 pending Transwestern Pipeline completion). <strong>Key companies waiting:</strong> <em>Microsoft</em> — acquired 283 acres in El Mirage ($258M) &amp; Goodyear for West Valley campuses; power delivery timing unclear. <em>Amazon (AWS)</em> — filed pre-submittal for 4 data centers in Mesa; studies pending. <em>Google</em> — Redhawk Mesa campus Phase 1 live Jul 2025; Phase 2 (400 MW solar/wind-backed) in queue. SRP doubling generation; 2,900 MW RFP issued 2026. Arizona utilities securing Transwestern gas pipeline capacity. APS abandoned 2050 clean energy goal; extended Four Corners coal to 2038 to handle load.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -737,7 +746,7 @@
             <td><span class="queue-stat">14+ GW</span><br><span class="wait-time">75+ applications exceeding ComEd all-time peak load</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">Illinois AG filed FERC objection to ComEd data center agreements (Jan 2026). ICC opened tariff investigation (March 2026). ComEd deposit increase approved: $1M base + $500K per 100 MW beyond 50 MW. Top-tier fiber, carrier density, cloud on-ramps. PJM 6 GW reliability shortfall by 2027 adds systemic risk. ICC tariff reform ongoing.</td>
+            <td class="key-dev">ComEd serves 14+ GW pipeline of DC requests — exceeds its historical all-time peak. ICC opened tariff investigation March 2026. ComEd deposit increase approved: $1M base + $500K per 100 MW beyond 50 MW. IL AG filed FERC objection to ComEd DC agreements (Jan 2026). PJM queue entry in 2026 = realistically no interconnection agreement before 2028; Chicago suburb load pockets face even longer. <strong>Key tenants in queue:</strong> <em>QTS</em>, <em>CyrusOne</em>, <em>Equinix</em>, <em>Digital Realty</em> — all active in Elk Grove / Carol Stream corridor. Clean Energy Buyers Assn (Amazon, Google, Meta, Microsoft) engaged in IL ratemaking. CRGA Act (2025) expanding battery storage to handle supply-demand imbalance. PJM 6 GW reliability shortfall by 2027 adds systemic risk. ComEd bills likely to remain high with AI demand surge (Chicago Sun-Times, Jul 2025).</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -748,7 +757,7 @@
             <td><span class="queue-stat">10 GW (PG&amp;E)</span><br><span class="wait-time">17 projects (~1.5 GW) in final engineering for 2026&ndash;2030</span></td>
             <td><span style="color:var(--red);font-weight:700;">3&ndash;5+ Years</span></td>
             <td><span class="status-pill status-critical">Critical</span></td>
-            <td class="key-dev">PG&amp;E pipeline grew from 5.5 GW (Feb 2025) to 10 GW (late 2025). Santa Clara SVP: 60% of city power to data centers; no capacity for new applicants. CPUC approved Electric Rule 30 for upfront-funded fast-track interconnection. CAISO avg queue time: 9.2 years (longest of all US ISOs). CA forecasts +4.9 GW data center load by 2040.</td>
+            <td class="key-dev">PG&amp;E pipeline grew from 5.5 GW (Feb 2025) to 10 GW (late 2025) — 21 new projects in follow-up cluster study (Apr 2025) totaling 4.1 GW. 17 projects (~1.5 GW) in final engineering for 2026–2030. <strong>Specific companies waiting/idle:</strong> <em>Digital Realty SJC37</em> (Santa Clara) — 430,000 sq ft, 48 MW built, stands EMPTY awaiting SVP power; no firm energization date. <em>Stack Infrastructure SVY02A</em> (Santa Clara) — 48 MW, 8 data halls, own substation, also stands EMPTY; both coordinating with SVP on phased power delivery. <em>Microsoft</em> — 60 MW microgrid campus in San Jose highlighted as workaround. Santa Clara SVP: 60% of city power to data centers; closed to new applicants. CPUC approved Electric Rule 30 for upfront-funded fast-track interconnection. CAISO avg queue: 9.2 years (longest US ISO). PG&amp;E 21-project cluster study launched Apr 2025. CA forecasts +4.9 GW data center load by 2040. Calmatters (Dec 2025): "Silicon Valley's AI boom hits a wall — data centers are built but can't turn on."</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -759,7 +768,7 @@
             <td><span class="queue-stat">50.9 GW pipeline</span><br><span class="wait-time">11 GW committed; 7.3 GW long-term contracted</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">Georgia PSC approved ~10 GW new generation Dec 2025: 5 gas plants at Bowen, McIntosh, Wansley. PSC approved 100+ MW special terms tariff (Jan 2025). Pipeline shrank by 6 GW (speculative exits) but committed load doubled to 7.3 GW. Est. $50&ndash;$60B lifecycle cost. Critics: insufficient customer protections if forecast overshoots.</td>
+            <td class="key-dev">Georgia PSC approved ~10 GW (9,885 MW) new generation Dec 2025: 5 gas plants at Bowen, McIntosh, Wansley. PSC approved 100+ MW special terms tariff (Jan 2025). 7,900 MW contracted with data centers; pipeline grew to 19 GW in 2025 (from 1.6 GW in 2021). Est. $50–$60B lifecycle cost. <strong>Key companies waiting/building:</strong> <em>Microsoft</em> — East Point campus (2-building complex), also Union City (via EdgeConneX, ~$2B, 136 acres). <em>Meta</em> — Stanton Springs campus (committed load). <em>Google</em> — Douglas County campus (operational + expansion). <em>Amazon</em> — purchased ~156 acres in Lithia Springs for $37.1M (2025). <em>EdgeConneX</em> — 2 Atlanta campuses (16 MW). Speculative pipeline shrank 6 GW as tariff reform took hold; committed load doubled to 7.3 GW. Critics (SELC): insufficient customer protections if forecast overshoots. Rate protection to existing customers until 2031 if boom fails.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -793,7 +802,7 @@
             <td><span class="queue-stat">9.8 GW under study</span><br><span class="wait-time">36 formal sites; 32 in Central Ohio; queue halved post-tariff from 30+ GW</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;3 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">AEP Ohio DCT approved July 2025: 85% min-bill, $10K&ndash;$100K study fee, 25+ MW threshold. Queue dropped from 30+ GW to 13 GW; speculative projects withdrawn. Moratorium lifted post-tariff. Google, Amazon, Meta all active in market. PUCO requiring DCs fund their infrastructure share. Affordable power + land remain draws.</td>
+            <td class="key-dev">AEP Ohio DCT approved July 2025 (effective Jul 23): 85% min-bill, $10K–$100K study fee, 8-year minimum contract, 25+ MW threshold. Queue dropped from 30+ GW to 13 GW; 36 formal study sites (32 in Central Ohio) = 9.8 GW. AEP has 4.4 GW of DC load contracted by 2030. <strong>Key companies waiting/active:</strong> <em>Amazon</em>, <em>Google</em>, <em>Meta</em>, <em>Microsoft</em> — all challenged AEP Ohio's tariff as "discriminatory" but operating or in study in Ohio. <em>Amazon</em> — major Ohio employer; multiple data halls in New Albany/Columbus corridor. Moratorium lifted post-tariff July 2025. PUCO requiring DCs fund infrastructure share. Ohio Manufacturers' Assn appealing DC cost allocation rules (Nov 2025). Columbus electric/gas/water costs rising (WOSU, Dec 2025). Affordable land + power remain draws vs. NOVA/Chicago.</td>
             <td class="trend-flat">&#8594;</td>
           </tr>
 
@@ -859,7 +868,7 @@
             <td><span class="queue-stat">~6.2 GW new gen needed</span><br><span class="wait-time">DC load = 18% of TVA industrial load in 2025; doubling by 2030</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;3 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">TVA pursuing 6.2 GW new generation (nuclear + gas) for data center demand. DC load to double in TVA region by 2030 (CEO Don Moul). Meta 300 MW campus in Gallatin with solar PPA. xAI/Grok buying 150 MW from TVA. TVA reversed coal closure due to AI demand. 60 data centers in TN. Nashville ranked top emerging market by Cushman &amp; Wakefield.</td>
+            <td class="key-dev">TVA pursuing 6.2 GW new generation (largest capital program in TVA history). DC load = 18% of TVA industrial load in 2025; doubling by 2030. TVA reversed coal plant closure due to AI demand. 60+ data centers in TN. TVA pledging rate fairness as DC demand surges (Axios Nashville, Feb 2026). <strong>Key companies waiting/building:</strong> <em>Meta</em> — Gallatin campus (~900 acres, 7+ facilities, up to 12 eventual data halls); ~300 MW solar PPA; expanding Tennessee campus (DCD). <em>xAI (Grok/Musk)</em> — buying 150 MW from TVA (Memphis facility, 12 turbines on-site). <em>Google</em> — TVA will be first US utility to buy power from advanced (Kairos) nuclear reactor; deal to power Google DCs. 1.5 GW new gas generator at Cumberland Fossil Plant expected 2026; 1.5 GW Kingston Energy Complex (2027). TVA interconnection queue: 70 projects totaling 21.79 GW. Nashville ranked top emerging market by Cushman &amp; Wakefield.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -892,7 +901,7 @@
             <td><span class="queue-stat">3 GW today; ~6 GW by 2034</span><br><span class="wait-time">NCUC requiring semiannual large-load filings</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;3 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">Duke Energy $103B 5-year capital plan driven by data center load. NC data center power forecast to double from ~3 GW to ~6 GW within a decade. Digital Realty $160M, 155-acre campus investment. NCUC requiring semiannual large-load reports. Urban Charlotte transmission limits mean longer timelines in some areas. Duke 2025 Carolinas Resource Plan filed.</td>
+            <td class="key-dev">Duke Energy $103B 5-year capital plan driven by DC load. NC DC power to double: ~3 GW today → ~6 GW by 2034. NCUC requiring semiannual large-load reports. Jul 2025: Duke filed response to NCUC on integrating large loads (100+ MW); warns of longer timelines in urban Charlotte/transmission-constrained areas. Duke uses "tranches" process similar to generator cluster studies. <strong>Key companies waiting/building:</strong> <em>Digital Realty</em> — $160M, 155-acre, 4th NC facility in Charlotte metro. <em>Flexential</em> — two Charlotte campuses (5.66 MW), Morrisville campus (4.31 MW). Company names held confidential by Duke &amp; NC officials in most cases. Duke 2025 Carolinas Resource Plan filed; rate cases for Duke Carolinas (Jan 2026) and Duke Progress (Oct 2025). Urban Charlotte transmission limits mean longer interconnection timelines in some zones. 35 large customers committed to Carolinas = 3 GW as of Jan 2024 (nearly half data centers).</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1108,7 +1117,7 @@
             <td><span class="queue-stat">Grid congestion declared</span><br><span class="wait-time">Liander "code red" — new large-load connections frozen across North Holland</span></td>
             <td><span style="color:var(--red);font-weight:700;">3&ndash;7 Years</span></td>
             <td><span class="status-pill status-critical">Critical</span></td>
-            <td class="key-dev">Amsterdam enacted Europe's first DC moratorium (2019&ndash;2022); partial lift followed. Liander declared full "net congestion" across North Holland &amp; Schiphol corridor — frozen for new large loads. ~4 GW+ operational. New builds redirecting to Zeeland (Borssele nuclear corridor), Utrecht, Groningen. AMS-IX = world's largest internet exchange (24+ Tbps). EU data hub status sustains demand despite severe grid constraints. Nitrogen permitting (PFAS rules) further delays new substations.</td>
+            <td class="key-dev">Amsterdam full moratorium extended to 2030 (April 2025). Liander declared full "net congestion" across North Holland — 591 customers on waiting list; up to 10-year wait for new connections. Grid won't be fully extended until 2036. Noord-Holland facing potential lengthy power cuts in 2026 due to grid overload. Dutch economy facing billions in losses as expansion halts (NL Times, Oct 2025). <strong>Key companies navigating restrictions:</strong> <em>Microsoft</em> — leased new hyperscale DC in Amsterdam (78 MW, 3 towers, 23,000 sqm); construction began Jan 2026, Phase 1 operational by 2028. Dutch minister: "I cannot stop it." Campus in Middenmeer (Wieringermeer) + 50 ha expansion (Sep 2025). <em>Google</em> — new DC launched in Winschoten, Groningen (Nov 2025); Eemshaven (2018) &amp; Middenmeer (2020) operational. Both Microsoft &amp; Google withholding Dutch energy data despite EU rules (DCD, Jan 2026). <em>Amazon</em> — presence mainly outside congested Amsterdam zone. Projects 70 MW+ or 10+ hectares banned across most of Netherlands. AMS-IX = world's largest IX (24+ Tbps). New builds redirecting to Zeeland (Borssele nuclear corridor), Utrecht, Groningen.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1119,7 +1128,7 @@
             <td><span class="queue-stat">200+ GW UK gen queue</span><br><span class="wait-time">Large-load grid connection: 2&ndash;5 years depending on zone</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;5 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">UK is Europe's largest DC market. Slough Trading Estate = Europe's most DC-dense postcode. National Grid ESO published Connections Reform roadmap (2024) to clear 200+ GW generation queue backlog. DCs designated Critical National Infrastructure (2024). Ofgem accelerating grid upgrade approvals. North of England (Manchester, Leeds) emerging as overflow. LINX (London Internet Exchange) major global peering hub. Subsea cables (MAREA, Hibernia) land at west coast.</td>
+            <td class="key-dev">50 GW of DC demand queued for UK grid access (The Register, Feb 2026). Since Nov 2024, total contracted demand queue offers rose 460% to 125 GW by Jun 2025 — 50 GW tied to DCs. Connection waits: up to 15 years for speculative projects. Iver substation (W. London): all power allocated through 2029. London DC demand could reach 6 GW by 2035; capacity expansions lagging. National Grid £35B 5-year investment plan. Ofgem TM04+ reform: re-ordering queue to prioritize "ready and needed" projects; revised offers from Autumn 2025, initially focused on 2026–2027 connections. AI DCs to get priority access (The Register, Mar 2026). <strong>Key companies waiting:</strong> <em>Equinix</em> — £3.9B UK investment pledged (Oct 2025), 250+ MW Hertfordshire campus acquisition; largest UK commitment. <em>VIRTUS</em> — top UK operator by MW, surpassing Equinix &amp; Digital Realty. <em>Digital Realty</em> — Slough acquisition Jul 2024, 14 UK facilities. National Grid CNI designation helps DCs get priority queue treatment. Govt Phase 1 explicitly targeting DC market for prioritized connections.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1130,7 +1139,7 @@
             <td><span class="queue-stat">Large and growing pipeline</span><br><span class="wait-time">Netzanschluss process: 2&ndash;4 years; Bundesnetzagentur tracking congestion</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">DE-CIX Frankfurt = world's largest internet exchange (&gt;24 Tbps). Frankfurt set to be Europe's largest DC market by GW by 2027. Raunheim&ndash;Eschborn corridor is primary campus zone. Germany's Energiewende creating grid uncertainty; four TSOs (Amprion, TenneT, 50Hertz, TransnetBW) managing transition. Energy costs stabilized post-2022 energy crisis. Hesse state government business-friendly. Berlin and Munich also growing. Strict permitting requirements for large new substations.</td>
+            <td class="key-dev">Germany highest DC load in Europe: 4.26 GW in 2025. Frankfurt operational: ~745 MW; 542 MW under construction; 383 MW in planning. Total Frankfurt metro market on track for 1.80 thousand MW by 2030. DC operators planning own fossil fuel plants, citing slow grid connections (Cleanenergywire). <strong>Key companies waiting/building:</strong> <em>CyrusOne</em> — FRA7 campus under construction, Phase 1 operational Q2 2026; partnered with E.ON for 61 MW IQ Energy Center on-site gas plant (May 2025) due to grid infrastructure delays. <em>Amazon</em> — pledged EUR 8.8B in Frankfurt by 2026. <em>Digital Realty</em> — confirmed AI-optimized Frankfurt expansion (Mar 2025). <em>NTT</em> — 500 MW campus on decommissioned US Army base (securing land early to counter site scarcity). DE-CIX Frankfurt = world's largest IX (&gt;24 Tbps). Grid connection wait: 2–4 years (Netzanschluss process); longer grid connection times pushing new builds to outer Frankfurt (Raunheim–Eschborn). Germany Energiewende + four TSOs (Amprion, TenneT, 50Hertz, TransnetBW) managing transition. Strict permitting for new substations adding delays.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1141,7 +1150,7 @@
             <td><span class="queue-stat">Moratorium (partial lift)</span><br><span class="wait-time">Dublin area: 2&ndash;5 yrs; non-Dublin: 1&ndash;3 yrs</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;5 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">EirGrid imposed Dublin-area DC moratorium (2022) due to grid stress. Partial lift: new approvals only with on-site generation or PPAs covering 100% of demand delta. DCs consume ~21% of Irish electricity (2024); forecast 30% by 2030. Government DC policy review ongoing. Non-Dublin sites (Athenry, Cork, Limerick) under development. Ireland abundant wind energy = hedge against power costs. Microsoft, Google, Meta, Apple all major operators. IDA Ireland continues aggressive DC inward investment promotion.</td>
+            <td class="key-dev"><strong>Moratorium formally LIFTED December 2025</strong> (CRU published final policy). Major new requirements: must install on-site generation/batteries capable of meeting full demand; must export power back to grid when needed; 80% renewable energy sourcing required (6-year glide path). EirGrid &amp; ESB Networks to publish updated connection policies by 31 March 2026. DCs consume ~22% of Irish electricity (2024); forecast 30–31% by 2030–32. EirGrid: no new Dublin applications until 2028 (existing moratorium on new applications within Dublin zone persists). <strong>Key companies affected:</strong> <em>Microsoft</em>, <em>Google</em>, <em>Meta</em>, <em>Apple</em> — all major Dublin operators navigating new onsite generation rules. Companies held back since 2021 moratorium now re-evaluating applications under new stringent requirements. Non-Dublin sites (Athenry, Cork, Limerick) developing under easier terms. Ireland abundant wind energy (30%+ penetration) = hedge against power costs. IDA Ireland continues DC inward investment promotion despite rules tightening. EU AI Sovereignty concerns driving demand for Irish capacity.</td>
             <td class="trend-flat">&#8594;</td>
           </tr>
 
@@ -1152,7 +1161,7 @@
             <td><span class="queue-stat">Growing pipeline</span><br><span class="wait-time">RTE Sch&eacute;ma D&eacute;cennal forecasts major load growth; ~2&ndash;4 yr connections</span></td>
             <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
             <td><span class="status-pill status-constrained">Constrained</span></td>
-            <td class="key-dev">France's nuclear advantage (65%+ nuclear power) makes electricity more affordable and lower-carbon than most of Europe. RTE 10-year transmission plan includes grid upgrades for data center growth. French government pledged &euro;109B in AI and tech investment. EDF offering direct nuclear PPAs (contrats long terme). Marseille growing as European subsea cable hub (ACE, SMW5, 2Africa). Paris is a top-5 global internet peering point (France-IX). FR government supports AI infrastructure as strategic priority.</td>
+            <td class="key-dev">France's nuclear advantage (65%+ nuclear) = affordable, low-carbon power. RTE (TSO) is contractually oversubscribed; local distribution cables are the bottleneck — not energy itself. Île-de-France (Paris) regional grid constrained; connection timelines typically 6–7 years for standard process. RTE piloting "mutualisation zones" near Dunkerque, Le Havre, Fos, and Île-de-France (3–4 year connections). French govt pledged €109B in AI/tech. DCFlex grid-flexibility demos underway in Paris region, more expected 2026. <strong>Key companies building/waiting:</strong> <em>CloudHQ</em> — Lisses campus Phase 1 inaugurated Jun 2025; full campus expected 2027. <em>Colt</em> — Villebon-sur-Yvette DC under construction (12.5 acres, 3 DCs, EUR 2.3B investment). <em>Paris AI Campus</em> — JV backed by MGX, Bpifrance, Mistral AI &amp; NVIDIA; construction expected H2 2026, operations 2028. <em>Digital Realty</em>, <em>Equinix</em>, <em>DATA4</em> — dominate France's strongly consolidated market. New entrants: <em>NTT DATA</em>, <em>CyrusOne</em>, <em>Yondr</em>, <em>OPCORE</em> entering market. EDF offering direct nuclear PPAs (contrats long terme). France-IX = top-5 global peering point.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1164,7 +1173,7 @@
             <td><span class="queue-stat">SE3 zone moderate pipeline</span><br><span class="wait-time">~1&ndash;3 years; SE3 zone experiencing some congestion</span></td>
             <td><span style="color:var(--green);font-weight:700;">1&ndash;3 Years</span></td>
             <td><span class="status-pill status-available">Available</span></td>
-            <td class="key-dev">World-class hydropower + wind = among Europe's cheapest, cleanest electricity. Cold climate enables free air cooling year-round. Nordic DC market growing 25%+ annually. Meta, Microsoft, Google major campuses in Sweden. Kista "Silicon Valley of Europe" tech district. Sweden 95%+ renewable electricity; 100% target by 2040. District heating reuse improving sustainability KPIs. Government supportive of DC investment. SE3 grid zone near Stockholm experiencing some congestion; new substations under construction. Low seismic &amp; weather risk.</td>
+            <td class="key-dev">World-class hydropower + wind = among Europe's cheapest, cleanest electricity. Cold climate enables free air cooling year-round. SE3 zone (Stockholm area) experiencing some congestion; central/southern Sweden (Strängnäs, Västerås, Katrineholm) emerging as alternatives — 130 kV substations available, &lt;10ms latency to Stockholm. Stockholm = 36.47% of Sweden DC market share (2024); Rest of Sweden growing at 11.22% CAGR as capital congestion pushes growth outward. <strong>Key companies building/expanding:</strong> <em>Amazon</em> — signed 4 PPAs (2019–2021, 746 MW total) for 3 new Stockholm campuses. <em>Microsoft</em> — 180 MW PPA announced Jun 2024 (with European Energy). <em>atNorth</em> — SWE02 (Stockholm Akalla, 30 MW) planned Q4 2027. <em>Conapto</em> — launched 20 MW Stockholm South DC. <em>Scandinavian Data Centers</em> — first ecosystem site launched. Sweden market: USD 3.94B in 2025 → USD 8.85B by 2030. Total installed capacity: 950 MW (2025) → 1,570 MW by 2030. New EU Energy Efficiency Directive reporting rules effective Jul 1, 2025 for large DCs. Sweden supportive of DC investment as grid-balancing partners.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1175,7 +1184,7 @@
             <td><span class="queue-stat">Rapidly growing</span><br><span class="wait-time">~1&ndash;2 years; grid modernization accelerating via EU funds</span></td>
             <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
             <td><span class="status-pill status-available">Available</span></td>
-            <td class="key-dev">CEE region's fastest-growing DC market. Microsoft &euro;1B+ investment; Google, OVHcloud, Equinix expanding. Lower land and labor costs than Western Europe. Poland leveraging &euro;76B+ EU funds for grid modernization. Transitioning from coal to renewables + planned nuclear (Westinghouse AP1000). Business-friendly investment climate. 100K+ IT graduates/year. EU data sovereignty laws driving onshoring. Government offering significant DC tax incentives. Geographic center of EU logistics network. TPIX Warsaw major peering exchange.</td>
+            <td class="key-dev">CEE region's fastest-growing DC market. Warsaw grid experiencing 41% drop in available connections (2022–2024); energy shortfall 2025–2028 stifling speculative development. Grid tie-ins can take 18 months; EUR 2–5M developer grid-upgrade costs now standard. PSE EUR 2B modernization roadmap due 2029. Warsaw grid deficit nudging capital toward secondary cities (Poznań, Wrocław). Energy Regulatory Office reforms to ease technical refusals expected 2026. <strong>Key companies building/waiting:</strong> <em>Microsoft</em> — PLN 2.8B (USD ~704M) expansion due Jun 2026. <em>Google</em> — Google Cloud Warsaw region (2024) reinforced for GDPR data residency. <em>Vantage Data Centers</em> — WAW1 (48 MW) reached grid only after committing to joint 400 kV infrastructure investment; now standard practice for 30+ MW allocations. <em>Switch Datacenters</em> — 90 MW Warsaw DC announced (expansion from Netherlands). <em>NTT</em> — expanding in Poland. Two large campus projects planned outside Warsaw (DCD). Poland total DC market could reach 500 MW by 2030 (CBRE). EU funds (€76B+) accelerating grid modernization. TPIX Warsaw major peering exchange. 100K+ IT graduates/year. Govt offering significant DC tax incentives.</td>
             <td class="trend-up">&#8679;</td>
           </tr>
 
@@ -1712,6 +1721,23 @@
       <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.icc.illinois.gov/api/web-management/documents/downloads/public/press-release/03.20.26%20Data%20center%20tariff%20investigation.pdf" target="_blank">ICC Opens ComEd Data Center Tariff Investigation &mdash; ICC Illinois</a><span class="source-date">Mar 2026</span></div>
       <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://blockspace.media/insight/texas-large-load-requests-up-270-in-2025-on-data-center-growth-ercot/" target="_blank">Texas Large Load Requests Up 270% in 2025 &mdash; Blockspace Media</a><span class="source-date">2025</span></div>
       <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.mayerbrown.com/en/insights/publications/2025/11/ferc-large-load-interconnection-preliminary-rulemaking-key-takeaways-for-data-center-developers-other-large-load-projects-and-investors" target="_blank">FERC Large Load Interconnection Rulemaking Key Takeaways &mdash; Mayer Brown</a><span class="source-date">Nov 2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.datacenterdynamics.com/en/news/silicon-valley-data-centers-stand-empty-awaiting-power-connections-report/" target="_blank">Silicon Valley Data Centers Stand Empty Awaiting Power — DCD</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.tomshardware.com/tech-industry/data-centers-in-nvidias-hometown-sit-idle-as-grid-struggles-to-keep-up" target="_blank">Digital Realty SJC37 &amp; Stack SVY02A Idle (Silicon Valley ~100 MW) &mdash; Tom's Hardware</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://investor.pgecorp.com/news-events/press-releases/press-release-details/2025/PGE-Accelerating-Connection-of-New-Data-Centers-throughout-Northern-and-Central-California/default.aspx" target="_blank">PG&E Accelerating Connection of New Data Centers &mdash; PG&E Investor Relations</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.dutchnews.nl/2026/01/massive-amsterdam-microsoft-data-centre-gets-green-light/" target="_blank">Massive Amsterdam Microsoft Data Centre Gets Green Light (78 MW) &mdash; DutchNews</a><span class="source-date">Jan 2026</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://nltimes.nl/2025/10/07/dutch-economy-faces-billions-losses-amsterdam-data-center-expansion-halts" target="_blank">Dutch Economy Faces Billions in Losses as Amsterdam DC Expansion Halts &mdash; NL Times</a><span class="source-date">Oct 2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.theregister.com/2026/02/27/datacenter_uk_grid_demand/" target="_blank">50 GW of Datacenter Demand Queues Up for UK Grid Access &mdash; The Register</a><span class="source-date">Feb 2026</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://newsroom.equinix.com/2025-10-30-Equinix-to-invest-GBP3-9-billion-in-UKs-critical-national-infrastructure-in-boost-to-countrys-economy" target="_blank">Equinix Pledges £3.9B UK Investment (250+ MW) &mdash; Equinix Newsroom</a><span class="source-date">Oct 2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.energyconnects.com/news/utilities/2025/december/ireland-ends-moratorium-on-new-power-links-to-data-centers/" target="_blank">Ireland Ends Moratorium on New Power Links to Data Centers &mdash; Energy Connects</a><span class="source-date">Dec 2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.datacenterdynamics.com/en/news/eirgrid-says-no-new-applications-for-data-centers-in-dublin-till-2028/" target="_blank">EirGrid: No New DC Applications in Dublin Until 2028 &mdash; DCD</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank">As Data Centers Jostle for Texas Grid, ERCOT Promises New Batch Zero Rules &mdash; Inside Climate News</a><span class="source-date">Jan 2026</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.cnbc.com/2025/12/12/ai-data-center-flood-texas-on-massive-scale.html" target="_blank">Red-Hot Texas Getting So Many Data Center Requests Experts See a Bubble &mdash; CNBC</a><span class="source-date">Dec 2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://protectpwc.org/2026/02/11/breaking-news-dominion-discloses-tripling-of-data-center-load-demand/" target="_blank">Dominion Discloses Tripling of Data Center Load Demand &mdash; Protect PWC</a><span class="source-date">Feb 2026</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.cleanenergywire.org/news/data-centres-germany-planning-own-fossil-fuel-plants-citing-slow-grid-connections-report" target="_blank">German Data Centers Planning Own Fossil Fuel Plants Citing Slow Grid Connections &mdash; Cleanenergywire</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.datacenterdynamics.com/en/news/meta-to-expand-tennessee-data-center-campus/" target="_blank">Meta to Expand Tennessee Data Center Campus &mdash; DCD</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.axios.com/local/nashville/2026/02/09/tva-pledges-to-tackle-electric-rate-fairness-as-data-center-demand-surges" target="_blank">TVA Pledges Rate Fairness as Data Center Demand Surges &mdash; Axios Nashville</a><span class="source-date">Feb 2026</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.utilitydive.com/news/Ohio-regulators-approve-aep-data-center-interconnection-rules/752690/" target="_blank">Ohio Regulators Approve AEP Data Center Interconnection Rules &mdash; Utility Dive</a><span class="source-date">2025</span></div>
+      <div class="source-item"><div class="source-dot"></div><a class="source-link" href="https://www.latitudemedia.com/news/microsoft-says-georgia-may-be-overestimating-data-center-load-growth/" target="_blank">Microsoft Says Georgia May Be Overestimating Data Center Load Growth &mdash; Latitude Media</a><span class="source-date">2025</span></div>
     </div>
   </div>
 
@@ -1720,7 +1746,7 @@
 <!-- FOOTER -->
 <div class="footer">
   <strong>Global Data Center Power &amp; Interconnection Queue Dashboard &mdash; North America &amp; EMEA</strong><br>
-  Research period: Q4 2025 &ndash; Q1 2026 &nbsp;|&nbsp; Last updated: March 27, 2026 &nbsp;|&nbsp; For real estate and site selection purposes only<br>
+  Research period: Q4 2025 &ndash; Q1 2026 &nbsp;|&nbsp; Last updated: March 26, 2026 (Refreshed) &nbsp;|&nbsp; For real estate and site selection purposes only<br>
   <span style="font-size:11px;margin-top:4px;display:block;">Data sourced from public utility filings, FERC dockets, ISO/RTO board materials, and verified industry publications. Queue depths are public estimates; verify directly with utilities for active site due diligence. Not investment advice.</span>
 </div>
 
@@ -1798,6 +1824,335 @@
     applyFilters();
   }
 
+  // KEY PLAYERS DATA — keyed by distinctive market name substring (case-insensitive includes match)
+  var kpData = {
+    'Northern Virginia': [
+      ['Microsoft','est. $80B Azure backlog; ~10 reqs/mo; expansion confirmed Feb 2026'],
+      ['Amazon / AWS','300 MW SMR collab w/ Dominion; binding contracts'],
+      ['Google','binding Dominion contracts; multi-campus'],
+      ['Meta','Ashburn campus expanding'],
+      ['Digital Realty','632 MW operational IT load; 100 MW pre-res blocks'],
+      ['QTS, Equinix, CyrusOne','NOVA corridor active'],
+    ],
+    'Dallas': [
+      ['Microsoft','Batch Zero participant; avg req ~700 MW'],
+      ['Amazon / AWS','Batch Zero participant; 700 MW avg request'],
+      ['Google','Batch Zero participant'],
+      ['Meta','Batch Zero participant'],
+      ['Note','TX law: DCs must pay grid infra share (PUC rulemaking Dec 2026)'],
+    ],
+    'Phoenix': [
+      ['Microsoft','283 acres El Mirage & Goodyear; power timing TBD'],
+      ['Amazon / AWS','4 DCs in Mesa; studies pending'],
+      ['Google','Redhawk Mesa Ph.2 ~400 MW in queue'],
+      ['APS note','APS: "We cannot serve the amount being requested"'],
+    ],
+    'Chicago': [
+      ['QTS','Elk Grove / Carol Stream corridor'],
+      ['CyrusOne','active in ComEd queue'],
+      ['Equinix','active in ComEd queue'],
+      ['Digital Realty','active in ComEd queue'],
+      ['Amazon, Google, Meta, Microsoft','rate-reform advocacy; ICC tariff investigation open'],
+    ],
+    'Silicon Valley': [
+      ['Digital Realty SJC37','48 MW BUILT & EMPTY — no firm power date','alert'],
+      ['Stack Infrastructure SVY02A','48 MW BUILT & EMPTY — no firm power date','alert'],
+      ['Microsoft','60 MW microgrid campus as workaround'],
+      ['SVP (Santa Clara)','closed to new applicants; 60% of city power = DCs'],
+    ],
+    'Atlanta': [
+      ['Microsoft','East Point campus; EdgeConneX Union City ~136 acres, ~$2B'],
+      ['Meta','Stanton Springs campus; committed load'],
+      ['Google','Douglas County; operational + expansion'],
+      ['Amazon','156 acres Lithia Springs; $37.1M land (2025)'],
+    ],
+    'Portland': [
+      ['Amazon, Google, Intel','existing; PGE/GridCARE 80 MW accelerated'],
+      ['PGE / GridCARE','400 MW pipeline; 80 MW delivered early via DeFlex'],
+    ],
+    'New York': [
+      ['Amazon, Microsoft, Google, Meta','PSE&G nuclear offtake talks (PSEG 3.7 GW fleet)'],
+      ['Equinix','NY5/NY7 Secaucus active'],
+      ['QTS','Piscataway active'],
+      ['NY note','State moratorium bill proposed; up to 3-yr pause risk'],
+    ],
+    'Columbus': [
+      ['Amazon','major OH employer; multiple New Albany halls'],
+      ['Google','active; in DCT study process'],
+      ['Meta','active'],
+      ['Microsoft','challenged DCT but continuing OH footprint'],
+    ],
+    'Denver': [
+      ['Multiple hyperscalers','names not public; Xcel queue ~5.8 GW'],
+      ['Tri-State co-op customers','$2.7M/MW deposit required'],
+      ['"Data Center Row" Aurora','primary campus zone; Xcel ~$22B grid plan'],
+    ],
+    'Kansas City': [
+      ['Google','second campus under construction'],
+      ['Evergy','75+ MW Power Service Rate approved (2025)'],
+      ['Former power plant','conversion to DC underway'],
+    ],
+    'Salt Lake': [
+      ['Multiple hyperscalers','undisclosed; nuclear feasibility study underway'],
+      ['Note','Land values 8× since 2020; $50K → $400K/acre'],
+    ],
+    'Reno': [
+      ['Switch','Tahoe Reno Industrial Center anchor tenant'],
+      ['Google, Apple','established campuses; expansion in queue'],
+    ],
+    'Indianapolis': [
+      ['Amazon / AWS','$11B campus, New Carlisle / LaPorte County'],
+      ['Duke Energy Indiana','multi-GW pipeline under study'],
+    ],
+    'Nashville': [
+      ['Meta','Gallatin campus; ~300 MW solar PPA; up to 12 halls'],
+      ['xAI / Grok','150 MW from TVA; 12 turbines on-site (Memphis)'],
+      ['Google','Kairos advanced nuclear PPA with TVA (first US utility)'],
+    ],
+    'San Antonio': [
+      ['Microsoft','large campus announced 2025; CPS Energy serving'],
+      ['CPS Energy','municipal utility; more flexible than IOU process'],
+    ],
+    'Quincy': [
+      ['Microsoft, Yahoo, Intuit, Sabey','operational; expansion FROZEN'],
+      ['Load cap note','7–10 yr wait for new large loads; caps imposed Mar 2025'],
+    ],
+    'Charlotte': [
+      ['Digital Realty','$160M, 155-acre NC facility'],
+      ['Flexential','Charlotte + Morrisville campuses'],
+      ['Undisclosed hyperscalers','names withheld by Duke/NC officials'],
+    ],
+    'Richmond': [
+      ['Amazon, Microsoft, Google','NOVA overflow; same Dominion queue constraints'],
+      ['Dominion','~450 DCs statewide; contracted load +185% (2023–25)'],
+    ],
+    'Minneapolis': [
+      ['Amazon, Microsoft, Google','Chicago overflow; Midwest footprint expansion'],
+      ['Xcel Energy','managing Denver + Minneapolis DC demand simultaneously'],
+    ],
+    'Houston': [
+      ['Amazon, Google, Microsoft','regional footprint; ERCOT connect-and-manage'],
+      ['CenterPoint','serving industrial + DC load; Hurricane Beryl risk noted'],
+    ],
+    'Miami': [
+      ['Iron Mountain','MIA-1 16 MW; groundbreaking Feb 2025, opens 2026'],
+      ['EdgeConneX','LATAM hub positioning'],
+    ],
+    'Seattle': [
+      ['Amazon','HQ proximity; major regional footprint'],
+      ['Microsoft','Redmond HQ region; large PSE queue position'],
+      ['BrightNight','200 MW / 800 MWh battery (Tacoma); online mid-2027'],
+    ],
+    'Council Bluffs': [
+      ['Google','mega-campus anchor; billions invested'],
+      ['MidAmerican Energy','90%+ renewable; Berkshire Hathaway reliability'],
+    ],
+    'Sacramento': [
+      ['SMUD customers','nimbler than PG&E IOU process'],
+      ['PG&E CAISO customers','9.2-yr avg queue applies statewide'],
+    ],
+    'St. Louis': [
+      ['Regional colo operators','on Ameren Missouri queue'],
+      ['Ameren delays','flagged by Canary Media 2025 as concern'],
+    ],
+    'Memphis': [
+      ['xAI / Grok','150 MW from TVA; 12 on-site turbines'],
+      ['MLGW','municipal utility; faster large-load response'],
+    ],
+    'Huntsville': [
+      ['Government / classified cloud','defense sector; Redstone Arsenal-adjacent'],
+      ['Huntsville Utilities','municipal; historically responsive to large industrial loads'],
+    ],
+    'Jacksonville': [
+      ['JEA municipal utility','large-load responsive'],
+      ['Financial services sector','Tampa colo demand (FIS, Raymond James)'],
+    ],
+    'Detroit': [
+      ['Multiple automotive cloud operators','EV + DC demand converging on DTE'],
+      ['DTE Energy','managing dual-demand surge (EVs + DCs simultaneously)'],
+    ],
+    'Cincinnati': [
+      ['Amazon OH employee base','driving regional demand'],
+      ['Duke Energy Ohio / MISO','territory customers in early stage'],
+    ],
+    'Pittsburgh': [
+      ['CMU AI/robotics compute demand','early-stage applicants'],
+      ['Duquesne Light / FirstEnergy','PJM territory; $329/MW-day capacity risk'],
+    ],
+    'Omaha': [
+      ['OPPD public power customers','no IOU profit motive'],
+      ['Adjacent to Council Bluffs','Google mega-campus spillover'],
+    ],
+    'Boise': [
+      ['DOE / Idaho National Lab','AI DC co-location solicitation active'],
+      ['Idaho Power / WECC','territory customers; nuclear co-location opportunity'],
+    ],
+    'Spokane': [
+      ['Quincy market overflow','Avista territory as constrained-market alternative'],
+      ['WSU / Univ of Idaho','tech ecosystem driving demand'],
+    ],
+    'Albuquerque': [
+      ['Phoenix overflow demand','APS/SRP constrained → NM alternative'],
+      ['Sandia / LANL','government secure compute demand'],
+    ],
+    // EMEA
+    'Amsterdam': [
+      ['Microsoft','78 MW 3-tower campus; approved Jan 2026; Ph.1 ops 2028','alert'],
+      ['Google','Winschoten/Groningen DC (Nov 2025); Eemshaven + Middenmeer ops'],
+      ['Amazon','presence mainly outside congested AMS zone'],
+      ['591 customers','on Liander waiting list; grid extended only by 2036'],
+    ],
+    'London': [
+      ['Equinix','£3.9B pledged Oct 2025; 250+ MW Hertfordshire campus'],
+      ['VIRTUS','largest UK operator by MW, surpassing Equinix & DLR'],
+      ['Digital Realty','14 UK facilities; Slough acquisition Jul 2024'],
+      ['Iver substation','all power allocated through 2029','alert'],
+    ],
+    'Frankfurt': [
+      ['CyrusOne FRA7','built own 61 MW gas plant due to grid delays','alert'],
+      ['Amazon','€8.8B Frankfurt investment by 2026'],
+      ['Digital Realty','AI-optimized expansion confirmed Mar 2025'],
+      ['NTT','500 MW campus on decommissioned US Army base'],
+    ],
+    'Dublin': [
+      ['Microsoft, Google, Meta, Apple','navigating new on-site generation requirements'],
+      ['New applicants','FROZEN for Dublin area until 2028','alert'],
+      ['New rule','100% on-site generation or PPA; 80% renewable (6-yr glide)'],
+    ],
+    'Paris': [
+      ['CloudHQ','Lisses Ph.1 inaugurated Jun 2025; full campus 2027'],
+      ['Colt','Villebon-sur-Yvette; 12.5 acres; €2.3B investment'],
+      ['Paris AI Campus','MGX + Bpifrance + Mistral AI + NVIDIA; ops 2028'],
+      ['Digital Realty, Equinix, DATA4','dominant operators'],
+      ['NTT DATA, CyrusOne, Yondr, OPCORE','new entrants 2025–26'],
+    ],
+    'Stockholm': [
+      ['Amazon','746 MW PPAs signed; 3 new Stockholm campuses'],
+      ['Microsoft','180 MW PPA with European Energy (Jun 2024)'],
+      ['atNorth SWE02','30 MW Akalla; planned Q4 2027'],
+      ['Conapto','20 MW Stockholm South DC launched'],
+    ],
+    'Warsaw': [
+      ['Microsoft','PLN 2.8B (~$704M) expansion; due Jun 2026'],
+      ['Google','Warsaw Cloud region (2024); GDPR data residency'],
+      ['Vantage Data Centers','WAW1 48 MW; funded joint 400 kV infra'],
+      ['Switch Datacenters','90 MW announced; expanding from Netherlands'],
+      ['NTT','expanding Polish footprint'],
+    ],
+    'Copenhagen': [
+      ['Meta, Google, Apple','established large Danish campuses'],
+      ['New builds','must comply with mandatory waste-heat reuse law (2025)'],
+    ],
+    'Madrid': [
+      ['Microsoft, Google, Amazon','€9B+ combined Spanish investments announced'],
+      ['ESPANIX Madrid','major peering exchange driving colo demand'],
+    ],
+    'Milan': [
+      ['Microsoft, Google, Equinix','active; Terna grid upgrades serving queue'],
+      ['New builds','moving to Siziano/Cornaredo corridor as Milan core fills'],
+    ],
+    'Manchester': [
+      ['National Grid overflow','from constrained London/Slough zone'],
+      ['MediaCityUK operators','BBC, ITV cloud demand'],
+    ],
+    'Zurich': [
+      ['Equinix','ZUR campus active'],
+      ['Safe Host, Green','major CH operators'],
+      ['Financial sector','UBS, Credit Suisse legacy + compliance demand'],
+    ],
+    'Vienna': [
+      ['Equinix','VIE campus'],
+      ['A1 Telekom, dataline','major AT operators'],
+      ['CEE gateway demand','Bratislava/Budapest/Prague corridor traffic'],
+    ],
+    'Dubai': [
+      ['Microsoft','$1.5B UAE AI investment committed'],
+      ['Amazon / AWS','Jebel Ali Free Zone presence'],
+      ['Google','Jebel Ali presence'],
+      ['G42 / MGX','Abu Dhabi sovereign AI compute infrastructure'],
+    ],
+    'Helsinki': [
+      ['Google','Hamina campus since 2011; waste heat → district heating'],
+      ['Microsoft','expanding Finland DC footprint'],
+    ],
+    'Brussels': [
+      ['Equinix','BRU campus'],
+      ['LCL','major BE operator'],
+      ['EU institutions','Commission, Parliament, Council cloud demand'],
+    ],
+    'Prague': [
+      ['Equinix','PRG campus'],
+      ['CE Colo, master:internet','established local operators'],
+      ['US + Asian new entrants','evaluating CEE hub positioning'],
+    ],
+    'Marseille': [
+      ['Orange, Interxion/DLR, Equinix','dominant operators at cable hub'],
+      ['15+ submarine cables','ACE, PEACE, SMW3/4/5/6, AAE-1, 2Africa, etc.'],
+    ],
+    'Lisbon': [
+      ['Equinix','LIS campus'],
+      ['NOS, Altice PT','local operators'],
+      ['US hyperscaler expansion','undisclosed; LATAM cable advantage'],
+    ],
+    'Istanbul': [
+      ['Microsoft Azure','Turkey region operational'],
+      ['Local operators + EU overflow','TISTIX exchange growing'],
+    ],
+    'Tel Aviv': [
+      ['Amazon, Microsoft, Google','all operating Israeli cloud regions'],
+      ['Cybersecurity sector','private compute (classified/defense)'],
+    ],
+    'Riyadh': [
+      ['Microsoft','$5B Saudi Arabia investment'],
+      ['Google Cloud, Oracle, Alibaba Cloud','active Saudi regions'],
+      ['PIF / G42','sovereign AI infrastructure; NEOM giga-project demand'],
+    ],
+    'Johannesburg': [
+      ['Teraco','dominant operator: JNB, CPT, Durban'],
+      ['Equinix','Cape Town presence'],
+      ['Amazon, Microsoft','existing SA cloud regions'],
+      ['On-site solar/diesel','required for all new builds due to Eskom risk','alert'],
+    ],
+  };
+
+  function buildKpHtml(market) {
+    var normalized = market.trim();
+    var entries = null;
+    for (var key in kpData) {
+      if (normalized.toLowerCase().indexOf(key.toLowerCase()) !== -1) {
+        entries = kpData[key];
+        break;
+      }
+    }
+    if (!entries) return '<span style="color:var(--text-muted);font-size:11px;">Data pending</span>';
+    var html = '<ul class="kp-list">';
+    entries.forEach(function(e) {
+      var isAlert = e[2] === 'alert';
+      html += '<li class="kp-item"><strong>' + e[0] + '</strong>';
+      if (e[1]) {
+        html += ' <span class="' + (isAlert ? 'kp-alert' : '') + '">' + e[1] + '</span>';
+      }
+      html += '</li>';
+    });
+    html += '</ul>';
+    return html;
+  }
+
+  function injectKeyPlayers() {
+    var rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach(function(row) {
+      var marketCell = row.querySelector('td.market-name');
+      if (!marketCell) return;
+      var marketName = (marketCell.childNodes[0] || marketCell).textContent.trim();
+      var trendTd = row.querySelector('td.trend-up, td.trend-flat, td.trend-down');
+      if (!trendTd) return;
+      var td = document.createElement('td');
+      td.innerHTML = buildKpHtml(marketName);
+      row.insertBefore(td, trendTd);
+    });
+  }
+
+  injectKeyPlayers();
   // Init
   updateCount();
 </script>
