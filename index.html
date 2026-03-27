@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US Data Center Power &amp; Interconnection Queue Dashboard</title>
+<title>Global Data Center Power &amp; Interconnection Queue Dashboard</title>
 <style>
   :root {
     --bg-primary: #0d1117;
@@ -237,6 +237,8 @@
     margin-bottom: 14px;
     flex-wrap: wrap;
   }
+  .filter-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; }
+  .filter-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap; }
   .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
   .filter-btn {
     background: var(--bg-card);
@@ -543,8 +545,8 @@
 <div class="header">
   <div class="header-inner">
     <div>
-      <div class="header-title">US Data Center <span>Power &amp; Interconnection</span> Queue Dashboard</div>
-      <div class="header-subtitle">Utility interconnection queue depths, wait times, and power availability across 30+ US markets &mdash; for real estate site selection</div>
+      <div class="header-title">Global Data Center <span>Power &amp; Interconnection</span> Queue Dashboard</div>
+      <div class="header-subtitle">Utility interconnection queue depths, wait times, and power availability across 55+ markets in North America &amp; EMEA &mdash; for real estate site selection</div>
     </div>
     <div class="header-meta">
       <span class="badge">2025&ndash;2026 Data</span>
@@ -657,15 +659,26 @@
   <!-- MARKET TABLE -->
   <div class="section">
     <div class="section-title"><div class="section-icon">&#128205;</div>Market-by-Market Analysis</div>
-    <div class="table-controls">
-      <div class="filter-group">
-        <button class="filter-btn active" data-filter="all" onclick="filterTier('all')">All Markets</button>
-        <button class="filter-btn" data-filter="1" onclick="filterTier('1')">Tier 1</button>
-        <button class="filter-btn" data-filter="2" onclick="filterTier('2')">Tier 2</button>
-        <button class="filter-btn" data-filter="e" onclick="filterTier('e')">Emerging</button>
+    <div class="table-controls" style="flex-direction:column;align-items:flex-start;gap:10px;">
+      <div class="filter-row">
+        <span class="filter-label">Tier</span>
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all" onclick="filterTier('all')">All Tiers</button>
+          <button class="filter-btn" data-filter="1" onclick="filterTier('1')">Tier 1</button>
+          <button class="filter-btn" data-filter="2" onclick="filterTier('2')">Tier 2</button>
+          <button class="filter-btn" data-filter="e" onclick="filterTier('e')">Emerging</button>
+        </div>
       </div>
-      <input class="search-box" type="text" id="searchInput" placeholder="Search markets, utilities..." oninput="searchTable()">
-      <div class="result-count" id="resultCount"></div>
+      <div class="filter-row">
+        <span class="filter-label">Region</span>
+        <div class="filter-group">
+          <button class="filter-btn region-btn active" data-region="all" onclick="filterRegion('all')">All Regions</button>
+          <button class="filter-btn region-btn" data-region="north-america" onclick="filterRegion('north-america')">&#127758; North America</button>
+          <button class="filter-btn region-btn" data-region="emea" onclick="filterRegion('emea')">&#127759; EMEA</button>
+        </div>
+        <input class="search-box" type="text" id="searchInput" placeholder="Search markets, utilities..." oninput="searchTable()">
+        <div class="result-count" id="resultCount"></div>
+      </div>
     </div>
     <div class="table-wrapper">
       <table id="marketTable">
@@ -684,7 +697,7 @@
         <tbody id="tableBody">
 
           <!-- TIER 1 -->
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Northern Virginia<span class="sub">Ashburn, Loudoun Co., Prince William Co.</span></td>
             <td class="utility">Dominion Energy / PJM</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -695,7 +708,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Dallas&ndash;Fort Worth TX<span class="sub">Allen, Lewisville, Irving, Plano, Grand Prairie</span></td>
             <td class="utility">Oncor / ERCOT</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -706,7 +719,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Phoenix / Scottsdale AZ<span class="sub">Mesa, Chandler, Goodyear, Tempe</span></td>
             <td class="utility">APS / SRP / WECC</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -717,7 +730,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Chicago / Northern Illinois<span class="sub">Elk Grove Village, Carol Stream, Bolingbrook</span></td>
             <td class="utility">ComEd / PJM / MISO</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -728,7 +741,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Silicon Valley / Bay Area<span class="sub">San Jose, Santa Clara, Fremont, Newark</span></td>
             <td class="utility">PG&amp;E / SVP / CAISO</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -739,7 +752,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Atlanta / Metro Georgia<span class="sub">Douglasville, Lithia Springs, Alpharetta</span></td>
             <td class="utility">Georgia Power / SERC</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -750,7 +763,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">Portland / Hillsboro OR<span class="sub">Hillsboro, Beaverton, Forest Grove</span></td>
             <td class="utility">PGE / BPA / WECC</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -761,7 +774,7 @@
             <td class="trend-flat">&#8594;</td>
           </tr>
 
-          <tr data-tier="1">
+          <tr data-tier="1" data-region="north-america">
             <td class="market-name">New York / New Jersey<span class="sub">N. NJ (Secaucus, Piscataway), Orangeburg NY</span></td>
             <td class="utility">PSE&amp;G / ConEd / PJM</td>
             <td><span class="tier-badge tier-1">Tier 1</span></td>
@@ -773,7 +786,7 @@
           </tr>
 
           <!-- TIER 2 -->
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Columbus, Ohio<span class="sub">Dublin, Hilliard, New Albany, Westerville</span></td>
             <td class="utility">AEP Ohio / PJM</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -784,7 +797,7 @@
             <td class="trend-flat">&#8594;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Denver / Boulder CO<span class="sub">Aurora "Data Center Row," Centennial</span></td>
             <td class="utility">Xcel Energy / SPP-WECC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -795,7 +808,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Kansas City MO/KS<span class="sub">Lenexa, Overland Park, Lee's Summit</span></td>
             <td class="utility">Evergy / SPP</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -806,7 +819,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Salt Lake City, UT<span class="sub">West Valley, West Jordan, Lehi, Draper</span></td>
             <td class="utility">Rocky Mountain Power / WECC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -817,7 +830,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Reno / Sparks, NV<span class="sub">Reno, Sparks, Storey County</span></td>
             <td class="utility">NV Energy / WECC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -828,7 +841,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Indianapolis, IN<span class="sub">Westfield, Whitestown, New Carlisle</span></td>
             <td class="utility">Duke Energy Indiana / MISO</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -839,7 +852,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Nashville / TVA Region<span class="sub">Gallatin, Lebanon, Smyrna, Murfreesboro</span></td>
             <td class="utility">TVA / Nashville Electric</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -850,7 +863,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">San Antonio, TX<span class="sub">San Antonio metro</span></td>
             <td class="utility">CPS Energy / ERCOT</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -861,7 +874,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Quincy / E. Washington<span class="sub">Quincy, George, Ephrata (Columbia Basin)</span></td>
             <td class="utility">Grant County PUD / BPA / WECC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -872,7 +885,7 @@
             <td class="trend-down">&#8681;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Charlotte / Carolinas<span class="sub">Charlotte, Catawba County, Conover NC</span></td>
             <td class="utility">Duke Energy Carolinas / SERC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -883,7 +896,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Richmond, VA<span class="sub">Richmond, Henrico County, Chester</span></td>
             <td class="utility">Dominion Energy / PJM</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -894,7 +907,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Minneapolis / Twin Cities<span class="sub">Shakopee, Chaska, Becker, Eagan</span></td>
             <td class="utility">Xcel Energy / MISO</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -905,7 +918,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Houston, TX<span class="sub">Katy, Sugar Land, The Woodlands</span></td>
             <td class="utility">CenterPoint / ERCOT</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -916,7 +929,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Miami / South Florida<span class="sub">Miami, Boca Raton, Doral, Plantation</span></td>
             <td class="utility">FPL / FRCC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -927,7 +940,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Seattle / Puget Sound<span class="sub">Bellevue, Redmond, Tukwila, Auburn</span></td>
             <td class="utility">Puget Sound Energy / BPA / WECC</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -938,7 +951,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Council Bluffs / Omaha IA/NE<span class="sub">Council Bluffs IA, Omaha NE</span></td>
             <td class="utility">MidAmerican / OPPD / MISO-SPP</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -949,7 +962,7 @@
             <td class="trend-flat">&#8594;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">Sacramento, CA<span class="sub">Elk Grove, Rancho Cordova, Roseville</span></td>
             <td class="utility">PG&amp;E / SMUD / CAISO</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -960,7 +973,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="2">
+          <tr data-tier="2" data-region="north-america">
             <td class="market-name">St. Louis, MO<span class="sub">Earth City, Maryland Heights, Chesterfield</span></td>
             <td class="utility">Ameren Missouri / MISO</td>
             <td><span class="tier-badge tier-2">Tier 2</span></td>
@@ -972,7 +985,7 @@
           </tr>
 
           <!-- EMERGING -->
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Memphis, TN<span class="sub">Memphis metro / Shelby County</span></td>
             <td class="utility">TVA / MLGW</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -983,7 +996,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Huntsville, AL<span class="sub">Huntsville / Madison County</span></td>
             <td class="utility">TVA / Huntsville Utilities</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -994,7 +1007,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Jacksonville / Tampa FL<span class="sub">Jacksonville, Tampa Bay, Orlando</span></td>
             <td class="utility">JEA / TECO / Duke FL / FRCC</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1005,7 +1018,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Detroit / SE Michigan<span class="sub">Detroit, Auburn Hills, Pontiac, Southfield</span></td>
             <td class="utility">DTE Energy / MISO</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1016,7 +1029,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Cincinnati / Dayton OH<span class="sub">Cincinnati, Mason, Monroe, West Chester</span></td>
             <td class="utility">Duke Energy Ohio / MISO</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1027,7 +1040,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Pittsburgh, PA<span class="sub">Pittsburgh, Cranberry Twp, Robinson Twp</span></td>
             <td class="utility">Duquesne Light / FirstEnergy / PJM</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1038,7 +1051,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Omaha / Lincoln NE<span class="sub">Omaha, La Vista, Papillion, Lincoln</span></td>
             <td class="utility">OPPD / LES / SPP</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1049,7 +1062,7 @@
             <td class="trend-flat">&#8594;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Boise / SW Idaho<span class="sub">Boise, Nampa, Caldwell, Meridian</span></td>
             <td class="utility">Idaho Power / WECC</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1060,7 +1073,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Spokane / E. Washington<span class="sub">Spokane, Cheney, Liberty Lake</span></td>
             <td class="utility">Avista / BPA / WECC</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1071,7 +1084,7 @@
             <td class="trend-up">&#8679;</td>
           </tr>
 
-          <tr data-tier="e">
+          <tr data-tier="e" data-region="north-america">
             <td class="market-name">Albuquerque, NM<span class="sub">Albuquerque, Rio Rancho</span></td>
             <td class="utility">PNM / WestConnect / WECC</td>
             <td><span class="tier-badge tier-e">Emerging</span></td>
@@ -1080,6 +1093,267 @@
             <td><span class="status-pill status-available">Available</span></td>
             <td class="key-dev">PNM (Public Service Company of NM) WECC territory. Competitive NM state incentives. Land abundance at low cost. High-altitude dry climate supports cooling. Emerging Phoenix alternative given APS/SRP capacity constraints. Sandia/LANL research ecosystem for secure and government workloads. Limited existing fiber density vs. Phoenix; growing via established operators. Favorable regulatory environment.</td>
             <td class="trend-up">&#8679;</td>
+          </tr>
+
+
+          <!-- ============================================================ -->
+          <!-- EMEA MARKETS -->
+          <!-- ============================================================ -->
+
+          <!-- TIER 1 EMEA — FLAP-D -->
+          <tr data-tier="1" data-region="emea">
+            <td class="market-name">Amsterdam / Netherlands<span class="sub">Schiphol corridor, AMS-IX, Haarlemmermeer</span></td>
+            <td class="utility">Liander / TenneT / AMS-IX</td>
+            <td><span class="tier-badge tier-1">Tier 1</span></td>
+            <td><span class="queue-stat">Grid congestion declared</span><br><span class="wait-time">Liander "code red" — new large-load connections frozen across North Holland</span></td>
+            <td><span style="color:var(--red);font-weight:700;">3&ndash;7 Years</span></td>
+            <td><span class="status-pill status-critical">Critical</span></td>
+            <td class="key-dev">Amsterdam enacted Europe's first DC moratorium (2019&ndash;2022); partial lift followed. Liander declared full "net congestion" across North Holland &amp; Schiphol corridor — frozen for new large loads. ~4 GW+ operational. New builds redirecting to Zeeland (Borssele nuclear corridor), Utrecht, Groningen. AMS-IX = world's largest internet exchange (24+ Tbps). EU data hub status sustains demand despite severe grid constraints. Nitrogen permitting (PFAS rules) further delays new substations.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="1" data-region="emea">
+            <td class="market-name">London / Slough, UK<span class="sub">Slough Trading Estate, Docklands, Hayes, Park Royal</span></td>
+            <td class="utility">National Grid ESO / UK Power Networks / SSE</td>
+            <td><span class="tier-badge tier-1">Tier 1</span></td>
+            <td><span class="queue-stat">200+ GW UK gen queue</span><br><span class="wait-time">Large-load grid connection: 2&ndash;5 years depending on zone</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;5 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">UK is Europe's largest DC market. Slough Trading Estate = Europe's most DC-dense postcode. National Grid ESO published Connections Reform roadmap (2024) to clear 200+ GW generation queue backlog. DCs designated Critical National Infrastructure (2024). Ofgem accelerating grid upgrade approvals. North of England (Manchester, Leeds) emerging as overflow. LINX (London Internet Exchange) major global peering hub. Subsea cables (MAREA, Hibernia) land at west coast.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="1" data-region="emea">
+            <td class="market-name">Frankfurt / Rhine-Main<span class="sub">Raunheim, Eschborn, Hanau, Frankfurt am Main</span></td>
+            <td class="utility">Amprion / TenneT DE / E.ON / Mainova</td>
+            <td><span class="tier-badge tier-1">Tier 1</span></td>
+            <td><span class="queue-stat">Large and growing pipeline</span><br><span class="wait-time">Netzanschluss process: 2&ndash;4 years; Bundesnetzagentur tracking congestion</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">DE-CIX Frankfurt = world's largest internet exchange (&gt;24 Tbps). Frankfurt set to be Europe's largest DC market by GW by 2027. Raunheim&ndash;Eschborn corridor is primary campus zone. Germany's Energiewende creating grid uncertainty; four TSOs (Amprion, TenneT, 50Hertz, TransnetBW) managing transition. Energy costs stabilized post-2022 energy crisis. Hesse state government business-friendly. Berlin and Munich also growing. Strict permitting requirements for large new substations.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="1" data-region="emea">
+            <td class="market-name">Dublin, Ireland<span class="sub">Clondalkin, Tallaght, Grange Castle, Mulhuddart</span></td>
+            <td class="utility">EirGrid (TSO) / ESB Networks (DSO)</td>
+            <td><span class="tier-badge tier-1">Tier 1</span></td>
+            <td><span class="queue-stat">Moratorium (partial lift)</span><br><span class="wait-time">Dublin area: 2&ndash;5 yrs; non-Dublin: 1&ndash;3 yrs</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;5 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">EirGrid imposed Dublin-area DC moratorium (2022) due to grid stress. Partial lift: new approvals only with on-site generation or PPAs covering 100% of demand delta. DCs consume ~21% of Irish electricity (2024); forecast 30% by 2030. Government DC policy review ongoing. Non-Dublin sites (Athenry, Cork, Limerick) under development. Ireland abundant wind energy = hedge against power costs. Microsoft, Google, Meta, Apple all major operators. IDA Ireland continues aggressive DC inward investment promotion.</td>
+            <td class="trend-flat">&#8594;</td>
+          </tr>
+
+          <tr data-tier="1" data-region="emea">
+            <td class="market-name">Paris / &Icirc;le-de-France<span class="sub">Saint-Denis, Vitry-sur-Seine, Clichy, Nanterre</span></td>
+            <td class="utility">RTE (TSO) / Enedis (DSO) / EDF</td>
+            <td><span class="tier-badge tier-1">Tier 1</span></td>
+            <td><span class="queue-stat">Growing pipeline</span><br><span class="wait-time">RTE Sch&eacute;ma D&eacute;cennal forecasts major load growth; ~2&ndash;4 yr connections</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;4 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">France's nuclear advantage (65%+ nuclear power) makes electricity more affordable and lower-carbon than most of Europe. RTE 10-year transmission plan includes grid upgrades for data center growth. French government pledged &euro;109B in AI and tech investment. EDF offering direct nuclear PPAs (contrats long terme). Marseille growing as European subsea cable hub (ACE, SMW5, 2Africa). Paris is a top-5 global internet peering point (France-IX). FR government supports AI infrastructure as strategic priority.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <!-- TIER 2 EMEA -->
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Stockholm / Sweden<span class="sub">Kista, J&auml;rf&auml;lla, Upplands-V&auml;sby</span></td>
+            <td class="utility">Svenska kraftn&auml;t / Vattenfall / Ellevio</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">SE3 zone moderate pipeline</span><br><span class="wait-time">~1&ndash;3 years; SE3 zone experiencing some congestion</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;3 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">World-class hydropower + wind = among Europe's cheapest, cleanest electricity. Cold climate enables free air cooling year-round. Nordic DC market growing 25%+ annually. Meta, Microsoft, Google major campuses in Sweden. Kista "Silicon Valley of Europe" tech district. Sweden 95%+ renewable electricity; 100% target by 2040. District heating reuse improving sustainability KPIs. Government supportive of DC investment. SE3 grid zone near Stockholm experiencing some congestion; new substations under construction. Low seismic &amp; weather risk.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Warsaw / Poland<span class="sub">Warsaw metro, W&oacute;lka Kosowska, &Lstrok;&oacute;d&Lstrok;, Wroc&lstrok;aw</span></td>
+            <td class="utility">PSE (TSO) / PGE / Energa / Enea</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Rapidly growing</span><br><span class="wait-time">~1&ndash;2 years; grid modernization accelerating via EU funds</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">CEE region's fastest-growing DC market. Microsoft &euro;1B+ investment; Google, OVHcloud, Equinix expanding. Lower land and labor costs than Western Europe. Poland leveraging &euro;76B+ EU funds for grid modernization. Transitioning from coal to renewables + planned nuclear (Westinghouse AP1000). Business-friendly investment climate. 100K+ IT graduates/year. EU data sovereignty laws driving onshoring. Government offering significant DC tax incentives. Geographic center of EU logistics network. TPIX Warsaw major peering exchange.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Copenhagen / Denmark<span class="sub">Copenhagen, Odense, &Aring;rhus</span></td>
+            <td class="utility">Energinet (TSO) / Radius / N1</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Manageable pipeline</span><br><span class="wait-time">~1&ndash;2 years; stable grid with high renewable penetration</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">World's highest wind energy penetration; targeting 100% renewable by 2030. Meta, Google, Apple operate large Danish campuses. Danish "Green Data Center" brand attractive for ESG commitments. Cold climate = free cooling efficiency. District heating waste reuse now mandatory for large DCs (Danish law + EU directive). Energinet grid stable and robust. High labor costs vs. Eastern Europe. Strong government support for digital infrastructure. NIX Copenhagen major peering point. Subsea cable gateway to Norway/Sweden/UK.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Madrid / Spain<span class="sub">Madrid, Alcal&aacute; de Henares, Tres Cantos</span></td>
+            <td class="utility">Red El&eacute;ctrica (REE) / Iberdrola / Endesa</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Moderate, growing rapidly</span><br><span class="wait-time">~1&ndash;2 years; Spain's grid capacity expanding with renewables</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Spain targeting 81% renewable by 2030. Microsoft, Google, Amazon announced &euro;9B+ combined investments in Spain. Madrid "Digital Hub" government initiative. LATAM + Africa submarine cable hub (Bilbao, C&aacute;diz). Competitive power costs with abundant solar/wind. Spanish government offering significant DC incentives. Low grid congestion risk vs. Northern Europe. Strong LATAM financial services connectivity advantage. Spain among Europe's fastest-growing DC markets. ESPANIX Madrid major peering exchange.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Milan / Northern Italy<span class="sub">Milan, Cornaredo, Siziano, Settimo Milanese</span></td>
+            <td class="utility">Terna (TSO) / A2A / E-Distribuzione (Enel)</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Growing pipeline</span><br><span class="wait-time">~2&ndash;3 years; Terna grid upgrades underway</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;3 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">Italy's primary DC market and gateway to CEE. Milan excellent fiber connectivity across Central and Eastern Europe. Microsoft, Google investing. Italian government digital strategy backing DC growth. Terna (TSO) upgrading grid for industrial load growth. Energy costs declining with renewables buildout. MIX (Milan Internet Exchange) major European peering point. Italy targeting 65% renewable by 2030. New builds moving to Siziano, Cornaredo corridor as Milan core approaches capacity. Strong financial services sector (Borsa Italiana) driving demand.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Manchester / UK North<span class="sub">Manchester, MediaCityUK, Leeds, Sheffield</span></td>
+            <td class="utility">National Grid ESO / Electricity North West / Northern Powergrid</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Growing, less constrained than London</span><br><span class="wait-time">~1&ndash;3 years; faster than London/Slough zone</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">1&ndash;3 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">Primary overflow from constrained London/Slough market. Lower land costs, improving fiber infrastructure. National Grid Connections Reform unlocking Northern England capacity faster than South East. MediaCityUK (BBC, ITV) driving media-cloud demand. UK government leveling-up agenda supporting Northern digital infrastructure. Growing tech ecosystem around Manchester University. Proximity to Yorkshire &amp; Scottish wind generation corridors. LINX node presence and growing IX presence.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Zurich / Switzerland<span class="sub">Zurich, Bern, Geneva, Zug</span></td>
+            <td class="utility">Swissgrid (TSO) / EWZ / Axpo</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Niche premium pipeline</span><br><span class="wait-time">~1&ndash;2 years; Swiss grid highly reliable</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Switzerland offers near-100% renewable hydro + nuclear power, world-class grid reliability, and a politically neutral jurisdiction. Financial services sector (UBS, Credit Suisse, private banking) drives demand for secure, compliant infrastructure. FSMA &amp; FINMA compliance requirements favor local DC footprint. Equinix, Safe Host, Green major operators. SwissIX Zurich major exchange. High operating costs vs. other European markets. Data protection laws (nFADP) among Europe's strongest. Cold Alpine climate enables free cooling.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="2" data-region="emea">
+            <td class="market-name">Vienna / Austria<span class="sub">Vienna, Lower Austria, Linz</span></td>
+            <td class="utility">APG (TSO) / Wien Energie / EVN</td>
+            <td><span class="tier-badge tier-2">Tier 2</span></td>
+            <td><span class="queue-stat">Moderate, CEE hub positioning</span><br><span class="wait-time">~1&ndash;2 years; Austria's grid stable and renewable-rich</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Austria's 75%+ renewable electricity (hydropower). Vienna positioned as CEE gateway between Western and Eastern European markets. VIX (Vienna Internet Exchange) major peering hub. Equinix, A1 Telekom, dataline active. Good fiber to Bratislava, Budapest, Prague corridors. Austrian business law and political stability attract financial services DCs. Lower costs than Zurich but similar neutrality profile. Data center industry growing 15% annually. Government offering DC investment incentives.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <!-- EMERGING EMEA -->
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Dubai / UAE<span class="sub">Jebel Ali, Dubai Internet City, Abu Dhabi</span></td>
+            <td class="utility">DEWA / ADWEA / Etisalat (e&amp;)</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Growing rapidly</span><br><span class="wait-time">~1&ndash;2 years; DEWA utility proactively expanding capacity</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">MENA's primary data center hub. UAE National AI Strategy driving hyperscale investment. DEWA stable and expanding. Jebel Ali Free Zone hosts AWS, Microsoft, Google. Microsoft committed $1.5B to UAE AI. G42 (Abu Dhabi) driving sovereign AI compute infrastructure. Hot climate = high cooling costs; evaporative + district cooling solutions. Strategic submarine cable hub (PEACE, 2Africa, SMW5). 0% corporate tax for Free Zone operators. Financial services, sovereign wealth, oil &amp; gas sectors driving demand. Strong geopolitical stability relative to wider MENA region.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Helsinki / Finland<span class="sub">Hamina, Espoo, Kirkkonummi, Vantaa</span></td>
+            <td class="utility">Fingrid (TSO) / Helen / Elenia</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Small but growing pipeline</span><br><span class="wait-time">~1&ndash;2 years; Fingrid grid among Europe's most stable</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Google's Hamina campus (since 2011) = one of Europe's most efficient DCs (waste heat into district heating). Microsoft expanding Finland footprint. Nordic hydro + wind = 80%+ renewable electricity. Fingrid grid highly stable. Cold climate enables sub-zero free cooling year-round. Mandatory waste heat utilization improving sustainability. Growing as Stockholm overflow market. Finnish tech ecosystem (Nokia heritage). FICIX Helsinki major exchange. Helsinki&ndash;Tallinn fiber corridor connecting to Baltics &amp; Eastern Europe. Lower costs than Stockholm.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Brussels / Belgium<span class="sub">Brussels, Zaventem, Antwerp, Ghent</span></td>
+            <td class="utility">Elia (TSO) / Sibelga / Fluvius</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Growing, EU institutional demand</span><br><span class="wait-time">~2&ndash;3 years; Elia grid capacity being upgraded</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;3 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">EU institutional demand (Commission, Parliament, Council) drives significant DC footprint in Brussels. BELRIX Brussels internet exchange. Belgium's nuclear fleet (Doel, Tihange) provides stable baseload power. Equinix, LCL major operators. Elia TSO upgrading grid capacity. Belgium's central location and dense fiber network (BICS) excellent connectivity. Proximity to AMS-IX and LINX routes. EU cloud sovereignty requirements driving onshoring demand. Antwerp logistics corridor attracting edge compute.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Prague / Czech Republic<span class="sub">Prague, Brno, Ostrava</span></td>
+            <td class="utility">CEPS (TSO) / PREdistribuce / &Egrave;EZ</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Small, early-stage pipeline</span><br><span class="wait-time">~1&ndash;2 years; EU accession driving grid modernization</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Prague emerging as CEE tech hub; strong tech talent from Czech Technical University. Lower costs than Vienna or Warsaw. Czech government Digital Czechia strategy backing DC investment. NIX.CZ Prague major exchange. New planned nuclear (Dukovany expansion) will improve power mix. Equinix, CE Colo, master:internet operating. EU GDPR compliance fully embedded. Good connectivity to Vienna, Berlin, Warsaw corridors. Competitive land and power costs. Czech Republic political stability and EU membership attractive to US and Asian operators.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Marseille / Southern France<span class="sub">Marseille, Sophia Antipolis, Lyon</span></td>
+            <td class="utility">RTE (TSO) / Enedis / EDF</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Strategic cable landing hub</span><br><span class="wait-time">~2&ndash;3 years; RTE grid expansion planned</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">2&ndash;3 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">Marseille is Europe's #1 submarine cable landing hub: 2Africa, PEACE, SEA-ME-WE 3/4/5/6, AAE-1, and others land here (15+ cables). Massive low-latency advantage for Africa &amp; Middle East traffic. Orange, Interxion/Digital Realty, Equinix operating. France's nuclear power = low-carbon, competitive pricing. Growing as overflow from Paris with better latency to African subsea systems. LFG Marseille internet exchange. EU cloud sovereignty driving southward expansion from Paris. Sophia Antipolis tech park driving adjacent demand.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Lisbon / Portugal<span class="sub">Lisbon, Sintra, Cascais, Porto</span></td>
+            <td class="utility">REN (TSO) / E-Redes / EDP</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Small, rapid growth</span><br><span class="wait-time">~1&ndash;2 years; Portugal's grid expanding with renewables</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Portugal targeting 85%+ renewable by 2030; among cheapest power in Western Europe. Lisbon positioned as Atlantic submarine cable hub (LATAM + US East Coast). Equinix, NOS, Altice PT operating. Competitive land and labor costs. Portugal Digital Strategy 2030 supporting DC investment. Strong transatlantic fiber connectivity (Azores cable routing). Government offering DC incentive programs. Growing tech startup ecosystem (Web Summit moves to Lisbon). Low natural disaster risk. Mild climate reduces cooling costs vs. northern markets.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Istanbul / Turkey<span class="sub">Istanbul, Ankara, Izmir</span></td>
+            <td class="utility">TEI&Acirc;&Scedil; / Enerjisa / AYEDAS</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Growing, strategic E&ndash;W bridge</span><br><span class="wait-time">~1&ndash;2 years; Turkish grid expanding with renewables + nuclear</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">Turkey bridges Europe and Asia — strategic submarine cable hub (SMW, KAFOS, IMEWE). Microsoft Azure Turkey region operational. Istanbul internet exchange (TISTIX) growing. Turkey's rapidly growing digital economy (85M users). Lower costs than Western Europe. Significant government push for digital economy development. Risks: currency volatility, regulatory environment, political risk. Accession Bank&ccedil;acılık (BDDK) requirements for financial sector DCs. Renewable buildout (solar, wind) improving power mix from coal dependency.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Tel Aviv / Israel<span class="sub">Tel Aviv, Petah Tikva, Herzliya, Be'er Sheva</span></td>
+            <td class="utility">IEC (Israel Electric Corp) / NOGA</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Small niche, high-value</span><br><span class="wait-time">~1&ndash;2 years; IEC grid stable; private generation growing</span></td>
+            <td><span style="color:var(--yellow);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-constrained">Constrained</span></td>
+            <td class="key-dev">Israel "Silicon Wadi" = high-value tech ecosystem (8,000+ startups). Amazon, Microsoft, Google all operating Israeli cloud regions. IEC transitioning from monopoly; private power generation reform advancing. Cybersecurity and AI sectors drive specialized compute demand. Be'er Sheva "Silicon Valley of the Negev" government tech hub. High-value, secure compute demand from defense/intelligence sector. Submarine cables (PEACE, MedNautilus) connecting to Europe and Asia. Risks: geopolitical/security environment. High-cost market but strategic for cyber and AI.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Riyadh / Saudi Arabia<span class="sub">Riyadh, KAEC, NEOM, Jeddah</span></td>
+            <td class="utility">SEC (Saudi Electricity Co.) / KCRC</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Vision 2030 mega-investments</span><br><span class="wait-time">~1&ndash;2 years; massive state investment in grid + generation</span></td>
+            <td><span style="color:var(--green);font-weight:700;">1&ndash;2 Years</span></td>
+            <td><span class="status-pill status-available">Available</span></td>
+            <td class="key-dev">Saudi Vision 2030 driving unprecedented DC investment. PIF (Public Investment Fund) deploying billions into AI/DC infrastructure. Microsoft $5B Saudi Arabia investment. Google, Oracle, Alibaba Cloud expanding. SEC (Saudi Electric) building massive grid for NEOM and giga-projects. Extremely competitive power costs (heavily subsidized). Hot climate = cooling challenges. Rising Oil income funds unlimited capacity expansion. LEAP tech conference = global DC deal hub. Strategic submarine cable position (PEACE, SMW). Data localization laws driving domestic DC demand.</td>
+            <td class="trend-up">&#8679;</td>
+          </tr>
+
+          <tr data-tier="e" data-region="emea">
+            <td class="market-name">Johannesburg / South Africa<span class="sub">Johannesburg, Midrand, Cape Town</span></td>
+            <td class="utility">Eskom / City Power / NamPower</td>
+            <td><span class="tier-badge tier-e">Emerging</span></td>
+            <td><span class="queue-stat">Small established base</span><br><span class="wait-time">Variable; on-site generation often required</span></td>
+            <td><span style="color:var(--red);font-weight:700;">Variable</span></td>
+            <td><span class="status-pill status-critical">Critical</span></td>
+            <td class="key-dev">Africa's most mature DC market. Eskom's historic load-shedding (up to Stage 8) = major operational risk; improving in 2024&ndash;2025 but not fully resolved. Teraco dominant operator (JNB, CPT, DUR). On-site diesel + solar generation now standard. NERSA private power generation reforms (2022) enabling on-site solar. JNB + Cape Town = Africa's internet exchange hubs (NAPAfrica, JINX). Financial services (JSE), retail, mining sectors drive demand. 2Africa + PEACE submarine cable landings at Cape Town growing as JNB alternative. Significant opportunity if Eskom reforms succeed.</td>
+            <td class="trend-flat">&#8594;</td>
           </tr>
 
         </tbody>
@@ -1445,13 +1719,14 @@
 
 <!-- FOOTER -->
 <div class="footer">
-  <strong>US Data Center Power &amp; Interconnection Queue Dashboard</strong><br>
-  Research period: Q4 2025 &ndash; Q1 2026 &nbsp;|&nbsp; Last updated: March 26, 2026 &nbsp;|&nbsp; For real estate and site selection purposes only<br>
+  <strong>Global Data Center Power &amp; Interconnection Queue Dashboard &mdash; North America &amp; EMEA</strong><br>
+  Research period: Q4 2025 &ndash; Q1 2026 &nbsp;|&nbsp; Last updated: March 27, 2026 &nbsp;|&nbsp; For real estate and site selection purposes only<br>
   <span style="font-size:11px;margin-top:4px;display:block;">Data sourced from public utility filings, FERC dockets, ISO/RTO board materials, and verified industry publications. Queue depths are public estimates; verify directly with utilities for active site due diligence. Not investment advice.</span>
 </div>
 
 <script>
   let currentFilter = 'all';
+  let currentRegion = 'all';
   let currentSort = { col: -1, dir: 'asc' };
 
   function updateCount() {
@@ -1463,8 +1738,16 @@
 
   function filterTier(tier) {
     currentFilter = tier;
-    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    document.querySelectorAll('.filter-btn:not(.region-btn)').forEach(function(btn) {
       btn.classList.toggle('active', btn.dataset.filter === tier);
+    });
+    applyFilters();
+  }
+
+  function filterRegion(region) {
+    currentRegion = region;
+    document.querySelectorAll('.region-btn').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.region === region);
     });
     applyFilters();
   }
@@ -1478,8 +1761,9 @@
     var rows = document.querySelectorAll('#tableBody tr');
     rows.forEach(function(row) {
       var tierMatch = currentFilter === 'all' || row.dataset.tier === currentFilter;
+      var regionMatch = currentRegion === 'all' || row.dataset.region === currentRegion;
       var searchMatch = !query || row.textContent.toLowerCase().includes(query);
-      row.classList.toggle('hidden', !(tierMatch && searchMatch));
+      row.classList.toggle('hidden', !(tierMatch && regionMatch && searchMatch));
     });
     updateCount();
   }
