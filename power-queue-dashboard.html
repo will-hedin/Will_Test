@@ -137,6 +137,22 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 .note ul{margin:0;padding-left:14px;list-style:disc}
 .note ul li{padding:1px 0;color:#94a3b8;font-size:11px;line-height:1.5}
 .note ul li strong{color:#e2e8f0}
+
+.top-tab-bar{display:flex;gap:4px;background:#12151f;border:1px solid #2d3148;border-radius:10px;padding:6px;margin-bottom:18px}
+.top-tab-btn{flex:1;background:transparent;border:none;color:#64748b;font-size:14px;font-weight:600;padding:10px 20px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.2px}
+.top-tab-btn:hover{color:#e2e8f0;background:#1a1d27}
+.top-tab-btn.active{background:#4f8ef7;color:#fff}
+.top-tab-panel{display:none}
+.top-tab-panel.active{display:block}
+.iq-filter-bar{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.iq-search{flex:1;min-width:220px;background:#12151f;border:1px solid #2d3148;border-radius:6px;padding:6px 12px;color:#e2e8f0;font-size:13px;outline:none}
+.iq-search:focus{border-color:#4f8ef7}
+.iq-search::placeholder{color:#4b5563}
+.iq-stat-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.iq-stat{background:#1a1d27;border:1px solid #2d3148;border-radius:8px;padding:10px 16px;flex:1;min-width:140px}
+.iq-stat-label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-bottom:4px}
+.iq-stat-value{font-size:20px;font-weight:700;color:#fff}
+.iq-stat-sub{font-size:11px;color:#64748b;margin-top:2px}
 </style>
 </head>
 <body>
@@ -157,6 +173,13 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 <div class="alert-bar">
   <strong>&#9889; Critical Headline:</strong> US data center grid-power demand rose 22% in 2025 and is projected to nearly triple by 2030 (S&amp;P Global). PJM projects 32 GW of new peak load growth 2024&ndash;2030 with <strong>94% attributable to data centers</strong>. North American vacancy at record-low <strong>1.6%</strong> (CBRE H1 2025). Power, not land or capital, is now the primary gatekeeper for development.
 </div>
+
+
+<div class="top-tab-bar">
+  <button class="top-tab-btn active" onclick="switchTopTab('overview',this)">&#9642; Market Overview</button>
+  <button class="top-tab-btn" onclick="switchTopTab('iq',this)">&#9783; Interconnection Queue</button>
+</div>
+<div id="top-overview" class="top-tab-panel active">
 
 <!-- KPI ROW -->
 <div class="exec-grid">
