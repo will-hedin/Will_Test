@@ -133,6 +133,10 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 .qs-withdrawn{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;background:#ef444420;color:#ef4444;border:1px solid #ef444440}
 .qs-operational{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;background:#a855f720;color:#a855f7;border:1px solid #a855f740}
 .queue-note{font-size:11px;color:#64748b;margin-top:10px;padding:8px 10px;background:#1a1d27;border-radius:6px;border-left:3px solid #2d3148}
+
+.note ul{margin:0;padding-left:14px;list-style:disc}
+.note ul li{padding:1px 0;color:#94a3b8;font-size:11px;line-height:1.5}
+.note ul li strong{color:#e2e8f0}
 </style>
 </head>
 <body>
@@ -358,7 +362,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">70,000 MW requests</span><div style="font-size:11px;color:#64748b">~25K MW by 2031</div></td>
   <td><span class="wait-val">36&ndash;60+ mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">GS-5 rate class approved Nov 2025 (eff. Jan 2027) for &gt;25 MW users. Golden-Mars 500kV line due 2028. $50.1B Dominion capex plan 2025&ndash;29. 60+ data center bills in 2026 VA legislature. Moratorium bill HB1515 carried to 2027 session.</td>
+  <td class="note"><ul><li>GS-5 rate class effective Jan 2027 — mandatory minimums for &gt;25 MW loads</li><li>New 500kV Golden-Mars transmission line online 2028</li><li>$50.1B Dominion capex commitment 2025–2029</li><li>60+ DC bills in 2026 VA legislature; moratorium deferred to 2027</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.datacenterdynamics.com/en/news/dominion-energy-admits-it-cant-meet-data-center-power-demands-in-virginia/" target="_blank">DCD</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('nova',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -403,7 +407,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">210 GW (Oncor)</span><div style="font-size:11px;color:#64748b">600+ active requests Q3 2025</div></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">Avg request size jumped from &lt;100 MW to ~700 MW. DFW inventory projected to 2x by end 2026. Oncor adding $12B+ to $36B capex plan. Only 20% of requests are high-confidence. ERCOT McKinsey process review underway.</td>
+  <td class="note"><ul><li>Average request size surged from &lt;100 MW → ~700 MW per project</li><li>DFW inventory on track to double by end of 2026</li><li>Oncor adding $12B+ to $36B capex plan</li><li>Only ~20% of queue requests deemed high-confidence</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.datacenterdynamics.com/en/news/texas-utility-oncor-reports-186gw-of-interconnection-requests-from-data-centers/" target="_blank">DCD</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('dfw',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -445,7 +449,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Very High</span><div style="font-size:11px;color:#64748b">Transmission-constrained</div></td>
   <td><span class="wait-val">60&ndash;110 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">CAISO reinforcing SV transmission proactively. Avg CAISO queue time 9.2 years &mdash; longest of all ISOs. IPE 5.0 readiness-based prioritization (June 2025). Data centers compete with renewables for transmission headroom. Very limited new capacity near-term.</td>
+  <td class="note"><ul><li>9.2-year average interconnection queue — longest of all US grid operators</li><li>CAISO proactively reinforcing Silicon Valley transmission</li><li>IPE 5.0 shifts to readiness-based prioritization — June 2025</li><li>Data centers competing with renewables for limited transmission headroom</li></ul></td>
   <td><span class="trend-flat">&#8594;</span></td>
   <td class="src-link"><a href="https://www.latitudemedia.com/news/interconnection-reform-and-load-growth-caisos-paradigm-shift/" target="_blank">Latitude</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('sv',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -485,7 +489,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">APS: 19,000 MW requested</span><div style="font-size:11px;color:#64748b">vs ~350 MW currently active</div></td>
   <td><span class="wait-val">48&ndash;84 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">APS turning away customers; firm power unlikely before 2030s. APS energy usage projected +40% by 2031. SRP updated E-67 rate plan (2025): 20 MW+ customers face minimum billing requirements. Data centers = 5.1% of SRP summer 2025 peak demand record.</td>
+  <td class="note"><ul><li>APS actively turning away new customers — firm power unlikely before 2030s</li><li>APS grid usage projected +40% by 2031 driven by data center load</li><li>SRP E-67 rate update (2025) — mandatory minimums for 20 MW+ customers</li><li>Data centers now 5.1% of SRP's record summer 2025 peak demand</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.azfamily.com/2025/07/10/data-centers-pushing-phoenix-areas-power-grid-limit/" target="_blank">AZ Family</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('phx',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -528,7 +532,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">High (PJM territory)</span><div style="font-size:11px;color:#64748b">5 TSAs approved Mar 2026</div></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">FERC approved 5 ComEd Transmission Security Agreements for data centers (Mar 10, 2026). TSAs include shortfall payments, credit obligations, and ratepayer cost protections. Model being watched by other utilities. PJM queue reform improving timelines.</td>
+  <td class="note"><ul><li>FERC approved 5 Transmission Security Agreements — March 10, 2026</li><li>TSAs include shortfall payments and ratepayer cost protections</li><li>Model being adopted by other PJM utilities</li><li>PJM CIFP fast-path process reducing interconnection delays</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.utilitydive.com/news/ferc-comed-exelon-data-center-service-agreement/814414/" target="_blank">Utility Dive</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('chicago',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -568,7 +572,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">~10,000 MW new capacity approved</span></td>
   <td><span class="wait-val">24&ndash;60 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Georgia PSC approved $16.3B expansion Dec 2025. 5 new gas plants + renewables. 80% of new 10 GW for data centers. Largest YoY inventory growth in CBRE H1 2025 (+969.4 MW). Total customer cost $50&ndash;60B over decades. SELC criticized customer protections.</td>
+  <td class="note"><ul><li>$16.3B grid expansion approved by Georgia PSC — December 2025</li><li>10,000 MW new capacity; 80% reserved for data centers</li><li>Largest single-year inventory growth in CBRE H1 2025 (+969 MW)</li><li>Total ratepayer cost estimated $50–60B over project lifetime</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://georgiarecorder.com/2025/12/19/georgia-regulators-approve-massive-power-grid-expansion-to-serve-data-centers/" target="_blank">GA Recorder</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('atlanta',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -608,7 +612,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">79+ applications in queue</span><div style="font-size:11px;color:#64748b">50&ndash;500 MW demand range</div></td>
   <td><span class="wait-val">12&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">PGE + GridCARE DeFlex AI methodology unlocks 80 MW in 2026, 400 MW by 2029 for flexible DCs. Flexible customers get queue priority. OPUC reviewing PGE plan (decision Apr 2026). Existing grid near limits in Hillsboro area. Innovation market for flexibility-based interconnection.</td>
+  <td class="note"><ul><li>79+ active large-load applications (50–500 MW each)</li><li>DeFlex AI program unlocks 80 MW (2026) → 400 MW (2029) for flexible customers</li><li>Flexible customers receive queue priority</li><li>OPUC regulatory decision expected April 2026</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.prnewswire.com/apac/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302578085.html" target="_blank">PR Newswire</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('portland',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -647,7 +651,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">PSE&amp;G: 9.4 GW pipeline</span><div style="font-size:11px;color:#64748b">90% data center; +47% in 2025</div></td>
   <td><span class="wait-val">36&ndash;60 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">PSE&amp;G pipeline jumped 47% in 2025. NJ nuclear fleet (3,758 MW) being marketed to DCs. Kenilworth DC: 100 MW by 2027 expanding to 300 MW by 2029. NY PSC active on large-load interconnection rules. PSEG exploring utility-owned generation to meet demand.</td>
+  <td class="note"><ul><li>PSE&amp;G large-load pipeline up 47% in 2025 — now 9.4 GW total</li><li>NJ nuclear fleet (3,758 MW) actively marketed to data centers</li><li>Kenilworth DC: 100 MW by 2027, scaling to 300 MW by 2029</li><li>PSE&amp;G exploring utility-owned generation to serve demand</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.datacenterdynamics.com/en/news/new-jersey-utility-pseg-sees-large-load-pipeline-surge-to-94gw-90-from-data-centers/" target="_blank">DCD</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('njny',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -688,7 +692,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">High (PJM backlog)</span><div style="font-size:11px;color:#64748b">Hyperscale hotspot</div></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Google, Amazon, and Meta all expanding in central Ohio. Affordable power, central connectivity, land availability. AI/latency-insensitive workloads growing here. Subject to broader PJM queue constraints. AEP managing rising large-load requests.</td>
+  <td class="note"><ul><li>Google, Amazon, and Meta all actively expanding in central Ohio</li><li>Affordable power, central US connectivity, and land availability</li><li>AI and latency-insensitive workloads are the primary demand driver</li><li>Subject to PJM's broader queue constraints (~8+ yr avg timeline)</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.commercialsearch.com/news/data-centers-pressured-for-power/" target="_blank">CommSearch</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('columbus',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -726,7 +730,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Growing</span><div style="font-size:11px;color:#64748b">Full power not available until 2031+</div></td>
   <td><span class="wait-val">48&ndash;72 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Novva Data Centers $2B financing closed; Rocky Mountain Power cannot guarantee full power until 2031. Utah groups studying nuclear options for world's largest planned DC site. Electricity rate 7.77&#162;/kWh (May 2025). Novva also building in Reno, Mesa AZ, Colorado Springs.</td>
+  <td class="note"><ul><li>Novva Data Centers closed $2B financing for world's largest planned DC site</li><li>Rocky Mountain Power cannot guarantee full power until 2031+</li><li>Nuclear power options under active study</li><li>Power rate: 7.77¢/kWh (May 2025)</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.publicpower.org/periodical/article/companies-get-2-billion-financing-commitment-complete-utah-data-center" target="_blank">APPA</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('slc',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -763,7 +767,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate-High</span><div style="font-size:11px;color:#64748b">California relief valve market</div></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Emerging as California's relief valve. Tax incentives, low land prices, Silicon Valley proximity. Large parcels near fiber routes and renewable power. Novva building campus here. Lower power costs than CA markets. WECC transmission constraints still apply.</td>
+  <td class="note"><ul><li>Emerging as California's primary data center overflow market</li><li>Lower power costs and land prices vs. Bay Area; Switch Citadel is one of the largest US campuses</li><li>Tax incentives and Silicon Valley fiber proximity key advantages</li><li>WECC transmission constraints remain a limiting factor</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://cushwake.cld.bz/Americas-Data-Center-H2-2024-Update" target="_blank">C&amp;W H2 2024</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('reno',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -801,7 +805,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Emerging (SPP / MISO)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">AI and latency-insensitive loads expanding into peripheral markets including KC. Affordable power, abundant Midwest wind, central US location. SPP new large-load rules (2025) improve interconnection speed. Growing hyperscale interest from operators seeking lower-cost markets.</td>
+  <td class="note"><ul><li>SPP new large-load fast-track rules (2025) improving interconnection speed</li><li>Affordable Midwest wind power; central US connectivity</li><li>Growing hyperscale interest for AI and latency-insensitive workloads</li><li>Emerging market with limited near-term capacity constraints</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://perkinscoie.com/insights/update/new-southwest-power-pool-rule-could-supercharge-industrial-and-data-center" target="_blank">Perkins Coie</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('kc',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -838,7 +842,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (MISO)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">Expanding hyperscale market driven by affordable power and land. AI/latency-insensitive workloads growing here. MISO ERAS reforms improving timelines. Central US location, reliable grid, competitive rates vs coastal markets. Rising hyperscale operator interest in 2025.</td>
+  <td class="note"><ul><li>MISO ERAS reforms improving interconnection timelines</li><li>Affordable power and land; competitive vs. coastal markets</li><li>Rising hyperscale and AI workload interest in 2025</li><li>No near-term capacity constraints reported</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.cushmanwakefield.com/en/insights/americas-data-center-update" target="_blank">C&amp;W H2 2025</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('indy',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -874,7 +878,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (TVA managed)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">TVA federally managed grid offers stable baseload power. Browns Ferry nuclear (3,700 MW, N. Alabama) backstops region. Growing tech sector demand. TVA exploring large-load rate structures. Southeast region expanding rapidly. Enterprise and AI workload demand rising.</td>
+  <td class="note"><ul><li>TVA federally managed grid provides stable, predictable baseload power</li><li>Browns Ferry nuclear (3,700 MW) backstops regional supply reliability</li><li>Meta's Gallatin, TN campus is one of the largest in the Southeast</li><li>TVA actively developing large-load rate structures for data centers</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.areadevelopment.com/data-centers/q4-2025/data-centers-in-2025-when-power-became-the-gatekeeper.shtml" target="_blank">Area Dev.</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('nashville',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -912,7 +916,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">High (Dominion queue)</span></td>
   <td><span class="wait-val">36&ndash;60 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">Powhatan County 180-acre campus approved; Dominion planning 365 MW initial deployment. Spillover demand from NoVA congestion driving Richmond growth. Subject to same Dominion queue and GS-5 rate class constraints as Northern Virginia. Long interconnection waits expected.</td>
+  <td class="note"><ul><li>Powhatan County 180-acre campus approved — 365 MW initial Dominion deployment</li><li>Demand spilling over from congested Northern Virginia market</li><li>Same GS-5 rate class and queue constraints as NoVA apply</li><li>36–60+ month interconnection wait expected</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://enkiai.com/data-center/dominion-energys-2026-pivot-taming-data-center-demand" target="_blank">Enki AI</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('richmond',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -948,7 +952,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (MISO)</span><div style="font-size:11px;color:#64748b">800 MW solar project approved</div></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">MidAmerican 800 MW Solar Reliability Project approved by Iowa UC; phases 2027&ndash;28. Google Council Bluffs campus ~95% carbon-free. CyrusOne 100% renewable via GreenAdvantage. Edged scaled back campus scope; owner-operated substations replacing utility substation. $12B+ MidAmerican wind base.</td>
+  <td class="note"><ul><li>MidAmerican 800 MW Solar Reliability Project approved — phased 2027–28</li><li>Google campus running ~95% carbon-free energy</li><li>CyrusOne operating on 100% renewable energy</li><li>$12B+ MidAmerican wind portfolio underpins supply reliability</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.businessrecord.com/energy-water-use-under-close-watch-as-data-centers-expand-in-iowa/" target="_blank">Business Record</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('councilbluffs',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -986,7 +990,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate-High</span></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Growing market with Xcel managing increasing large-load requests. Front Range corridor seeing hyperscale expansion. Competitive renewable energy resources. WECC constraints in transmission corridors affect timelines. Xcel developing large-load service frameworks for data centers.</td>
+  <td class="note"><ul><li>Front Range corridor seeing accelerating hyperscale expansion</li><li>Xcel developing large-load service frameworks for data centers</li><li>Competitive renewable energy portfolio available</li><li>WECC transmission constraints affecting interconnection timelines</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.datacenterfrontier.com/energy/article/55317213/utilities-race-to-meet-surging-data-center-demand-with-new-power-models" target="_blank">DC Frontier</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('denver',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1024,7 +1028,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (Duke queue)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Charlotte-Raleigh cited as low-power-cost market driving supply growth. Duke Energy managing rising large-load queue. Affordable rates vs primary markets. Growing proximity to financial/tech sector demand. Hyperscale expansion accelerating into both Carolinas in 2025&ndash;2026.</td>
+  <td class="note"><ul><li>Low-cost power market driving accelerating supply growth (CBRE 2025)</li><li>Duke Energy managing rising large-load queue across both Carolinas</li><li>Hyperscale expansion accelerating into the region in 2025–2026</li><li>Competitive rates vs. primary Tier 1 markets</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.cbre.com/insights/briefs/north-america-data-center-trends-h1-2025-ai-and-hyperscaler-demand-lead-to-record-low-vacancy" target="_blank">CBRE H1 2025</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('charlotte',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1062,7 +1066,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (MISO)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">52 data centers operating. Commercial rate 10.98&#162;/kWh (May 2025). Cold climate advantage for cooling efficiency. MISO queue reforms improving timelines. Growing AI/hyperscale interest for latency-insensitive workloads. Xcel expanding renewable portfolio for DC customers.</td>
+  <td class="note"><ul><li>52 data centers currently operating</li><li>Commercial rate: 10.98¢/kWh; cold climate reduces cooling costs</li><li>MISO ERAS reforms improving interconnection timelines</li><li>Growing AI and hyperscale interest for latency-insensitive workloads</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://brightlio.com/data-center-stats/" target="_blank">Brightlio</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('minneapolis',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1098,7 +1102,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">High (ERCOT)</span><div style="font-size:11px;color:#64748b">Part of TX 375-DC metro cluster</div></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">375 data centers operating across Austin/Houston/Dallas/San Antonio. CPS Energy (municipally owned) provides some queue flexibility vs investor-owned Oncor. Commercial rate 7.43&#162;/kWh. Low-cost power competitive advantage. ERCOT queue congestion still a market constraint.</td>
+  <td class="note"><ul><li>375 data centers across TX major metro cluster</li><li>CPS Energy (municipal) offers queue flexibility vs. investor-owned Oncor</li><li>Power rate: 7.43¢/kWh — competitive low-cost market</li><li>ERCOT queue congestion remains a key constraint</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://canada.constructconnect.com/dcn/news/usa/2025/12/renewable-energy-is-key-to-powering-texas-data-centers" target="_blank">Construct Connect</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('satx',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1135,7 +1139,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">High (CAISO)</span></td>
   <td><span class="wait-val">60&ndash;84 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">Sacramento requires ~72 months for grid interconnection. CA data center environmental impact legislation passed 2025. State legislating transparency and guardrails. SMUD (municipal) offers some flexibility. CAISO 9.2-year avg queue time dominates region. CA data center demand report released Nov 2025.</td>
+  <td class="note"><ul><li>~72-month interconnection timeline — among the longest in the US</li><li>California enacted new DC environmental impact legislation (2025)</li><li>SMUD (municipal utility) offers limited flexibility within CAISO constraints</li><li>CAISO IPE 5.0 shifting to readiness-based prioritization (June 2025)</li></ul></td>
   <td><span class="trend-flat">&#8594;</span></td>
   <td class="src-link"><a href="https://calmatters.org/environment/2025/11/data-center-environmental-report/" target="_blank">CalMatters</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('sacramento',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1172,7 +1176,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Constrained (WECC / BPA)</span></td>
   <td><span class="wait-val">36&ndash;60 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">I-5 transmission corridor constrained; no major upgrades near-term. By 2029, data centers could exceed PSE's total load for 1.2M+ customers. PSE requesting ~30% rate increase by 2029. 200 MW / 800 MWh battery storage deployed near Tacoma. WA clean energy mandates creating conflict with DC growth.</td>
+  <td class="note"><ul><li>I-5 transmission corridor fully constrained — no near-term upgrades planned</li><li>Data center load projected to exceed PSE's 1.2M-customer total by 2029</li><li>PSE requesting ~30% rate increase by 2029</li><li>200 MW / 800 MWh battery storage deployed near Tacoma (2025)</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.seattletimes.com/seattle-news/times-watchdog/power-hungry-how-the-data-center-boom-drained-wa-of-hydropower/" target="_blank">Seattle Times</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('seattle',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1210,7 +1214,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">79 pending applications</span><div style="font-size:11px;color:#64748b">Load caps implemented Mar 2025</div></td>
   <td><span class="wait-val">84&ndash;120 mo</span></td>
   <td><span class="constraint c-red">CRITICAL</span></td>
-  <td class="note">Grant PUD implemented unprecedented load caps (March 25, 2025). No new connections at capacity limits. 7&ndash;10 year wait per utility. Transmission expansion needed before growth resumes. 79 pending applications. Solar contract proposed. Hydro-driven market at hard grid limits.</td>
+  <td class="note"><ul><li>Grant PUD load caps enacted March 2025 — no new connections at capacity limits</li><li>79 pending applications; 7–10 year stated wait time</li><li>Transmission expansion required before growth can resume</li><li>Solar contract proposed as near-term supply addition</li></ul></td>
   <td><span class="trend-down">&#9660;</span></td>
   <td class="src-link"><a href="https://www.newsdata.com/clearing_up/supply_and_demand/grant-county-pud-puts-load-caps-on-data-centers-to-slow-growth-until-transmission-expansion/article_52b44501-c5f9-4b24-953a-746049ef800a.html" target="_blank">NewsData</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('quincy',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1247,7 +1251,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (TVA)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">Google and Meta have major facilities here. 27 DCs operating or under construction statewide. TVA Browns Ferry nuclear (3,700 MW) provides baseload. AL commercial rate 14.68&#162;/kWh (Oct 2025). AI-driven boom accelerating through early 2026. State incentives available.</td>
+  <td class="note"><ul><li>Google and Meta operating major facilities in market</li><li>27 data centers operating or under construction statewide</li><li>TVA Browns Ferry nuclear (3,700 MW) provides reliable baseload</li><li>AI-driven demand accelerating through 2026; state incentives available</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.wbrc.com/2026/02/18/alabama-data-centers-multiply-artificial-intelligence-fuels-growth/" target="_blank">WBRC</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('huntsville',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1284,7 +1288,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">High (ERCOT)</span></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">32 data centers operating. Commercial rate 7.43&#162;/kWh. CenterPoint managing rising large-load queue. ERCOT queue constraints apply. High cooling costs (tropical heat). Energy industry synergies. Behind-the-meter gas generation solutions emerging. Renewable energy growing in TX portfolio.</td>
+  <td class="note"><ul><li>32 data centers operating; energy sector synergies driving growth</li><li>Power rate: 7.43¢/kWh — low-cost market</li><li>Behind-the-meter gas generation emerging to bypass ERCOT queue</li><li>ERCOT queue constraints and high cooling costs are key risks</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://brightlio.com/data-center-stats/" target="_blank">Brightlio</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('houston',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1331,7 +1335,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Latin America connectivity hub. FPL one of largest US utilities. High cooling costs (tropical climate). Growing as gateway for LatAm data center market. NextEra major renewables investor. Land costs rising in urban core. Edge and enterprise demand strong. Hurricane risk a planning factor.</td>
+  <td class="note"><ul><li>Primary US gateway for Latin America connectivity</li><li>FPL (NextEra) is one of the largest US utilities; leads US renewables</li><li>Hurricane risk requires hardened, resilient facility design</li><li>High cooling costs and rising land prices are primary constraints</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.cushmanwakefield.com/en/insights/americas-data-center-update" target="_blank">C&amp;W H2 2025</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('miami',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1378,7 +1382,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (WECC)</span></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Idaho Power faces growing large-load requests. Low-cost hydro attractive but constrained. WECC-wide transmission constraints affect region. Growing semiconductor/tech sector (Micron HQ) driving DC interest. Cold climate cooling advantage. Grid capacity limited; nuclear interest growing.</td>
+  <td class="note"><ul><li>Idaho Power facing growing large-load requests; hydro capacity constrained</li><li>Micron Technology (HQ) anchors tech sector demand</li><li>Cold climate reduces cooling costs; WECC constraints limit near-term capacity</li><li>Nuclear power options under active study</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.commercialsearch.com/news/data-centers-pressured-for-power/" target="_blank">CommSearch</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('boise',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1426,7 +1430,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (MISO)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">Central US location, Ameren reliable grid. MISO ERAS process improving timelines. Affordable power and lower land costs than primary markets. Growing interest from hyperscale and AI workloads. MISO 202 GW queue with 20 GW of GIAs approved in 2025. Favorable state incentive environment.</td>
+  <td class="note"><ul><li>MISO ERAS reforms improving interconnection timelines</li><li>20 GW of grid interconnection agreements approved in 2025</li><li>Affordable power and competitive land costs vs. primary markets</li><li>State incentive environment favorable for data center development</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://cdn.misoenergy.org/20251209%20System%20Planning%20Committee%20of%20the%20BOD%20Item%2005%20Resource%20Adequacy%20and%20Generator%20Interconnection%20Queue%20Update730302.pdf" target="_blank">MISO</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('stlouis',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1462,7 +1466,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Low-Moderate (TVA)</span></td>
   <td><span class="wait-val">12&ndash;24 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">TVA provides stable, affordable federal power. MLGW municipally owned distribution gives flexibility. Lower market profile but strong power fundamentals. Growing interest from logistics and enterprise. Mississippi River corridor connectivity. Favorable land costs vs primary markets.</td>
+  <td class="note"><ul><li>TVA federal power provides stable rates and reliable supply</li><li>MLGW municipal utility offers flexibility vs. investor-owned peers</li><li>FedEx anchors enterprise IT demand; logistics sector synergy</li><li>12–24 month interconnection timeline — fastest in the Southeast</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.areadevelopment.com/data-centers/q4-2025/data-centers-in-2025-when-power-became-the-gatekeeper.shtml" target="_blank">Area Dev.</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('memphis',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1510,7 +1514,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Low-Moderate</span></td>
   <td><span class="wait-val">12&ndash;24 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">Adjacent to Council Bluffs hyperscale cluster. OPPD publically owned; MidAmerican renewable-heavy (4,400+ MW wind). Google campus nearby. Corn Belt wind energy abundant. Low land costs, central US connectivity. MISO ERAS process improving timelines for new connections.</td>
+  <td class="note"><ul><li>Adjacent to Google's major Council Bluffs campus cluster</li><li>OPPD publicly owned — greater flexibility than investor-owned utilities</li><li>MidAmerican renewable-heavy (4,400+ MW wind capacity)</li><li>MISO ERAS improving interconnection timelines</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.cyrusone.com/data-centers/north-america/council-bluffs-ia" target="_blank">CyrusOne</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('omaha',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1546,7 +1550,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (MISO)</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">DTE managing increasing large-load requests. Industrial grid rebuilt for automotive sector now attracting data centers. MISO reforms improving interconnection. Great Lakes cooling advantage. Enterprise and edge market growing. DTE investing in grid modernization and renewable energy portfolio.</td>
+  <td class="note"><ul><li>Industrial grid built for automotive sector now attracting data centers</li><li>Great Lakes proximity provides natural cooling cost advantages</li><li>DTE investing in grid modernization and renewable energy</li><li>MISO ERAS reforms improving timelines for new large-load connections</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.morganlewis.com/pubs/2025/07/failure-to-connect-grid-challenges-persist-as-demand-rises" target="_blank">Morgan Lewis</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('detroit',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1582,7 +1586,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Low-Moderate</span></td>
   <td><span class="wait-val">12&ndash;24 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">JEA (Jacksonville) municipally owned utility provides flexibility vs IOU competition. Tampa Electric managing growing large-load pipeline. Florida growth markets with enterprise and colo demand. Hurricane risk a planning factor. FPL/NextEra renewables dominant statewide. Lower land costs vs. South Florida.</td>
+  <td class="note"><ul><li>JEA (Jacksonville) is municipally owned — more flexible than investor-owned peers</li><li>Tampa Electric managing growing large-load pipeline</li><li>Lower land costs vs. South Florida; enterprise and colo demand growing</li><li>Hurricane risk a key facility planning and design factor</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.innowave-studio.com/post/best-u-s-states-for-data-center-development-in-2025-incentives-power-costs-connectivity-and-des" target="_blank">Innowave</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('jaxpa',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1619,7 +1623,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (WECC)</span></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Avista serves Eastern WA with BPA wholesale backstop. Less congested than Puget Sound or Quincy. Cold climate cooling advantage. Tax incentives available. H5 Data Centers presence noted. WECC-wide transmission constraints still apply. Lower profile than Seattle/Quincy but growing operator interest.</td>
+  <td class="note"><ul><li>Less congested alternative to Puget Sound and Quincy</li><li>Cold climate provides natural cooling cost advantage</li><li>BPA wholesale backstop provides supply reliability</li><li>WECC-wide transmission constraints still apply</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.datacentermap.com/usa/washington/spokane/h5-quincy/" target="_blank">DC Map</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('spokane',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1655,7 +1659,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Low-Moderate</span></td>
   <td><span class="wait-val">18&ndash;36 mo</span></td>
   <td><span class="constraint c-green">AVAILABLE</span></td>
-  <td class="note">PNM transitioning from coal to renewables. Strong solar resource. Low land and power costs. Growing tech presence (Intel campus nearby in Rio Rancho). Less competition for sites vs primary markets. State data center incentives available. Dry climate aids cooling efficiency. WECC interconnection.</td>
+  <td class="note"><ul><li>PNM transitioning from coal to renewables; strong solar resource</li><li>Intel fab (Rio Rancho) anchors tech sector presence</li><li>Low land costs and dry climate for cooling efficiency</li><li>State data center incentives available; limited site competition</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://www.innowave-studio.com/post/best-u-s-states-for-data-center-development-in-2025-incentives-power-costs-connectivity-and-des" target="_blank">Innowave</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('abq',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1702,7 +1706,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (PJM)</span></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">PJM territory with &gt;8 yr avg queue time but improving via CIFP fast-path (Aug 2025). CMU/DARPA/defense tech presence driving AI DC interest. Behind-the-meter solutions being explored. Brownfield industrial sites available. Duquesne Light managing growing large-load requests.</td>
+  <td class="note"><ul><li>PJM CIFP fast-path process reducing interconnection timelines (Aug 2025)</li><li>CMU, DARPA, and defense tech driving AI data center interest</li><li>Brownfield industrial sites available for development</li><li>Behind-the-meter generation solutions being actively explored</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://rmi.org/pjms-speed-to-power-problem-and-how-to-fix-it/" target="_blank">RMI</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('pittsburgh',this)"><span class="chevron">&#9660;</span> Queue</button></td>
@@ -1738,7 +1742,7 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <td><span class="queue-val">Moderate (PJM)</span></td>
   <td><span class="wait-val">24&ndash;48 mo</span></td>
   <td><span class="constraint c-yellow">MODERATE</span></td>
-  <td class="note">Duke Energy Ohio managing PJM queue pressures. Proximity to Columbus hyperscale cluster driving interest. Enterprise and colo demand growing. PJM April 2025 Cycle process reducing timeline uncertainty. Affordable power vs coastal markets. Duke investing in grid capacity for load growth.</td>
+  <td class="note"><ul><li>PJM Cycle process (April 2025) reducing interconnection timeline uncertainty</li><li>Proximity to Columbus hyperscale cluster driving secondary market interest</li><li>Affordable power vs. coastal markets; Duke investing in grid capacity</li><li>Enterprise and colo demand growing</li></ul></td>
   <td><span class="trend-up">&#9650;</span></td>
   <td class="src-link"><a href="https://insidelines.pjm.com/2025-year-in-review-planning-prepares-for-burgeoning-electricity-demand/" target="_blank">PJM</a></td>
   <td><button class="queue-btn" onclick="toggleQueue('cincinnati',this)"><span class="chevron">&#9660;</span> Queue</button></td>
