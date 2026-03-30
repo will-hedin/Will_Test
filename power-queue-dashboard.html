@@ -1940,37 +1940,6 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 </div><!-- end top-overview -->
 <div id="top-iq" class="top-tab-panel">
 
-<div class="iq-top-stats">
-  <div class="iq-kpi red"><div class="iq-kpi-label">ERCOT System Queue</div><div class="iq-kpi-val">233 GW</div><div class="iq-kpi-sub">73% data centers; 600+ Oncor requests</div></div>
-  <div class="iq-kpi red"><div class="iq-kpi-label">Dominion / PJM (NoVA)</div><div class="iq-kpi-val">70,000 MW</div><div class="iq-kpi-sub">~25K by 2031; 45K undated</div></div>
-  <div class="iq-kpi yellow"><div class="iq-kpi-label">CAISO Avg Queue Time</div><div class="iq-kpi-val">9.2 yrs</div><div class="iq-kpi-sub">Longest of all US ISOs</div></div>
-  <div class="iq-kpi green"><div class="iq-kpi-label">Est. Conversion Rate</div><div class="iq-kpi-val">10–30%</div><div class="iq-kpi-sub">Of queue requests reach energization</div></div>
-  <div class="iq-kpi"><div class="iq-kpi-label">Operators Tracked</div><div class="iq-kpi-val">135+</div><div class="iq-kpi-sub">Across 32 markets &amp; 8 grid operators</div></div>
-</div>
-<div class="iq-top-filters">
-  <span class="filter-label">Grid Operator:</span>
-  <div class="tier-btns" id="go-filter-btns">
-    <button class="tier-btn active" onclick="iqGoFilter('all',this)">All</button>
-    <button class="tier-btn" onclick="iqGoFilter('pjm',this)">PJM</button>
-    <button class="tier-btn" onclick="iqGoFilter('ercot',this)">ERCOT</button>
-    <button class="tier-btn" onclick="iqGoFilter('caiso',this)">CAISO</button>
-    <button class="tier-btn" onclick="iqGoFilter('miso',this)">MISO</button>
-    <button class="tier-btn" onclick="iqGoFilter('spp',this)">SPP</button>
-    <button class="tier-btn" onclick="iqGoFilter('tva',this)">TVA</button>
-    <button class="tier-btn" onclick="iqGoFilter('serc',this)">SERC</button>
-    <button class="tier-btn" onclick="iqGoFilter('wecc',this)">WECC</button>
-  </div>
-  <span class="filter-label" style="margin-left:8px">Status:</span>
-  <div class="tier-btns" id="status-filter-btns">
-    <button class="tier-btn active" onclick="iqStatusFilter('all',this)">All</button>
-    <button class="tier-btn" onclick="iqStatusFilter('construction',this)">Under Construction</button>
-    <button class="tier-btn" onclick="iqStatusFilter('studying',this)">Studying</button>
-    <button class="tier-btn" onclick="iqStatusFilter('approved',this)">Approved</button>
-    <button class="tier-btn" onclick="iqStatusFilter('operational',this)">Operational</button>
-  </div>
-  <input class="search-box" id="iqSearch" placeholder="Search operator, market, grid..." oninput="iqApply()" style="flex:1;min-width:180px">
-  <span class="result-count" id="iqCount"></span>
-</div>
 <div class="table-wrap">
 <table id="iqTable">
 <thead>
@@ -2122,6 +2091,38 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 <tr data-go="wecc" data-tier=""><td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:#8b5cf620;color:#8b5cf6;border:1px solid #8b5cf640;white-space:nowrap">WECC</span></td><td style="font-weight:600;color:#e2e8f0;white-space:nowrap">Albuquerque, NM</td><td style="color:#e2e8f0">Hyperscalers / AI (unnamed)</td><td style="font-weight:700;color:#4f8ef7;white-space:nowrap">50–200 MW each</td><td><span class="qs-studying">Studying</span></td><td style="font-weight:600;color:#f59e0b;white-space:nowrap">2027–2030</td><td style="font-size:11px;color:#64748b;max-width:220px">PNM transitioning to renewables; state incentives available</td></tr>
 </tbody>
 </table>
+</div>
+
+<div class="iq-top-stats">
+  <div class="iq-kpi red"><div class="iq-kpi-label">ERCOT System Queue</div><div class="iq-kpi-val">233 GW</div><div class="iq-kpi-sub">73% data centers; 600+ Oncor requests</div></div>
+  <div class="iq-kpi red"><div class="iq-kpi-label">Dominion / PJM (NoVA)</div><div class="iq-kpi-val">70,000 MW</div><div class="iq-kpi-sub">~25K by 2031; 45K undated</div></div>
+  <div class="iq-kpi yellow"><div class="iq-kpi-label">CAISO Avg Queue Time</div><div class="iq-kpi-val">9.2 yrs</div><div class="iq-kpi-sub">Longest of all US ISOs</div></div>
+  <div class="iq-kpi green"><div class="iq-kpi-label">Est. Conversion Rate</div><div class="iq-kpi-val">10–30%</div><div class="iq-kpi-sub">Of queue requests reach energization</div></div>
+  <div class="iq-kpi"><div class="iq-kpi-label">Operators Tracked</div><div class="iq-kpi-val">135+</div><div class="iq-kpi-sub">Across 32 markets &amp; 8 grid operators</div></div>
+</div>
+<div class="iq-top-filters">
+  <span class="filter-label">Grid Operator:</span>
+  <div class="tier-btns" id="go-filter-btns">
+    <button class="tier-btn active" onclick="iqGoFilter('all',this)">All</button>
+    <button class="tier-btn" onclick="iqGoFilter('pjm',this)">PJM</button>
+    <button class="tier-btn" onclick="iqGoFilter('ercot',this)">ERCOT</button>
+    <button class="tier-btn" onclick="iqGoFilter('caiso',this)">CAISO</button>
+    <button class="tier-btn" onclick="iqGoFilter('miso',this)">MISO</button>
+    <button class="tier-btn" onclick="iqGoFilter('spp',this)">SPP</button>
+    <button class="tier-btn" onclick="iqGoFilter('tva',this)">TVA</button>
+    <button class="tier-btn" onclick="iqGoFilter('serc',this)">SERC</button>
+    <button class="tier-btn" onclick="iqGoFilter('wecc',this)">WECC</button>
+  </div>
+  <span class="filter-label" style="margin-left:8px">Status:</span>
+  <div class="tier-btns" id="status-filter-btns">
+    <button class="tier-btn active" onclick="iqStatusFilter('all',this)">All</button>
+    <button class="tier-btn" onclick="iqStatusFilter('construction',this)">Under Construction</button>
+    <button class="tier-btn" onclick="iqStatusFilter('studying',this)">Studying</button>
+    <button class="tier-btn" onclick="iqStatusFilter('approved',this)">Approved</button>
+    <button class="tier-btn" onclick="iqStatusFilter('operational',this)">Operational</button>
+  </div>
+  <input class="search-box" id="iqSearch" placeholder="Search operator, market, grid..." oninput="iqApply()" style="flex:1;min-width:180px">
+  <span class="result-count" id="iqCount"></span>
 </div>
 
 </div><!-- end top-iq -->
