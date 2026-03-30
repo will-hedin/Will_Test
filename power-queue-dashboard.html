@@ -153,6 +153,37 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 .iq-stat-label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-bottom:4px}
 .iq-stat-value{font-size:20px;font-weight:700;color:#fff}
 .iq-stat-sub{font-size:11px;color:#64748b;margin-top:2px}
+
+.go-section{margin-bottom:28px}
+.go-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:#1a1d27;border:1px solid #2d3148;border-radius:10px 10px 0 0;padding:14px 18px;border-bottom:2px solid #4f8ef740}
+.go-header h3{font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px}
+.go-badge{font-size:11px;padding:3px 10px;border-radius:4px;font-weight:600;background:#4f8ef720;color:#4f8ef7;border:1px solid #4f8ef740}
+.go-stats{display:flex;gap:20px;flex-wrap:wrap}
+.go-stat{text-align:right}
+.go-stat-val{font-size:18px;font-weight:700;color:#fff}
+.go-stat-lbl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.4px}
+.go-table-wrap{background:#1a1d27;border:1px solid #2d3148;border-radius:0 0 10px 10px;overflow:hidden}
+.go-table{width:100%;border-collapse:collapse}
+.go-table thead th{background:#0f1117;padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;color:#64748b;cursor:pointer;white-space:nowrap;user-select:none}
+.go-table thead th:hover{color:#94a3b8}
+.go-table tbody tr{border-bottom:1px solid #1e2235;transition:background 0.15s}
+.go-table tbody tr:hover{background:#1e2235}
+.go-table td{padding:8px 12px;font-size:12px;vertical-align:top}
+.go-metro{font-weight:600;color:#e2e8f0}
+.go-op{color:#94a3b8}
+.go-mw{font-weight:700;color:#4f8ef7}
+.go-date{font-weight:600;color:#f59e0b}
+.go-note{color:#64748b;font-size:11px;max-width:240px}
+.iq-top-filters{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.iq-top-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px}
+.iq-kpi{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:14px 16px;position:relative;overflow:hidden}
+.iq-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#4f8ef7}
+.iq-kpi.red::before{background:#ef4444}
+.iq-kpi.yellow::before{background:#f59e0b}
+.iq-kpi.green::before{background:#22c55e}
+.iq-kpi-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.iq-kpi-val{font-size:22px;font-weight:700;color:#fff;line-height:1}
+.iq-kpi-sub{font-size:11px;color:#64748b;margin-top:3px}
 </style>
 </head>
 <body>
@@ -1906,6 +1937,327 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
   <div class="source-item"><div class="s-title"><a href="https://www.utilitydive.com/news/batteries-brightnight-puget-sound-pse-greenwater/807423/" target="_blank">Batteries to Provide Grid Support in Constrained Pacific Northwest</a></div><div class="s-date">Utility Dive &nbsp;&middot;&nbsp; 2025</div></div>
 </div>
 
+</div><!-- end top-overview -->
+<div id="top-iq" class="top-tab-panel">
+
+<div class="iq-top-stats">
+  <div class="iq-kpi red"><div class="iq-kpi-label">ERCOT System Queue</div><div class="iq-kpi-val">233 GW</div><div class="iq-kpi-sub">73% data centers; 600+ Oncor requests</div></div>
+  <div class="iq-kpi red"><div class="iq-kpi-label">Dominion / PJM (NoVA)</div><div class="iq-kpi-val">70,000 MW</div><div class="iq-kpi-sub">~25K by 2031; 45K undated</div></div>
+  <div class="iq-kpi yellow"><div class="iq-kpi-label">CAISO Avg Queue Time</div><div class="iq-kpi-val">9.2 yrs</div><div class="iq-kpi-sub">Longest of all US ISOs</div></div>
+  <div class="iq-kpi green"><div class="iq-kpi-label">Est. Conversion Rate</div><div class="iq-kpi-val">10–30%</div><div class="iq-kpi-sub">Of queue requests reach energization</div></div>
+  <div class="iq-kpi"><div class="iq-kpi-label">Operators Tracked</div><div class="iq-kpi-val">150+</div><div class="iq-kpi-sub">Across 32 markets &amp; 7 grid operators</div></div>
+</div>
+<div class="iq-top-filters">
+  <span class="filter-label">Jump to Grid Operator:</span>
+  <div class="tier-btns">
+    <button class="tier-btn" onclick="document.getElementById('go-pjm').scrollIntoView({behavior:'smooth'})">PJM</button>
+    <button class="tier-btn" onclick="document.getElementById('go-ercot').scrollIntoView({behavior:'smooth'})">ERCOT</button>
+    <button class="tier-btn" onclick="document.getElementById('go-caiso').scrollIntoView({behavior:'smooth'})">CAISO</button>
+    <button class="tier-btn" onclick="document.getElementById('go-miso').scrollIntoView({behavior:'smooth'})">MISO</button>
+    <button class="tier-btn" onclick="document.getElementById('go-spp').scrollIntoView({behavior:'smooth'})">SPP</button>
+    <button class="tier-btn" onclick="document.getElementById('go-tva').scrollIntoView({behavior:'smooth'})">TVA</button>
+    <button class="tier-btn" onclick="document.getElementById('go-serc').scrollIntoView({behavior:'smooth'})">SERC</button>
+    <button class="tier-btn" onclick="document.getElementById('go-wecc').scrollIntoView({behavior:'smooth'})">WECC</button>
+  </div>
+</div>
+
+<div class="go-section" id="go-pjm">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#4f8ef720;color:#4f8ef7;border:1px solid #4f8ef740">PJM</span> PJM Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">~120,000+ MW</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">7 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">36–60+ mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Amazon Web Services</td><td class="go-mw">3,000–5,000+ MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2029</td><td class="go-note">50+ facilities; ongoing large-scale expansion</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Microsoft</td><td class="go-mw">2,000–4,000 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2028</td><td class="go-note">~4M sq ft under construction in Manassas alone</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Google</td><td class="go-mw">1,000–2,000 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2028</td><td class="go-note">Loudoun &amp; Culpeper campuses</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Meta Platforms</td><td class="go-mw">600–1,200 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Multiple Loudoun County facilities</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">CoreWeave</td><td class="go-mw">500–1,000 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Aggressive AI compute campus expansion</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Equinix</td><td class="go-mw">400–800 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2027</td><td class="go-note">Ashburn campus DC1–DC15+ expansion</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Digital Realty</td><td class="go-mw">300–600 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Ashburn / Sterling campus additions</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">QTS Realty (Blackstone)</td><td class="go-mw">300–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Manassas / Ashburn expansion</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">CyrusOne</td><td class="go-mw">200–400 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Sterling / Ashburn capacity additions</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Iron Mountain</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">PWC hyperscale campus</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Apple</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">Multiple undisclosed sites</td></tr>
+<tr><td class="go-metro">N. Virginia</td><td class="go-op">Unnamed Hyperscalers (aggregate)</td><td class="go-mw">~45,000 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028+ / Undated</td><td class="go-note">Bulk of 70,000 MW Dominion queue; ~10–30% expected to convert</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">Microsoft (Elk Grove Village)</td><td class="go-mw">480–700 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">ComEd TSA holder; campus expansions ongoing</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">Google</td><td class="go-mw">300–600 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">PJM large-load queue position</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">Amazon Web Services</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Multiple IL campus expansions</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">Equinix (CH1–CH10+)</td><td class="go-mw">200–400 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2027</td><td class="go-note">Elk Grove Village campus expansion</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">Digital Realty (CHI1–4)</td><td class="go-mw">150–300 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Active campus additions</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">Meta Platforms</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Franklin Park large-load request</td></tr>
+<tr><td class="go-metro">Chicago</td><td class="go-op">5 ComEd TSA Holders (unnamed)</td><td class="go-mw">~1,000+ MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2026–2028</td><td class="go-note">FERC-approved Mar 2026; developers not all publicly named</td></tr>
+<tr><td class="go-metro">Columbus, OH</td><td class="go-op">Google (New Albany)</td><td class="go-mw">500–1,000 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2028</td><td class="go-note">Multiple buildings operational &amp; expanding</td></tr>
+<tr><td class="go-metro">Columbus, OH</td><td class="go-op">Amazon Web Services</td><td class="go-mw">400–800 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Multiple AEP Ohio campuses</td></tr>
+<tr><td class="go-metro">Columbus, OH</td><td class="go-op">Meta Platforms</td><td class="go-mw">300–600 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2027</td><td class="go-note">New Albany campus under construction</td></tr>
+<tr><td class="go-metro">Columbus, OH</td><td class="go-op">Microsoft</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Columbus / Dublin area queue</td></tr>
+<tr><td class="go-metro">Columbus, OH</td><td class="go-op">CoreWeave / AI Campus</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">AI compute; central OH growing as workload hub</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">PSE&amp;G Unnamed Hyperscaler A</td><td class="go-mw">500–1,000 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Part of 9.4 GW PSE&amp;G pipeline</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">Kenilworth Data Center</td><td class="go-mw">100→300 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2027→2029</td><td class="go-note">Publicly disclosed; 100 MW then scaling to 300 MW</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">Google</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">NJ / NY area queue position</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">Microsoft</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2029</td><td class="go-note">PJM / PSE&amp;G large-load queue</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">Amazon Web Services</td><td class="go-mw">200–400 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2026–2028</td><td class="go-note">Active NJ campus footprint</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">Equinix</td><td class="go-mw">100–250 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Established NJ / NY colocation campuses</td></tr>
+<tr><td class="go-metro">New York / New Jersey</td><td class="go-op">Remaining PSE&amp;G Pipeline (unnamed)</td><td class="go-mw">~7,400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">90% data center; +47% YoY growth in 2025</td></tr>
+<tr><td class="go-metro">Richmond / Central VA</td><td class="go-op">Hyperscaler (Powhatan County)</td><td class="go-mw">365 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Same GS-5 rate class &amp; queue constraints as NoVA</td></tr>
+<tr><td class="go-metro">Richmond / Central VA</td><td class="go-op">NoVA Spillover Operators</td><td class="go-mw">100–400 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Congestion from NoVA driving Richmond exploration</td></tr>
+<tr><td class="go-metro">Pittsburgh</td><td class="go-op">Microsoft / Google</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">PJM CIFP fast-path; brownfield sites available</td></tr>
+<tr><td class="go-metro">Pittsburgh</td><td class="go-op">AI Campus (unnamed)</td><td class="go-mw">50–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">CMU/DARPA defense tech driving AI DC demand</td></tr>
+<tr><td class="go-metro">Cincinnati</td><td class="go-op">Hyperscaler (Columbus spillover)</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Duke Energy Ohio; PJM Cycle process Apr 2025</td></tr>
+<tr><td class="go-metro">Cincinnati</td><td class="go-op">CyrusOne / Flexential</td><td class="go-mw">50–150 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Established Duke Energy Ohio colo operators</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-ercot">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#ef444420;color:#ef4444;border:1px solid #ef444440">ERCOT</span> ERCOT Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">~233,000 MW (system)</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">3 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">24–48 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">Amazon Web Services</td><td class="go-mw">500–1,500 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2028</td><td class="go-note">Multiple DFW campuses; avg request ~700 MW</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">Microsoft</td><td class="go-mw">500–1,200 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">West Texas / DFW large-load requests</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">Google</td><td class="go-mw">300–800 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Oncor / ERCOT queue position</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">Meta Platforms</td><td class="go-mw">300–700 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Active DFW campus footprint</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">Aligned Data Centers</td><td class="go-mw">200–500 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Hyperscale-ready operator</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">Compass Data Centers</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">ERCOT large-load requests filed</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">H5 Data Centers</td><td class="go-mw">100–300 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Established DFW operator</td></tr>
+<tr><td class="go-metro">Dallas–Fort Worth</td><td class="go-op">600+ Unnamed Requests (aggregate)</td><td class="go-mw">~210,000 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2030</td><td class="go-note">Oncor queue; only ~20% high-confidence; avg request ~700 MW</td></tr>
+<tr><td class="go-metro">San Antonio</td><td class="go-op">Rackspace Technology</td><td class="go-mw">50–150 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">HQ + data centers; CPS Energy legacy customer</td></tr>
+<tr><td class="go-metro">San Antonio</td><td class="go-op">AI Campus (unnamed)</td><td class="go-mw">100–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">CPS municipal utility offers queue flexibility</td></tr>
+<tr><td class="go-metro">Houston</td><td class="go-op">Amazon Web Services</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">CenterPoint / ERCOT queue position</td></tr>
+<tr><td class="go-metro">Houston</td><td class="go-op">Microsoft / Google</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Growing TX presence beyond DFW</td></tr>
+<tr><td class="go-metro">Houston</td><td class="go-op">BTM Gas + DC (unnamed)</td><td class="go-mw">100–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Behind-the-meter gas bypassing ERCOT queue</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-caiso">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#a855f720;color:#a855f7;border:1px solid #a855f740">CAISO</span> CAISO Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">Very High (9.2-yr avg)</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">2 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">60–110 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">Google</td><td class="go-mw">500–1,000 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2028</td><td class="go-note">Mountain View / Santa Clara campuses</td></tr>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">Meta Platforms</td><td class="go-mw">300–600 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Menlo Park HQ + data centers</td></tr>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">Amazon Web Services</td><td class="go-mw">300–600 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">CAISO queue; 9.2-yr avg timeline</td></tr>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">Microsoft</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">IPE 5.0 readiness-based prioritization applies</td></tr>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">Equinix (SV1–SV15+)</td><td class="go-mw">200–400 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2026</td><td class="go-note">Ongoing campus expansions</td></tr>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">Digital Realty</td><td class="go-mw">150–300 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Active Santa Clara campus</td></tr>
+<tr><td class="go-metro">Silicon Valley</td><td class="go-op">AI Campuses (unnamed)</td><td class="go-mw">100–500 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028–2033+</td><td class="go-note">Very limited near-term capacity; IPE 5.0 prioritization</td></tr>
+<tr><td class="go-metro">Sacramento</td><td class="go-op">Amazon Web Services</td><td class="go-mw">200–400 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2026–2028</td><td class="go-note">SMUD territory offers some advantage vs. full CAISO</td></tr>
+<tr><td class="go-metro">Sacramento</td><td class="go-op">Google</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028–2032</td><td class="go-note">~72-month interconnection timeline</td></tr>
+<tr><td class="go-metro">Sacramento</td><td class="go-op">Microsoft</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028–2032</td><td class="go-note">CAISO IPE 5.0 readiness-based prioritization</td></tr>
+<tr><td class="go-metro">Sacramento</td><td class="go-op">AI Campus (unnamed)</td><td class="go-mw">100–500 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028–2033+</td><td class="go-note">CAISO 9.2-yr avg queue time dominates region</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-miso">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#22c55e20;color:#22c55e;border:1px solid #22c55e40">MISO</span> MISO Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">~202,000 MW (system)</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">5 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">18–36 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Indianapolis</td><td class="go-op">Hyperscalers (unnamed)</td><td class="go-mw">200–500 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">MISO ERAS fast-track eligible; AI latency-insensitive</td></tr>
+<tr><td class="go-metro">Indianapolis</td><td class="go-op">Switch (DigitalBridge)</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Expanding Midwest footprint</td></tr>
+<tr><td class="go-metro">Minneapolis</td><td class="go-op">Hyperscalers (unnamed)</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">MISO ERAS improving timelines; cold climate advantage</td></tr>
+<tr><td class="go-metro">Minneapolis</td><td class="go-op">CyrusOne / Flexential</td><td class="go-mw">50–200 MW each</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Established Xcel / MISO colo operators</td></tr>
+<tr><td class="go-metro">St. Louis</td><td class="go-op">Hyperscalers / AI (unnamed)</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">20 GW of GIAs approved in 2025; affordable power</td></tr>
+<tr><td class="go-metro">St. Louis</td><td class="go-op">CyrusOne / Flexential</td><td class="go-mw">50–150 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Ameren Missouri colo operators</td></tr>
+<tr><td class="go-metro">Detroit</td><td class="go-op">Hyperscaler (unnamed)</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">DTE large-load; automotive grid repurposed for DCs</td></tr>
+<tr><td class="go-metro">Detroit</td><td class="go-op">QTS / CyrusOne (emerging)</td><td class="go-mw">50–200 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Colo operators exploring Detroit market</td></tr>
+<tr><td class="go-metro">Council Bluffs / Omaha</td><td class="go-op">Google (7+ buildings)</td><td class="go-mw">300–600 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">~95% carbon-free; major MidAmerican customer</td></tr>
+<tr><td class="go-metro">Council Bluffs / Omaha</td><td class="go-op">CyrusOne</td><td class="go-mw">100–200 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">100% renewable via MidAmerican GreenAdvantage</td></tr>
+<tr><td class="go-metro">Council Bluffs / Omaha</td><td class="go-op">Meta Platforms</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Growing Midwest presence</td></tr>
+<tr><td class="go-metro">Council Bluffs / Omaha</td><td class="go-op">Amazon Web Services</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Growing OPPD / MidAmerican footprint</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-spp">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40">SPP</span> SPP Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">~13,000 MW (ERAS)</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">1 metro</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">18–36 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Kansas City</td><td class="go-op">CyrusOne</td><td class="go-mw">50–150 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Established KC colocation campus</td></tr>
+<tr><td class="go-metro">Kansas City</td><td class="go-op">Hyperscalers / AI (unnamed)</td><td class="go-mw">200–500 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">SPP large-load fast-track rules 2025; limited public disclosure</td></tr>
+<tr><td class="go-metro">Kansas City</td><td class="go-op">Amazon / Microsoft / Google (early)</td><td class="go-mw">100–400 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Hyperscaler exploration; SPP fast-track improving timelines</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-tva">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#06b6d420;color:#06b6d4;border:1px solid #06b6d440">TVA</span> TVA Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">Federally managed</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">3 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">12–36 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Nashville / Middle TN</td><td class="go-op">Meta Platforms (Gallatin)</td><td class="go-mw">400–800 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2027</td><td class="go-note">One of largest SE campuses; major TVA / NES customer</td></tr>
+<tr><td class="go-metro">Nashville / Middle TN</td><td class="go-op">Amazon Web Services</td><td class="go-mw">200–400 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Multiple Middle TN campus requests</td></tr>
+<tr><td class="go-metro">Nashville / Middle TN</td><td class="go-op">Microsoft</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">TVA / NES queue position</td></tr>
+<tr><td class="go-metro">Nashville / Middle TN</td><td class="go-op">Google</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Growing Southeast presence</td></tr>
+<tr><td class="go-metro">Nashville / Middle TN</td><td class="go-op">CoreWeave / AI Campus</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">AI compute demand; TVA rate structure exploration</td></tr>
+<tr><td class="go-metro">Huntsville, AL</td><td class="go-op">Google</td><td class="go-mw">100–300 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Major Huntsville campus; AI-driven expansion</td></tr>
+<tr><td class="go-metro">Huntsville, AL</td><td class="go-op">Meta Platforms</td><td class="go-mw">100–300 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Major Huntsville campus; TVA large-load customer</td></tr>
+<tr><td class="go-metro">Huntsville, AL</td><td class="go-op">Amazon Web Services</td><td class="go-mw">100–200 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Growing AL presence</td></tr>
+<tr><td class="go-metro">Huntsville, AL</td><td class="go-op">Microsoft / CoreWeave</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">AI compute; Browns Ferry nuclear backstop attractive</td></tr>
+<tr><td class="go-metro">Memphis</td><td class="go-op">FedEx (enterprise IT)</td><td class="go-mw">50–150 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Major MLGW customer; logistics/IT anchor</td></tr>
+<tr><td class="go-metro">Memphis</td><td class="go-op">Amazon Web Services</td><td class="go-mw">50–150 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2025–2027</td><td class="go-note">TVA / MLGW queue; logistics hub synergy</td></tr>
+<tr><td class="go-metro">Memphis</td><td class="go-op">Hyperscaler (unnamed)</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">12–24 mo timeline — fastest in Southeast</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-serc">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#ec489920;color:#ec4899;border:1px solid #ec489940">SERC / Southeast</span> SERC / Southeast Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">~10,000+ MW approved</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">4 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">18–60 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Atlanta</td><td class="go-op">Google (Douglas / Newton Co.)</td><td class="go-mw">500–1,000 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2027</td><td class="go-note">Long-standing Atlanta presence; ongoing expansion</td></tr>
+<tr><td class="go-metro">Atlanta</td><td class="go-op">Amazon Web Services</td><td class="go-mw">400–800 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Multiple GA campus additions</td></tr>
+<tr><td class="go-metro">Atlanta</td><td class="go-op">Meta Platforms</td><td class="go-mw">300–600 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">DeKalb County campus</td></tr>
+<tr><td class="go-metro">Atlanta</td><td class="go-op">Microsoft</td><td class="go-mw">300–600 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Part of 10,000 MW Georgia PSC-approved pipeline</td></tr>
+<tr><td class="go-metro">Atlanta</td><td class="go-op">QTS Realty (Blackstone)</td><td class="go-mw">200–400 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2026</td><td class="go-note">Suwanee campus expansion</td></tr>
+<tr><td class="go-metro">Atlanta</td><td class="go-op">AI Campuses (unnamed, aggregate)</td><td class="go-mw">~7,000 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Bulk of 10,000 MW PSC expansion; 80% for data centers</td></tr>
+<tr><td class="go-metro">Charlotte / Carolinas</td><td class="go-op">Microsoft</td><td class="go-mw">300–600 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Duke Energy queue across both Carolinas</td></tr>
+<tr><td class="go-metro">Charlotte / Carolinas</td><td class="go-op">Amazon Web Services</td><td class="go-mw">200–500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Multiple Carolinas campus requests</td></tr>
+<tr><td class="go-metro">Charlotte / Carolinas</td><td class="go-op">Google</td><td class="go-mw">200–400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Duke queue position; growing SE footprint</td></tr>
+<tr><td class="go-metro">Charlotte / Carolinas</td><td class="go-op">QTS Realty (Blackstone)</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Duke large-load requests</td></tr>
+<tr><td class="go-metro">Miami / South Florida</td><td class="go-op">Equinix (MI1–MI5)</td><td class="go-mw">80–200 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Dominant Miami colo; LatAm hub; FPL customer</td></tr>
+<tr><td class="go-metro">Miami / South Florida</td><td class="go-op">Amazon Web Services</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">FPL large-load requests; LatAm-facing</td></tr>
+<tr><td class="go-metro">Miami / South Florida</td><td class="go-op">Microsoft / Google</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Growing South Florida presence</td></tr>
+<tr><td class="go-metro">Jacksonville / Tampa</td><td class="go-op">QTS Realty</td><td class="go-mw">50–150 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Active Jacksonville colo; JEA customer</td></tr>
+<tr><td class="go-metro">Jacksonville / Tampa</td><td class="go-op">Amazon Web Services</td><td class="go-mw">50–200 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2025–2027</td><td class="go-note">JEA municipal utility flexibility</td></tr>
+<tr><td class="go-metro">Jacksonville / Tampa</td><td class="go-op">Microsoft / Google</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">JEA / Tampa Electric queue position</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+<div class="go-section" id="go-wecc">
+  <div class="go-header">
+    <h3><span class="go-badge" style="background:#8b5cf620;color:#8b5cf6;border:1px solid #8b5cf640">WECC / Western</span> WECC / Western Interconnection Queue</h3>
+    <div class="go-stats">
+      <div class="go-stat"><div class="go-stat-val">~30,000+ MW</div><div class="go-stat-lbl">Total MW in Queue</div></div>
+      <div class="go-stat"><div class="go-stat-val">10 metros</div><div class="go-stat-lbl">Metro Markets</div></div>
+      <div class="go-stat"><div class="go-stat-val">18–120 mo</div><div class="go-stat-lbl">Avg Wait Time</div></div>
+    </div>
+  </div>
+  <div class="go-table-wrap">
+  <table class="go-table">
+  <thead><tr>
+    <th>Metro</th><th>Operator / Developer</th><th>MW Requested</th>
+    <th>Status</th><th>Est. Power Delivery</th><th>Notes</th>
+  </tr></thead>
+  <tbody>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">Switch (DigitalBridge / The Citadel)</td><td class="go-mw">1,000–2,000 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2030</td><td class="go-note">One of largest Phoenix area developments</td></tr>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">Microsoft</td><td class="go-mw">500–1,500 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">West Valley; APS turning away new customers</td></tr>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">Amazon Web Services</td><td class="go-mw">500–1,200 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2028</td><td class="go-note">Phoenix / Chandler; APS &amp; SRP</td></tr>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">Google</td><td class="go-mw">300–800 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2029</td><td class="go-note">Firm power uncertain before 2029</td></tr>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">CyrusOne (PHX10+)</td><td class="go-mw">400–800 MW</td><td><span class="qs-construction">Under Construction</span></td><td class="go-date">2025–2027</td><td class="go-note">Chandler campus expansion</td></tr>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">Aligned / Vantage</td><td class="go-mw">200–700 MW each</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">On-site generation deployed to bypass APS queue</td></tr>
+<tr><td class="go-metro">Phoenix</td><td class="go-op">Unnamed Hyperscalers (aggregate)</td><td class="go-mw">~14,000 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028–2032+</td><td class="go-note">Bulk of 19,000 MW APS queue; firm power unlikely before 2030s</td></tr>
+<tr><td class="go-metro">Portland / Hillsboro</td><td class="go-op">Amazon Web Services</td><td class="go-mw">800–1,200+ MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Dominant Hillsboro operator; 10+ buildings</td></tr>
+<tr><td class="go-metro">Portland / Hillsboro</td><td class="go-op">Google</td><td class="go-mw">200–400 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2027</td><td class="go-note">Active Hillsboro campus additions</td></tr>
+<tr><td class="go-metro">Portland / Hillsboro</td><td class="go-op">DeFlex Priority Applicants (79+)</td><td class="go-mw">80 MW→400 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2029</td><td class="go-note">PGE/GridCARE program; flexible customers get priority</td></tr>
+<tr><td class="go-metro">Salt Lake City</td><td class="go-op">Novva Data Centers</td><td class="go-mw">300–800 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2028–2031</td><td class="go-note">World's largest planned DC site; $2B financing closed</td></tr>
+<tr><td class="go-metro">Salt Lake City</td><td class="go-op">Google / Microsoft / AWS</td><td class="go-mw">200–400 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Full power not until 2031 per Rocky Mountain Power</td></tr>
+<tr><td class="go-metro">Reno / Sparks</td><td class="go-op">Switch (The Citadel)</td><td class="go-mw">800–1,500 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">One of largest US DC campuses</td></tr>
+<tr><td class="go-metro">Reno / Sparks</td><td class="go-op">Apple</td><td class="go-mw">200–400 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Wingfield Springs campus operational</td></tr>
+<tr><td class="go-metro">Reno / Sparks</td><td class="go-op">Amazon / Google / Novva</td><td class="go-mw">100–400 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">NV Energy large-load requests; WECC constraints</td></tr>
+<tr><td class="go-metro">Denver / Boulder</td><td class="go-op">Google / Microsoft / AWS</td><td class="go-mw">200–400 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Xcel / WECC queue; Front Range expansion</td></tr>
+<tr><td class="go-metro">Denver / Boulder</td><td class="go-op">Novva (Colorado Springs)</td><td class="go-mw">100–300 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">Adjacent market; Xcel / Black Hills Energy queue</td></tr>
+<tr><td class="go-metro">Denver / Boulder</td><td class="go-op">CoreSite / Flexential</td><td class="go-mw">50–200 MW each</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Established Denver colo operators</td></tr>
+<tr><td class="go-metro">Seattle / Puget Sound</td><td class="go-op">Microsoft</td><td class="go-mw">400–800 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Dominant PSE customer; I-5 corridor constrained</td></tr>
+<tr><td class="go-metro">Seattle / Puget Sound</td><td class="go-op">Amazon Web Services</td><td class="go-mw">300–600 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">AWS HQ + multiple DCs; at grid limits</td></tr>
+<tr><td class="go-metro">Seattle / Puget Sound</td><td class="go-op">Google</td><td class="go-mw">100–300 MW</td><td><span class="qs-approved">Approved/Active</span></td><td class="go-date">2025–2026</td><td class="go-note">Active Puget Sound footprint</td></tr>
+<tr><td class="go-metro">Seattle / Puget Sound</td><td class="go-op">Unnamed Hyperscalers</td><td class="go-mw">200–500 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2031</td><td class="go-note">I-5 constrained; PSE rate +30% by 2029; WA clean energy conflict</td></tr>
+<tr><td class="go-metro">Quincy, WA</td><td class="go-op">Microsoft (operational)</td><td class="go-mw">200–400 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">At grid capacity; no new connections</td></tr>
+<tr><td class="go-metro">Quincy, WA</td><td class="go-op">Yahoo / Sabey (operational)</td><td class="go-mw">50–150 MW each</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">At grid capacity; load caps enacted Mar 2025</td></tr>
+<tr><td class="go-metro">Quincy, WA</td><td class="go-op">79 Pending Applicants</td><td class="go-mw">50–500 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">7–10 years</td><td class="go-note">Grant PUD load caps Mar 2025; transmission expansion required</td></tr>
+<tr><td class="go-metro">Boise, ID</td><td class="go-op">Micron Technology (fab)</td><td class="go-mw">100–300 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Major Idaho Power load anchor; hydro constrained</td></tr>
+<tr><td class="go-metro">Boise, ID</td><td class="go-op">Hyperscalers (unnamed)</td><td class="go-mw">100–300 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">WECC constraints; nuclear options under study</td></tr>
+<tr><td class="go-metro">Spokane, WA</td><td class="go-op">H5 Data Centers</td><td class="go-mw">50–150 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Established Eastern WA operator; Avista / BPA</td></tr>
+<tr><td class="go-metro">Spokane, WA</td><td class="go-op">Hyperscaler (unnamed)</td><td class="go-mw">50–200 MW</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2026–2028</td><td class="go-note">Less congested than Puget Sound / Quincy</td></tr>
+<tr><td class="go-metro">Albuquerque, NM</td><td class="go-op">Intel (Rio Rancho fab)</td><td class="go-mw">100–200 MW</td><td><span class="qs-operational">Operational</span></td><td class="go-date">Ongoing</td><td class="go-note">Major PNM customer; semiconductor fab</td></tr>
+<tr><td class="go-metro">Albuquerque, NM</td><td class="go-op">Hyperscalers / AI (unnamed)</td><td class="go-mw">50–200 MW each</td><td><span class="qs-studying">Studying</span></td><td class="go-date">2027–2030</td><td class="go-note">PNM transitioning to renewables; state incentives available</td></tr>
+  </tbody>
+  </table>
+  </div>
+</div>
+</div><!-- end top-iq -->
+
 <footer>
   US Data Center Power &amp; Interconnection Queue Dashboard &nbsp;&middot;&nbsp; Research conducted March 30, 2026 &nbsp;&middot;&nbsp; All figures represent reported data at time of research &nbsp;&middot;&nbsp; Queue depths reflect requests, not committed load (typical conversion: 10&ndash;30%) &nbsp;&middot;&nbsp; <a href="https://www.pjm.com" target="_blank">PJM</a> &middot; <a href="https://www.ercot.com" target="_blank">ERCOT</a> &middot; <a href="https://www.caiso.com" target="_blank">CAISO</a> &middot; <a href="https://www.misoenergy.org" target="_blank">MISO</a> &middot; <a href="https://www.spp.org" target="_blank">SPP</a>
 </footer>
@@ -1913,6 +2265,14 @@ footer{text-align:center;padding:20px;color:#4b5563;font-size:12px;border-top:1p
 </div>
 
 <script>
+
+
+function switchTopTab(tab, btn) {
+  document.querySelectorAll('.top-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.top-tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('top-' + tab).classList.add('active');
+}
 
 function toggleQueue(id, btn) {
   const row = document.getElementById('queue-' + id);
