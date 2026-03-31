@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperscaler Lease Tracker — U.S. 2026</title>
+<style>
+  :root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --bg-card: #1c2128;
+    --border: #30363d;
+    --border-hover: #484f58;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --accent-blue: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-orange: #d29922;
+    --accent-red: #f85149;
+    --accent-purple: #bc8cff;
+    --accent-teal: #39d353;
+    --accent-yellow: #e3b341;
+    --tag-ms: #0078d4;
+    --tag-aws: #ff9900;
+    --tag-google: #4285f4;
+    --tag-meta: #1877f2;
+    --tag-oracle: #c74634;
+    --tag-apple: #555555;
+    --tag-multi: #7c3aed;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Header */
+  .header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+  .header-left .subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .last-updated {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    background: var(--accent-green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; } 50% { opacity:0.4; }
+  }
+
+  .main { padding: 24px 32px; max-width: 1600px; margin: 0 auto; }
+
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    transition: border-color 0.2s;
+  }
+  .kpi-card:hover { border-color: var(--border-hover); }
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .kpi-accent-blue .kpi-value { color: var(--accent-blue); }
+  .kpi-accent-green .kpi-value { color: var(--accent-green); }
+  .kpi-accent-orange .kpi-value { color: var(--accent-orange); }
+  .kpi-accent-purple .kpi-value { color: var(--accent-purple); }
+  .kpi-accent-teal .kpi-value { color: var(--accent-teal); }
+  .kpi-accent-yellow .kpi-value { color: var(--accent-yellow); }
+
+  /* Tabs */
+  .tab-bar {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
+  }
+  .tab-icon { font-size: 14px; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Filter Row */
+  .filter-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .search-box {
+    flex: 1;
+    min-width: 240px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 14px 8px 36px;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent-blue); }
+  .search-wrap { position: relative; flex: 1; min-width: 240px; }
+  .search-icon {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 14px; pointer-events: none;
+  }
+  .filter-select {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    min-width: 140px;
+    transition: border-color 0.2s;
+  }
+  .filter-select:focus { border-color: var(--accent-blue); }
+  .filter-count {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* Table */
+  .table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    background: var(--bg-tertiary);
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  thead th:hover { color: var(--text-primary); }
+  thead th .sort-icon { margin-left: 4px; opacity: 0.5; }
+  thead th.sorted .sort-icon { opacity: 1; color: var(--accent-blue); }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--bg-tertiary); }
+  td {
+    padding: 12px 14px;
+    vertical-align: top;
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .td-num { text-align: center; color: var(--text-muted); font-size: 12px; }
+
+  /* Tags / Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-ms { background: rgba(0,120,212,0.2); color: #58b0ff; }
+  .badge-aws { background: rgba(255,153,0,0.2); color: #ffb840; }
+  .badge-google { background: rgba(66,133,244,0.2); color: #80b0ff; }
+  .badge-meta { background: rgba(24,119,242,0.2); color: #60a0ff; }
+  .badge-oracle { background: rgba(199,70,52,0.2); color: #ff8070; }
+  .badge-apple { background: rgba(85,85,85,0.2); color: #aaa; }
+  .badge-multi { background: rgba(124,58,237,0.2); color: #c084fc; }
+  .badge-unknown { background: rgba(139,148,158,0.2); color: #8b949e; }
+
+  .badge-type-lease { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+  .badge-type-bts { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
+  .badge-type-expansion { background: rgba(210,153,34,0.15); color: var(--accent-orange); }
+  .badge-type-loi { background: rgba(188,140,255,0.15); color: var(--accent-purple); }
+  .badge-type-renewal { background: rgba(57,211,83,0.1); color: #6ee7b7; }
+  .badge-type-acquisition { background: rgba(248,81,73,0.15); color: var(--accent-red); }
+  .badge-type-power { background: rgba(227,179,65,0.15); color: var(--accent-yellow); }
+
+  .badge-confirmed { background: rgba(63,185,80,0.15); color: var(--accent-green); }
+  .badge-reported { background: rgba(88,166,255,0.15); color: var(--accent-blue); }
+  .badge-rumored { background: rgba(210,153,34,0.15); color: var(--accent-orange); }
+
+  .badge-primary { background: rgba(88,166,255,0.1); color: var(--accent-blue); }
+  .badge-secondary { background: rgba(139,148,158,0.15); color: var(--text-secondary); }
+  .badge-emerging { background: rgba(188,140,255,0.1); color: var(--accent-purple); }
+
+  .mw-value { font-weight: 700; color: var(--accent-teal); }
+  .mw-na { color: var(--text-muted); font-style: italic; }
+
+  .operator-name { font-weight: 600; color: var(--text-primary); }
+  .market-name { color: var(--accent-blue); font-weight: 500; }
+
+  .source-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 11px;
+  }
+  .source-link:hover { text-decoration: underline; }
+
+  .notes-text {
+    font-size: 11px;
+    color: var(--text-secondary);
+    max-width: 280px;
+    line-height: 1.4;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* Summary Panels */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .summary-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .summary-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .bar-label {
+    min-width: 120px;
+    font-size: 12px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+  .bar-fill-blue { background: var(--accent-blue); }
+  .bar-fill-green { background: var(--accent-green); }
+  .bar-fill-orange { background: var(--accent-orange); }
+  .bar-fill-purple { background: var(--accent-purple); }
+  .bar-fill-red { background: var(--accent-red); }
+  .bar-fill-teal { background: var(--accent-teal); }
+  .bar-fill-yellow { background: var(--accent-yellow); }
+  .bar-meta { min-width: 60px; text-align: right; font-size: 12px; color: var(--text-secondary); }
+
+  /* Sources tab */
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .source-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+  .source-card:hover { border-color: var(--border-hover); }
+  .source-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .source-card-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .source-card-pub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+  .note-box {
+    background: rgba(210,153,34,0.08);
+    border: 1px solid rgba(210,153,34,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: var(--accent-orange);
+    line-height: 1.6;
+  }
+  .note-box strong { color: var(--accent-yellow); }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .sources-grid { grid-template-columns: repeat(2, 1fr); }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 16px 16px; flex-direction: column; gap: 10px; }
+    .main { padding: 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .sources-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>&#9889; Hyperscaler Lease Tracker &mdash; U.S. Markets 2026</h1>
+    <div class="subtitle">Known colocation &amp; wholesale lease transactions: Microsoft · AWS · Google · Meta · Oracle · Apple</div>
+  </div>
+  <div class="header-right">
+    <div class="last-updated"><span class="live-dot"></span>Researched March 31, 2026</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-accent-blue">
+      <div class="kpi-label">Total Deals Tracked</div>
+      <div class="kpi-value">17</div>
+      <div class="kpi-sub">CY2026 (Jan–Mar 31)</div>
+    </div>
+    <div class="kpi-card kpi-accent-teal">
+      <div class="kpi-label">Total Confirmed MW</div>
+      <div class="kpi-value">17,057+</div>
+      <div class="kpi-sub">Where disclosed</div>
+    </div>
+    <div class="kpi-card kpi-accent-orange">
+      <div class="kpi-label">Total Deal Value</div>
+      <div class="kpi-value">$44B+</div>
+      <div class="kpi-sub">Contracted value (where known)</div>
+    </div>
+    <div class="kpi-card kpi-accent-purple">
+      <div class="kpi-label">Hyperscalers Active</div>
+      <div class="kpi-value">5</div>
+      <div class="kpi-sub">MS · AWS · Google · Meta · Oracle</div>
+    </div>
+    <div class="kpi-card kpi-accent-green">
+      <div class="kpi-label">Markets Covered</div>
+      <div class="kpi-value">12</div>
+      <div class="kpi-sub">8 primary, 4 secondary/emerging</div>
+    </div>
+    <div class="kpi-card kpi-accent-yellow">
+      <div class="kpi-label">Avg Lease Term</div>
+      <div class="kpi-value">14yr</div>
+      <div class="kpi-sub">Where disclosed (range 10–20yr)</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('deals')" id="tab-deals">
+      <span class="tab-icon">&#128203;</span> All Deals
+    </button>
+    <button class="tab-btn" onclick="showTab('market')" id="tab-market">
+      <span class="tab-icon">&#127758;</span> Market Summary
+    </button>
+    <button class="tab-btn" onclick="showTab('hyperscaler')" id="tab-hyperscaler">
+      <span class="tab-icon">&#9729;</span> Hyperscaler Summary
+    </button>
+    <button class="tab-btn" onclick="showTab('sources')" id="tab-sources">
+      <span class="tab-icon">&#128196;</span> Sources
+    </button>
+  </div>
+
+  <!-- DEALS TAB -->
+  <div class="tab-panel active" id="panel-deals">
+    <div class="filter-row">
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="search-box" id="searchInput" placeholder="Search deals, operators, markets, tenants..." oninput="filterTable()">
+      </div>
+      <select class="filter-select" id="filterHyperscaler" onchange="filterTable()">
+        <option value="">All Hyperscalers</option>
+        <option value="Microsoft">Microsoft</option>
+        <option value="AWS">AWS</option>
+        <option value="Google">Google</option>
+        <option value="Meta">Meta</option>
+        <option value="Oracle">Oracle</option>
+        <option value="Unknown">Unknown Hyperscaler</option>
+      </select>
+      <select class="filter-select" id="filterDealType" onchange="filterTable()">
+        <option value="">All Deal Types</option>
+        <option value="Signed Lease">Signed Lease</option>
+        <option value="Build-to-Suit">Build-to-Suit</option>
+        <option value="Power Agreement">Power Agreement</option>
+        <option value="LOI">LOI / Pre-Lease</option>
+        <option value="Fund/JV">Fund / JV</option>
+        <option value="Sale">Asset Sale</option>
+      </select>
+      <select class="filter-select" id="filterTier" onchange="filterTable()">
+        <option value="">All Market Tiers</option>
+        <option value="Primary">Primary</option>
+        <option value="Secondary">Secondary</option>
+        <option value="Emerging">Emerging</option>
+      </select>
+      <select class="filter-select" id="filterStatus" onchange="filterTable()">
+        <option value="">All Status</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Reported">Reported</option>
+      </select>
+      <div class="filter-count" id="rowCount">17 deals</div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="dealsTable">
+        <thead>
+          <tr>
+            <th class="td-num" onclick="sortTable(0)">#<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(1)">Hyperscaler<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(2)">Operator / Developer<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(3)">Market<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(4)">Tier<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(5)">Deal Type<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(6)">Size (MW)<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(7)">Value<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(8)">Date<span class="sort-icon">&#8597;</span></th>
+            <th onclick="sortTable(9)">Status<span class="sort-icon">&#8597;</span></th>
+            <th>Notes</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
+      <div class="no-results" id="noResults" style="display:none;">No deals match your filters. Try adjusting the search.</div>
+    </div>
+  </div>
+
+  <!-- MARKET SUMMARY TAB -->
+  <div class="tab-panel" id="panel-market">
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3>&#128205; Deal Count by Market</h3>
+        <div class="bar-row"><div class="bar-label">N. Virginia / DC</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:100%"></div></div><div class="bar-meta">3 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Multi-Market / US</div><div class="bar-track"><div class="bar-fill bar-fill-purple" style="width:100%"></div></div><div class="bar-meta">3 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Michigan</div><div class="bar-track"><div class="bar-fill bar-fill-teal" style="width:67%"></div></div><div class="bar-meta">2 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Wisconsin</div><div class="bar-track"><div class="bar-fill bar-fill-green" style="width:67%"></div></div><div class="bar-meta">2 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Ohio/TX undisclosed</div><div class="bar-track"><div class="bar-fill bar-fill-yellow" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">Maryland (DC adj.)</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">Indiana</div><div class="bar-track"><div class="bar-fill bar-fill-green" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">Phoenix, AZ</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">Oklahoma</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">North Carolina</div><div class="bar-track"><div class="bar-fill bar-fill-purple" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">Atlanta, GA</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:33%"></div></div><div class="bar-meta">1 deal</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3>&#127968; Operator Activity</h3>
+        <div class="bar-row"><div class="bar-label">Vantage Data Centers</div><div class="bar-track"><div class="bar-fill bar-fill-red" style="width:85%"></div></div><div class="bar-meta">902 MW Lighthouse WI</div></div>
+        <div class="bar-row"><div class="bar-label">Digital Realty</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:75%"></div></div><div class="bar-meta">$3.25B fund</div></div>
+        <div class="bar-row"><div class="bar-label">Compass Datacenters</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:65%"></div></div><div class="bar-meta">174 MW Phoenix</div></div>
+        <div class="bar-row"><div class="bar-label">TA Digital Group</div><div class="bar-track"><div class="bar-fill bar-fill-purple" style="width:55%"></div></div><div class="bar-meta">165 MW sold</div></div>
+        <div class="bar-row"><div class="bar-label">PowerHouse / AREP</div><div class="bar-track"><div class="bar-fill bar-fill-green" style="width:45%"></div></div><div class="bar-meta">120 MW signed</div></div>
+        <div class="bar-row"><div class="bar-label">Panattoni / Equinix</div><div class="bar-track"><div class="bar-fill bar-fill-teal" style="width:35%"></div></div><div class="bar-meta">Various</div></div>
+        <div class="bar-row"><div class="bar-label">Yondr Group</div><div class="bar-track"><div class="bar-fill bar-fill-yellow" style="width:25%"></div></div><div class="bar-meta">96 MW NOVA</div></div>
+        <div class="bar-row"><div class="bar-label">Cipher Digital</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:18%"></div></div><div class="bar-meta">1 lease</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3>&#127942; Deal Type Breakdown</h3>
+        <div class="bar-row"><div class="bar-label">Signed Lease</div><div class="bar-track"><div class="bar-fill bar-fill-green" style="width:100%"></div></div><div class="bar-meta">6 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Build-to-Suit</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:67%"></div></div><div class="bar-meta">4 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Power Agreement</div><div class="bar-track"><div class="bar-fill bar-fill-yellow" style="width:67%"></div></div><div class="bar-meta">4 deals</div></div>
+        <div class="bar-row"><div class="bar-label">Asset Sale</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:17%"></div></div><div class="bar-meta">1 deal</div></div>
+        <div class="bar-row"><div class="bar-label">Fund / JV</div><div class="bar-track"><div class="bar-fill bar-fill-purple" style="width:17%"></div></div><div class="bar-meta">1 deal</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3>&#128337; Market Notes &amp; Themes Q1 2026</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          <strong style="color:var(--text-primary);">Northern Virginia</strong> remains a top hyperscale leasing market with 3 tracked 2026 transactions. Power scarcity is driving deals to adjacent Loudoun and Leesburg.
+        </p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          <strong style="color:var(--text-primary);">Emerging markets</strong> (Michigan, Indiana, Wisconsin, Oklahoma) are gaining traction as hyperscalers seek available power blocks of 1GW+ unavailable in core markets.
+        </p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          <strong style="color:var(--text-primary);">Multi-market deals</strong> (Oracle/Digital Realty, Meta Nuclear PPA, DLR $3.25B fund) reflect hyperscalers locking in capacity across portfolios rather than single-site transactions.
+        </p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8;">
+          <strong style="color:var(--text-primary);">AWS pullback:</strong> No executed U.S. lease transactions with a 2026 announcement date have been publicly disclosed for AWS as of Q1 2026. Wells Fargo reported AWS paused some international colocation pre-lease discussions in early 2026, but AWS VP Kevin Miller stated demand remains strong.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HYPERSCALER SUMMARY TAB -->
+  <div class="tab-panel" id="panel-hyperscaler">
+    <div class="summary-grid">
+      <div class="summary-card">
+        <h3 style="color:#58b0ff;">&#9729; Microsoft</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          Spent <strong style="color:var(--text-primary);">$11.1B on data center leases in Q1 FY2026</strong> (per latest earnings). Total future lease commitments: $155B.
+          Key CY2026 activities include the <strong>Fairwater Campus</strong> in Wisconsin (900 MW, $7B), the <strong>PowerHouse Arcola</strong> lease (120 MW, Jan 2026), and a <strong>Duke Energy power agreement</strong> covering 4.5 GW in North Carolina.
+          Azure regions in Northern Virginia and Wisconsin remained under capacity expansion through mid-2026.
+        </p>
+        <div class="bar-row"><div class="bar-label">Future Commitments</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:60%"></div></div><div class="bar-meta">$155B</div></div>
+        <div class="bar-row"><div class="bar-label">Q1 FY26 Lease Spend</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:25%"></div></div><div class="bar-meta">$11.1B</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3 style="color:#ffb840;">&#9729; AWS (Amazon)</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          No executed U.S. lease transactions with a 2026 announcement date have been publicly disclosed for AWS as of Q1 2026.
+          Wells Fargo reported AWS paused some international colocation pre-lease discussions in early 2026, but AWS VP Kevin Miller stated demand remains strong.
+          AWS has ~180 colocation partners globally.
+          Projected 2026 capex: <strong style="color:var(--text-primary);">~$200B</strong>.
+        </p>
+        <div class="bar-row"><div class="bar-label">2026 MW Tracked</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:5%"></div></div><div class="bar-meta">0 MW tracked</div></div>
+        <div class="bar-row"><div class="bar-label">2026 Capex Estimate</div><div class="bar-track"><div class="bar-fill bar-fill-orange" style="width:78%"></div></div><div class="bar-meta">~$200B</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3 style="color:#80b0ff;">&#9729; Google / Alphabet</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          Signed agreement with DTE Energy for a <strong>1 GW data center</strong> in Van Buren Township, Michigan ("Project Cannoli," March 2026).
+          Approved rezoning for "Project Spring" in Sand Springs, Oklahoma (Feb 2026).
+          Projected 2026 capex: <strong style="color:var(--text-primary);">$175–185B</strong>.
+        </p>
+        <div class="bar-row"><div class="bar-label">2026 Capex Estimate</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:65%"></div></div><div class="bar-meta">$175–185B</div></div>
+        <div class="bar-row"><div class="bar-label">Michigan Commitment</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:20%"></div></div><div class="bar-meta">1 GW planned</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3 style="color:#60a0ff;">&#9729; Meta</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          Committed <strong style="color:var(--text-primary);">~$104B in total future data center lease obligations</strong>.
+          Meta and Microsoft collectively helped push global hyperscale lease commitments above $700B (Bloomberg, March 2026).
+          Broke ground on <strong>Prometheus campus</strong> in Lebanon, Indiana (1 GW, $10B, March 2026).
+          Secured <strong>6.6 GW nuclear power</strong> deal across Ohio/Pennsylvania (20-year PPA with TerraPower, Oklo, Vistra — Feb 2026).
+          Signed AMD deal for $100B in custom AI chips (Feb 2026).
+          Projected 2026 capex: <strong style="color:var(--text-primary);">$115–135B</strong>.
+        </p>
+        <div class="bar-row"><div class="bar-label">Future Commitments</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:40%"></div></div><div class="bar-meta">$104B</div></div>
+        <div class="bar-row"><div class="bar-label">2026 Capex Estimate</div><div class="bar-track"><div class="bar-fill bar-fill-blue" style="width:48%"></div></div><div class="bar-meta">$115–135B</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3 style="color:#ff8070;">&#9729; Oracle</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:10px;">
+          Oracle holds the largest future data center lease obligation at <strong style="color:var(--text-primary);">$248–261B</strong> — up 2,239% from Nov 2023.
+          Leases are expected to begin Q3 FY2026–FY2028 and run 15–19 years.
+          <strong>Digital Realty</strong> is Oracle's #2 customer (~$267M/yr, 500K+ sq ft, 14 US markets).
+          Anchoring the <strong>Oracle/OpenAI Saline Township, Michigan</strong> campus ($7B+, 1.4 GW, with DTE Energy power deal) and the <strong>Vantage Lighthouse Campus</strong> in Port Washington, Wisconsin (902 MW, $15B, Stargate initiative).
+          Oracle leases at Digital Realty in Ashburn, Chicago, Dallas, Phoenix, Silicon Valley, NY and other OCI markets.
+        </p>
+        <div class="bar-row"><div class="bar-label">Future Commitments</div><div class="bar-track"><div class="bar-fill bar-fill-red" style="width:100%"></div></div><div class="bar-meta">$248–261B</div></div>
+        <div class="bar-row"><div class="bar-label">Digital Realty Revenue</div><div class="bar-track"><div class="bar-fill bar-fill-red" style="width:18%"></div></div><div class="bar-meta">$267M/yr</div></div>
+      </div>
+
+      <div class="summary-card">
+        <h3>&#127942; Key Macro Themes</h3>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">
+          <strong style="color:var(--text-primary);">$700B+ Total Commitment:</strong> Bloomberg reported (Mar 12, 2026) that Microsoft, Meta, Oracle, and Amazon collectively hold $700B+ in future data center lease commitments.
+        </p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">
+          <strong style="color:var(--text-primary);">Hyperscaler Capex 2026:</strong> $600–625B across the Big 5 (+36% YoY), ~75% tied to AI infrastructure.
+        </p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8; margin-bottom:8px;">
+          <strong style="color:var(--text-primary);">Power is the Bottleneck:</strong> Lease activity is increasingly driven by power access. Deals announced in Michigan, Wisconsin, Indiana, and Oklahoma reflect utilities' ability to offer 1GW+ blocks unavailable in core markets.
+        </p>
+        <p style="font-size:12px; color:var(--text-secondary); line-height:1.8;">
+          <strong style="color:var(--text-primary);">Lease Terms Lengthening:</strong> The average disclosed lease term for 2026 deals is 14–15 years, up from 10 years historically, as hyperscalers lock in power-constrained capacity.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOURCES TAB -->
+  <div class="tab-panel" id="panel-sources">
+    <div class="note-box">
+      <strong>Methodology Note:</strong> All deals are sourced from publicly available press releases, earnings filings, and industry publications. Tenant names are only listed where publicly disclosed. Deals where the hyperscaler is unnamed are labeled "Unknown Hyperscaler." No data has been fabricated. MW figures reflect IT load unless noted otherwise. All deals have 2026 announcement dates. Deals announced before January 1, 2026 have been excluded regardless of delivery date.
+    </div>
+    <div class="sources-grid" id="sourcesGrid">
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DEAL DATA
+// ============================================================
+const deals = [
+  {
+    id: 1,
+    hyperscaler: "Microsoft",
+    operator: "PowerHouse Data Centers (AREP)",
+    market: "Loudoun County, VA (NOVA)",
+    tier: "Primary",
+    dealType: "Signed Lease",
+    mw: 120,
+    value: "Undisclosed",
+    date: "2026-01-15",
+    dateDisplay: "Jan 15, 2026",
+    status: "Confirmed",
+    notes: "Long-term hyperscale lease at PowerHouse Arcola campus, 37 acres, 615,000 sq ft, two buildings. Near Rt 50 & Loudoun County Pkwy. Tier III+/IV, GPU/liquid cool. Tenant unnamed but described as hyperscale operator.",
+    sourceUrl: "https://www.prnewswire.com/news-releases/powerhouse-data-centers-executes-hyperscale-lease-at-powerhouse-arcola-advancing-northern-virginia-expansion-302661927.html",
+    sourcePub: "PR Newswire / DCD"
+  },
+  {
+    id: 2,
+    hyperscaler: "Unknown Hyperscaler",
+    operator: "TA Digital Group / TA Realty",
+    market: "Leesburg, VA (NOVA)",
+    tier: "Primary",
+    dealType: "Sale",
+    mw: 165,
+    value: "Undisclosed",
+    date: "2026-02-05",
+    dateDisplay: "Feb 5, 2026",
+    status: "Confirmed",
+    notes: "Sale of two hyperscale data center buildings (745,000 sq ft, 165 MW IT load) fully leased to a single unnamed global cloud provider. Part of planned 5-building, 450 MW campus. First two buildings already delivered and leased.",
+    sourceUrl: "https://www.globenewswire.com/news-release/2026/02/05/3233084/0/en/TA-Realty-Announces-Sale-of-Hyperscale-Data-Centers-in-Northern-Virginia.html",
+    sourcePub: "GlobeNewswire / DCD"
+  },
+  {
+    id: 3,
+    hyperscaler: "Oracle",
+    operator: "DTE Energy (Saline Township, MI)",
+    market: "Saline Township, MI (Ann Arbor area)",
+    tier: "Emerging",
+    dealType: "Power Agreement",
+    mw: 1400,
+    value: "$7B+",
+    date: "2026-02-18",
+    dateDisplay: "Feb 2026",
+    status: "Confirmed",
+    notes: "Oracle/OpenAI co-anchor. 575 acres south of Ann Arbor. DTE signed 1.4 GW power deal (first hyperscale contract for DTE, growing its load 25%). MPSC-approved. Construction begins 2026.",
+    sourceUrl: "https://www.datacenterdynamics.com/en/news/dte-energy-signs-14gw-power-deal-with-unnamed-hyperscaler/",
+    sourcePub: "Data Center Dynamics / Detroit News"
+  },
+  {
+    id: 4,
+    hyperscaler: "Google",
+    operator: "Panattoni Development / DTE Energy",
+    market: "Van Buren Township, MI",
+    tier: "Emerging",
+    dealType: "Power Agreement",
+    mw: 1000,
+    value: "Undisclosed",
+    date: "2026-03-17",
+    dateDisplay: "Mar 17, 2026",
+    status: "Confirmed",
+    notes: "Google confirmed as 'Project Cannoli.' Panattoni developing 152-acre site (280 acres total). 3 data center buildings. Google signed DTE Energy power agreement; 2.7 GW clean energy commitment. Contested case before MPSC committed.",
+    sourceUrl: "https://michiganadvance.com/2026/03/17/google-and-dte-announce-van-buren-township-data-center-agreement-commit-to-contested-case-hearing/",
+    sourcePub: "Michigan Advance / Bridge Michigan"
+  },
+  {
+    id: 5,
+    hyperscaler: "Unknown Hyperscaler",
+    operator: "Harrison Street / PowerHouse (Emerson & Sandy Farms)",
+    market: "Maryland (DC Adjacent — Baltimore suburbs)",
+    tier: "Primary",
+    dealType: "Sale",
+    mw: null,
+    value: "$221.9M (sale price)",
+    date: "2026-02-01",
+    dateDisplay: "Feb 2026",
+    status: "Confirmed",
+    notes: "Sale to GI Partners of two hyperscale powered-shell campuses (Emerson and Sandy Farms) totaling 218,000+ sq ft on ~95 acres near Baltimore. Fully pre-leased to a single hyperscale user. Capital One provided $113M loan.",
+    sourceUrl: "https://newswire.telecomramblings.com/2026/02/harrison-street-asset-management-sells-two-hyperscale-powered-shell-data-center-campuses-in-maryland/",
+    sourcePub: "Telecom Ramblings / DCD"
+  },
+  {
+    id: 6,
+    hyperscaler: "Unknown Hyperscaler",
+    operator: "Cipher Digital (3rd Campus)",
+    market: "Ohio or Texas (undisclosed site)",
+    tier: "Emerging",
+    dealType: "Signed Lease",
+    mw: null,
+    value: "Undisclosed",
+    date: "2026-03-25",
+    dateDisplay: "Mar 25, 2026",
+    status: "Confirmed",
+    notes: "Cipher's 3rd large AI campus lease. 15-year initial term with unnamed investment-grade hyperscaler. Cipher to develop/deliver new HPC data center at existing site. Accompanied by $200M revolving credit facility (Morgan Stanley led).",
+    sourceUrl: "https://www.globenewswire.com/news-release/2026/03/25/3262079/0/en/Cipher-Digital-Announces-Business-Updates.html",
+    sourcePub: "GlobeNewswire / DCD"
+  },
+  {
+    id: 7,
+    hyperscaler: "Oracle",
+    operator: "Digital Realty (Multi-Market Portfolio)",
+    market: "Ashburn VA · Chicago · Dallas · Phoenix · Silicon Valley",
+    tier: "Primary",
+    dealType: "Signed Lease",
+    mw: null,
+    value: "$267M/yr (Oracle = DLR #2 customer)",
+    date: "2026-01-01",
+    dateDisplay: "Ongoing / 2026",
+    status: "Confirmed",
+    notes: "Oracle leases 500,000+ sq ft across 59 Digital Realty data centers in 14 US markets via OCI FastConnect. Digital Realty closed $3.25B hyperscale fund (Mar 30, 2026) focused on NOVA, Santa Clara, Dallas, Atlanta, Charlotte, NYC.",
+    sourceUrl: "https://www.globenewswire.com/news-release/2026/03/30/3264485/0/en/Digital-Realty-Announces-Final-Close-of-3-25-billion-U-S-Hyperscale-Data-Center-Fund.html",
+    sourcePub: "GlobeNewswire / CoStar"
+  },
+  {
+    id: 8,
+    hyperscaler: "Microsoft",
+    operator: "Self-Owned (Fairwater Campus)",
+    market: "Mount Pleasant, WI (Milwaukee area)",
+    tier: "Emerging",
+    dealType: "Build-to-Suit",
+    mw: 900,
+    value: "$7.3B",
+    date: "2026-01-01",
+    dateDisplay: "Jan 2026 (final const. phase)",
+    status: "Confirmed",
+    notes: "Microsoft's largest AI campus. Formerly Foxconn site. Phase 1 completion by July 1, 2026. 15 buildings approved, taxable value $13B+. Peak Phase 1 power ~400 MW; full buildout ~900 MW. Financed via finance leases (included in $11.1B Q1 spend).",
+    sourceUrl: "https://www.datacenterdynamics.com/en/news/microsoft-spent-111bn-on-data-center-leases-alone-in-q1-2026/",
+    sourcePub: "Data Center Dynamics"
+  },
+  {
+    id: 9,
+    hyperscaler: "Meta",
+    operator: "Self-Owned / Greenfield (Prometheus Campus)",
+    market: "Lebanon, IN (30 mi NW of Indianapolis)",
+    tier: "Emerging",
+    dealType: "Build-to-Suit",
+    mw: 1000,
+    value: "$10B",
+    date: "2026-03-01",
+    dateDisplay: "Mar 2026",
+    status: "Confirmed",
+    notes: "Meta's first multi-GW AI cluster. Groundbreaking March 2026. ~4,000 construction jobs at peak; 300 operational positions. Meta's largest infrastructure build to date.",
+    sourceUrl: "https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-march-2026",
+    sourcePub: "Data Center Knowledge"
+  },
+  {
+    id: 10,
+    hyperscaler: "Meta",
+    operator: "TerraPower / Oklo / Vistra (Nuclear PPA)",
+    market: "Ohio · Pennsylvania (existing) + future sites",
+    tier: "Primary",
+    dealType: "Power Agreement",
+    mw: 6600,
+    value: "20-year PPA (value undisclosed)",
+    date: "2026-02-01",
+    dateDisplay: "Feb 2026",
+    status: "Confirmed",
+    notes: "Meta secured 6.6 GW of nuclear power over 20 years. Immediate access to three existing nuclear facilities in Ohio and Pennsylvania; new modular nuclear plants expected online ~2032. Supports Meta's existing data center campuses.",
+    sourceUrl: "https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-february-2026",
+    sourcePub: "Data Center Knowledge"
+  },
+  {
+    id: 11,
+    hyperscaler: "Oracle",
+    operator: "Vantage / OpenAI (Stargate — Port Washington, WI)",
+    market: "Port Washington, WI",
+    tier: "Emerging",
+    dealType: "Build-to-Suit",
+    mw: 902,
+    value: "$15B",
+    date: "2026-01-01",
+    dateDisplay: "Jan 2026",
+    status: "Confirmed",
+    notes: "Lighthouse Campus — 4 data centers, 902 MW IT. Oracle and OpenAI Stargate initiative. Groundbreaking Jan 2026. Part of Vantage's $15B investment.",
+    sourceUrl: "https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-january-2026",
+    sourcePub: "Data Center Knowledge"
+  },
+  {
+    id: 12,
+    hyperscaler: "Unknown Hyperscaler",
+    operator: "Yondr Group / JK Land Holdings",
+    market: "Loudoun County, VA (NOVA)",
+    tier: "Primary",
+    dealType: "Signed Lease",
+    mw: 96,
+    value: "Undisclosed",
+    date: "2026-01-01",
+    dateDisplay: "Jan 2026 (Phase 2 RFS)",
+    status: "Confirmed",
+    notes: "96 MW Northern Virginia campus (two 48 MW buildings). First building operational; second building Phase 1 (12 MW) achieved RFS Jan 2026, with full 48 MW expected in 2026. 240 MW additional pipeline on adjacent parcel.",
+    sourceUrl: "https://www.yondrgroup.com/newsroom/press-release/yondr-group-completes-first-rfs-milestone-for-second-building-at-96mw-northern-virginia-campus/",
+    sourcePub: "Yondr Group"
+  },
+  {
+    id: 13,
+    hyperscaler: "Unknown Hyperscaler",
+    operator: "Compass Datacenters (Phoenix Portfolio)",
+    market: "Phoenix, AZ",
+    tier: "Primary",
+    dealType: "Signed Lease",
+    mw: 174,
+    value: "$219.6M/yr (annualized base rent — 6-building portfolio)",
+    date: "2026-02-11",
+    dateDisplay: "Feb 2026",
+    status: "Confirmed",
+    notes: "Five Phoenix campus buildings + one Toronto (198.2 MW total). 100% leased to 4 investment-grade hyperscale tenants. Compass securitizing $830M ABS backed by this portfolio. Remaining lease terms: 14.1, 14.8, and 7.8 years for top 3 tenants.",
+    sourceUrl: "https://www.bisnow.com/national/news/data-center-capital-markets/brookfields-compass-datacenters-raising-830m-securitizing-6-big-tech-data-centers-133152",
+    sourcePub: "Bisnow / CRE Daily"
+  },
+  {
+    id: 14,
+    hyperscaler: "Google",
+    operator: "White Rose Partners (Project Spring)",
+    market: "Sand Springs, OK (Tulsa metro)",
+    tier: "Emerging",
+    dealType: "LOI",
+    mw: null,
+    value: "Part of $9B OK investment",
+    date: "2026-02-01",
+    dateDisplay: "Feb 2026",
+    status: "Confirmed",
+    notes: "Google rezoning approved Feb 2026 for 827-acre Project Spring campus (developer: White Rose Partners). Google expected end-user / purchaser. Construction scheduled 2027, completion 2029. Part of $9B Google Oklahoma investment.",
+    sourceUrl: "https://www.datacenterdynamics.com/en/news/google-gets-greenlight-for-data-center-in-tulsa-oklahoma/",
+    sourcePub: "Data Center Dynamics"
+  },
+  {
+    id: 15,
+    hyperscaler: "Oracle",
+    operator: "Digital Realty (New $3.25B Hyperscale Fund)",
+    market: "N. Virginia · Santa Clara · Dallas · Atlanta · Charlotte · NYC",
+    tier: "Primary",
+    dealType: "Fund/JV",
+    mw: null,
+    value: "$3.25B equity raise",
+    date: "2026-03-30",
+    dateDisplay: "Mar 30, 2026",
+    status: "Confirmed",
+    notes: "Digital Realty closed $3.25B inaugural U.S. hyperscale data center fund (final close). Focused on Tier 1 US metros. Oracle is DLR's #2 customer; fund will support Oracle's expansion across these markets. Investors: public pensions, SWFs, endowments.",
+    sourceUrl: "https://www.globenewswire.com/news-release/2026/03/30/3264485/0/en/Digital-Realty-Announces-Final-Close-of-3-25-billion-U-S-Hyperscale-Data-Center-Fund.html",
+    sourcePub: "GlobeNewswire"
+  },
+  {
+    id: 16,
+    hyperscaler: "Microsoft",
+    operator: "Duke Energy (North Carolina power deal)",
+    market: "North Carolina",
+    tier: "Secondary",
+    dealType: "Power Agreement",
+    mw: 4500,
+    value: "Undisclosed (Duke total DC contracts = 4.5 GW)",
+    date: "2026-03-01",
+    dateDisplay: "Mar 2026",
+    status: "Confirmed",
+    notes: "Duke Energy's data center contracts reached 4.5 GW following agreement with Microsoft (and Compass Datacenters). Microsoft is a significant Duke customer; this agreement supports ongoing NC data center operations.",
+    sourceUrl: "https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-march-2026",
+    sourcePub: "Data Center Knowledge"
+  },
+  {
+    id: 17,
+    hyperscaler: "Unknown Hyperscaler",
+    operator: "Equinix xScale (Atlanta campus)",
+    market: "Atlanta, GA (Hampton area)",
+    tier: "Secondary",
+    dealType: "Build-to-Suit",
+    mw: 200,
+    value: "Undisclosed (part of $15B JV)",
+    date: "2026-03-24",
+    dateDisplay: "Mar 24, 2026",
+    status: "Reported",
+    notes: "Equinix announced 3 new xScale campuses (Mar 24, 2026). Atlanta: 200 MW planned across 2 buildings, groundbreaking expected Q2 2026. Tenants unnamed; Equinix xScale serves Google, Microsoft, AWS, Meta. Hampton, GA site; first half pre-leased to hyperscale customer per Q4 2025 earnings.",
+    sourceUrl: "https://www.ad-hoc-news.de/boerse/news/ueberblick/equinix-xscale-data-centers-expand-hyperscale-capacity-for-ai-and-cloud/68985889",
+    sourcePub: "Equinix / Data Center Dynamics Q4 2025 Results"
+  }
+];
+
+// ============================================================
+// SOURCES DATA
+// ============================================================
+const sources = [
+  { title: "Microsoft, Meta Drive $700B Surge in Data Center Lease Commitments", pub: "Bloomberg", date: "Mar 12, 2026", url: "https://www.bloomberg.com/news/articles/2026-03-12/microsoft-meta-add-to-700-billion-surge-in-data-center-leases", desc: "Comprehensive analysis of Big Tech lease commitments topping $700B." },
+  { title: "Microsoft Spent $11.1B on Data Center Leases in Q1 2026", pub: "Data Center Dynamics", date: "2026", url: "https://www.datacenterdynamics.com/en/news/microsoft-spent-111bn-on-data-center-leases-alone-in-q1-2026/", desc: "Breakdown of Microsoft's Q1 FY2026 capex and lease spending." },
+  { title: "PowerHouse Data Centers Executes Hyperscale Lease at Arcola", pub: "PR Newswire / DCD", date: "Jan 15, 2026", url: "https://www.prnewswire.com/news-releases/powerhouse-data-centers-executes-hyperscale-lease-at-powerhouse-arcola-advancing-northern-virginia-expansion-302661927.html", desc: "120 MW long-term hyperscale lease in Loudoun County, VA." },
+  { title: "TA Realty Announces Sale of Northern Virginia Hyperscale Data Centers", pub: "GlobeNewswire", date: "Feb 5, 2026", url: "https://www.globenewswire.com/news-release/2026/02/05/3233084/0/en/TA-Realty-Announces-Sale-of-Hyperscale-Data-Centers-in-Northern-Virginia.html", desc: "Sale of 165 MW, 745,000 sq ft in Leesburg, VA to unnamed single cloud tenant buyer." },
+  { title: "Digital Realty Announces $3.25B U.S. Hyperscale Fund Final Close", pub: "GlobeNewswire", date: "Mar 30, 2026", url: "https://www.globenewswire.com/news-release/2026/03/30/3264485/0/en/Digital-Realty-Announces-Final-Close-of-3-25-billion-U-S-Hyperscale-Data-Center-Fund.html", desc: "Fund targets NOVA, Santa Clara, Dallas, Atlanta, Charlotte, NYC hyperscale development." },
+  { title: "DTE Energy Signs 1.4GW Power Deal with Unnamed Hyperscaler (Oracle/OpenAI)", pub: "Data Center Dynamics / Detroit News", date: "Feb 2026", url: "https://www.datacenterdynamics.com/en/news/dte-energy-signs-14gw-power-deal-with-unnamed-hyperscaler/", desc: "Oracle/OpenAI data center in Saline Township, MI with DTE Energy." },
+  { title: "Google and DTE Announce Van Buren Township Data Center Agreement", pub: "Michigan Advance / Bridge Michigan", date: "Mar 17, 2026", url: "https://michiganadvance.com/2026/03/17/google-and-dte-announce-van-buren-township-data-center-agreement-commit-to-contested-case-hearing/", desc: "Google 'Project Cannoli' — 1 GW campus with DTE Energy in Van Buren Township, MI." },
+  { title: "Harrison Street Sells Two Hyperscale Powered Shell Campuses in Maryland", pub: "Telecom Ramblings / DCD", date: "Feb 2026", url: "https://newswire.telecomramblings.com/2026/02/harrison-street-asset-management-sells-two-hyperscale-powered-shell-data-center-campuses-in-maryland/", desc: "Sale to GI Partners for $221.9M; fully pre-leased to hyperscale user." },
+  { title: "Cipher Digital Announces 3rd Hyperscale Campus Lease + $200M Credit Facility", pub: "GlobeNewswire", date: "Mar 25, 2026", url: "https://www.globenewswire.com/news-release/2026/03/25/3262079/0/en/Cipher-Digital-Announces-Business-Updates.html", desc: "Third 15-year AI campus lease with unnamed investment-grade hyperscaler." },
+
+  { title: "Wells Fargo: AWS Delays Data Center Leases Following Microsoft Pullback", pub: "Data Center Dynamics", date: "2026", url: "https://www.datacenterdynamics.com/en/news/wells-fargo-amazon-web-services-delays-data-center-leases-following-microsoft-pullback/", desc: "AWS pausing some international pre-lease discussions. US executed leases unaffected." },
+  { title: "Compass Datacenters Securitizes 6 Big Tech Data Centers for $830M", pub: "Bisnow / CRE Daily", date: "2026", url: "https://www.bisnow.com/national/news/data-center-capital-markets/brookfields-compass-datacenters-raising-830m-securitizing-6-big-tech-data-centers-133152", desc: "Phoenix (174 MW) + Toronto (24 MW) portfolio fully leased to 4 hyperscale tenants." },
+  { title: "Equinix xScale Expands Hyperscale Capacity for AI Workloads in 2026", pub: "Equinix / DCD Q4 2025 Results", date: "Mar 2026", url: "https://www.datacenterdynamics.com/en/news/data-center-colo-results-q4-2025-digital-realty-equinix-iron-mountain-american-tower/", desc: "Equinix announces 3 new xScale campuses including 200 MW Atlanta site." },
+  { title: "Google Gets Greenlight for Data Center in Sand Springs (Tulsa), Oklahoma", pub: "Data Center Dynamics", date: "Feb 2026", url: "https://www.datacenterdynamics.com/en/news/google-gets-greenlight-for-data-center-in-tulsa-oklahoma/", desc: "Rezoning approved for Project Spring — 827-acre Google-backed campus." },
+  { title: "Moody's Flags $662B Risk in Hyperscaler Off-Balance-Sheet Lease Commitments", pub: "Fortune / DCD", date: "Feb 2026", url: "https://fortune.com/2026/02/25/hyperscaler-risk-off-balance-sheet-662-billion-data-center-commitments-meta-amazon-microsoft-oracle-alphabet/", desc: "Moody's warns of hidden lease risk across Meta, Amazon, Microsoft, Oracle, Alphabet." },
+  { title: "New Data Center Developments: January, February & March 2026 (Monthly Roundups)", pub: "Data Center Knowledge", date: "Q1 2026", url: "https://www.datacenterknowledge.com/data-center-construction/new-data-center-developments-march-2026", desc: "Monthly roundup of US and global data center construction and lease announcements." }
+];
+
+// ============================================================
+// RENDERING
+// ============================================================
+function hyperscalerBadge(h) {
+  const map = {
+    "Microsoft": "badge-ms",
+    "AWS": "badge-aws",
+    "Google": "badge-google",
+    "Meta": "badge-meta",
+    "Oracle": "badge-oracle",
+    "Apple": "badge-apple",
+    "Unknown Hyperscaler": "badge-unknown"
+  };
+  return `<span class="badge ${map[h] || 'badge-unknown'}">${h}</span>`;
+}
+function dealTypeBadge(t) {
+  const map = {
+    "Signed Lease": "badge-type-lease",
+    "Build-to-Suit": "badge-type-bts",
+    "Power Agreement": "badge-type-power",
+    "LOI": "badge-type-loi",
+    "Fund/JV": "badge-type-bts",
+    "Sale": "badge-type-acquisition"
+  };
+  return `<span class="badge ${map[t] || 'badge-type-lease'}">${t}</span>`;
+}
+function statusBadge(s) {
+  const map = { "Confirmed": "badge-confirmed", "Reported": "badge-reported", "Rumored": "badge-rumored" };
+  return `<span class="badge ${map[s] || 'badge-reported'}">${s}</span>`;
+}
+function tierBadge(t) {
+  const map = { "Primary": "badge-primary", "Secondary": "badge-secondary", "Emerging": "badge-emerging" };
+  return `<span class="badge ${map[t] || 'badge-secondary'}">${t}</span>`;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  const noResults = document.getElementById('noResults');
+  const rowCount = document.getElementById('rowCount');
+
+  if (data.length === 0) {
+    tbody.innerHTML = '';
+    noResults.style.display = 'block';
+    rowCount.textContent = '0 deals';
+    return;
+  }
+  noResults.style.display = 'none';
+  rowCount.textContent = `${data.length} deal${data.length !== 1 ? 's' : ''}`;
+
+  tbody.innerHTML = data.map((d, i) => `
+    <tr>
+      <td class="td-num">${i + 1}</td>
+      <td>${hyperscalerBadge(d.hyperscaler)}</td>
+      <td><span class="operator-name">${d.operator}</span></td>
+      <td><span class="market-name">${d.market}</span></td>
+      <td>${tierBadge(d.tier)}</td>
+      <td>${dealTypeBadge(d.dealType)}</td>
+      <td>${d.mw ? `<span class="mw-value">${d.mw.toLocaleString()} MW</span>` : '<span class="mw-na">N/D</span>'}</td>
+      <td style="font-size:12px; color:var(--accent-orange); font-weight:600; white-space:nowrap;">${d.value}</td>
+      <td style="font-size:12px; color:var(--text-secondary); white-space:nowrap;">${d.dateDisplay}</td>
+      <td>${statusBadge(d.status)}</td>
+      <td><span class="notes-text">${d.notes}</span></td>
+      <td><a class="source-link" href="${d.sourceUrl}" target="_blank">&#128279; ${d.sourcePub}</a></td>
+    </tr>
+  `).join('');
+}
+
+function renderSources() {
+  const grid = document.getElementById('sourcesGrid');
+  grid.innerHTML = sources.map(s => `
+    <div class="source-card">
+      <div class="source-card-title"><a class="source-link" href="${s.url}" target="_blank" style="font-size:12px;">&#128279; ${s.title}</a></div>
+      <div class="source-card-desc">${s.desc}</div>
+      <div class="source-card-pub">${s.pub} &middot; ${s.date}</div>
+    </div>
+  `).join('');
+}
+
+let currentData = [...deals];
+let sortCol = 0, sortAsc = true;
+
+function filterTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const filterH = document.getElementById('filterHyperscaler').value;
+  const filterT = document.getElementById('filterDealType').value;
+  const filterTier = document.getElementById('filterTier').value;
+  const filterStatus = document.getElementById('filterStatus').value;
+
+  currentData = deals.filter(d => {
+    const blob = [d.hyperscaler, d.operator, d.market, d.dealType, d.tier, d.notes, d.value, d.dateDisplay].join(' ').toLowerCase();
+    if (search && !blob.includes(search)) return false;
+    if (filterH && d.hyperscaler !== filterH) return false;
+    if (filterT && d.dealType !== filterT) return false;
+    if (filterTier && d.tier !== filterTier) return false;
+    if (filterStatus && d.status !== filterStatus) return false;
+    return true;
+  });
+  renderTable(currentData);
+}
+
+function sortTable(col) {
+  const headers = document.querySelectorAll('thead th');
+  headers.forEach((h, i) => {
+    h.classList.remove('sorted');
+    const icon = h.querySelector('.sort-icon');
+    if (icon) icon.textContent = '⇅';
+  });
+
+  if (sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = true; }
+
+  headers[col].classList.add('sorted');
+  const icon = headers[col].querySelector('.sort-icon');
+  if (icon) icon.textContent = sortAsc ? '↑' : '↓';
+
+  const keys = ['id', 'hyperscaler', 'operator', 'market', 'tier', 'dealType', 'mw', 'value', 'date', 'status'];
+  const key = keys[col];
+  currentData.sort((a, b) => {
+    let va = a[key], vb = b[key];
+    if (va === null) va = -Infinity;
+    if (vb === null) vb = -Infinity;
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (va < vb) return sortAsc ? -1 : 1;
+    if (va > vb) return sortAsc ? 1 : -1;
+    return 0;
+  });
+  renderTable(currentData);
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init
+renderTable(currentData);
+renderSources();
+</script>
+</body>
+</html>
