@@ -308,6 +308,15 @@
     max-width: 280px;
     line-height: 1.4;
   }
+  .notes-list {
+    margin: 0;
+    padding-left: 14px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    max-width: 280px;
+    line-height: 1.5;
+  }
+  .notes-list li { margin-bottom: 2px; }
 
   .no-results {
     text-align: center;
@@ -1069,7 +1078,7 @@ function renderTable(data) {
       <td style="font-size:12px; color:var(--accent-orange); font-weight:600; white-space:nowrap;">${d.value}</td>
       <td style="font-size:12px; color:var(--text-secondary); white-space:nowrap;">${d.dateDisplay}</td>
       <td>${statusBadge(d.status)}</td>
-      <td><span class="notes-text">${d.notes}</span></td>
+      <td><ul class="notes-list">${d.notes.split(/\.\s+/).filter(s=>s.trim()).map(s=>`<li>${s.replace(/\.$/,'')}</li>`).join('')}</ul></td>
       <td><a class="source-link" href="${d.sourceUrl}" target="_blank">&#128279; ${d.sourcePub}</a></td>
     </tr>
   `).join('');
