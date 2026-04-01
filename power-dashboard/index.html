@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>US Power Infrastructure — Site Selection Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- D3 v7 -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <!-- TopoJSON -->
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <!-- Chart.js v4 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <span class="logo">⚡</span>
+    <h1>US Power Infrastructure</h1>
+    <span class="subtitle">Data Center Site Selection</span>
+  </div>
+  <div class="header-right">
+    <button id="theme-toggle">Dark Mode</button>
+  </div>
+</header>
+
+<!-- ── US Map View ──────────────────────────────────────────────────────────── -->
+<div id="map-view" class="view">
+
+  <div class="view-controls">
+    <div class="toggle-group">
+      <button class="toggle-btn active" data-view="score">Infrastructure Score</button>
+      <button class="toggle-btn" data-view="iso">ISO Coverage</button>
+      <button class="toggle-btn" data-view="demand">DC Demand</button>
+      <button class="toggle-btn" data-view="supply">Available Supply</button>
+      <button class="toggle-btn" data-view="345kv">345 kV Network</button>
+    </div>
+  </div>
+
+  <div class="map-container">
+    <svg id="us-map"></svg>
+    <div id="us-tooltip" class="tooltip hidden"></div>
+  </div>
+
+  <div id="us-legend" class="legend"></div>
+
+</div>
+
+<!-- ── State Detail View ────────────────────────────────────────────────────── -->
+<div id="state-view" class="view hidden">
+
+  <div class="state-header">
+    <button id="back-btn" class="back-btn">← Back to US Map</button>
+    <div id="state-title">
+      <h2 id="state-name"></h2>
+      <span id="state-iso-badge" class="badge"></span>
+    </div>
+  </div>
+
+  <!-- Summary metric cards -->
+  <div class="metric-cards">
+    <div class="card">
+      <div class="card-label">Installed Capacity</div>
+      <div class="card-value" id="val-capacity">—</div>
+      <div class="card-sub"  id="sub-capacity">Loading…</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Generators</div>
+      <div class="card-value" id="val-generators">—</div>
+      <div class="card-sub"  id="sub-generators">Operating units</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Commercial Price</div>
+      <div class="card-value" id="val-price">—</div>
+      <div class="card-sub"  id="sub-price">cents/kWh</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Grid Operator</div>
+      <div class="card-value" id="val-iso">—</div>
+      <div class="card-sub"  id="sub-iso">ISO / Utility</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Top Fuel Source</div>
+      <div class="card-value" id="val-fuel">—</div>
+      <div class="card-sub"  id="sub-fuel">By installed capacity</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Available Supply</div>
+      <div class="card-value" id="val-headroom">—</div>
+      <div class="card-sub"  id="sub-headroom">Capacity − peak demand</div>
+    </div>
+    <div class="card card-highlight">
+      <div class="card-label">345+ kV Access</div>
+      <div class="card-value" id="val-transmission">—</div>
+      <div class="card-sub"  id="sub-transmission">Loading OSM + HIFLD…</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Grid CO₂ Rate</div>
+      <div class="card-value" id="val-co2">—</div>
+      <div class="card-sub"  id="sub-co2">lbs CO₂/MWh · EPA eGRID</div>
+    </div>
+  </div>
+
+  <!-- Main two-column content -->
+  <div class="state-content">
+
+    <!-- Left: County heatmap + generator overlay -->
+    <div class="county-map-panel">
+      <div class="panel-header">
+        <h3>Transmission Infrastructure Heat Map</h3>
+        <div class="map-legend-inline" id="county-legend"></div>
+      </div>
+      <!-- Voltage-class filter pills — default: 230/345/500+ ON; 110/150 OFF -->
+      <div class="tx-filters" id="tx-filters">
+        <span class="tx-filter-label">Lines:</span>
+        <button class="tx-filter" data-kv="110" style="--c:#94a3b8">110 kV</button>
+        <button class="tx-filter" data-kv="150" style="--c:#60a5fa">150 kV</button>
+        <button class="tx-filter active" data-kv="230" style="--c:#22d3ee">230 kV</button>
+        <button class="tx-filter active" data-kv="345" style="--c:#f59e0b">345 kV</button>
+        <button class="tx-filter active" data-kv="500" style="--c:#f97316">500+ kV</button>
+      </div>
+
+      <div class="map-wrapper" id="county-map-wrapper">
+        <div id="county-loading" class="loading-spinner">Loading map data…</div>
+        <svg id="county-map"></svg>
+        <div id="county-tooltip" class="tooltip hidden"></div>
+      </div>
+      <div class="fuel-legend" id="fuel-legend"></div>
+    </div>
+
+    <!-- Right: Generators table + Grid panel -->
+    <div class="charts-panel">
+
+      <!-- Top generators table -->
+      <div class="panel">
+        <h3>Top Generators by Capacity</h3>
+        <div id="generators-loading" class="loading-spinner" style="position:static;height:40px;background:transparent;border-radius:0">Fetching EIA data…</div>
+        <div id="generators-error" class="error-msg hidden"></div>
+        <table id="generators-table" class="data-table hidden">
+          <thead>
+            <tr>
+              <th style="width:40%">Plant</th>
+              <th style="width:22%">Fuel</th>
+              <th style="width:16%;text-align:right">MW</th>
+              <th style="width:22%">County</th>
+            </tr>
+          </thead>
+          <tbody id="generators-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- Grid data panel -->
+      <div class="panel" id="grid-panel">
+        <h3>Grid Data <span id="grid-panel-iso" style="font-weight:400;color:var(--text-muted)"></span></h3>
+        <div id="grid-loading" class="loading-spinner" style="position:static;height:40px;background:transparent;border-radius:0">Fetching grid data…</div>
+        <div id="grid-non-iso" class="hidden"></div>
+        <div id="grid-error" class="error-msg hidden"></div>
+        <div id="grid-charts" class="grid-charts hidden">
+          <div class="chart-row">
+            <div class="chart-box">
+              <h4>Interconnection Queue (MW by Fuel)</h4>
+              <canvas id="queue-chart"></canvas>
+            </div>
+            <div class="chart-box">
+              <h4>Current Generation Fuel Mix</h4>
+              <canvas id="fuelmix-chart"></canvas>
+            </div>
+          </div>
+          <div id="queue-stats"></div>
+        </div>
+      </div>
+
+    </div><!-- .charts-panel -->
+  </div><!-- .state-content -->
+
+  <!-- Data sources attribution bar -->
+  <div class="sources-bar" id="sources-bar">
+    <span class="sources-label">Data sources:</span>
+    <span class="src-badge" id="src-eia">EIA</span>
+    <span class="src-badge" id="src-osm">OSM</span>
+    <span class="src-badge" id="src-hifld">HIFLD</span>
+    <span class="src-badge" id="src-gridstatus">GridStatus</span>
+    <span class="src-badge src-static" id="src-egrid">EPA eGRID</span>
+  </div>
+
+</div><!-- #state-view -->
+
+<!-- Scripts: config first so CONFIG is available to all modules -->
+<script src="config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/transmission.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
