@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Utility Power Policy — Data Center Interconnection Requirements</title>
+<style>
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-card: #1c2230;
+  --bg-card-hover: #222d3d;
+  --border: #2d3748;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #6e7681;
+  --accent-blue: #58a6ff;
+  --accent-teal: #39d0c2;
+  --accent-purple: #bc8cff;
+  --accent-gold: #d29922;
+  --red: #f85149;
+  --yellow: #e3b341;
+  --green: #3fb950;
+  --orange: #f0883e;
+  --red-bg: rgba(248,81,73,0.15);
+  --yellow-bg: rgba(227,179,65,0.12);
+  --green-bg: rgba(63,185,80,0.12);
+  --blue-bg: rgba(88,166,255,0.1);
+  --purple-bg: rgba(188,140,255,0.1);
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #0d1117 0%, #1a2340 50%, #0d1f3c 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 32px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.header-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+.header-title span { color: var(--accent-blue); }
+.header-subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.badge {
+  background: rgba(88,166,255,0.12);
+  border: 1px solid rgba(88,166,255,0.3);
+  color: var(--accent-blue);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.badge-live {
+  background: rgba(63,185,80,0.15);
+  border-color: rgba(63,185,80,0.4);
+  color: var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* CONTAINER */
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+}
+
+/* KPI CARDS */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+.kpi-card .kpi-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  line-height: 1;
+}
+.kpi-card .kpi-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.kpi-card.kpi-warn .kpi-value { color: var(--yellow); }
+.kpi-card.kpi-danger .kpi-value { color: var(--red); }
+.kpi-card.kpi-success .kpi-value { color: var(--green); }
+.kpi-card.kpi-purple .kpi-value { color: var(--accent-purple); }
+
+/* ALERT BAR */
+.alert-bar {
+  background: var(--red-bg);
+  border: 1px solid rgba(248,81,73,0.3);
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.alert-bar .alert-icon { font-size: 18px; flex-shrink: 0; }
+.alert-bar strong { color: var(--red); }
+.alert-bar-info {
+  background: var(--blue-bg);
+  border-color: rgba(88,166,255,0.3);
+}
+.alert-bar-info strong { color: var(--accent-blue); }
+
+/* TABS */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 0;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 18px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.tab-btn.active {
+  color: var(--accent-blue);
+  border-bottom-color: var(--accent-blue);
+  font-weight: 600;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* FILTER BAR */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+.filter-bar input[type="text"] {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  padding: 8px 14px;
+  width: 280px;
+  outline: none;
+}
+.filter-bar input[type="text"]:focus { border-color: var(--accent-blue); }
+.filter-bar select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  padding: 8px 12px;
+  outline: none;
+  cursor: pointer;
+}
+.filter-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 14px;
+  transition: all 0.15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background: rgba(88,166,255,0.12);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+.result-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* TIER BADGES */
+.tier { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+.tier-1 { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.tier-2 { background: rgba(88,166,255,0.12); color: var(--accent-blue); border: 1px solid rgba(88,166,255,0.3); }
+.tier-3 { background: rgba(227,179,65,0.12); color: var(--yellow); border: 1px solid rgba(227,179,65,0.3); }
+.tier-e { background: rgba(188,140,255,0.1); color: var(--accent-purple); border: 1px solid rgba(188,140,255,0.3); }
+
+/* STATUS */
+.status { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+.status-active { background: rgba(63,185,80,0.15); color: var(--green); }
+.status-pending { background: rgba(227,179,65,0.12); color: var(--yellow); }
+.status-moratorium { background: rgba(248,81,73,0.15); color: var(--red); }
+.status-constrained { background: rgba(240,136,62,0.15); color: var(--orange); }
+.status-new { background: rgba(188,140,255,0.1); color: var(--accent-purple); }
+
+/* TABLES */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+thead th {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 12px 14px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+thead th:hover { color: var(--accent-blue); }
+tbody td {
+  border-bottom: 1px solid rgba(45,55,72,0.5);
+  padding: 12px 14px;
+  vertical-align: top;
+}
+tbody tr:hover { background: var(--bg-card-hover); }
+tbody tr:last-child td { border-bottom: none; }
+td.utility-name { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+td .city-list { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+td .detail-list { list-style: none; padding: 0; }
+td .detail-list li { position: relative; padding-left: 12px; margin-bottom: 3px; font-size: 12px; line-height: 1.5; color: var(--text-secondary); }
+td .detail-list li::before { content: "•"; position: absolute; left: 0; color: var(--accent-blue); font-weight: 700; }
+td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
+
+/* EXPANDABLE ROWS */
+.expand-btn {
+  background: rgba(88,166,255,0.1);
+  border: 1px solid rgba(88,166,255,0.2);
+  border-radius: 6px;
+  color: var(--accent-blue);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px 10px;
+  transition: all 0.15s;
+}
+.expand-btn:hover { background: rgba(88,166,255,0.2); }
+.detail-row { display: none; }
+.detail-row.open { display: table-row; }
+.detail-row td {
+  background: rgba(22,27,34,0.8);
+  padding: 16px 20px;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+.detail-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.detail-section h4 {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.detail-section ul { list-style: none; padding: 0; }
+.detail-section ul li {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 0;
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.5;
+}
+.detail-section ul li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--accent-teal);
+}
+.detail-section ul li strong { color: var(--text-primary); }
+
+/* POLICY CARDS */
+.policy-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 16px;
+}
+.policy-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+.policy-card:hover { border-color: rgba(88,166,255,0.3); }
+.policy-card .pc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.policy-card .pc-title { font-size: 15px; font-weight: 700; }
+.policy-card .pc-iso { font-size: 11px; color: var(--accent-teal); font-weight: 600; }
+.policy-card .pc-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; }
+.policy-card ul { list-style: none; padding: 0; }
+.policy-card ul li {
+  font-size: 12px; color: var(--text-secondary); padding: 3px 0 3px 14px; position: relative; line-height: 1.5;
+}
+.policy-card ul li::before { content: "▸"; position: absolute; left: 0; color: var(--accent-blue); }
+.policy-card ul li strong { color: var(--text-primary); }
+
+/* CHANGES FEED */
+.changes-feed { display: flex; flex-direction: column; gap: 12px; }
+.change-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.change-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-teal);
+  white-space: nowrap;
+  min-width: 90px;
+  flex-shrink: 0;
+}
+.change-body { font-size: 13px; color: var(--text-secondary); }
+.change-body strong { color: var(--text-primary); }
+.change-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.tag-tariff { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
+.tag-moratorium { background: rgba(248,81,73,0.15); color: var(--red); }
+.tag-new { background: rgba(63,185,80,0.12); color: var(--green); }
+.tag-ferc { background: rgba(188,140,255,0.1); color: var(--accent-purple); }
+.tag-state { background: rgba(227,179,65,0.12); color: var(--yellow); }
+
+/* SOURCES */
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 10px;
+}
+.source-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.source-item a { color: var(--accent-blue); text-decoration: none; }
+.source-item a:hover { text-decoration: underline; }
+.source-item .src-date { color: var(--text-muted); font-size: 11px; }
+
+/* SECTION TITLE */
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title span { color: var(--accent-blue); }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header { padding: 16px; }
+  .container { padding: 16px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .filter-bar input[type="text"] { width: 100%; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .policy-cards { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <div class="header-title">⚡ US Utility Power Policy — <span>Data Center Interconnection Requirements</span></div>
+      <div class="header-subtitle">Take-or-Pay | Collateral | Policy Requirements | Payment Schedules — All Major US Markets</div>
+    </div>
+    <div class="header-meta">
+      <span class="badge badge-live">● LIVE</span>
+      <span style="font-size:12px;color:var(--text-muted);">Last updated: March 31, 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-value">52</div><div class="kpi-label">Utilities Tracked</div></div>
+  <div class="kpi-card"><div class="kpi-value">28</div><div class="kpi-label">States Covered</div></div>
+  <div class="kpi-card kpi-success"><div class="kpi-value">38</div><div class="kpi-label">Active DC Programs</div></div>
+  <div class="kpi-card kpi-danger"><div class="kpi-value">6</div><div class="kpi-label">Moratoriums / Constraints</div></div>
+  <div class="kpi-card kpi-warn"><div class="kpi-value">65+</div><div class="kpi-label">Large Load Tariffs (US)</div></div>
+  <div class="kpi-card kpi-purple"><div class="kpi-value">$50K–$2M</div><div class="kpi-label">Collateral Range (per MW)</div></div>
+</div>
+
+<!-- ALERT BAR -->
+<div class="alert-bar">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>Recent Policy Changes (Q1 2026):</strong>
+    ComEd (IL) — ICC approved increased large-load deposits, Mar 20, 2026 &nbsp;|&nbsp;
+    Texas PUC — Proposed Rule 25.194 for SB 6 implementation published Mar 12, 2026 &nbsp;|&nbsp;
+    NV Energy — Standby service tariff revision filed Mar 6, 2026 &nbsp;|&nbsp;
+    PGE (OR) — UM2377 large load tariff decision expected Apr 2026 &nbsp;|&nbsp;
+    Xcel (CO) — Large-load tariff filing extended to Apr 2, 2026 &nbsp;|&nbsp;
+    PJM Cycle 1 2026 — Application deadline Apr 27, 2026
+  </div>
+</div>
+
+<div class="alert-bar alert-bar-info">
+  <span class="alert-icon">📊</span>
+  <div>
+    <strong>Market Overview:</strong>
+    As of late 2025, at least <strong>65 large load tariffs</strong> are pending or in place across <strong>34 states</strong>, with 46+ new in 2025 alone. Industry convergence around <strong>15-year minimum contracts</strong>, <strong>80% minimum billing demand</strong>, and <strong>collateral backstop provisions</strong> with exit fees.
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('takeorpay')">Take or Pay</button>
+  <button class="tab-btn" onclick="switchTab('collateral')">Collateral Requirements</button>
+  <button class="tab-btn" onclick="switchTab('payments')">Payment Schedules</button>
+  <button class="tab-btn" onclick="switchTab('changes')">Recent Policy Changes</button>
+  <button class="tab-btn" onclick="switchTab('sources')">Sources</button>
+</div>
+
+<!-- ===== TAB: OVERVIEW ===== -->
+<div id="tab-overview" class="tab-content active">
+
+<div class="filter-bar">
+  <input type="text" id="searchOverview" placeholder="Search utility, city, or state..." oninput="filterOverview()">
+  <select id="filterISO" onchange="filterOverview()">
+    <option value="">All ISOs/RTOs</option>
+    <option value="PJM">PJM</option>
+    <option value="ERCOT">ERCOT</option>
+    <option value="CAISO">CAISO</option>
+    <option value="MISO">MISO</option>
+    <option value="SPP">SPP</option>
+    <option value="NYISO">NYISO</option>
+    <option value="ISO-NE">ISO-NE</option>
+    <option value="WECC">WECC</option>
+    <option value="SERC">SERC</option>
+    <option value="TVA">TVA</option>
+  </select>
+  <select id="filterTier" onchange="filterOverview()">
+    <option value="">All Tiers</option>
+    <option value="T1">Tier 1</option>
+    <option value="T2">Tier 2</option>
+    <option value="T3">Tier 3</option>
+    <option value="EM">Emerging</option>
+  </select>
+  <select id="filterState" onchange="filterOverview()">
+    <option value="">All States</option>
+    <option value="VA">Virginia</option>
+    <option value="TX">Texas</option>
+    <option value="OH">Ohio</option>
+    <option value="IL">Illinois</option>
+    <option value="GA">Georgia</option>
+    <option value="NC">North Carolina</option>
+    <option value="CA">California</option>
+    <option value="AZ">Arizona</option>
+    <option value="NV">Nevada</option>
+    <option value="OR">Oregon</option>
+    <option value="WA">Washington</option>
+    <option value="UT">Utah</option>
+    <option value="MI">Michigan</option>
+    <option value="PA">Pennsylvania</option>
+    <option value="NJ">New Jersey</option>
+    <option value="NY">New York</option>
+    <option value="FL">Florida</option>
+    <option value="IN">Indiana</option>
+    <option value="TN">Tennessee</option>
+    <option value="KS">Kansas</option>
+    <option value="MO">Missouri</option>
+    <option value="CO">Colorado</option>
+    <option value="ID">Idaho</option>
+    <option value="WI">Wisconsin</option>
+    <option value="IA">Iowa</option>
+    <option value="AL">Alabama</option>
+    <option value="CT">Connecticut</option>
+    <option value="MA">Massachusetts</option>
+  </select>
+  <span class="result-count" id="overviewCount"></span>
+</div>
+
+<div class="table-wrap">
+<table id="overviewTable">
+<thead>
+<tr>
+  <th onclick="sortTable('overviewTable',0)">Utility</th>
+  <th onclick="sortTable('overviewTable',1)">State</th>
+  <th onclick="sortTable('overviewTable',2)">Cities / Markets</th>
+  <th onclick="sortTable('overviewTable',3)">ISO/RTO</th>
+  <th onclick="sortTable('overviewTable',4)">Tier</th>
+  <th onclick="sortTable('overviewTable',5)">Min Load</th>
+  <th onclick="sortTable('overviewTable',6)">Take-or-Pay</th>
+  <th onclick="sortTable('overviewTable',7)">Collateral</th>
+  <th onclick="sortTable('overviewTable',8)">Contract Term</th>
+  <th>Status</th>
+  <th>Details</th>
+</tr>
+</thead>
+<tbody>
+
+<!-- ===== PJM UTILITIES ===== -->
+<tr data-iso="PJM" data-tier="T1" data-state="VA" class="data-row">
+  <td class="utility-name">Dominion Energy Virginia</td>
+  <td>VA</td>
+  <td>Ashburn, Manassas, Richmond<div class="city-list">Northern Virginia (Data Center Alley)</div></td>
+  <td>PJM</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>25 MW</td>
+  <td>85% distribution/transmission; 60% generation demand</td>
+  <td>$1.5M/MW (proposed); $450K/MW (requested by DCs)</td>
+  <td>14 years fixed; 4-yr ramp</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li><strong>New GS-5 rate class</strong> for customers ≥25 MW (effective Jan 1, 2027)</li>
+    <li>Min billing: <strong>85% of contracted distribution & transmission demand</strong></li>
+    <li>Min billing: <strong>60% of contracted generation demand</strong></li>
+    <li>4-year load ramp allowed for new customers</li>
+    <li>14-year fixed contract term required</li>
+  </ul></div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li><strong>$1.5M per MW</strong> of contracted capacity proposed by Dominion</li>
+    <li>Data center developers requested reduction to <strong>$450K/MW</strong></li>
+    <li>Required if customer cannot meet credit & liquidity requirements</li>
+    <li>Offsets expenses if DC leaves or infrastructure under-utilized</li>
+    <li>Accepted types: Letters of credit, cash deposits, parent guarantees</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>VA SCC approved new data center rate class (Nov 2025)</li>
+    <li>Higher cost allocation assigned to data center customers</li>
+    <li>Customers pay full cost of grid upgrades triggered by their load</li>
+    <li>Existing DC customers grandfathered on prior tariff</li>
+    <li>Queue: Significant backlog in Northern Virginia</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Interconnection study fees per PJM queue process</li>
+    <li>Collateral posted at contract execution</li>
+    <li>Monthly demand charges based on contracted capacity</li>
+    <li>Exit fees for early termination</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="PJM" data-tier="T1" data-state="IL" class="data-row">
+  <td class="utility-name">ComEd (Exelon)</td>
+  <td>IL</td>
+  <td>Chicago, Elk Grove Village, Aurora<div class="city-list">Chicago Metro Data Center Market</div></td>
+  <td>PJM</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>50 MW</td>
+  <td>Cost recovery via deposits; full infrastructure cost pass-through</td>
+  <td>$1M base + $500K/100 MW above 200 MW</td>
+  <td>Per contract; no standard published</td>
+  <td><span class="status status-new">New Tariff</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Developers now must front <strong>connection costs + substation & transmission build-out</strong></li>
+    <li>Infrastructure costs can run <strong>tens of millions per project</strong></li>
+    <li>Deposits cover cost recovery if DC goes out of business or under-utilizes</li>
+    <li>75 applications in pipeline exceeding ComEd's all-time system peak</li>
+  </ul></div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li><strong>ICC approved March 20, 2026</strong> — increased deposit structure</li>
+    <li>50–200 MW projects: <strong>$1M base deposit</strong></li>
+    <li>>200 MW: <strong>+$500K per additional 100 MW</strong></li>
+    <li>Previously: flat $1M for all large load applications</li>
+    <li>Deposits returned on canceled projects minus costs incurred</li>
+    <li>On completed projects, deposits applied toward development costs</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Illinois Commerce Commission Docket P2025-0677</li>
+    <li>New tariff does <strong>not apply retroactively</strong> to existing grid customers</li>
+    <li>Developers must demonstrate ability to pay full infrastructure costs</li>
+    <li>Ongoing investigation into data center impact on grid</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Security deposit due at application</li>
+    <li>Infrastructure cost advances due before construction</li>
+    <li>Monthly billing post-energization</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="PJM" data-tier="T1" data-state="OH" class="data-row">
+  <td class="utility-name">AEP Ohio</td>
+  <td>OH</td>
+  <td>Columbus, New Albany, Dublin<div class="city-list">Central Ohio Data Center Cluster</div></td>
+  <td>PJM</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>25 MW</td>
+  <td>85% minimum monthly billing demand</td>
+  <td>Credit-rated (A-/A3) exempt; others per formula</td>
+  <td>8 yrs min (after 4-yr ramp = 12 yrs total)</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>PUCO-approved July 9, 2025 — <strong>landmark DC-specific tariff</strong></li>
+    <li><strong>85% minimum monthly billing</strong> of contracted demand, even if unused</li>
+    <li>4-year maximum load ramp period</li>
+    <li>8-year minimum after ramp (12 years total)</li>
+    <li>Could add ~<strong>$10M in first-year costs</strong> for a 100 MW data center</li>
+  </ul></div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Customers rated <strong>A- (S&P) / A3 (Moody's)</strong> with 10x cash reserves: <strong>exempt</strong></li>
+    <li>All others: collateral required per formula (amount not publicly disclosed)</li>
+    <li>Customer or <strong>financial sponsor</strong> may post (sponsor must co-sign contract)</li>
+    <li>Modified by PUCO to require sponsor co-signature</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Applies to <strong>new loads >25 MW aggregate</strong> in AEP Ohio territory</li>
+    <li>Exit fee: all minimum charges for full contract term, OR</li>
+    <li>After Year 5 post-ramp: <strong>3 years of minimum charges</strong> as exit fee</li>
+    <li>No early exit option until end of 5th year post-ramp</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Collateral at contract execution</li>
+    <li>Monthly minimum demand charges begin at energization</li>
+    <li>Study fees per PJM interconnection process</li>
+    <li>Exit fee if terminating before contract end</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="PJM" data-tier="T2" data-state="PA" class="data-row">
+  <td class="utility-name">PPL Electric</td>
+  <td>PA</td>
+  <td>Allentown, Lancaster<div class="city-list">Eastern Pennsylvania</div></td>
+  <td>PJM</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per PJM</td>
+  <td>Per PJM tariff and bilateral contracts</td>
+  <td>Per PJM requirements</td>
+  <td>Per contract negotiation</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Policy Overview</h4><ul>
+    <li>PA PUC issued large load interconnection guidance (Nov 2025)</li>
+    <li>Follows PJM interconnection study process</li>
+    <li>No DC-specific tariff published as of March 2026</li>
+    <li>Large load applications increasing in Lehigh Valley corridor</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="PJM" data-tier="T2" data-state="NJ" class="data-row">
+  <td class="utility-name">PSE&G</td>
+  <td>NJ</td>
+  <td>Newark, Jersey City, Secaucus<div class="city-list">Northern New Jersey</div></td>
+  <td>PJM</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per PJM</td>
+  <td>Per PJM tariff</td>
+  <td>Per PJM requirements</td>
+  <td>Per contract negotiation</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Policy Overview</h4><ul>
+    <li>Pipeline jumped <strong>47% to 9.4 GW</strong> — much speculative</li>
+    <li>Interconnection requests grew from 400 MW to 4,700 MW (2024→2025)</li>
+    <li>No dedicated DC tariff published; follows PJM process</li>
+    <li>Electric Tariff B.P.U.N.J. No. 17 effective Feb 1, 2026</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="NYISO" data-tier="T2" data-state="NY" class="data-row">
+  <td class="utility-name">Con Edison</td>
+  <td>NY</td>
+  <td>New York City, Westchester<div class="city-list">NYC Metro</div></td>
+  <td>NYISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per NYISO</td>
+  <td>Developing — NY PSC proceedings ongoing</td>
+  <td>Expected: 100% participant funding for upgrades</td>
+  <td>TBD</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Policy Overview</h4><ul>
+    <li>NY PSC large-load interconnection rulemaking underway</li>
+    <li>FERC 100% participant funding model expected for network upgrades</li>
+    <li>Wholesale Distribution Service (WDS) tariff for generators on ConEd system</li>
+    <li>No dedicated DC tariff yet — regulatory guidance in development</li>
+    <li>Limited transmission capacity in NYC constrains large loads</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ISO-NE" data-tier="T2" data-state="CT" class="data-row">
+  <td class="utility-name">Eversource</td>
+  <td>CT/MA/NH</td>
+  <td>Hartford, Boston, Manchester<div class="city-list">New England corridor</div></td>
+  <td>ISO-NE</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per ISO-NE</td>
+  <td>Per ISO-NE/state tariffs</td>
+  <td>Per ISO-NE requirements</td>
+  <td>Per contract negotiation</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Policy Overview</h4><ul>
+    <li>Supports retail and ISO-NE RNS/LNS customers</li>
+    <li>Transmission load interconnections subject to ISO-NE tariff or Eversource state tariff</li>
+    <li>No DC-specific large load tariff published</li>
+    <li>DOE pushing for expedited study process — potentially 60 days</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ISO-NE" data-tier="T2" data-state="MA" class="data-row">
+  <td class="utility-name">National Grid</td>
+  <td>NY/MA/RI</td>
+  <td>Brooklyn, Queens, Worcester<div class="city-list">NY downstate / MA / RI</div></td>
+  <td>ISO-NE / NYISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per ISO</td>
+  <td>Per ISO-NE/NYISO tariffs</td>
+  <td>Per ISO requirements</td>
+  <td>Per contract</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Policy Overview</h4><ul>
+    <li>Serves portions of NY (NYISO) and MA/RI (ISO-NE)</li>
+    <li>No published DC-specific large load tariff</li>
+    <li>Large load demand growing in both territories</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== ERCOT UTILITIES ===== -->
+<tr data-iso="ERCOT" data-tier="T1" data-state="TX" class="data-row">
+  <td class="utility-name">Oncor (Sempra)</td>
+  <td>TX</td>
+  <td>Dallas, Fort Worth, Midland<div class="city-list">DFW / North-Central-West Texas</div></td>
+  <td>ERCOT</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>75 MW (SB 6)</td>
+  <td>$50K/MW security; 20%/80% withdrawal penalty</td>
+  <td>LC, cash, corporate guarantee; $3.5B held</td>
+  <td>Per SB 6 / 5-yr sustained ops for refund</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay (SB 6 Framework)</h4><ul>
+    <li><strong>$50,000/MW financial security</strong> required (e.g., $50M for 1 GW DC)</li>
+    <li>Withdrawal: 20% refund to customer, <strong>80% to TSP rate base</strong></li>
+    <li>Milestone failure (6+ months late): same 20/80 split</li>
+    <li>Full refund after <strong>5 years sustained operations</strong> at contracted demand</li>
+    <li>Queue: <strong>~255 GW total</strong> (~186-210 GW from data centers); 650 active requests</li>
+  </ul></div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li><strong>Letters of credit</strong> (bank rated A-/A3+)</li>
+    <li><strong>Cash deposits</strong></li>
+    <li><strong>Corporate/parental guaranty</strong> (issuer rated BBB-/Baa3+)</li>
+    <li>Currently holds <strong>$3.5 billion in customer collateral</strong> (Feb 2026)</li>
+    <li>Posted before interconnecting facilities constructed</li>
+    <li>Refundable once project placed in service</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements (SB 6 + PUC 25.194)</h4><ul>
+    <li>Study fee: <strong>$100K–$300K</strong> depending on project size</li>
+    <li><strong>Intermediate Agreement</strong> required before ERCOT study begins</li>
+    <li>Site control proof: deed, signed lease (min 5-yr term), or purchase option</li>
+    <li>Must disclose backup generation, duplicative requests</li>
+    <li>Remote disconnect capability required (post-Dec 2025)</li>
+    <li>EEA3 curtailment: ERCOT can direct backup gen or curtailment</li>
+    <li>$47.5B capital plan (2026-2030)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Study fee ($100K-$300K) at application</li>
+    <li>Financial security ($50K/MW) before technical feasibility study</li>
+    <li>ERCOT Batch Study fee TBD (target Aug 2026)</li>
+    <li>Quarterly Stability Assessment before initial energization</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ERCOT" data-tier="T1" data-state="TX" class="data-row">
+  <td class="utility-name">CenterPoint Energy</td>
+  <td>TX</td>
+  <td>Houston, Katy, Sugar Land<div class="city-list">Greater Houston Metro</div></td>
+  <td>ERCOT</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>75 MW (SB 6)</td>
+  <td>Per SB 6 framework; $50K/MW</td>
+  <td>Per SB 6: LC, cash, guaranty</td>
+  <td>Per SB 6 / 5-yr sustained ops</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Queue: <strong>~8 GW DC interconnection requests</strong></li>
+    <li><strong>700% increase</strong> in DC interconnection requests (2024→2025)</li>
+    <li>~2/3 of new Houston load growth from data centers</li>
+    <li>Customers targeting interconnections in late 2026-2028</li>
+    <li>All SB 6 / PUC 25.194 requirements apply</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ERCOT" data-tier="T2" data-state="TX" class="data-row">
+  <td class="utility-name">AEP Texas</td>
+  <td>TX</td>
+  <td>Midland, Odessa, Corpus Christi<div class="city-list">West Texas / Permian Basin</div></td>
+  <td>ERCOT</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>75 MW (SB 6)</td>
+  <td>Per SB 6 framework; $50K/MW</td>
+  <td>Per SB 6: LC, cash, guaranty</td>
+  <td>Per SB 6</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>AEP expects <strong>24 GW of new load by 2030</strong>, mainly DCs</li>
+    <li>~300 miles of 765-kV transmission planned (Permian Basin Reliability Plan)</li>
+    <li>Operates at 69 kV, 138 kV, 345 kV; planned 765 kV</li>
+    <li>All SB 6 / PUC 25.194 requirements apply</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ERCOT" data-tier="T2" data-state="TX" class="data-row">
+  <td class="utility-name">Austin Energy (Municipal)</td>
+  <td>TX</td>
+  <td>Austin<div class="city-list">City of Austin</div></td>
+  <td>ERCOT</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>75 MW (SB 6)</td>
+  <td>Per SB 6 + CIAC policy</td>
+  <td>Per SB 6 + Austin Energy security</td>
+  <td>Per SB 6</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Current peak: ~3 GW; DCs requesting <strong>5-11 GW</strong> — exceeds entire system</li>
+    <li>Infrastructure cannot deliver power for proposed data centers</li>
+    <li>No formal moratorium but <strong>effectively capacity-constrained</strong></li>
+    <li>Transmission outage moratorium May-September limits upgrade windows</li>
+    <li>Nearby San Marcos blocked a DC proposal (Feb 2026)</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ERCOT" data-tier="T2" data-state="TX" class="data-row">
+  <td class="utility-name">CPS Energy (Municipal)</td>
+  <td>TX</td>
+  <td>San Antonio<div class="city-list">Bexar County</div></td>
+  <td>ERCOT</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>40 MW (own) / 75 MW (SB 6)</td>
+  <td>Per SB 6; full incremental cost recovery</td>
+  <td>Per SB 6 framework</td>
+  <td>5-7 yr timeline for major projects</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li><strong>40 MW threshold</strong> for CPS own Large Load program (below SB 6's 75 MW)</li>
+    <li>~2 GW of DC load in contracting</li>
+    <li>Pre-LLIS Screening Study to identify optimal POI</li>
+    <li>All incremental costs borne by data center, not ratepayers</li>
+    <li>Acquiring ~1,632 MW gas-fired plants (~$1.4B) for reliability</li>
+    <li>$1.3B+ planned for transmission & generation</li>
+    <li>Key customer: Microsoft (8 DCs, $1.2B+ investment)</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== CAISO / WESTERN UTILITIES ===== -->
+<tr data-iso="CAISO" data-tier="T1" data-state="CA" class="data-row">
+  <td class="utility-name">PG&E</td>
+  <td>CA</td>
+  <td>San Jose, Santa Clara, Sacramento<div class="city-list">Silicon Valley / NorCal</div></td>
+  <td>CAISO</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>Per CAISO</td>
+  <td>Per CAISO tariff; bilateral contracts</td>
+  <td>Per CAISO interconnection</td>
+  <td>Per contract</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Policy Overview</h4><ul>
+    <li>CAISO interconnection process governs large load connections</li>
+    <li>Significant transmission constraints in Silicon Valley corridor</li>
+    <li>High electricity costs ($0.20-0.30+/kWh) impact DC economics</li>
+    <li>No DC-specific tariff; standard commercial/industrial rates apply</li>
+    <li>CPUC oversight for rate-related matters</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T1" data-state="AZ" class="data-row">
+  <td class="utility-name">Arizona Public Service (APS)</td>
+  <td>AZ</td>
+  <td>Phoenix, Mesa, Chandler, Goodyear<div class="city-list">Phoenix Metro</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>TBD (tariff in development)</td>
+  <td>Developing; expected $1.5M-$2M/MW collateral</td>
+  <td>$1.5M–$2M per MW (reported range)</td>
+  <td>Long-term; per contract</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li><strong>4.7 GW contractually committed</strong> large load (2/3 from DCs)</li>
+    <li><strong>10 GW pending</strong> DC interconnection requests — cannot serve all</li>
+    <li>20 GW of other potential large customers in pipeline</li>
+    <li>Collateral: <strong>$1.5M–$2M per MW</strong> (among highest in US)</li>
+    <li>Electric sales growing 4-6% annually through 2027</li>
+    <li>$2.7B generation investment (2025-2027)</li>
+    <li>New tariff framework under development — exploring DC-specific terms</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T1" data-state="AZ" class="data-row">
+  <td class="utility-name">Salt River Project (SRP)</td>
+  <td>AZ</td>
+  <td>Phoenix, Tempe, Mesa, Scottsdale<div class="city-list">Phoenix East Valley</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>20 MW</td>
+  <td>80% minimum billing of requested demand</td>
+  <td>Per contract negotiation</td>
+  <td>Per contract; E-67 schedule</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li><strong>E-67 pricing guidelines</strong> amended for projects >20 MW (effective 2026)</li>
+    <li><strong>80% minimum billing</strong> of requested demand, even if unused</li>
+    <li>Municipal utility — not regulated by Arizona Corporation Commission</li>
+    <li>Significant DC development activity in East Valley</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T1" data-state="NV" class="data-row">
+  <td class="utility-name">NV Energy</td>
+  <td>NV</td>
+  <td>Las Vegas, Reno, Henderson<div class="city-list">Southern & Northern Nevada</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>5 MW (Clean Transition)</td>
+  <td>Backstop provisions, exit fees, capacity reassignment</td>
+  <td>Cash, LC; scaled to MW size</td>
+  <td>Per contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li><strong>Clean Transition Tariff</strong> (approved Mar 2025): monthly demand >5 MW</li>
+    <li>Premium for 24/7 clean energy from new resources</li>
+    <li>Non-refundable application fee + study deposit scaled to MW</li>
+    <li>Site control required through study phases and construction</li>
+    <li>Large Standby Service Rider (LSR) revision filed Mar 6, 2026</li>
+    <li>FERC rejected free exit from interconnection study (2026)</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T2" data-state="OR" class="data-row">
+  <td class="utility-name">Portland General Electric</td>
+  <td>OR</td>
+  <td>Portland, Hillsboro, Prineville<div class="city-list">Oregon Data Center Market</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>20 MW (POWER Act)</td>
+  <td>10-yr min contract; baseline demand payment regardless of use</td>
+  <td>Separate cost allocation; grid upgrade pass-through</td>
+  <td>10 years minimum</td>
+  <td><span class="status status-new">New Tariff</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details — Oregon POWER Act (June 2025)</h4><ul>
+    <li><strong>First state to create dedicated DC electricity rate class</strong></li>
+    <li>Applies to facilities consuming <strong>>20 MW</strong></li>
+    <li><strong>10-year minimum contract</strong> with baseline demand payment</li>
+    <li>Separate cost allocation — no residential cross-subsidy</li>
+    <li>Transmission cost pass-through for grid upgrades</li>
+    <li>Biennial PUC reporting begins Sep 1, 2026</li>
+    <li>PGE UM2377 tariff: <strong>25% price increase</strong> for DC customers proposed</li>
+    <li>Oregon PUC decision expected by April 2026</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T2" data-state="UT" class="data-row">
+  <td class="utility-name">Rocky Mountain Power (PacifiCorp)</td>
+  <td>UT/WY/ID</td>
+  <td>Salt Lake City, Provo, West Jordan<div class="city-list">Utah / Wyoming / Idaho</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per large-load contract</td>
+  <td>Per bilateral contract; tariff under development</td>
+  <td>Per contract negotiation</td>
+  <td>Per contract</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Docket 26-035-05: large-load service contract approval pending</li>
+    <li>Legislature considering splitting PacifiCorp into red/blue state consortiums</li>
+    <li>Changes to DC contracts announced but not rate structure</li>
+    <li>OATT-governed interconnection via PacifiCorp Transmission</li>
+    <li>Active AI/DC recruitment by state of Utah</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T3" data-state="ID" class="data-row">
+  <td class="utility-name">Idaho Power</td>
+  <td>ID</td>
+  <td>Boise, Kuna, Nampa<div class="city-list">Treasure Valley</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-3">T3</span></td>
+  <td>20 MW (Schedule 20)</td>
+  <td>Special contract for >20 MW; Schedule 20 for high-density load</td>
+  <td>Per contract negotiation</td>
+  <td>Per special contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li><strong>Schedule 20</strong> (Speculative High-Density Load) for qualifying customers</li>
+    <li>>20 MW aggregate: must make <strong>special contract arrangements</strong></li>
+    <li>Meta DC in Kuna and Micron expansion driving growth</li>
+    <li>7.48% rate increase effective Jan 1, 2026</li>
+    <li>Rate case driven by rapid growth, reliability projects, wildfire resilience</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="WECC" data-tier="T3" data-state="WA" class="data-row">
+  <td class="utility-name">Puget Sound Energy</td>
+  <td>WA</td>
+  <td>Bellevue, Tacoma, Olympia<div class="city-list">Western Washington</div></td>
+  <td>WECC</td>
+  <td><span class="tier tier-3">T3</span></td>
+  <td>Per contract</td>
+  <td>Per bilateral contract</td>
+  <td>Per contract negotiation</td>
+  <td>Per contract</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>9.30% rate increase for 2026</li>
+    <li>No published DC-specific tariff</li>
+    <li>Growing DC demand in Puget Sound region</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== MISO UTILITIES ===== -->
+<tr data-iso="MISO" data-tier="T1" data-state="MI" class="data-row">
+  <td class="utility-name">DTE Energy</td>
+  <td>MI</td>
+  <td>Detroit, Ann Arbor, Saline<div class="city-list">Southeast Michigan</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>1 MW (D11 tariff)</td>
+  <td>80% minimum billing demand (vs. 50-60% standard)</td>
+  <td>Default = 50% of exit fee; declines over contract term</td>
+  <td>19 years minimum</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li><strong>19-year minimum contract</strong> (vs. 5-year standard for >1 MW D11 customers)</li>
+    <li><strong>80% minimum billing demand</strong> (vs. 50-60% D11 standard)</li>
+    <li>DTE responsible for costs it cannot recover from DC customer</li>
+    <li>Approved Dec 18, 2025 by Michigan PSC</li>
+    <li>1,383 MW data center contract approved (Saline Township)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Default collateral = <strong>50% of exit fee</strong></li>
+    <li>Reduces over contract term as risk decreases</li>
+    <li>Early termination payment required</li>
+    <li>MPSC directed DTE to file large load customer tariff within 90 days</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="MISO" data-tier="T1" data-state="MI" class="data-row">
+  <td class="utility-name">Consumers Energy</td>
+  <td>MI</td>
+  <td>Grand Rapids, Lansing, Kalamazoo<div class="city-list">Western & Central Michigan</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>100 MW (or 20 MW/site)</td>
+  <td>80% minimum billing demand; 5-yr ramp</td>
+  <td>Per ex parte filings; cost-subsidy proof required</td>
+  <td>15 yrs min; 5-yr auto-extension</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Threshold: <strong>100 MW aggregate</strong> (or 20 MW/site, same owner)</li>
+    <li><strong>15-year minimum contract</strong></li>
+    <li><strong>80% minimum billing demand</strong></li>
+    <li>5-year ramp-up period allowed</li>
+    <li>5-year automatic extensions; 4 years' notice for termination</li>
+    <li>Michigan's first DC-specific tariff (approved Nov 6, 2025)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Collateral & Cost Recovery</h4><ul>
+    <li>Each large load customer requires <strong>ex parte filing</strong> to MPSC</li>
+    <li>Must prove <strong>no subsidy from residential/commercial/industrial customers</strong></li>
+    <li>Detail on generation resources used to serve DC</li>
+    <li>Commission endeavors to review within 90 days</li>
+    <li>Consumers providing 1 GW to new hyperscale DC</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== SPP UTILITIES ===== -->
+<tr data-iso="SPP" data-tier="T2" data-state="KS" class="data-row">
+  <td class="utility-name">Evergy</td>
+  <td>KS/MO</td>
+  <td>Kansas City, Topeka, Wichita<div class="city-list">Kansas / Western Missouri</div></td>
+  <td>SPP</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>75 MW</td>
+  <td>80% minimum monthly bill on contract demand</td>
+  <td>Per contract negotiation</td>
+  <td>12 yrs min (after 5-yr ramp = 17 yrs total)</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Kansas Corporation Commission approved settlement (2025)</li>
+    <li><strong>Large Load Power Service Rate Plan</strong> for new facilities >75 MW</li>
+    <li>Up to 5-year ramp-up, then 12-year minimum service</li>
+    <li><strong>80% minimum monthly bill</strong> based on contract demand</li>
+    <li>Provisions to prevent speculative queue entries</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="SPP" data-tier="T2" data-state="CO" class="data-row">
+  <td class="utility-name">Xcel Energy Colorado</td>
+  <td>CO</td>
+  <td>Denver, Aurora, Colorado Springs<div class="city-list">Front Range Colorado</div></td>
+  <td>SPP (partial)</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>TBD (tariff pending)</td>
+  <td>15-yr contracts; minimum bills; exit fees</td>
+  <td>Security deposits required; amount TBD</td>
+  <td>15 years minimum (expected)</td>
+  <td><span class="status status-pending">Pending</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>CO PUC directed tariff filing by <strong>Jan 31, 2026</strong> (Xcel requested extension to Apr 2, 2026)</li>
+    <li>Guiding principles: upfront fees, <strong>15-yr contracts, minimum bills, security deposits, exit fees</strong></li>
+    <li>Xcel says <strong>$22B needed</strong> to meet potential DC demand by 2040</li>
+    <li>Tri-State co-op also developing large-load tariff ($2.7M/MW security deposit, 15-yr contract)</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== SOUTHEAST UTILITIES ===== -->
+<tr data-iso="SERC" data-tier="T1" data-state="GA" class="data-row">
+  <td class="utility-name">Georgia Power (Southern Co.)</td>
+  <td>GA</td>
+  <td>Atlanta, Midtown, Douglas County<div class="city-list">Metro Atlanta / Georgia</div></td>
+  <td>SERC</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>100 MW</td>
+  <td>80% min monthly demand; 20%+ reduction triggers exit fee</td>
+  <td>Long-term commitments; PSC review required</td>
+  <td>Long-term; per PSC-reviewed contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>GA PSC approved rule Jan 23, 2025: customers <strong>>100 MW</strong> billed on special terms</li>
+    <li><strong>80% minimum monthly demand charge</strong> of contract capacity</li>
+    <li><strong>Exit fee if capacity reduced >20%</strong></li>
+    <li>All contracts >100 MW require <strong>GA PSC review and approval</strong></li>
+    <li>Large-load pipeline shrank by 6 GW (some projects abandoned)</li>
+    <li>Dec 10, 2025 stipulated agreement: significant costs allocated to large-load customers</li>
+    <li>Costs for upstream generation, transmission, distribution passed through</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="SERC" data-tier="T1" data-state="NC" class="data-row">
+  <td class="utility-name">Duke Energy Carolinas</td>
+  <td>NC/SC</td>
+  <td>Charlotte, Raleigh, Durham<div class="city-list">Research Triangle / Charlotte Metro</div></td>
+  <td>SERC</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>100 MW</td>
+  <td>Full infrastructure cost; minimum bills; termination penalties</td>
+  <td>LC, parent guarantees, cash; per ESA</td>
+  <td>Long-term ESA required</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Process: initial engagement → transmission study → Letter Agreement → <strong>Energy Supply Agreement (ESA)</strong></li>
+    <li>Customers pay <strong>full cost of grid connection + infrastructure upgrades</strong></li>
+    <li>Financial protections: minimum bills, termination penalties, LC/parent guarantees</li>
+    <li>NC Utilities Commission asked Duke to address >100 MW integration (Jul 2025)</li>
+    <li>Clean transition tariff "fizzled" — not yet filed</li>
+    <li>General rate cases: DEC (Jan 2026), DEP (Oct 2025)</li>
+    <li>>50 MW projects must demonstrate self-funded infrastructure</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="SERC" data-tier="T2" data-state="FL" class="data-row">
+  <td class="utility-name">Florida Power & Light (NextEra)</td>
+  <td>FL</td>
+  <td>Miami, Fort Lauderdale, West Palm Beach<div class="city-list">South & Central Florida</div></td>
+  <td>SERC</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per large-load tariff</td>
+  <td>70% take-or-pay minimum; 100% generation cost funding</td>
+  <td>Strict collateral tied to credit; cash/LC</td>
+  <td>20 years minimum</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li><strong>70% take-or-pay minimum</strong> (reduced from 90% originally proposed)</li>
+    <li>Customer must pay for infrastructure even if not fully utilized</li>
+    <li><strong>Incremental Generation Charge (IGC)</strong>: 100% of new generation cost funded by DC</li>
+    <li>Early exit fee applies post in-service</li>
+  </ul></div>
+  <div class="detail-section"><h4>Contract & Collateral</h4><ul>
+    <li><strong>20-year minimum contract</strong> from in-service date</li>
+    <li>Strict collateral tied to creditworthiness</li>
+    <li>Must fund engineering study for scope, cost, and timeline</li>
+    <li>Rates set for 2026-2029 via broad coalition agreement</li>
+    <li>FL PSC approved rate agreement Nov 20, 2025</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="SERC" data-tier="T3" data-state="FL" class="data-row">
+  <td class="utility-name">Duke Energy Florida</td>
+  <td>FL</td>
+  <td>Tampa, Orlando, St. Petersburg<div class="city-list">Central Florida</div></td>
+  <td>SERC</td>
+  <td><span class="tier tier-3">T3</span></td>
+  <td>50 MW</td>
+  <td>>50 MW must self-fund infrastructure</td>
+  <td>Advance estimated costs; per contract</td>
+  <td>Per contract; legislative framework expected</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Projects >50 MW: must demonstrate self-funded infrastructure</li>
+    <li><50 MW: may use GSLD-3 tariff (50%+ bill savings vs. initial filings)</li>
+    <li>Duke exploring building its own DCs in Florida</li>
+    <li>Large load tariff frameworks aligning with legislative expectations</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== TVA UTILITIES ===== -->
+<tr data-iso="TVA" data-tier="T2" data-state="TN" class="data-row">
+  <td class="utility-name">TVA (Tennessee Valley Authority)</td>
+  <td>TN/AL/MS/KY</td>
+  <td>Nashville, Chattanooga, Memphis, Huntsville<div class="city-list">TVA 7-State Region</div></td>
+  <td>TVA</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>5 MW (review) / 100 MW (board approval)</td>
+  <td>Ensuring DCs don't create rate pressure on other customers</td>
+  <td>Per contract negotiation</td>
+  <td>Per large power contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Contracts >5 MW: <strong>TVA review required</strong></li>
+    <li>Contracts >100 MW: <strong>TVA Board approval required</strong></li>
+    <li>DC demand: <strong>18% of industrial load in 2025</strong>; projected to double by 2030</li>
+    <li>11 GW of DC/AI/crypto requests pending</li>
+    <li>TVA Board approved 150 MW for Musk DC via Memphis MLGW (Nov 2025)</li>
+    <li>Pursuing 6.2 GW of new generation (nuclear + gas)</li>
+    <li>Priority: DCs do not create rate pressure on existing customers</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<!-- ===== ADDITIONAL / EMERGING ===== -->
+<tr data-iso="PJM" data-tier="EM" data-state="IN" class="data-row">
+  <td class="utility-name">Indiana Michigan Power (AEP)</td>
+  <td>IN</td>
+  <td>Fort Wayne, South Bend, Muncie<div class="city-list">Northern Indiana</div></td>
+  <td>PJM</td>
+  <td><span class="tier tier-e">Emerging</span></td>
+  <td>70 MW (single) / 150 MW (aggregate)</td>
+  <td>80% min demand; exit fee if >20% reduction</td>
+  <td>$1.5M/MW if credit/liquidity not met</td>
+  <td>12 yrs min; 5-yr ramp</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>IURC approved modified industrial tariff (Feb 2025)</li>
+    <li>New/expanding loads >70 MW (single) or >150 MW (aggregate)</li>
+    <li><strong>12-year minimum contract</strong>; 5-year load ramp</li>
+    <li><strong>80% minimum demand billing</strong></li>
+    <li>Exit fee if capacity reduced >20%</li>
+    <li><strong>$1.5M/MW collateral</strong> if credit requirements not met</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="MISO" data-tier="EM" data-state="IA" class="data-row">
+  <td class="utility-name">MidAmerican Energy</td>
+  <td>IA</td>
+  <td>Des Moines, Council Bluffs<div class="city-list">Iowa</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-e">Emerging</span></td>
+  <td>Per contract</td>
+  <td>Per bilateral contract</td>
+  <td>Per contract negotiation</td>
+  <td>Per contract</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>Berkshire Hathaway Energy subsidiary</li>
+    <li>Major DC market in Council Bluffs (Meta, Google, Microsoft)</li>
+    <li>No publicly available DC-specific tariff</li>
+    <li>Significant wind generation portfolio supports clean energy DCs</li>
+  </ul></div>
+</div>
+</td></tr>
+
+<tr data-iso="ERCOT" data-tier="EM" data-state="TX" class="data-row">
+  <td class="utility-name">Texas-New Mexico Power</td>
+  <td>TX</td>
+  <td>Fort Stockton, Odessa (partial)<div class="city-list">West Texas / Far West Texas</div></td>
+  <td>ERCOT</td>
+  <td><span class="tier tier-e">Emerging</span></td>
+  <td>75 MW (SB 6)</td>
+  <td>Per SB 6 framework</td>
+  <td>Per SB 6: $50K/MW</td>
+  <td>Per SB 6</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Key Details</h4><ul>
+    <li>~1.47 GW new load growth identified (oil & gas, DCs, crypto)</li>
+    <li>Significant West Texas transmission constraints</li>
+    <li>Capacity limitations preventing full interconnection</li>
+    <li>Coyanosa-Leon Creek 138 kV project underway</li>
+  </ul></div>
+</div>
+</td></tr>
+
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ===== TAB: TAKE OR PAY ===== -->
+<div id="tab-takeorpay" class="tab-content">
+<div class="section-title">⚡ <span>Take-or-Pay Requirements by Utility</span></div>
+<div class="policy-cards">
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Dominion Energy Virginia</span><span class="pc-iso">PJM | T1</span></div>
+  <div class="pc-meta">Northern Virginia • GS-5 Rate Class (eff. Jan 2027)</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 85% of contracted distribution & transmission demand</li>
+    <li><strong>Generation:</strong> 60% minimum of contracted generation demand</li>
+    <li><strong>Contract:</strong> 14-year fixed term</li>
+    <li><strong>Ramp:</strong> 4-year load ramp for new customers</li>
+    <li><strong>Threshold:</strong> ≥25 MW for GS-5 rate class</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">AEP Ohio</span><span class="pc-iso">PJM | T1</span></div>
+  <div class="pc-meta">Columbus, OH • PUCO-approved Jul 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 85% of contracted demand monthly</li>
+    <li><strong>Contract:</strong> 12 years total (4-yr ramp + 8-yr min)</li>
+    <li><strong>Exit Fee:</strong> All remaining minimum charges OR 3-yr minimum after Year 5</li>
+    <li><strong>Threshold:</strong> >25 MW aggregate new loads</li>
+    <li><strong>Impact:</strong> ~$10M added first-year cost per 100 MW DC</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">ERCOT Utilities (SB 6)</span><span class="pc-iso">ERCOT | T1-T2</span></div>
+  <div class="pc-meta">All TX TSPs: Oncor, CenterPoint, AEP TX, TNMP, Austin, CPS</div>
+  <ul>
+    <li><strong>Security:</strong> $50,000/MW financial security required</li>
+    <li><strong>Withdrawal:</strong> 20% refund / 80% to TSP rate base</li>
+    <li><strong>Milestone Failure:</strong> Same 20/80 split if 6+ months late</li>
+    <li><strong>Full Refund:</strong> After 5 years sustained operations at contracted demand</li>
+    <li><strong>Study Fee:</strong> $100K–$300K depending on project size</li>
+    <li><strong>Threshold:</strong> 75 MW (adjustable by PUC)</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Georgia Power</span><span class="pc-iso">SERC | T1</span></div>
+  <div class="pc-meta">Atlanta, GA • GA PSC Rule Jan 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% minimum monthly demand charge of contract capacity</li>
+    <li><strong>Exit Fee:</strong> Triggered if capacity reduced >20%</li>
+    <li><strong>Threshold:</strong> >100 MW for special terms</li>
+    <li><strong>PSC Review:</strong> All >100 MW contracts require PSC approval</li>
+    <li><strong>Cost Allocation:</strong> Upstream gen/transmission/distribution costs passed to DC</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Florida Power & Light</span><span class="pc-iso">SERC | T2</span></div>
+  <div class="pc-meta">South Florida • FL PSC approved Nov 2025</div>
+  <ul>
+    <li><strong>Take-or-Pay:</strong> 70% minimum (reduced from 90% proposed)</li>
+    <li><strong>Generation:</strong> 100% of new generation cost via IGC charge</li>
+    <li><strong>Contract:</strong> 20 years from in-service date</li>
+    <li><strong>Exit Fee:</strong> Early exit fee applies post in-service</li>
+    <li><strong>Engineering Study:</strong> Customer-funded scope & feasibility study</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">DTE Energy (Michigan)</span><span class="pc-iso">MISO | T1</span></div>
+  <div class="pc-meta">Detroit, MI • MPSC approved Dec 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% minimum billing (vs. 50-60% standard D11)</li>
+    <li><strong>Contract:</strong> 19-year minimum (vs. 5-year standard)</li>
+    <li><strong>Early Termination:</strong> Payment + collateral requirements</li>
+    <li><strong>Risk Allocation:</strong> DTE responsible for unrecoverable costs</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Consumers Energy (Michigan)</span><span class="pc-iso">MISO | T1</span></div>
+  <div class="pc-meta">Grand Rapids, MI • MPSC approved Nov 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% minimum billing demand</li>
+    <li><strong>Contract:</strong> 15-year minimum; 5-yr auto-extension</li>
+    <li><strong>Ramp:</strong> Up to 5-year ramp-up period</li>
+    <li><strong>Termination Notice:</strong> 4 years required</li>
+    <li><strong>Threshold:</strong> 100 MW aggregate (or 20 MW/site, same owner)</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Salt River Project (Arizona)</span><span class="pc-iso">WECC | T1</span></div>
+  <div class="pc-meta">Phoenix, AZ • E-67 Amendment (eff. 2026)</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% of requested demand, even if unused</li>
+    <li><strong>Threshold:</strong> Projects >20 MW</li>
+    <li><strong>Schedule:</strong> E-67 pricing guidelines</li>
+    <li><strong>Note:</strong> Municipal utility — not ACC regulated</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Portland General Electric (Oregon)</span><span class="pc-iso">WECC | T2</span></div>
+  <div class="pc-meta">Portland, OR • POWER Act (Jun 2025)</div>
+  <ul>
+    <li><strong>Contract:</strong> 10-year minimum with baseline demand payment</li>
+    <li><strong>Billing:</strong> Baseline demand paid regardless of consumption</li>
+    <li><strong>Cost Allocation:</strong> Separate — no residential cross-subsidy</li>
+    <li><strong>Grid Upgrades:</strong> Transmission costs fully passed to DC</li>
+    <li><strong>Threshold:</strong> >20 MW consumption</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Evergy (Kansas City)</span><span class="pc-iso">SPP | T2</span></div>
+  <div class="pc-meta">Kansas City, KS/MO • KCC approved 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% minimum monthly bill on contract demand</li>
+    <li><strong>Contract:</strong> 17 years total (5-yr ramp + 12-yr min service)</li>
+    <li><strong>Threshold:</strong> New facilities >75 MW</li>
+    <li><strong>Program:</strong> Large Load Power Service Rate Plan</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Indiana Michigan Power (AEP)</span><span class="pc-iso">PJM | Emerging</span></div>
+  <div class="pc-meta">Northern Indiana • IURC approved Feb 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% of contract capacity</li>
+    <li><strong>Contract:</strong> 12-year minimum; 5-yr ramp</li>
+    <li><strong>Exit Fee:</strong> If capacity reduced >20%</li>
+    <li><strong>Threshold:</strong> >70 MW (single) or >150 MW (aggregate)</li>
+    <li><strong>Collateral:</strong> $1.5M/MW if credit requirements not met</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+<!-- ===== TAB: COLLATERAL ===== -->
+<div id="tab-collateral" class="tab-content">
+<div class="section-title">🏦 <span>Collateral Requirements by Utility</span></div>
+
+<div class="table-wrap">
+<table id="collateralTable">
+<thead>
+<tr>
+  <th>Utility</th>
+  <th>State</th>
+  <th>ISO/RTO</th>
+  <th>Collateral Amount</th>
+  <th>Accepted Types</th>
+  <th>When Posted</th>
+  <th>Release Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td class="utility-name">Dominion Energy VA</td><td>VA</td><td>PJM</td>
+  <td><strong>$1.5M/MW</strong> (proposed); $450K/MW (DC counter-proposal)</td>
+  <td>Letters of credit, cash, parent guarantees</td>
+  <td>At contract execution</td>
+  <td>Offsets if DC leaves; applied to costs if project completes</td>
+</tr>
+<tr>
+  <td class="utility-name">ComEd (Exelon)</td><td>IL</td><td>PJM</td>
+  <td><strong>$1M base</strong> (50-200 MW); +$500K per 100 MW above 200 MW</td>
+  <td>Security deposit (cash)</td>
+  <td>At application</td>
+  <td>Returned on cancellation minus costs incurred; applied to project on completion</td>
+</tr>
+<tr>
+  <td class="utility-name">AEP Ohio</td><td>OH</td><td>PJM</td>
+  <td>Per formula; <strong>exempt if A-/A3 rated + 10x cash</strong></td>
+  <td>Cash, LC; financial sponsor may post (must co-sign)</td>
+  <td>At contract execution</td>
+  <td>Modified by PUCO; sponsor co-signature required</td>
+</tr>
+<tr>
+  <td class="utility-name">All ERCOT TSPs (SB 6)</td><td>TX</td><td>ERCOT</td>
+  <td><strong>$50,000/MW</strong> (e.g., $50M for 1 GW)</td>
+  <td>Irrevocable LC (bank A-/A3+), cash, corporate/parental guaranty (BBB-/Baa3+)</td>
+  <td>Before technical feasibility study</td>
+  <td>20% on energization; full refund after 5 yrs sustained ops; 80% forfeited on withdrawal</td>
+</tr>
+<tr>
+  <td class="utility-name">Arizona Public Service</td><td>AZ</td><td>WECC</td>
+  <td><strong>$1.5M–$2M/MW</strong> (among highest in US)</td>
+  <td>Per contract negotiation</td>
+  <td>Per contract</td>
+  <td>Per contract terms</td>
+</tr>
+<tr>
+  <td class="utility-name">Indiana Michigan Power</td><td>IN</td><td>PJM</td>
+  <td><strong>$1.5M/MW</strong> if credit/liquidity not met</td>
+  <td>Per IURC-approved tariff</td>
+  <td>At contract execution</td>
+  <td>Exit fee if capacity reduced >20%</td>
+</tr>
+<tr>
+  <td class="utility-name">DTE Energy</td><td>MI</td><td>MISO</td>
+  <td><strong>50% of exit fee</strong> (default); declines over contract term</td>
+  <td>Per MPSC-approved terms</td>
+  <td>At contract execution</td>
+  <td>Reduces over contract duration as risk decreases</td>
+</tr>
+<tr>
+  <td class="utility-name">Consumers Energy</td><td>MI</td><td>MISO</td>
+  <td>Per ex parte filing — must prove no subsidy</td>
+  <td>Per MPSC-reviewed special contract</td>
+  <td>At contract execution</td>
+  <td>MPSC review within 90 days; ongoing no-subsidy proof</td>
+</tr>
+<tr>
+  <td class="utility-name">FPL (NextEra)</td><td>FL</td><td>SERC</td>
+  <td>Strict collateral tied to creditworthiness</td>
+  <td>Cash, letters of credit</td>
+  <td>To reserve capacity on FPL system</td>
+  <td>20-year contract term; early exit fee applies</td>
+</tr>
+<tr>
+  <td class="utility-name">Duke Energy Carolinas</td><td>NC/SC</td><td>SERC</td>
+  <td>Full infrastructure cost advance; financial security per ESA</td>
+  <td>Letters of credit, parent guarantees, cash</td>
+  <td>Per ESA milestones</td>
+  <td>Prevents speculative projects from stranding costs</td>
+</tr>
+<tr>
+  <td class="utility-name">Georgia Power</td><td>GA</td><td>SERC</td>
+  <td>Long-term financial commitments proportional to load size</td>
+  <td>Per PSC-reviewed contract</td>
+  <td>Per contract execution</td>
+  <td>Exit fee on >20% capacity reduction; PSC oversight</td>
+</tr>
+<tr>
+  <td class="utility-name">NV Energy</td><td>NV</td><td>WECC</td>
+  <td>Non-refundable app fee + study deposit scaled to MW</td>
+  <td>Cash, LC</td>
+  <td>At application; no study without payment</td>
+  <td>FERC rejected free exit from interconnection study</td>
+</tr>
+<tr>
+  <td class="utility-name">Tri-State (CO Co-ops)</td><td>CO</td><td>SPP</td>
+  <td><strong>$2.7M/MW</strong> security deposit</td>
+  <td>Per tariff (in development)</td>
+  <td>At contract execution</td>
+  <td>15-year contract; per tariff</td>
+</tr>
+<tr>
+  <td class="utility-name">Xcel Energy Colorado</td><td>CO</td><td>SPP</td>
+  <td>Security deposits required; amount TBD (tariff pending Apr 2026)</td>
+  <td>Expected: cash, LC</td>
+  <td>Upfront per CO PUC principles</td>
+  <td>15-year contract; exit fees</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- ===== TAB: PAYMENT SCHEDULES ===== -->
+<div id="tab-payments" class="tab-content">
+<div class="section-title">📅 <span>Payment Schedules & Milestone Requirements</span></div>
+
+<div class="policy-cards">
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">PJM Interconnection Process</span><span class="pc-iso">PJM</span></div>
+  <div class="pc-meta">Cycle 1 2026 — Application deadline Apr 27, 2026</div>
+  <ul>
+    <li><strong>Application:</strong> Interconnection Study Deposit (varies by project size)</li>
+    <li><strong>Readiness Deposit:</strong> Demonstrates ability to proceed with IA</li>
+    <li><strong>Cluster Study:</strong> Engineering analysis per NextGen platform</li>
+    <li><strong>Compliance:</strong> FERC-directed tariff revisions for co-located load (Jan 2026)</li>
+    <li><strong>Timeline:</strong> Reformed from legacy serial queue to cluster study process</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">ERCOT Large Load (SB 6)</span><span class="pc-iso">ERCOT</span></div>
+  <div class="pc-meta">All Texas TSPs • Phased implementation 2025-2026</div>
+  <ul>
+    <li><strong>Step 1:</strong> Study fee $100K–$300K at application</li>
+    <li><strong>Step 2:</strong> $50K/MW financial security before feasibility study</li>
+    <li><strong>Step 3:</strong> Intermediate Agreement before ERCOT study begins</li>
+    <li><strong>Step 4:</strong> Quarterly Stability Assessment before initial energization</li>
+    <li><strong>Step 5:</strong> Ramp-up schedule with milestone demands</li>
+    <li><strong>Batch Study:</strong> Target launch Aug 1, 2026; 30-day commit/withdraw window</li>
+    <li><strong>Refund:</strong> 20% on energization; remainder over 5 years sustained ops</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">ComEd (Illinois)</span><span class="pc-iso">PJM</span></div>
+  <div class="pc-meta">ICC approved Mar 20, 2026</div>
+  <ul>
+    <li><strong>Application:</strong> Security deposit at application filing</li>
+    <li><strong>50-200 MW:</strong> $1M deposit</li>
+    <li><strong>>200 MW:</strong> $1M + $500K per 100 MW above 200 MW</li>
+    <li><strong>Infrastructure:</strong> Full advance payment before construction</li>
+    <li><strong>Monthly:</strong> Ongoing billing post-energization</li>
+    <li><strong>Cancellation:</strong> Deposit returned minus incurred costs</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">AEP Ohio</span><span class="pc-iso">PJM</span></div>
+  <div class="pc-meta">PUCO-approved Jul 2025</div>
+  <ul>
+    <li><strong>Collateral:</strong> At contract execution (credit-dependent)</li>
+    <li><strong>Monthly:</strong> 85% minimum demand charge begins at energization</li>
+    <li><strong>Exit Fee (pre-Year 5):</strong> All remaining minimum charges for full term</li>
+    <li><strong>Exit Fee (post-Year 5):</strong> 3 years of minimum charges</li>
+    <li><strong>Study Fees:</strong> Per PJM interconnection cycle process</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">FPL (Florida)</span><span class="pc-iso">SERC</span></div>
+  <div class="pc-meta">FL PSC approved Nov 2025 • Rates 2026-2029</div>
+  <ul>
+    <li><strong>Collateral:</strong> Posted to reserve capacity (credit-tied)</li>
+    <li><strong>Engineering Study:</strong> Customer-funded before commitment</li>
+    <li><strong>Monthly:</strong> 70% take-or-pay + Incremental Generation Charge (IGC)</li>
+    <li><strong>Exit Fee:</strong> Applies after in-service date</li>
+    <li><strong>Contract Duration:</strong> 20 years from in-service</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Duke Energy Carolinas</span><span class="pc-iso">SERC</span></div>
+  <div class="pc-meta">NC/SC • Process: Engagement → Study → LOA → ESA</div>
+  <ul>
+    <li><strong>Phase 1:</strong> Initial engagement and scoping</li>
+    <li><strong>Phase 2:</strong> Transmission study (customer-funded)</li>
+    <li><strong>Phase 3:</strong> Letter Agreement negotiation</li>
+    <li><strong>Phase 4:</strong> Energy Supply Agreement (ESA) with financial security</li>
+    <li><strong>Monthly:</strong> Minimum bills per ESA terms</li>
+    <li><strong>Termination:</strong> Penalties per contract</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">NV Energy</span><span class="pc-iso">WECC</span></div>
+  <div class="pc-meta">Nevada • Clean Transition Tariff (Mar 2025)</div>
+  <ul>
+    <li><strong>Application:</strong> Non-refundable fee at filing</li>
+    <li><strong>Study Deposit:</strong> Scaled to MW size; required for study to proceed</li>
+    <li><strong>Site Control:</strong> Must be demonstrated before application accepted</li>
+    <li><strong>Clean Transition:</strong> Premium charge for 24/7 clean energy (>5 MW)</li>
+    <li><strong>Standby Service:</strong> LSR tariff revision filed Mar 2026</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">TVA</span><span class="pc-iso">TVA</span></div>
+  <div class="pc-meta">7-state region • Board approval for >100 MW</div>
+  <ul>
+    <li><strong>>5 MW:</strong> TVA review required</li>
+    <li><strong>>100 MW:</strong> TVA Board of Directors approval required</li>
+    <li><strong>Contract:</strong> Large Power contract with local distributor + TVA</li>
+    <li><strong>Timeline:</strong> Case-by-case; significant for large requests</li>
+    <li><strong>Cost Recovery:</strong> Ensuring no rate pressure on existing customers</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+<!-- ===== TAB: RECENT CHANGES ===== -->
+<div id="tab-changes" class="tab-content">
+<div class="section-title">📰 <span>Recent Policy Changes & Regulatory Developments</span></div>
+
+<div class="changes-feed">
+
+<div class="change-item">
+  <div class="change-date">Mar 20, 2026</div>
+  <div class="change-body"><strong>ComEd (IL)</strong> — ICC approved increased security deposits for large-load projects. New tiered structure: $1M base for 50-200 MW, +$500K/100 MW above 200 MW. Developers must also front infrastructure costs. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Mar 12, 2026</div>
+  <div class="change-body"><strong>Texas PUC</strong> — Published Proposed Rule 25.194 implementing SB 6 for loads ≥75 MW. Requires Intermediate Agreement, site control proof, $50K/MW financial security, and energization schedule disclosure. Comments due Apr 17, 2026. <span class="change-tag tag-state">State</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Mar 6, 2026</div>
+  <div class="change-body"><strong>NV Energy (Sierra Pacific)</strong> — Filed tariff revision for Large Standby Service Rider (LSR) with Nevada PUC. Updates contract demand requirements for standby service. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Feb 2026</div>
+  <div class="change-body"><strong>TVA</strong> — Pledged to tackle electric rate fairness as data center demand surges. DC demand at 18% of industrial load in 2025, projected to double by 2030. <span class="change-tag tag-state">State</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Feb 2026</div>
+  <div class="change-body"><strong>AEP Ohio</strong> — Reports new data center tariff is "working as designed." Critics dispute effectiveness. Ongoing monitoring by PUCO. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Jan 2026</div>
+  <div class="change-body"><strong>Dominion Energy VA</strong> — SCC approved new rates assigning more costs to data centers. New GS-5 rate class for ≥25 MW customers effective Jan 1, 2027. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Dec 2025</div>
+  <div class="change-body"><strong>FERC</strong> — Directed PJM to create transparent rules for co-located data centers and large loads. Compliance filing due Jan 19, 2026. Provisional & surplus interconnection service provisions. <span class="change-tag tag-ferc">FERC</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Dec 18, 2025</div>
+  <div class="change-body"><strong>DTE Energy (MI)</strong> — MPSC approved 1,383 MW data center contract (Saline Township). 19-year minimum, 80% billing demand, 50% exit-fee collateral. Directed to file general large-load tariff within 90 days. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Dec 15, 2025</div>
+  <div class="change-body"><strong>ERCOT</strong> — PGRR115 major provisions effective. Large Load Interconnection Study process fully operational. Quarterly Stability Assessment required for all large loads before energization. <span class="change-tag tag-state">State</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Dec 10, 2025</div>
+  <div class="change-body"><strong>Georgia Power</strong> — Stipulated agreement with PSC staff: significant generation portfolio costs allocated to large-load customers in next base rate case. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Nov 20, 2025</div>
+  <div class="change-body"><strong>FPL (Florida)</strong> — FL PSC approved rate agreement for 2026-2029. 70% take-or-pay, 20-year contracts, 100% Incremental Generation Charge for DC customers. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Nov 6, 2025</div>
+  <div class="change-body"><strong>Consumers Energy (MI)</strong> — MPSC approved Michigan's first DC-specific tariff: 100 MW threshold, 15-year contracts, 80% billing demand, ex parte cost review. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Jul 9, 2025</div>
+  <div class="change-body"><strong>AEP Ohio</strong> — PUCO approved landmark DC-specific tariff. 85% minimum billing, 12-year contracts, exit fees, collateral for non-investment-grade customers. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Jun 2025</div>
+  <div class="change-body"><strong>Texas SB 6</strong> — Enacted. $50K/MW security, $100-300K study fees, 20/80 withdrawal penalty, remote disconnect capability, backup gen disclosure for all ERCOT loads ≥75 MW. <span class="change-tag tag-state">State</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Jun 2025</div>
+  <div class="change-body"><strong>Oregon POWER Act</strong> — First state to create dedicated DC electricity rate class (>20 MW). 10-year contracts, baseline demand payment, separate cost allocation, transmission pass-through. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Mar 2025</div>
+  <div class="change-body"><strong>NV Energy</strong> — Clean Transition Tariff approved. Available to customers >5 MW monthly demand. Premium for 24/7 clean energy from new resources. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Feb 2025</div>
+  <div class="change-body"><strong>Indiana Michigan Power</strong> — IURC approved modified industrial tariff for large loads: >70 MW single / >150 MW aggregate, 12-year terms, $1.5M/MW collateral. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Jan 23, 2025</div>
+  <div class="change-body"><strong>Georgia PSC</strong> — Approved rule allowing special billing terms for customers >100 MW. 80% minimum demand, exit fees, PSC contract review mandate. <span class="change-tag tag-new">New</span></div>
+</div>
+
+</div>
+</div>
+
+<!-- ===== TAB: SOURCES ===== -->
+<div id="tab-sources" class="tab-content">
+<div class="section-title">🔗 <span>Sources & References</span></div>
+<div class="sources-grid">
+
+<div class="source-item"><a href="https://insideclimatenews.org/news/07012026/virginia-regulators-approve-new-dominion-rates/" target="_blank">VA Regulators Approve New Dominion Rates, Assign More Costs to Data Centers</a><div class="src-date">Inside Climate News — Jan 7, 2026</div></div>
+<div class="source-item"><a href="https://virginiamercury.com/2025/09/03/dominion-proposes-higher-utility-rates-new-rate-class-for-data-centers/" target="_blank">Dominion Proposes Higher Rates, New Rate Class for Data Centers</a><div class="src-date">Virginia Mercury — Sep 3, 2025</div></div>
+<div class="source-item"><a href="https://www.americanactionforum.org/insight/virginias-new-data-center-electricity-rate-class/" target="_blank">Virginia's New Data Center Electricity Rate Class</a><div class="src-date">American Action Forum — 2026</div></div>
+<div class="source-item"><a href="https://capitolnewsillinois.com/news/regulators-ok-comeds-plan-to-increase-deposit-costs-for-large-load-projects-like-data-centers/" target="_blank">Regulators OK ComEd's Plan to Increase Deposit Costs for Large-Load Projects</a><div class="src-date">Capitol News Illinois — Mar 20, 2026</div></div>
+<div class="source-item"><a href="https://www.datacenterdynamics.com/en/news/chicagos-commonwealth-edison-demands-large-load-users-make-firm-financial-commitments-for-new-projects/" target="_blank">ComEd Demands Large Load Users Make Firm Financial Commitments</a><div class="src-date">DCD — 2025</div></div>
+<div class="source-item"><a href="https://www.vorys.com/publication-public-utilities-commission-of-ohio-authorizes-tariff-for-aep-ohios-data-center-customers-requires-end-of-moratorium-on-new-services-for-data-centers" target="_blank">PUCO Authorizes Tariff for AEP Ohio's Data Center Customers</a><div class="src-date">Vorys — 2025</div></div>
+<div class="source-item"><a href="https://www.utilitydive.com/news/Ohio-regulators-approve-aep-data-center-interconnection-rules/752690/" target="_blank">Ohio Regulators Approve AEP Data Center Interconnection Rules</a><div class="src-date">Utility Dive — 2025</div></div>
+<div class="source-item"><a href="https://www.pillsburylaw.com/en/news-and-insights/texas-sb6-transmission-fees-interconnected-standards-large-load-customers-colocated-loads.html" target="_blank">Texas SB 6: Transmission Fees & Large Load Customer Standards</a><div class="src-date">Pillsbury Law — Jul 2025</div></div>
+<div class="source-item"><a href="https://www.mcguirewoods.com/client-resources/alerts/2025/7/texas-senate-bill-6-significantly-expands-regulatory-oversight-over-large-loads-in-ercot/" target="_blank">Texas SB 6 Expands Regulatory Oversight Over Large Loads in ERCOT</a><div class="src-date">McGuireWoods — Jul 2025</div></div>
+<div class="source-item"><a href="https://natlawreview.com/article/texas-senate-bill-6-update-what-data-centers-and-large-load-customers-should-know" target="_blank">Texas SB 6 Update: What Data Centers Should Know</a><div class="src-date">Nat'l Law Review — 2026</div></div>
+<div class="source-item"><a href="https://www.oncor.com/content/oncorwww/wire/en/home/newsroom/ONCOR-REPORTS-2025-RESULTS---ANNOUNCES--47-5-BILLION-2026-2030-BASE-CAPITAL-PLAN.html" target="_blank">Oncor Reports 2025 Results, Announces $47.5B Capital Plan</a><div class="src-date">Oncor — 2026</div></div>
+<div class="source-item"><a href="https://www.cpsenergy.com/en/construction-and-renovation/latest-updates/large-load-customer-growth.html" target="_blank">CPS Energy Large Load Customer Growth Program</a><div class="src-date">CPS Energy — 2026</div></div>
+<div class="source-item"><a href="https://psc.ga.gov/site/downloads/datacenterfactsheet.pdf" target="_blank">Georgia PSC 2025 Data Center Fact Sheet</a><div class="src-date">GA PSC — Dec 1, 2025</div></div>
+<div class="source-item"><a href="https://www.utilitydive.com/news/georgia-power-large-load-data-centers/806300/" target="_blank">Georgia Power's Large Load Pipeline Shrinks by 6 GW</a><div class="src-date">Utility Dive — 2026</div></div>
+<div class="source-item"><a href="https://www.nelsonmullins.com/insights/blogs/megawatt-minute-blog/power-generation/developments-on-how-duke-energy-integrates-data-centers-and-other-new-large-load-customers-in-north-carolina" target="_blank">How Duke Energy Integrates Large Load Customers in NC</a><div class="src-date">Nelson Mullins — 2025</div></div>
+<div class="source-item"><a href="https://www.michigan.gov/mpsc/commission/news-releases/2025/12/18/mpsc-approves-dte-electric-energy-contracts-for-data-center" target="_blank">MPSC Approves DTE Electric Energy Contracts for Data Center</a><div class="src-date">Michigan PSC — Dec 18, 2025</div></div>
+<div class="source-item"><a href="https://www.michigan.gov/mpsc/commission/news-releases/2025/11/06/mpsc-approves-terms-of-service-between-consumers-energy-and-data-centers" target="_blank">MPSC Approves Consumers Energy Terms for Data Centers</a><div class="src-date">Michigan PSC — Nov 6, 2025</div></div>
+<div class="source-item"><a href="https://www.latitudemedia.com/news/the-unsettled-landscape-of-large-load-tariffs/" target="_blank">The Unsettled Landscape of Large Load Tariffs</a><div class="src-date">Latitude Media — 2025</div></div>
+<div class="source-item"><a href="https://www.scottmadden.com/insight/adapting-utility-tariffs-for-data-center-driven-load-growth/" target="_blank">Adapting Utility Tariffs for Data Center Driven Load Growth</a><div class="src-date">ScottMadden — 2025</div></div>
+<div class="source-item"><a href="https://www.zeroemissiongrid.com/insights-press-zeg-blog/pjm-2026-cycle/" target="_blank">PJM's 2026 Interconnection Cycle: What This Shift Means</a><div class="src-date">Zero Emission Grid — 2026</div></div>
+<div class="source-item"><a href="https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and" target="_blank">FERC Directs PJM to Create New Rules for Data Centers</a><div class="src-date">FERC — Dec 2025</div></div>
+<div class="source-item"><a href="https://www.oregon.gov/puc/utilities/pages/large-load.aspx" target="_blank">Oregon PUC: Large Customer Demand</a><div class="src-date">Oregon PUC — 2026</div></div>
+<div class="source-item"><a href="https://www.utilitydive.com/news/xcel-energy-pursuing-large-load-tariffs-in-4-states-amid-data-center-growth/811518/" target="_blank">Xcel Energy Pursuing Large Load Tariffs in 4 States</a><div class="src-date">Utility Dive — 2026</div></div>
+<div class="source-item"><a href="https://www.utilitydive.com/news/kansas-michigan-data-center-large-load-evergy-consumers/805115/" target="_blank">Kansas, Michigan Regulators Approve Large Load Rules</a><div class="src-date">Utility Dive — 2025</div></div>
+<div class="source-item"><a href="https://www.axios.com/local/nashville/2026/02/09/tva-pledges-to-tackle-electric-rate-fairness-as-data-center-demand-surges" target="_blank">TVA Pledges to Tackle Electric Rate Fairness</a><div class="src-date">Axios Nashville — Feb 2026</div></div>
+<div class="source-item"><a href="https://www.sierraclub.org/sites/default/files/2026-01/policies-for-data-centers-2026.pdf" target="_blank">Data Center State Policies, 2026</a><div class="src-date">Sierra Club — Jan 2026</div></div>
+<div class="source-item"><a href="https://www.euci.com/utilities-adopt-large-load-tariffs-to-cope-with-the-costs-and-power-demands-of-data-centers/" target="_blank">Utilities Adopt Large Load Tariffs to Cope with Data Centers</a><div class="src-date">EUCI — 2025</div></div>
+<div class="source-item"><a href="https://www.brattle.com/wp-content/uploads/2025/09/Large-Loads-Interconnection-Tariff-Designs-and-State-Actions.pdf" target="_blank">Large Loads: Interconnection, Tariff Designs and State Actions</a><div class="src-date">Brattle Group — Sep 2025</div></div>
+<div class="source-item"><a href="https://ercot.com/services/rq/large-load-integration" target="_blank">ERCOT Large Load Integration</a><div class="src-date">ERCOT — 2026</div></div>
+
+</div>
+</div>
+
+</div><!-- end container -->
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleDetail(btn) {
+  const detailRow = btn.closest('tr').nextElementSibling;
+  detailRow.classList.toggle('open');
+  btn.textContent = detailRow.classList.contains('open') ? '− Detail' : '+ Detail';
+}
+
+function filterOverview() {
+  const search = document.getElementById('searchOverview').value.toLowerCase();
+  const iso = document.getElementById('filterISO').value;
+  const tier = document.getElementById('filterTier').value;
+  const state = document.getElementById('filterState').value;
+  const rows = document.querySelectorAll('#overviewTable tbody tr.data-row');
+  let count = 0;
+
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    const rowISO = row.getAttribute('data-iso');
+    const rowTier = row.getAttribute('data-tier');
+    const rowState = row.getAttribute('data-state');
+    const detail = row.nextElementSibling;
+
+    let show = true;
+    if (search && !text.includes(search)) show = false;
+    if (iso && rowISO !== iso) show = false;
+    if (tier && rowTier !== tier) show = false;
+    if (state && rowState !== state) show = false;
+
+    row.style.display = show ? '' : 'none';
+    if (detail && detail.classList.contains('detail-row')) {
+      if (!show) { detail.style.display = 'none'; detail.classList.remove('open'); }
+      else { detail.style.display = ''; }
+    }
+    if (show) count++;
+  });
+
+  document.getElementById('overviewCount').textContent = count + ' utilities shown';
+}
+
+function sortTable(tableId, colIdx) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rowPairs = [];
+  const rows = tbody.querySelectorAll('tr');
+
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i].classList.contains('data-row')) {
+      rowPairs.push({ main: rows[i], detail: rows[i + 1] && rows[i + 1].classList.contains('detail-row') ? rows[i + 1] : null });
+    }
+  }
+
+  const dir = table.getAttribute('data-sort-dir') === 'asc' ? 'desc' : 'asc';
+  table.setAttribute('data-sort-dir', dir);
+
+  rowPairs.sort((a, b) => {
+    const aText = (a.main.cells[colIdx]?.textContent || '').trim().toLowerCase();
+    const bText = (b.main.cells[colIdx]?.textContent || '').trim().toLowerCase();
+    return dir === 'asc' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+  });
+
+  rowPairs.forEach(pair => {
+    tbody.appendChild(pair.main);
+    if (pair.detail) tbody.appendChild(pair.detail);
+  });
+}
+
+// Init count
+filterOverview();
+</script>
+
+</body>
+</html>
