@@ -27,6 +27,13 @@ async function initUSMap(onStateClick) {
   const svg = d3.select('#us-map');
   const container = svg.node().parentElement;
 
+  // diagnostic
+  const _dbg = document.createElement('div');
+  _dbg.id = 'map-diag';
+  _dbg.style.cssText = 'font:11px monospace;padding:4px 8px;background:#1e40af22;color:#93c5fd;border-radius:4px;margin-bottom:6px';
+  container.parentElement.insertBefore(_dbg, container);
+  function _log(msg) { _dbg.textContent = msg; }
+
   function getSize() {
     const w = container.clientWidth  || 960;
     const h = Math.max(500, Math.min(600, w * 0.58));
@@ -34,14 +41,18 @@ async function initUSMap(onStateClick) {
   }
 
   const { w, h } = getSize();
+  _log(`container: ${container.clientWidth}px → using ${w}×${h} | d3: ${typeof d3} | topojson: ${typeof topojson}`);
   svg.attr('viewBox', `0 0 ${w} ${h}`).attr('width', w).attr('height', h).attr('preserveAspectRatio', 'xMidYMid meet');
 
   _usProjection = d3.geoAlbersUsa().scale(w * 1.2).translate([w / 2, h / 2]);
   _usPath = d3.geoPath().projection(_usProjection);
 
   // Load TopoJSON
+  _log(`fetching TopoJSON from CDN…`);
   _usTopojson = await d3.json(TOPO_STATES);
+  _log(`TopoJSON loaded — ${_usTopojson?.objects?.states ? 'states object OK' : 'MISSING states object'} | features: pending`);
   const states = topojson.feature(_usTopojson, _usTopojson.objects.states);
+  _log(`states features: ${states.features.length} | rendering…`);
 
   // Draw state mesh (borders)
   svg.append('path')
@@ -66,6 +77,7 @@ async function initUSMap(onStateClick) {
 
   updateUSMapColors('score');
   renderUSLegend('score');
+  _log(`✓ map rendered — ${states.features.length} states | container: ${container.clientWidth}px`);
 
   // Handle resize
   const ro = new ResizeObserver(() => {
