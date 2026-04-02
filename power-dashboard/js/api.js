@@ -26,9 +26,8 @@ async function eiaFetch(endpoint, parts) {
   return json.response?.data || [];
 }
 
-// Fetch all operating generators for a state (up to 5000).
-// EIA v2 field names (2025+): plantName, energy_source_code, nameplate-capacity-mw,
-// latitude, longitude, county
+// Fetch all operating generators for a state.
+// EIA v2 returns monthly rows — deduplicate to one row per plant+generator (latest period).
 async function fetchGenerators(stateId) {
   const raw = await eiaFetch('electricity/operating-generator-capacity', {
     [`facets[stateid][]`]: stateId,
@@ -38,8 +37,18 @@ async function fetchGenerators(stateId) {
     [`sort[0][direction]`]: 'desc',
     length: 5000,
   });
+
+  // Deduplicate: keep latest period per plant+generator combo
+  const seen = new Map();
+  for (const g of raw) {
+    const key = `${g.plantid}-${g.generatorid}`;
+    if (!seen.has(key) || g.period > seen.get(key).period) seen.set(key, g);
+  }
+  const deduped = Array.from(seen.values())
+    .sort((a, b) => (+b['nameplate-capacity-mw'] || 0) - (+a['nameplate-capacity-mw'] || 0));
+
   // Normalise to legacy field names so the rest of the app doesn't need changing
-  return raw.map(g => ({
+  return deduped.map(g => ({
     ...g,
     'plant-name':            g.plantName           || g['plant-name']           || '',
     'energy-source-code':    g.energy_source_code  || g['energy-source-code']   || 'OTH',
@@ -117,22 +126,21 @@ async function gsDataset(datasetId, limit = 300) {
   }
 }
 
-// Fetch interconnection queue, fuel mix, and load for an ISO
+// Fetch fuel mix for an ISO (queue/load datasets no longer available on GridStatus free tier)
 async function fetchGridStatus(isoName) {
   const prefix = ISO_GRID_PREFIXES[isoName];
   if (!prefix) throw new Error(`No GridStatus prefix for ISO: ${isoName}`);
 
   const results = { queue: [], fuelmix: [], load: [], errors: {} };
 
-  const [qR, fR, lR] = await Promise.allSettled([
-    gsDataset(`${prefix}_interconnection_queue`, 300),
+  const [fR] = await Promise.allSettled([
     gsDataset(`${prefix}_fuel_mix`, 100),
-    gsDataset(`${prefix}_load`, 100),
   ]);
 
-  if (qR.status === 'fulfilled') results.queue   = qR.value; else results.errors.queue   = qR.reason?.message;
-  if (fR.status === 'fulfilled') results.fuelmix  = fR.value; else results.errors.fuelmix  = fR.reason?.message;
-  if (lR.status === 'fulfilled') results.load     = lR.value; else results.errors.load     = lR.reason?.message;
+  if (fR.status === 'fulfilled') results.fuelmix = fR.value;
+  else results.errors.fuelmix = fR.reason?.message;
+
+  results.errors.queue = 'Interconnection queue data no longer available via GridStatus free tier';
 
   return results;
 }
