@@ -211,6 +211,17 @@ function egridForState(stateId) {
   return sub ? { subregion: sub, ...EGRID_DATA[sub] } : null;
 }
 
+// EIA RTO "respondent" codes for each ISO/RTO — used by electricity/rto/region-data
+const ISO_BA_CODES = {
+  'PJM':    'PJM',
+  'ERCOT':  'ERCO',
+  'MISO':   'MISO',
+  'CAISO':  'CISO',
+  'NYISO':  'NYIS',
+  'ISO-NE': 'ISNE',
+  'SPP':    'SWPP',
+};
+
 // ── Top fuel source name from a mix object ────────────────────────────────────
 function topFuel(mix) {
   if (!mix) return 'Unknown';

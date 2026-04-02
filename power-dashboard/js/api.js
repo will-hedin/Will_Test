@@ -145,6 +145,30 @@ async function fetchGridStatus(isoName) {
   return results;
 }
 
+// Fetch real-time BA demand + net generation from EIA RTO regional data.
+// Returns { period, demandMW, netGenMW } for the most recent hourly interval.
+async function fetchBALoad(baCode) {
+  const rows = await eiaFetch('electricity/rto/region-data', {
+    [`facets[respondent][]`]: baCode,
+    [`facets[type][]`]: ['D', 'NG'],
+    [`data[]`]: 'value',
+    frequency: 'hourly',
+    [`sort[0][column]`]: 'period',
+    [`sort[0][direction]`]: 'desc',
+    length: 4,
+  });
+
+  const demand = rows.find(r => r.type === 'D');
+  const ng     = rows.find(r => r.type === 'NG');
+  if (!demand) return null;
+
+  return {
+    period:    demand.period,
+    demandMW:  +(demand.value || 0),
+    netGenMW:  ng ? +(ng.value || 0) : null,
+  };
+}
+
 // ── Main entry point ─────────────────────────────────────────────────────────
 
 // Fetch all data for a state, calling onProgress(stage, data) as each part lands.
@@ -158,7 +182,7 @@ async function fetchStateData(stateId, onProgress) {
   const stateInfo = STATE_DATA[stateId];
   if (!stateInfo) throw new Error(`Unknown state: ${stateId}`);
 
-  const result = { generators: [], retailSales: [], facilityFuel: [], grid: null, errors: {} };
+  const result = { generators: [], retailSales: [], facilityFuel: [], grid: null, baLoad: null, errors: {} };
 
   // Check for placeholder keys
   const hasEIA = CONFIG.EIA_API_KEY && CONFIG.EIA_API_KEY !== 'YOUR_EIA_API_KEY_HERE' && CONFIG.EIA_API_KEY !== 'REPLACE_WITH_YOUR_EIA_API_KEY';
@@ -196,18 +220,28 @@ async function fetchStateData(stateId, onProgress) {
     }
   }
 
-  // GridStatus (ISO states only)
+  // GridStatus + EIA BA load (ISO states only, run in parallel)
   const iso = stateInfo.iso;
   if (iso !== 'Non-ISO') {
-    if (!hasGS) {
-      result.errors.grid = 'GridStatus API key not configured — add your key to config.js (get one free at gridstatus.io)';
+    const baCode = ISO_BA_CODES[iso];
+
+    const [gsResult, baResult] = await Promise.allSettled([
+      hasGS ? fetchGridStatus(iso) : Promise.reject(new Error('GridStatus API key not configured — add your key to config.js (get one free at gridstatus.io)')),
+      (hasEIA && baCode) ? fetchBALoad(baCode) : Promise.resolve(null),
+    ]);
+
+    if (gsResult.status === 'fulfilled') {
+      result.grid = gsResult.value;
+      onProgress('grid', result);
     } else {
-      try {
-        result.grid = await fetchGridStatus(iso);
-        onProgress('grid', result);
-      } catch (e) {
-        result.errors.grid = e.message;
-      }
+      result.errors.grid = gsResult.reason?.message;
+    }
+
+    if (baResult.status === 'fulfilled' && baResult.value) {
+      result.baLoad = baResult.value;
+      onProgress('baload', result);
+    } else if (baResult.status === 'rejected') {
+      result.errors.baLoad = baResult.reason?.message;
     }
   }
 

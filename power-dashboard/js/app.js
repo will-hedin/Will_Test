@@ -290,6 +290,38 @@ function handleDataProgress(stateId, stage, data, info) {
     }
   }
 
+  if (stage === 'baload' || (stage === 'cached' && data.baLoad)) {
+    const ba = data.baLoad;
+    if (ba && ba.demandMW > 0) {
+      const demandGW  = (ba.demandMW / 1000).toFixed(1);
+      const capGW     = info.capacity_gw || 0;
+      const utilPct   = capGW > 0 ? Math.round((ba.demandMW / 1000 / capGW) * 100) : null;
+
+      // Format period: "2024-01-15T14" → "Jan 15 14:00 UTC"
+      let periodStr = '';
+      if (ba.period) {
+        // EIA period format: "2024-01-15T14" (hour only, UTC)
+        const d = new Date(ba.period + ':00:00Z');
+        if (!isNaN(d)) {
+          periodStr = d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', timeZone:'UTC', timeZoneName:'short' });
+        }
+      }
+
+      // Rebuild headroom value (may already be set from generators stage)
+      const gens   = data.generators || [];
+      const totalMW = gens.reduce((s, g) => s + +(g['nameplate-capacity-mw'] || 0), 0);
+      const totalGW = totalMW / 1000 || capGW;
+      const peakGW  = info.peak_gw || 0;
+      const headroomGW = totalGW - peakGW;
+      const headroomStr = headroomGW >= 0 ? `+${headroomGW.toFixed(1)} GW` : `${headroomGW.toFixed(1)} GW`;
+
+      const utilStr  = utilPct !== null ? `${utilPct}% utilized` : '';
+      const demandStr = `${demandGW} GW demand`;
+      const sub = [utilStr, demandStr, periodStr].filter(Boolean).join(' · ');
+      setCard('headroom', headroomStr, sub);
+    }
+  }
+
   if (stage === 'done' || stage === 'cached') {
     hide('generators-loading');
     hide('grid-loading');
