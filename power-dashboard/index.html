@@ -187,6 +187,22 @@
 
 </div><!-- #state-view -->
 
+<!-- Diagnostic error overlay (remove once map is confirmed working) -->
+<script>
+window.addEventListener('error', function(e) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:60px;left:0;right:0;background:#b91c1c;color:#fff;padding:10px 16px;font:13px monospace;z-index:9999;white-space:pre-wrap;word-break:break-all';
+  d.textContent = 'JS ERROR: ' + e.message + '\n' + (e.filename||'') + ':' + e.lineno;
+  document.body.appendChild(d);
+});
+window.addEventListener('unhandledrejection', function(e) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;top:60px;left:0;right:0;background:#b45309;color:#fff;padding:10px 16px;font:13px monospace;z-index:9999;white-space:pre-wrap;word-break:break-all';
+  d.textContent = 'PROMISE REJECTION: ' + (e.reason?.message || e.reason || 'unknown');
+  document.body.appendChild(d);
+});
+</script>
+
 <!-- Scripts: config first so CONFIG is available to all modules -->
 <script src="config.js"></script>
 <script src="js/data.js"></script>
