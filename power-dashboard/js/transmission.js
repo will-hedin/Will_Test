@@ -225,12 +225,12 @@ function computeLineMiles(features) {
 
 // ── Main fetch + cache ────────────────────────────────────────────────────────
 
-const _cache = {};
+const _txCache = {};
 
 // Returns { lines: FeatureCollection, substations: FeatureCollection,
 //           sources: { osm: bool, hifld: bool } }
 async function fetchStateTransmission(stateId, bbox) {
-  if (_cache[stateId]) return _cache[stateId];
+  if (_txCache[stateId]) return _txCache[stateId];
 
   const [osmResult, hifldLines, hifldSubs] = await Promise.allSettled([
     fetchOSM(bbox),
@@ -261,11 +261,11 @@ async function fetchStateTransmission(stateId, bbox) {
     },
   };
 
-  _cache[stateId] = result;
+  _txCache[stateId] = result;
   return result;
 }
 
 function clearTransmissionCache(stateId) {
-  if (stateId) delete _cache[stateId];
-  else Object.keys(_cache).forEach(k => delete _cache[k]);
+  if (stateId) delete _txCache[stateId];
+  else Object.keys(_txCache).forEach(k => delete _txCache[k]);
 }
