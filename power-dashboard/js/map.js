@@ -284,10 +284,10 @@ async function renderCountyMap(stateId, generators) {
     }
   }
 
-  // Color scale: teal ramp
+  // Color scale: dark-floor blue ramp — readable in both light and dark mode
   const colorScale = d3.scaleSequential()
     .domain([0, 100])
-    .interpolator(d3.interpolateRgb('#E1F5EE', '#085041'));
+    .interpolator(d3.interpolateRgb('#1e3a5f', '#60a5fa'));
 
   // Setup SVG
   const wrapper = document.getElementById('county-map-wrapper');
@@ -319,10 +319,10 @@ async function renderCountyMap(stateId, generators) {
     .attr('d', path)
     .attr('fill', f => {
       const score = countyScores[f.id];
-      return score != null ? colorScale(score) : '#e5e7eb';
+      return score != null ? colorScale(score) : '#1e3a5f';
     })
-    .attr('stroke', 'var(--county-border)')
-    .attr('stroke-width', 0.5)
+    .attr('stroke', 'rgba(255,255,255,0.25)')
+    .attr('stroke-width', 0.8)
     .on('mousemove', (event, f) => {
       const score = countyScores[f.id] || 0;
       const gens  = (countyGenLists[f.id] || []).slice(0, 5);
@@ -346,8 +346,8 @@ async function renderCountyMap(stateId, generators) {
     .attr('class', 'county-border')
     .attr('d', path)
     .attr('fill', 'none')
-    .attr('stroke', 'var(--county-border)')
-    .attr('stroke-width', 0.5);
+    .attr('stroke', 'rgba(255,255,255,0.3)')
+    .attr('stroke-width', 0.8);
 
   // Store G for post-render transmission layer injection
   _countyG = g;

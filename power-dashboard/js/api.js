@@ -5,7 +5,7 @@ const _cache = {};
 // ── EIA helpers ──────────────────────────────────────────────────────────────
 
 function eiaUrl(endpoint, parts) {
-  let url = `https://api.eia.gov/v2/${endpoint}/data?api_key=${CONFIG.EIA_API_KEY}`;
+  let url = `https://api.eia.gov/v2/${endpoint}/data/?api_key=${CONFIG.EIA_API_KEY}`;
   for (const [k, v] of Object.entries(parts)) {
     if (Array.isArray(v)) {
       v.forEach(item => url += `&${k}=${encodeURIComponent(item)}`);
