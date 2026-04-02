@@ -48,35 +48,56 @@ function aggregateQueue(rows) {
   return { entries: sorted, activeCount, activeMW };
 }
 
+// Non-fuel metadata columns to skip in wide-format detection
+const _META_COLS = new Set([
+  'interval_start_utc','interval_end_utc','interval_start','interval_end',
+  'load_mw','net_load_mw','total_mw','timestamp','period','iso',
+]);
+
 // Aggregate fuel mix data
-// GridStatus fuel_mix rows have fields like fuel_type / source / natural_gas_mw etc.
+// GridStatus fuel_mix rows come in two wide formats:
+//   A) columns ending in _mw  (e.g. natural_gas_mw, solar_mw)
+//   B) plain fuel columns     (e.g. natural_gas, solar, wind) — ERCOT style
+// Or long format with fuel_type + mw columns.
 function aggregateFuelMix(rows) {
   const groups = {};
+  if (!rows.length) return [];
 
-  // Some ISOs return one row per snapshot with many columns (wide format)
-  if (rows.length > 0) {
-    const first = rows[0];
-    const wideCols = Object.keys(first).filter(k =>
-      k.endsWith('_mw') && !['load_mw','net_load_mw','total_mw'].includes(k)
-    );
+  const first = rows[0];
 
-    if (wideCols.length > 3) {
-      // Wide format — use most recent row
-      const recent = rows[0];
-      for (const col of wideCols) {
-        const key = normFuel(col.replace(/_mw$/, ''));
-        const val = +(recent[col] || 0);
-        if (val > 0) groups[key] = (groups[key] || 0) + val;
-      }
-    } else {
-      // Long format — aggregate by fuel_type
-      for (const row of rows) {
-        const fuel = row.fuel_type || row.source || row.fuel || 'Other';
-        const mw = +(row.mw || row.load_mw || row.net_generation_mw || row.generation_mw || 0);
-        if (mw > 0) {
-          const key = normFuel(fuel);
-          groups[key] = (groups[key] || 0) + mw;
-        }
+  // Wide format A: _mw-suffixed columns
+  const mwCols = Object.keys(first).filter(k =>
+    k.endsWith('_mw') && !_META_COLS.has(k)
+  );
+
+  // Wide format B: plain numeric columns that look like fuel names (not metadata)
+  const plainCols = Object.keys(first).filter(k =>
+    !_META_COLS.has(k) && !k.endsWith('_utc') && !k.endsWith('_mw') &&
+    typeof first[k] === 'number' && first[k] >= 0
+  );
+
+  if (mwCols.length > 2) {
+    const recent = rows[0];
+    for (const col of mwCols) {
+      const key = normFuel(col.replace(/_mw$/, ''));
+      const val = +(recent[col] || 0);
+      if (val > 0) groups[key] = (groups[key] || 0) + val;
+    }
+  } else if (plainCols.length > 2) {
+    const recent = rows[0];
+    for (const col of plainCols) {
+      const key = normFuel(col);
+      const val = +(recent[col] || 0);
+      if (val > 0) groups[key] = (groups[key] || 0) + val;
+    }
+  } else {
+    // Long format — one row per fuel type
+    for (const row of rows) {
+      const fuel = row.fuel_type || row.source || row.fuel || 'Other';
+      const mw = +(row.mw || row.load_mw || row.net_generation_mw || row.generation_mw || 0);
+      if (mw > 0) {
+        const key = normFuel(fuel);
+        groups[key] = (groups[key] || 0) + mw;
       }
     }
   }
