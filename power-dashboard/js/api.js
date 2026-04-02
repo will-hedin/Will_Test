@@ -226,16 +226,19 @@ async function fetchStateData(stateId, onProgress) {
     const baCode = ISO_BA_CODES[iso];
 
     const [gsResult, baResult] = await Promise.allSettled([
-      hasGS ? fetchGridStatus(iso) : Promise.reject(new Error('GridStatus API key not configured — add your key to config.js (get one free at gridstatus.io)')),
+      hasGS ? fetchGridStatus(iso) : Promise.resolve(null),
       (hasEIA && baCode) ? fetchBALoad(baCode) : Promise.resolve(null),
     ]);
 
-    if (gsResult.status === 'fulfilled') {
+    if (!hasGS) {
+      result.errors.grid = 'GridStatus API key not configured — add your key to config.js (get one free at gridstatus.io)';
+    } else if (gsResult.status === 'fulfilled') {
       result.grid = gsResult.value;
-      onProgress('grid', result);
     } else {
       result.errors.grid = gsResult.reason?.message;
     }
+    // Always fire 'grid' so the panel updates (shows charts or error message)
+    onProgress('grid', result);
 
     if (baResult.status === 'fulfilled' && baResult.value) {
       result.baLoad = baResult.value;
