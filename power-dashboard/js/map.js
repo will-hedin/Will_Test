@@ -249,6 +249,11 @@ async function renderCountyMap(stateId, generators) {
   const countyGenLists = {};
 
   if (generators && generators.length > 0) {
+    // Cap at 500 for scoring — generators are pre-sorted by descending capacity,
+    // so small units at the tail barely affect the score but dominate compute time
+    // (Texas: 5000 gens × 254 counties = 1.27M haversine calls without this cap)
+    const scoringGens = generators.slice(0, 500).filter(g => +g.latitude && +g.longitude);
+
     const centroids = {};
     for (const f of stateCounties) {
       centroids[f.id] = d3.geoCentroid(f); // [lon, lat]
@@ -258,10 +263,9 @@ async function renderCountyMap(stateId, generators) {
       const [clon, clat] = centroids[f.id];
       let totalMW = 0;
       const genList = [];
-      for (const g of generators) {
+      for (const g of scoringGens) {
         const lat = +g.latitude;
         const lon = +g.longitude;
-        if (!lat || !lon) continue;
         const dist = haversineKm(clat, clon, lat, lon);
         if (dist <= 25) {
           const mw = +(g['nameplate-capacity-mw'] || 0);
@@ -352,7 +356,7 @@ async function renderCountyMap(stateId, generators) {
   if (generators && generators.length > 0) {
     const largeGens = generators.filter(g =>
       +(g['nameplate-capacity-mw'] || 0) >= 10 && +g.latitude && +g.longitude
-    );
+    ).slice(0, 300);  // cap overlay dots to avoid SVG performance issues on large states
 
     const genGroup = g.append('g').attr('class', 'generators');  // transmission is inserted before this
     const tt = document.getElementById('county-tooltip');
