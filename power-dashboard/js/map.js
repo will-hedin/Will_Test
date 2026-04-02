@@ -67,14 +67,16 @@ async function initUSMap(onStateClick) {
   updateUSMapColors('score');
   renderUSLegend('score');
 
-  // Handle resize
+  // Handle resize — rAF wrapper prevents ResizeObserver loop warnings
   const ro = new ResizeObserver(() => {
-    const { w: nw, h: nh } = getSize();
-    svg.attr('viewBox', `0 0 ${nw} ${nh}`).attr('width', nw).attr('height', nh);
-    _usProjection.scale(nw * 1.2).translate([nw / 2, nh / 2]);
-    _usPath = d3.geoPath().projection(_usProjection);
-    svg.selectAll('path.state').attr('d', _usPath);
-    svg.selectAll('path.state-border').attr('d', _usPath);
+    requestAnimationFrame(() => {
+      const { w: nw, h: nh } = getSize();
+      svg.attr('viewBox', `0 0 ${nw} ${nh}`).attr('width', nw).attr('height', nh);
+      _usProjection.scale(nw * 1.2).translate([nw / 2, nh / 2]);
+      _usPath = d3.geoPath().projection(_usProjection);
+      svg.selectAll('path.state').attr('d', _usPath);
+      svg.selectAll('path.state-border').attr('d', _usPath);
+    });
   });
   ro.observe(container);
 }
