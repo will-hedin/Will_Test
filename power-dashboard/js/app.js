@@ -103,6 +103,10 @@ function resetStateView(stateId, info) {
     setCard('co2', '—', 'eGRID subregion unknown');
   }
 
+  // Hide transmission capacity panel until data loads
+  const txCapPanel = document.getElementById('tx-capacity-panel');
+  if (txCapPanel) txCapPanel.style.display = 'none';
+
   // Reset county map
   document.getElementById('county-loading').style.display = '';
   document.getElementById('county-loading').textContent = 'Loading map data...';
@@ -153,6 +157,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();
+          renderTransmissionCapacity(computeCapacityByClass(lines));
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 110–765 kV · ${srcLabel}`);
@@ -181,6 +186,7 @@ function handleDataProgress(stateId, stage, data, info) {
         .then(({ lines, substations }) => {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
+          renderTransmissionCapacity(computeCapacityByClass(lines));
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 345/500/765 kV`);
         })
@@ -230,6 +236,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();   // hide classes that are toggled off
+          renderTransmissionCapacity(computeCapacityByClass(lines));
           const miles    = computeLineMiles(lines.features);
           const subCount = substations.features.length;
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
@@ -357,6 +364,39 @@ function renderGeneratorsTable(generators) {
     </tr>`;
   }).join('');
   show('generators-table');
+}
+
+// ── Transmission capacity panel ───────────────────────────────────────────────
+
+function renderTransmissionCapacity({ byClass, totalMW }) {
+  const panel  = document.getElementById('tx-capacity-panel');
+  const barsEl = document.getElementById('tx-capacity-bars');
+  const totEl  = document.getElementById('tx-cap-total');
+  if (!panel || !barsEl) return;
+
+  panel.style.display = '';
+  totEl.textContent = `~${(totalMW / 1000).toFixed(0)} GW estimated`;
+
+  const LABELS = { '110':'110 kV', '150':'150 kV', '230':'230 kV', '345':'345 kV', '500':'500+ kV' };
+  const active = TX_CLASSES.filter(cls => byClass[cls].miles > 0);
+  const maxMW  = Math.max(1, ...active.map(cls => byClass[cls].estimatedMW));
+
+  barsEl.innerHTML = active.map(cls => {
+    const s   = byClass[cls];
+    const pct = (s.estimatedMW / maxMW * 100).toFixed(1);
+    const mw  = s.estimatedMW >= 1000
+      ? `${(s.estimatedMW / 1000).toFixed(1)} GW`
+      : `${s.estimatedMW.toLocaleString()} MW`;
+    return `
+      <div class="tx-cap-row">
+        <span class="tx-cap-label">${LABELS[cls]}</span>
+        <div class="tx-cap-bar-wrap">
+          <div class="tx-cap-bar" style="width:${pct}%;background:${TX_COLORS[cls]}"></div>
+        </div>
+        <span class="tx-cap-val">${mw}</span>
+        <span class="tx-cap-sub">${s.miles.toLocaleString()} mi · ${s.lineCount.toLocaleString()} seg</span>
+      </div>`;
+  }).join('');
 }
 
 // ── Back button ───────────────────────────────────────────────────────────────
