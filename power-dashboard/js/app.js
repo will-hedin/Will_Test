@@ -157,7 +157,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();
-          renderTransmissionCapacity(computeCapacityByClass(lines));
+          try { renderTransmissionCapacity(computeCapacityByClass(lines)); } catch (e) { console.warn('tx capacity render:', e); }
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 110–765 kV · ${srcLabel}`);
@@ -186,7 +186,7 @@ function handleDataProgress(stateId, stage, data, info) {
         .then(({ lines, substations }) => {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
-          renderTransmissionCapacity(computeCapacityByClass(lines));
+          try { renderTransmissionCapacity(computeCapacityByClass(lines)); } catch (e) { console.warn('tx capacity render:', e); }
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 345/500/765 kV`);
         })
@@ -236,7 +236,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();   // hide classes that are toggled off
-          renderTransmissionCapacity(computeCapacityByClass(lines));
+          try { renderTransmissionCapacity(computeCapacityByClass(lines)); } catch (e) { console.warn('tx capacity render:', e); }
           const miles    = computeLineMiles(lines.features);
           const subCount = substations.features.length;
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');

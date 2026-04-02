@@ -2,6 +2,21 @@
 
 const _cache = {};
 
+// ── Fetch with timeout ────────────────────────────────────────────────────────
+
+function fetchWithTimeout(url, options, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`Request timed out after ${timeoutMs / 1000}s`)),
+      timeoutMs
+    );
+    fetch(url, options).then(
+      res => { clearTimeout(timer); resolve(res); },
+      err => { clearTimeout(timer); reject(err); }
+    );
+  });
+}
+
 // ── EIA helpers ──────────────────────────────────────────────────────────────
 
 function eiaUrl(endpoint, parts) {
@@ -93,7 +108,7 @@ function gsHeaders() {
 async function gsFetch(path, params = {}) {
   const qs = new URLSearchParams({ limit: 300, ...params }).toString();
   const url = `${GS_BASE}${path}?${qs}`;
-  const resp = await fetch(url, { headers: gsHeaders() });
+  const resp = await fetchWithTimeout(url, { headers: gsHeaders() }, 15000);
   if (resp.status === 404) {
     const err = new Error('NOT_FOUND');
     err.status = 404;
@@ -113,14 +128,14 @@ async function gsFindDataset(pattern) {
 
 async function gsDataset(datasetId, limit = 300) {
   try {
-    return await gsFetch(`/datasets/${datasetId}/query`, { limit });
+    return await gsFetch(`/datasets/${datasetId}/query`, { limit, sort: '-interval_start_utc' });
   } catch (err) {
     if (err.status === 404) {
       // Try to find a matching dataset
       const prefix = datasetId.split('_')[0];
       const suffix = datasetId.split('_').slice(1).join('_');
       const found = await gsFindDataset(`${prefix}_${suffix}`).catch(() => null);
-      if (found) return gsFetch(`/datasets/${found.id}/query`, { limit });
+      if (found) return gsFetch(`/datasets/${found.id}/query`, { limit, sort: '-interval_start_utc' });
     }
     throw err;
   }

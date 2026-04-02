@@ -77,11 +77,11 @@ out center geom;`;
 }
 
 async function fetchOSM(bbox) {
-  const resp = await fetch(OVERPASS_URL, {
+  const resp = await fetchWithTimeout(OVERPASS_URL, {
     method:  'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body:    `data=${encodeURIComponent(buildOverpassQuery(bbox))}`,
-  });
+  }, 30000);
   if (!resp.ok) throw new Error(`Overpass ${resp.status}`);
   const json = await resp.json();
   if (json.remark?.toLowerCase().includes('exceeded'))
