@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Data Center Power & Interconnection Queue Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f1117;color:#e2e8f0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5}
+a{color:#4f8ef7;text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1700px;margin:0 auto;padding:16px}
+header{background:linear-gradient(135deg,#1a1d27 0%,#12151f 100%);border-bottom:1px solid #2d3148;padding:20px 24px;margin-bottom:20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.3px}
+header h1 span{color:#4f8ef7}
+.header-meta{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.badge{background:#1e2235;border:1px solid #2d3148;border-radius:6px;padding:4px 10px;font-size:12px;color:#94a3b8}
+.badge.live{border-color:#22c55e;color:#22c55e}
+.badge.warn{border-color:#f59e0b;color:#f59e0b}
+.section-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';display:inline-block;width:3px;height:18px;background:#4f8ef7;border-radius:2px}
+.exec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:20px}
+.kpi-card{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:16px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.blue::before{background:#4f8ef7}
+.kpi-card.red::before{background:#ef4444}
+.kpi-card.yellow::before{background:#f59e0b}
+.kpi-card.green::before{background:#22c55e}
+.kpi-card.purple::before{background:#a855f7}
+.kpi-card.orange::before{background:#f97316}
+.kpi-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:#fff;line-height:1}
+.kpi-sub{font-size:11px;color:#64748b;margin-top:4px}
+.kpi-trend{font-size:11px;color:#22c55e;margin-top:4px}
+.kpi-trend.down{color:#ef4444}
+.alert-bar{background:#1a1d27;border:1px solid #f59e0b40;border-left:3px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24}
+.alert-bar strong{color:#f59e0b}
+.grid-ops{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;margin-bottom:20px}
+.grid-card{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s}
+.grid-card:hover{border-color:#4f8ef7}
+.grid-card-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2d3148}
+.grid-card-header h3{font-size:14px;font-weight:700;color:#fff}
+.grid-card-body{padding:14px 16px}
+.grid-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #1e2235}
+.grid-stat:last-child{border-bottom:none}
+.grid-stat-label{color:#94a3b8;font-size:12px}
+.grid-stat-value{color:#e2e8f0;font-weight:600;font-size:12px}
+.grid-stat-value.red{color:#ef4444}
+.grid-stat-value.yellow{color:#f59e0b}
+.grid-stat-value.green{color:#22c55e}
+.grid-card-expand{padding:0 16px;max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.2s}
+.grid-card-expand.open{max-height:400px;padding:12px 16px}
+.expand-note{font-size:12px;color:#64748b;line-height:1.6}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.search-box{background:#1a1d27;border:1px solid #2d3148;border-radius:8px;padding:8px 14px;color:#e2e8f0;font-size:13px;width:260px;outline:none;transition:border-color 0.2s}
+.search-box:focus{border-color:#4f8ef7}
+.filter-btns{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{background:#1a1d27;border:1px solid #2d3148;border-radius:6px;padding:6px 14px;color:#94a3b8;font-size:12px;cursor:pointer;transition:all 0.2s}
+.fbtn:hover{border-color:#4f8ef7;color:#e2e8f0}
+.fbtn.active{background:#4f8ef7;border-color:#4f8ef7;color:#fff;font-weight:600}
+.fbtn.t1.active{background:#ef4444;border-color:#ef4444}
+.fbtn.t2.active{background:#f59e0b;border-color:#f59e0b}
+.fbtn.em.active{background:#22c55e;border-color:#22c55e}
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid #2d3148;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#1a1d27}
+th{padding:11px 13px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;white-space:nowrap;user-select:none;border-bottom:1px solid #2d3148}
+th:hover{color:#e2e8f0}
+th .sort-icon{display:inline-block;margin-left:4px;opacity:0.4;font-size:10px}
+th.sorted .sort-icon{opacity:1;color:#4f8ef7}
+tbody tr{border-bottom:1px solid #1e2235;transition:background 0.15s}
+tbody tr:hover{background:#1a1d27}
+tbody tr:last-child{border-bottom:none}
+td{padding:10px 13px;font-size:13px;vertical-align:top}
+.market-name{font-weight:600;color:#fff;white-space:nowrap}
+.market-sub{font-size:11px;color:#64748b;margin-top:2px}
+.tier-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+.tier-1{background:#ef444420;color:#ef4444;border:1px solid #ef444440}
+.tier-2{background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40}
+.tier-em{background:#22c55e20;color:#22c55e;border:1px solid #22c55e40}
+.avail-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.avail-critical{background:#ef444420;color:#ef4444;border:1px solid #ef444440}
+.avail-tight{background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40}
+.avail-moderate{background:#3b82f620;color:#3b82f6;border:1px solid #3b82f640}
+.avail-available{background:#22c55e20;color:#22c55e;border:1px solid #22c55e40}
+.trend-up{color:#ef4444;font-weight:700;font-size:16px}
+.trend-flat{color:#f59e0b;font-weight:700;font-size:16px}
+.trend-down{color:#22c55e;font-weight:700;font-size:16px}
+.constraint-tag{display:inline-block;background:#1e2235;border:1px solid #2d3148;border-radius:4px;padding:2px 6px;font-size:11px;color:#94a3b8;margin:2px 2px 2px 0;white-space:nowrap}
+.dev-text{font-size:12px;color:#94a3b8;line-height:1.5;max-width:260px}
+.queue-val{font-weight:700;color:#e2e8f0;font-size:13px}
+.queue-sub{font-size:11px;color:#64748b}
+.wait-val{font-weight:600;color:#e2e8f0}
+.policy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-bottom:20px}
+.policy-card{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:16px}
+.policy-card h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.policy-card h4 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.policy-item{padding:7px 0;border-bottom:1px solid #1e2235;font-size:12px;color:#94a3b8;line-height:1.5}
+.policy-item:last-child{border-bottom:none}
+.policy-item strong{color:#e2e8f0}
+.policy-item .date{font-size:11px;color:#4f8ef7;margin-bottom:2px}
+.sources-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:20px}
+.source-item{background:#1a1d27;border:1px solid #2d3148;border-radius:8px;padding:12px;font-size:12px}
+.source-item a{color:#4f8ef7}
+.source-item .src-label{font-size:11px;color:#64748b;margin-bottom:4px}
+footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
+.hidden{display:none}
+@media(max-width:768px){
+  header{flex-direction:column;align-items:flex-start}
+  .search-box{width:100%}
+  .exec-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <h1>US Data Center <span>Power &amp; Interconnection Queue</span> Dashboard</h1>
+    <div style="font-size:12px;color:#64748b;margin-top:4px">35 markets tracked &bull; Tier 1, Tier 2 &amp; Emerging &bull; All major ISOs / RTOs / IOUs</div>
+  </div>
+  <div class="header-meta">
+    <span class="badge live">Live Research</span>
+    <span class="badge warn">Q2 2026 Data</span>
+    <span class="badge">Updated Apr 2, 2026</span>
+    <span class="badge">35 Markets</span>
+  </div>
+</header>
+
+<div class="alert-bar">
+  <strong>CRITICAL ALERT:</strong> ERCOT large-load queue hits record <strong>410 GW</strong> (Apr 2026, 73% data centers) &bull; Dominion Virginia has <strong>47.2 GW</strong> contracted beyond current production capacity &bull; PJM colocation rules compliance deadline <strong>Feb 16, 2026</strong> &bull; FERC must act on DOE large-load ANPR by <strong>Apr 30, 2026</strong> &bull; AEP Ohio queue exceeds <strong>30 GW</strong> vs ~5 GW 2030 forecast
+</div>
+
+<div class="section-title">Executive Summary</div>
+<div class="exec-grid">
+  <div class="kpi-card red">
+    <div class="kpi-label">ERCOT Large-Load Queue</div>
+    <div class="kpi-value">410 GW</div>
+    <div class="kpi-sub">Record high &mdash; Apr 2026</div>
+    <div class="kpi-trend down">+547% vs Dec 2024 (63 GW)</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">PJM Avg Queue Wait</div>
+    <div class="kpi-value">8+ yrs</div>
+    <div class="kpi-sub">Up from &lt;2 yrs in 2008</div>
+    <div class="kpi-trend down">30 GW DC growth by 2030</div>
+  </div>
+  <div class="kpi-card yellow">
+    <div class="kpi-label">MISO Queue</div>
+    <div class="kpi-value">309 GW</div>
+    <div class="kpi-sub">vs 127 GW peak load</div>
+    <div class="kpi-trend">ERAS 2nd cycle Dec 2025</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">CAISO Queue</div>
+    <div class="kpi-value">126 GW</div>
+    <div class="kpi-sub">427 projects; 4.5 GW DC studied</div>
+    <div class="kpi-trend">New IPP process Jun 2025</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">Dominion VA Contracted</div>
+    <div class="kpi-value">47.2 GW</div>
+    <div class="kpi-sub">Beyond current production</div>
+    <div class="kpi-trend down">+185% since Jul 2023</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-label">AEP Ohio DC Queue</div>
+    <div class="kpi-value">30+ GW</div>
+    <div class="kpi-sub">vs ~5 GW 2030 forecast</div>
+    <div class="kpi-trend down">New tariff Jul 2025</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Ameren MO New Contracts</div>
+    <div class="kpi-value">2.2 GW</div>
+    <div class="kpi-sub">Signed Feb 2026 (confidential)</div>
+    <div class="kpi-trend">3 GW total construction agreements</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">Xcel DC Pipeline</div>
+    <div class="kpi-value">6 GW</div>
+    <div class="kpi-sub">Expected in queue by 2027</div>
+    <div class="kpi-trend">$22B infra investment planned</div>
+  </div>
+</div>
+
+<div class="section-title">Grid Operator Status (click to expand)</div>
+<div class="grid-ops">
+
+  <div class="grid-card" onclick="toggleCard('pjm')">
+    <div class="grid-card-header">
+      <h3>PJM Interconnection</h3>
+      <span class="tier-badge tier-1">CRITICAL</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">States Served</span><span class="grid-stat-value">13 states + DC</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Peak Load</span><span class="grid-stat-value">~154 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Avg Wait Time</span><span class="grid-stat-value red">8+ years (2025)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">DC Load Growth 2024-30</span><span class="grid-stat-value red">~30 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">2026/27 Capacity Auction</span><span class="grid-stat-value red">$329/MWh cap hit</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Colocation Rules Deadline</span><span class="grid-stat-value yellow">Feb 16, 2026</span></div>
+    </div>
+    <div class="grid-card-expand" id="pjm">
+      <div class="expand-note">FERC issued unanimous Dec 18, 2025 order directing PJM to establish data center co-location rules with 3 new transmission service tiers (Firm, Non-Firm, Interim). PJM Board fast-tracked large-load reliability effort via CIFP. Transition queue largely cleared; new 1-2 year processing target for GIAs. ~57 GW have signed or been offered GIAs. PJM consumers face $100B extra through 2033 from DC demand surge. Sources: <a href="https://insidelines.pjm.com/pjm-board-fast-tracks-effort-to-reliably-serve-large-loads/" target="_blank">PJM Inside Lines</a>, <a href="https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and" target="_blank">FERC Order Dec 2025</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('ercot')">
+    <div class="grid-card-header">
+      <h3>ERCOT (Texas)</h3>
+      <span class="tier-badge tier-1">CRITICAL</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">Large-Load Queue (Apr 2026)</span><span class="grid-stat-value red">410 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Data Center Share</span><span class="grid-stat-value red">~73%</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Nov 2025 Queue</span><span class="grid-stat-value yellow">226 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Dec 2024 Queue</span><span class="grid-stat-value green">63 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Process Reform</span><span class="grid-stat-value yellow">Batch studies 2026</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">McKinsey Framework</span><span class="grid-stat-value green">Q1 2026 target</span></div>
+    </div>
+    <div class="grid-card-expand" id="ercot">
+      <div class="expand-note">ERCOT legacy process designed for 40-50 large loads; now managing 410 GW. "Batch Zero" first evaluations expected 2026. Oncor Southern DFW filed 765-kV line (~180 mi) Dec 2025; regulator decision Jun 2026, energized Dec 2028. Texas SB 6 (2023) implementation ongoing. CenterPoint (Houston) queue: 1 GW to 8 GW in under one year. Sources: <a href="https://www.latitudemedia.com/news/ercots-large-load-queue-has-nearly-quadrupled-in-a-single-year/" target="_blank">Latitude Media</a>, <a href="https://www.rtoinsider.com/129421-ercot-large-load-requests-soar-again/" target="_blank">RTO Insider</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('miso')">
+    <div class="grid-card-header">
+      <h3>MISO</h3>
+      <span class="tier-badge tier-2">CONSTRAINED</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">Queue Size</span><span class="grid-stat-value red">309 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">System Peak Load</span><span class="grid-stat-value">127 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">ERAS 2nd Cycle</span><span class="grid-stat-value green">Dec 2025 (6.1 GW)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">ERAS 3rd Cycle Start</span><span class="grid-stat-value">Mar 2, 2026</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Queue Cap</span><span class="grid-stat-value yellow">FERC-approved</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Target Queue Time</span><span class="grid-stat-value green">1 year (reform goal)</span></div>
+    </div>
+    <div class="grid-card-expand" id="miso">
+      <div class="expand-note">MISO launched Expedited Resource Addition Study (ERAS) for fast-track capacity. 2025 DPP cycle: applications closed Oct 7, 2025; Phase 1 began Jan 5, 2026. FERC approved MISO queue cap. Members seeing unprecedented large-load surge from data centers and advanced manufacturing. MISO path to 1-year queue via reforms and technology. Sources: <a href="https://www.misoenergy.org/planning/large-loads---container-page/large-load-additions/" target="_blank">MISO Large Loads</a>, <a href="https://www.spglobal.com/energy/en/news-research/latest-news/electric-power/022525-miso-on-path-to-reduce-queue-process-to-one-year-with-reforms-technology-executive" target="_blank">S&P Global</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('caiso')">
+    <div class="grid-card-header">
+      <h3>CAISO (California)</h3>
+      <span class="tier-badge tier-2">MODERATE</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">Active Queue</span><span class="grid-stat-value">126 GW (427 projects)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">DC Load in 2025-26 Study</span><span class="grid-stat-value yellow">4.5 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">CA DC Growth by 2030</span><span class="grid-stat-value">+1.8 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">CA DC Growth by 2040</span><span class="grid-stat-value">+4.9 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">New IPP Process Live</span><span class="grid-stat-value green">Jun 25, 2025</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">2024 Queue Cleared</span><span class="grid-stat-value green">~65%</span></div>
+    </div>
+    <div class="grid-card-expand" id="caiso">
+      <div class="expand-note">CAISO's Interconnection Prioritization Process (IPP) replaces first-come-first-served with proximity-to-capacity scoring. South Bay $2B+ transmission plan approved May 2025 for 2.5 GW of DC and EV load 2026-2039. SMUD operates independently (2026 window: Jun 1 - Jul 15). CA Public Advocates scrutinizing DC ratepayer cost shifts Oct 2025. Sources: <a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank">CAISO Jul 2025 Brief</a>, <a href="https://www.zeroemissiongrid.com/iso-rto-meeting-summaries/caiso-interconnection-reforms-2025/" target="_blank">ZEG</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('tva')">
+    <div class="grid-card-header">
+      <h3>TVA (Tennessee Valley)</h3>
+      <span class="tier-badge tier-2">CONSTRAINED</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">DC Share of Industrial Load</span><span class="grid-stat-value red">18% (2025)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">DC Load Projection 2030</span><span class="grid-stat-value red">2x current</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">New Generation Plan</span><span class="grid-stat-value yellow">6.2 GW (largest ever)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Cumberland Gas (1.5 GW)</span><span class="grid-stat-value green">Online late 2026</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Kingston Gas (1.5 GW)</span><span class="grid-stat-value">Online 2027</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Jan 2025 Peak Record</span><span class="grid-stat-value red">35,430 MW</span></div>
+    </div>
+    <div class="grid-card-expand" id="tva">
+      <div class="expand-note">TVA reversed planned coal closures to meet AI DC demand. Tennessee has 60 DCs; 27 in Nashville area. Meta Gallatin campus = 300 MW. TVA $330M new system operations center online 2026. Feb 2026 rate fairness pledge after ratepayer concerns. DC load was 1% of demand six years ago, now 18% of industrial load. Sources: <a href="https://www.utilitydive.com/news/tva-tennessee-valley-authority-nuclear-gas-demand-growth/811306/" target="_blank">Utility Dive</a>, <a href="https://www.datacenterdynamics.com/en/news/tennessee-utility-tva-projects-data-center-load-to-double-across-service-area-by-2030/" target="_blank">DCD</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('wecc')">
+    <div class="grid-card-header">
+      <h3>WECC / Northwest / Rockies</h3>
+      <span class="tier-badge tier-2">MIXED</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">NV Energy (Nevada)</span><span class="grid-stat-value red">49 GW queue; 5.9 GW needed N. NV</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Rocky Mtn Power (UT)</span><span class="grid-stat-value red">Cannot fully serve until 2031+</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Idaho Power</span><span class="grid-stat-value yellow">1,700 MW peak growth (20yr)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Grant County PUD (WA)</span><span class="grid-stat-value red">Load caps hit Q3/Q4 2025</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">PGE Oregon</span><span class="grid-stat-value green">DeFlex 400+ MW by 2029</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Xcel Colorado</span><span class="grid-stat-value yellow">5.8 GW pending; 3-5yr wait</span></div>
+    </div>
+    <div class="grid-card-expand" id="wecc">
+      <div class="expand-note">Utah SB 132 (2025) lets RMP large loads (100+ MW) self-supply if utility cannot serve on reasonable timeline. Grant PUD implementing QTEP (Quincy Transmission Expansion Plan) — new Wanapum Dam line by 2029, segment in service mid-2027. PGE + GridCARE DeFlex deployed Oct 2025: 80 MW incremental by 2026, 400+ MW by 2029 via AI forecasting and flexible dispatch. Sources: <a href="https://www.latitudemedia.com/news/utah-is-taking-a-different-approach-to-new-data-center-load/" target="_blank">Latitude Media UT</a>, <a href="https://grantpudqtep.org/" target="_blank">QTEP</a>, <a href="https://www.prnewswire.com/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302577731.html" target="_blank">PGE/GridCARE</a></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="section-title">Market-by-Market Interconnection Queue Analysis</div>
+<div class="controls">
+  <input type="text" class="search-box" id="searchBox" placeholder="Search markets, utilities, constraints..." oninput="filterTable()">
+  <div class="filter-btns">
+    <button class="fbtn active" onclick="setFilter('all',this)">All Markets (35)</button>
+    <button class="fbtn t1" onclick="setFilter('Tier 1',this)">Tier 1 (8)</button>
+    <button class="fbtn t2" onclick="setFilter('Tier 2',this)">Tier 2 (19)</button>
+    <button class="fbtn em" onclick="setFilter('Emerging',this)">Emerging (8)</button>
+  </div>
+</div>
+<div class="table-wrap">
+<table id="marketTable">
+<thead>
+<tr>
+  <th onclick="sortTable(0)">Market <span class="sort-icon">&#8597;</span></th>
+  <th onclick="sortTable(1)">Tier <span class="sort-icon">&#8597;</span></th>
+  <th onclick="sortTable(2)">Utility / ISO <span class="sort-icon">&#8597;</span></th>
+  <th onclick="sortTable(3)">Queue Depth <span class="sort-icon">&#8597;</span></th>
+  <th onclick="sortTable(4)">Est. Wait <span class="sort-icon">&#8597;</span></th>
+  <th onclick="sortTable(5)">Power Availability <span class="sort-icon">&#8597;</span></th>
+  <th>Key Constraints</th>
+  <th>Recent Developments (2025-2026)</th>
+  <th onclick="sortTable(8)">Trend <span class="sort-icon">&#8597;</span></th>
+</tr>
+</thead>
+<tbody id="tableBody">
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Northern Virginia</div><div class="market-sub">Ashburn / Loudoun / Fairfax</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>Dominion Energy / PJM</td>
+  <td><div class="queue-val">47.2 GW contracted</div><div class="queue-sub">Beyond current production</div></td>
+  <td><span class="wait-val" style="color:#ef4444">3-7+ yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">Transmission saturation</span><span class="constraint-tag">Import dependency</span><span class="constraint-tag">Carbon-free mandate</span><span class="constraint-tag">Rate class overhaul</span></td>
+  <td class="dev-text">VA SCC approved new DC rate class Nov 2025 (85% distribution demand minimum, effective Jan 2027). 2026 GA bills to slow DC growth. +185% contracted capacity Jul 2023-Jul 2025. Dominion admits cannot meet all requests. Loudoun residents fighting new HV transmission lines to SCC.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Dallas-Fort Worth</div><div class="market-sub">Midlothian / Red Oak / Irving</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>Oncor / ERCOT</td>
+  <td><div class="queue-val">410 GW (TX total)</div><div class="queue-sub">DFW is primary cluster</div></td>
+  <td><span class="wait-val" style="color:#ef4444">3-5+ yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">Process overload</span><span class="constraint-tag">Sequential study backlog</span><span class="constraint-tag">TX SB 6 compliance</span><span class="constraint-tag">Transmission lag</span></td>
+  <td class="dev-text">Oncor Southern DFW filed 765-kV line (~180 mi) Dec 2025; decision Jun 2026, energized Dec 2028. ERCOT "Batch Zero" evaluations begin 2026. McKinsey reformed process framework expected Q1 2026. Queue jumped +547% in 12 months.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Phoenix Metro</div><div class="market-sub">Chandler / Mesa / Goodyear</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>APS / SRP</td>
+  <td><div class="queue-val">10+ GW pending (APS)</div><div class="queue-sub">4.7 GW contracted (2/3 DC)</div></td>
+  <td><span class="wait-val" style="color:#ef4444">4-8 yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">Generation shortage</span><span class="constraint-tag">Transmission bottleneck</span><span class="constraint-tag">Extreme heat peaks</span><span class="constraint-tag">Turning away new customers</span></td>
+  <td class="dev-text">APS actively turning away large DC customers: "We can serve you, but just not now." SRP 2026 All-Source RFP seeks 2,900 MW new generation. AZ utilities locking in gas fuel supply. APS has 350 MW DC load today vs 10+ GW pending. Rising residential rates concern.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Chicago / Chicagoland</div><div class="market-sub">Elk Grove Village / Carol Stream</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>ComEd / MISO</td>
+  <td><div class="queue-val">309 GW (MISO total)</div><div class="queue-sub">IL is top MISO load area</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">MISO queue backlog</span><span class="constraint-tag">Urban land scarcity</span><span class="constraint-tag">IL clean energy rules</span><span class="constraint-tag">High RE cost pressure</span></td>
+  <td class="dev-text">MISO ERAS 2nd cycle Dec 2025 (6.1 GW, mostly gas/storage). FERC approved MISO queue cap. Ameren Illinois signed 850 MW DC construction agreements; customers paid $46M nonrefundable. IL Future Energy Jobs Act complicates 24/7 clean energy matching.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Silicon Valley</div><div class="market-sub">San Jose / Santa Clara / Sunnyvale</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>PG&amp;E / SVP / CAISO</td>
+  <td><div class="queue-val">126 GW (CAISO)</div><div class="queue-sub">4.5 GW DC in 2025-26 study</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-6 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">Premium land cost</span><span class="constraint-tag">CAISO queue reform</span><span class="constraint-tag">CA carbon-free mandates</span><span class="constraint-tag">Water restrictions</span></td>
+  <td class="dev-text">CAISO new IPP (Jun 2025) prioritizes proximity to existing capacity. South Bay $2B+ transmission approved May 2025 for 2.5 GW load 2026-2039. Santa Clara SVP operates independent grid. CA CEC projects 4.9 GW DC growth by 2040. CA Public Advocates scrutinizing ratepayer cost impacts.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Atlanta Metro</div><div class="market-sub">Douglasville / Lithia Springs / Norcross</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>Georgia Power / Southern Co.</td>
+  <td><div class="queue-val">9,885 MW approved (PSC)</div><div class="queue-sub">17.9 GW gas in gen queue</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">5 new gas plants planned</span><span class="constraint-tag">Clean energy tension</span><span class="constraint-tag">Rate hike risk post-2031</span><span class="constraint-tag">Generator queue inflation</span></td>
+  <td class="dev-text">Georgia PSC unanimously approved 9,885 MW Dec 19, 2025 (majority for DCs, 5 gas plants). DC customer rate protection through 2031. Gen queue: 17.9 GW gas, 8.4 GW storage. Clean energy advocates oppose fossil build-out. Georgia Recorder: plan reliant on fossil fuel.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">Portland / Hillsboro</div><div class="market-sub">Hillsboro / Beaverton / Boardman</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>Portland General Electric / WECC</td>
+  <td><div class="queue-val">400+ MW pipeline</div><div class="queue-sub">DeFlex methodology deployed</div></td>
+  <td><span class="wait-val" style="color:#22c55e">1-3 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">Hydro variability</span><span class="constraint-tag">OR land use rules</span><span class="constraint-tag">Transmission expansion needed</span></td>
+  <td class="dev-text">PGE + GridCARE DeFlex project deployed Oct 2025: 80 MW incremental in 2026, 400+ MW by 2029. AI forecasting + flexible dispatch avoids multi-year upgrades. Hillsboro remains top-tier market: diverse energy mix, strong fiber, temperate climate. First US deployment of this approach.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Tier 1">
+  <td><div class="market-name">New York / New Jersey</div><div class="market-sub">NYC Metro / NNJ corridor</div></td>
+  <td><span class="tier-badge tier-1">Tier 1</span></td>
+  <td>ConEd / PSE&amp;G / PJM</td>
+  <td><div class="queue-val">~1,700 MW PSE&amp;G queued</div><div class="queue-sub">Solar / storage / offshore wind</div></td>
+  <td><span class="wait-val" style="color:#ef4444">5-8+ yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">PJM 8-yr average wait</span><span class="constraint-tag">Highest power costs nationally</span><span class="constraint-tag">NYC Local Law 97 emissions</span><span class="constraint-tag">FERC colocation opportunity</span></td>
+  <td class="dev-text">PJM capacity auction hit $329/MWh cap in 2026. PJM consumers face $100B+ extra through 2033 from DC demand. FERC colocation rules (Dec 2025) enable generator-adjacent DC connections as alternative path. PSE&G tracking 8 PJM projects. NJ State of the Grid 2025 report flagged capacity constraints.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Columbus, OH</div><div class="market-sub">New Albany / Dublin / Gahanna</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>AEP Ohio / PJM</td>
+  <td><div class="queue-val">30+ GW requests</div><div class="queue-sub">vs ~5 GW 2030 forecast</div></td>
+  <td><span class="wait-val" style="color:#ef4444">4-7 yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">Queue pause lifted Jul 2025</span><span class="constraint-tag">8-yr contract minimum</span><span class="constraint-tag">$100K study fee (100 MW)</span><span class="constraint-tag">85% min demand charge</span></td>
+  <td class="dev-text">AEP Ohio paused new requests Mar 2023; PUCO approved DC tariff Jul 9, 2025 (effective Jul 23). 50+ DCs in queue representing 30+ GW. Load: 100 MW (2020) to 600 MW (2024) to 5 GW (2030 forecast). PJM + AEP + FirstEnergy $1.1B Ohio transmission project approved. Rate hikes prompting customer opposition Dec 2025.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Salt Lake City, UT</div><div class="market-sub">West Jordan / Bluffdale / Draper</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Rocky Mountain Power / WECC</td>
+  <td><div class="queue-val">Severely constrained</div><div class="queue-sub">Cannot fully serve until 2031+</div></td>
+  <td><span class="wait-val" style="color:#ef4444">5-7+ yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">2031+ for new capacity</span><span class="constraint-tag">Self-supply via SB 132</span><span class="constraint-tag">Developers pivoting to on-site gas</span><span class="constraint-tag">15+ DC sites since 2021</span></td>
+  <td class="dev-text">Utah SB 132 (2025) lets 100+ MW loads self-supply if RMP cannot serve. Developers turning to on-site natural gas generation. Novva off-grid 20 MW DC planned near SLC. RMP explicitly cannot guarantee power before 2031. Grist: "companies turning to fossil fuels" to power Utah DC boom.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Indianapolis, IN</div><div class="market-sub">Decatur Twp / Franklin Twp / Lawrence</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>AES Indiana / Duke Energy IN / MISO</td>
+  <td><div class="queue-val">~300 MW active pipeline</div><div class="queue-sub">MISO queue further delayed</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">MISO queue delays</span><span class="constraint-tag">Gas expansion pressure</span><span class="constraint-tag">Zoning conflicts</span><span class="constraint-tag">Ratepayer cost concerns</span></td>
+  <td class="dev-text">4 DC proposals in Indianapolis; 2 active (Metrobloks 53 MW, Sabey 250 MW). AES seeking thermal developers for new gas generators. MISO pushed queue timelines back again in 2025. Jan 2026 PACES report: Indiana emerging as secondary market. AES customer bill increase concerns mounting.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Reno / Sparks, NV</div><div class="market-sub">Tahoe-Reno Industrial Center</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>NV Energy / WECC</td>
+  <td><div class="queue-val">49 GW (NV total)</div><div class="queue-sub">5,900 MW needed in N. Nevada</div></td>
+  <td><span class="wait-val" style="color:#ef4444">4-6 yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">Capacity quadrupling required</span><span class="constraint-tag">PUCN Rule 9 cost-sharing</span><span class="constraint-tag">Major transmission buildout</span><span class="constraint-tag">Greenlink project underway</span></td>
+  <td class="dev-text">NV Energy IRP: 5,900 MW new capacity needed for N. NV (vs 2,100 MW current peak). Pending requests could require 4x current capacity. Novva Tahoe Reno (60 MW, 300K sqft) announced at TRIC. Greenlink Nevada transmission underway. NV lawmakers considering DC regulations 2026 session.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">San Antonio, TX</div><div class="market-sub">West Side / Castroville corridor</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>CPS Energy / ERCOT</td>
+  <td><div class="queue-val">2 GW in queue</div><div class="queue-sub">vs 6,000 MW summer peak</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">$1.4B TX spend needed (5 yrs)</span><span class="constraint-tag">15 new ERCOT TX lines approved</span><span class="constraint-tag">AI-driven surge</span><span class="constraint-tag">Spruce 2 plant conversion</span></td>
+  <td class="dev-text">CPS Energy investing $1.4B in transmission over 5 years. Microsoft has 8 DCs + new $482M Castroville facility. Stream Data Centers 200 MW hyperscale campus broke ground Jul 2025. CPS warns 5-7 yr delivery timeline. AI power grab putting CPS "on the ropes" per Hoodline Mar 2026.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Kansas City, MO/KS</div><div class="market-sub">Lenexa / Overland Park / North KC</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Evergy / MISO / SPP</td>
+  <td><div class="queue-val">15 GW total pipeline</div><div class="queue-sub">~5 GW advanced stage</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">Must double generation output</span><span class="constraint-tag">KS/MO parallel rate cases</span><span class="constraint-tag">Permitting delays</span><span class="constraint-tag">Defunct plant sites targeted</span></td>
+  <td class="dev-text">Kansas KCC approved Evergy large-load Power Service Rate Plan (75+ MW) Nov 6, 2025. 20+ large-load customers in active discussions (6+ GW). MO/KS commissions working to enable Evergy to 2x output. Developers exploring defunct KC Power &amp; Light plant site Jul 2025.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Nashville, TN</div><div class="market-sub">Gallatin / Murfreesboro / Smyrna</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>TVA / Nashville Electric</td>
+  <td><div class="queue-val">27 DCs in Nashville area</div><div class="queue-sub">DCs = 18% TVA industrial load</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">TVA coal reversal for DCs</span><span class="constraint-tag">Gas plant lag 2026-27</span><span class="constraint-tag">Rate equity concerns</span><span class="constraint-tag">Peak records broken 2025</span></td>
+  <td class="dev-text">TVA 6.2 GW build-out = largest capital program in history. Meta Gallatin campus = 300 MW. Cumberland gas 1.5 GW online late 2026; Kingston 1.5 GW online 2027. TVA reversed coal plant closures. Feb 2026 rate fairness pledge. Tennessee has 60 DCs total statewide.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Richmond, VA</div><div class="market-sub">Henrico / Chester / Chesterfield</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Dominion Energy / PJM</td>
+  <td><div class="queue-val">Part of 47.2 GW VA total</div><div class="queue-sub">NoVA spillover market</div></td>
+  <td><span class="wait-val" style="color:#ef4444">4-7 yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">NoVA overflow pressure</span><span class="constraint-tag">Transmission saturation</span><span class="constraint-tag">New DC rate class Jan 2027</span><span class="constraint-tag">State import dependency</span></td>
+  <td class="dev-text">VA SCC approved new DC rate class Nov 2025 (effective Jan 2027): 85% distribution minimum, 60% generation minimum. Dominion +185% contracted capacity. VA importing electricity while DCs seek 2x current production. PJM colocation rules create alternative interconnection path.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Sacramento, CA</div><div class="market-sub">Elk Grove / Rancho Cordova / Natomas</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>SMUD / CAISO</td>
+  <td><div class="queue-val">CAISO: 126 GW total</div><div class="queue-sub">SMUD independent framework</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">2-4 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">SMUD annual window only</span><span class="constraint-tag">CA clean energy mandates</span><span class="constraint-tag">Ratepayer cost scrutiny</span></td>
+  <td class="dev-text">SMUD 2026 application window: Jun 1 - Jul 15 (sole annual opportunity). El Rio Substation construction Q1 2025, complete late 2026. SMUD operates outside CAISO cluster process. CA Public Advocates scrutinizing DC ratepayer cost impacts (Oct 2025 commentary). Moderate availability vs Bay Area.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Quincy, WA</div><div class="market-sub">Central Washington / Grant County</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Grant County PUD / BPA / WECC</td>
+  <td><div class="queue-val">~3,000 MW queued</div><div class="queue-sub">3x PUD peak demand; 1,578 MW Quincy</div></td>
+  <td><span class="wait-val" style="color:#ef4444">4-6 yrs (until QTEP)</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">Hard demand caps hit Q3 2025</span><span class="constraint-tag">Transmission bottleneck</span><span class="constraint-tag">QTEP in-service 2027-2029</span><span class="constraint-tag">DCs = 45% of PUD annual load</span></td>
+  <td class="dev-text">Grant PUD placed hard demand caps on DCs (caps hit Q3/Q4 2025). QTEP: new Wanapum Dam-Quincy line, segment in-service mid-2027. WA lawmakers pushing DC regulation Feb 2026. Governor Ferguson ordered DC impact assessment. WA propublica investigation into tax breaks vs clean energy goals.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Council Bluffs, IA</div><div class="market-sub">Omaha Metro / Iowa side</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>MidAmerican Energy / MISO</td>
+  <td><div class="queue-val">800 MW solar approved</div><div class="queue-sub">518 MW gas plant pending IUC</div></td>
+  <td><span class="wait-val" style="color:#22c55e">2-4 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">IUC approval needed for gas</span><span class="constraint-tag">Wind/solar reliability mix</span><span class="constraint-tag">Solar plan phased 2027-2028</span></td>
+  <td class="dev-text">Google $5.5B invested in Council Bluffs; new $576M Cedar Rapids campus. Google 407 MW MidAmerican wind deal. MidAmerican 800 MW Solar Reliability Project (IUC approved, phases 2027-2028). 518 MW Orient Energy Center gas plant pending IUC. Edged reducing DC campus scope 2025. Clean energy ITC concerns from Big Beautiful Bill.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Denver / Boulder, CO</div><div class="market-sub">Data Center Row (Denver / Aurora)</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Xcel Energy / SPP / WECC</td>
+  <td><div class="queue-val">5.8 GW pending</div><div class="queue-sub">8.5 GW expected by 2040</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">$22B infrastructure needed</span><span class="constraint-tag">CO PUC 15-yr contracts required</span><span class="constraint-tag">Tariff filing due Apr 2, 2026</span><span class="constraint-tag">Security deposits required</span></td>
+  <td class="dev-text">Xcel has 5.8 GW DC pending, 8.5 GW projected by 2040. Xcel seeking 12-14 GW new gen, $22B total investment. CO PUC requires 15-yr contracts, security deposits, early-exit fees. Tariff filing deadline extended to Apr 2, 2026. Data Center Row (Denver/Aurora) corridor expanding rapidly.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Charlotte / Carolinas</div><div class="market-sub">Charlotte / Kannapolis / Research Triangle</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Duke Energy / SERC</td>
+  <td><div class="queue-val">Tranche-based system</div><div class="queue-sub">2025 Carolinas Resource Plan filed</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-6 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">Urban transmission limits</span><span class="constraint-tag">Tranche queue system</span><span class="constraint-tag">NCUC IRP hearings 2026</span><span class="constraint-tag">Dual rate cases 2025-2026</span></td>
+  <td class="dev-text">Duke signed Microsoft + Compass DC power deals (Bloomberg Feb 2026). Digital Realty $160M 155-acre 4th facility in Charlotte. NCUC now requires semiannual large-load reports. Duke Carolinas rate case Jan 2026; Duke Progress Oct 2025. NCUC IRP order due Dec 31, 2026.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">St. Louis, MO</div><div class="market-sub">St. Charles County / Metro East IL</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Ameren Missouri / MISO</td>
+  <td><div class="queue-val">3 GW construction agreements</div><div class="queue-sub">2.2 GW new signed Feb 2026</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">100% direct interconnect cost upfront</span><span class="constraint-tag">2-yr min-bill security deposit</span><span class="constraint-tag">Confidential contracts</span><span class="constraint-tag">MISO fast-track DOE snag</span></td>
+  <td class="dev-text">Ameren Missouri signed confidential 2.2 GW DC contracts Feb 2026 (undisclosed companies). MO PSC approved large-load rate structure Nov 2025 (100% interconnect upfront, $38M nonrefundable paid). St. Charles rejected one DC. Ameren IL signed 850 MW DC agreements ($46M nonrefundable). 300 MW MISO fast-track hit DOE funding uncertainty.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Minneapolis / Twin Cities</div><div class="market-sub">Eagan / Eden Prairie / Shakopee</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Xcel Energy / MISO</td>
+  <td><div class="queue-val">2+ GW contracted</div><div class="queue-sub">6 GW expected in queue by 2027</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">MN PUC large-load tariff rules</span><span class="constraint-tag">MN Energy Connection line</span><span class="constraint-tag">Clean energy 24/7 matching</span><span class="constraint-tag">Distributed capacity pilot</span></td>
+  <td class="dev-text">Xcel + Google deal: 1,900 MW new clean energy for Pine Island MN DC (announced Feb 24, 2026). MN Energy Connection transmission: CON/RP approved Apr 10, 2025; construction Spring 2026. Xcel + NextEra MOU for large-load generation. Xcel pursuing large-load tariffs in MN, WI, CO, TX. 6 GW expected by 2027.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Houston, TX</div><div class="market-sub">Katy / Sugar Land / The Woodlands</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>CenterPoint Energy / ERCOT</td>
+  <td><div class="queue-val">1 GW to 8 GW</div><div class="queue-sub">Under 1 year jump</div></td>
+  <td><span class="wait-val" style="color:#ef4444">4-6 yrs</span></td>
+  <td><span class="avail-badge avail-critical">Critical</span></td>
+  <td><span class="constraint-tag">8x queue jump in 12 months</span><span class="constraint-tag">50% load rise projected by 2031</span><span class="constraint-tag">Grid upgrade lag</span><span class="constraint-tag">On-site gas as bridge</span></td>
+  <td class="dev-text">CenterPoint queue: 1 GW to 8 GW in under 12 months. Google, Meta, Amazon, OpenAI all seeking Houston grid capacity. ERCOT batch studies will include Houston loads. CenterPoint upgrade lag pushing developers to install interim gas turbines or fuel cells. ~50% load growth projected by 2031.</td>
+  <td><span class="trend-up" title="Constraints worsening">&#8679;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Miami / South Florida</div><div class="market-sub">Doral / Boca Raton / Fort Lauderdale</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>FPL / SERC (non-ISO)</td>
+  <td><div class="queue-val">23.57 GW (FL statewide)</div><div class="queue-sub">FPL gen interconnection queue</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">Extreme heat / cooling peaks</span><span class="constraint-tag">Hurricane resiliency premium</span><span class="constraint-tag">FPL large-load tariff</span><span class="constraint-tag">Rate allocation dispute</span></td>
+  <td class="dev-text">Iron Mountain MIA-1 (16 MW GPU-ready facility, phasing to mid-2026). FPL rate case on DC cost allocation Oct 2025 (FL could set precedent on residential bill impacts). DeSantis signaling against imposing DC costs on residents. FPL plans 521.5 MW storage in 2025, 7,603 MW by 2034. FL incentive packages reshaping DC siting.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Seattle / Puget Sound</div><div class="market-sub">Redmond / Bellevue / Tukwila</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Puget Sound Energy / BPA / WECC</td>
+  <td><div class="queue-val">Constrained</div><div class="queue-sub">First WA Integrated System Plan in dev.</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">Transmission permits lag</span><span class="constraint-tag">WA clean energy mandate</span><span class="constraint-tag">10% demand response law by Jan 2027</span><span class="constraint-tag">Hydro variability</span></td>
+  <td class="dev-text">WA PSE developing first statewide ISP (WUTC rulemaking completed Oct 2025). WA law requires PSE to offset 10% peak via demand response by Jan 2027. WA Dec 2025 DC workgroup report published. WA falling behind clean energy buildout needed for DC growth. Microsoft/Amazon/Google campus density creates competing demand pressure.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+<tr data-tier="Tier 2">
+  <td><div class="market-name">Boise, ID</div><div class="market-sub">Kuna / Meridian / Nampa</div></td>
+  <td><span class="tier-badge tier-2">Tier 2</span></td>
+  <td>Idaho Power / WECC</td>
+  <td><div class="queue-val">1,700 MW peak growth (20yr)</div><div class="queue-sub">1,000 MW over next 5 yrs</div></td>
+  <td><span class="wait-val" style="color:#22c55e">2-4 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">Hyperscale newcomer market</span><span class="constraint-tag">Large loads fund own infrastructure</span><span class="constraint-tag">Cluster window Mar 2026</span><span class="constraint-tag">Rate case 2025</span></td>
+  <td class="dev-text">Meta $800M AI data center in Kuna (operations 2026, AI-redesigned). Micron expansion in Boise. Diode Ventures $1B Gemstone Technology Park (620 acres, 5 DCs, 10-year buildout). Idaho Power online portal for large gen interconnection: Mar 1, 2026. Idaho requires large loads to fund own infrastructure.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Detroit / SE Michigan</div><div class="market-sub">Ann Arbor / Saline / Washtenaw Co.</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>DTE Energy / Consumers Energy / MISO</td>
+  <td><div class="queue-val">1.4 GW DTE deal signed</div><div class="queue-sub">15 GW Consumers pipeline</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">15-yr contract minimum</span><span class="constraint-tag">80% minimum demand billing</span><span class="constraint-tag">$7B DC approved Dec 2025</span><span class="constraint-tag">12 GW DTE new gen plan</span></td>
+  <td class="dev-text">MPSC conditionally approved DTE $7B/1.4 GW Washtenaw DC contracts Dec 18, 2025. DTE plans 12 GW new gen 2026-2032; signed 1.4 GW hyperscaler with line of sight to 7 GW more. Consumers: MPSC approved Nov 6, 2025 framework (15-yr min, 80% billing demand). Michigan regulators: approved with ratepayer safeguards.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Huntsville, AL</div><div class="market-sub">Madison County / Decatur corridor</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>TVA / Huntsville Utilities</td>
+  <td><div class="queue-val">8 DCs operational</div><div class="queue-sub">DC = 18% TVA industrial load</div></td>
+  <td><span class="wait-val" style="color:#22c55e">2-4 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">TVA supply chain lag</span><span class="constraint-tag">Gas plant completion pace</span><span class="constraint-tag">Competitive TVA power rates</span></td>
+  <td class="dev-text">N. Alabama fastest-growing DC market nationally. AL has 23 DCs (Huntsville leads with 8). TVA cheap rates attract hyperscalers. Meta + DC BLOX operational in Huntsville. Redstone Arsenal load +23 MW by 2025, +39 MW by 2026-27. TVA 6.2 GW build-out underway. Mar 2026 Axios gut-check: some DC projects seeing delays.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Pittsburgh, PA</div><div class="market-sub">Homer City / Monroeville / Coraopolis</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>FirstEnergy / Duquesne Light / PJM</td>
+  <td><div class="queue-val">Homer City: 4.5 GW planned</div><div class="queue-sub">PJM + NYISO dual grid connection</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">PJM 8-yr queue backlog</span><span class="constraint-tag">Legacy grid infrastructure</span><span class="constraint-tag">Colocation model opportunity</span><span class="constraint-tag">$10B project planned</span></td>
+  <td class="dev-text">Homer City Redevelopment + Kiewit: up to 4.5 GW gas at retired coal plant (~50 mi east of Pittsburgh), $10B project. Site connects to both PJM + NYISO grids. FirstEnergy peak load forecast +45% by 2035 on DC demand. FirstEnergy $28B capex 2025-2029 ($14B transmission). Transource $1.7B PJM footprint upgrades.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Cincinnati, OH</div><div class="market-sub">West Chester / Mason / Florence KY</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>Duke Energy Ohio / AEP / PJM</td>
+  <td><div class="queue-val">Limited - Columbus overflow</div><div class="queue-sub">PJM coordination required</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">Columbus overflow path</span><span class="constraint-tag">PJM queue dependency</span><span class="constraint-tag">KY cross-border planning</span><span class="constraint-tag">AEP 24 GW new load by 2030</span></td>
+  <td class="dev-text">Cincinnati positioned as Columbus/N. Kentucky spillover market. AEP projects 24 GW new load by 2030 (mostly DCs). Duke Energy Ohio and Indiana converging DC demand. N. Kentucky (Florence/Hebron) part of growing corridor. Cross-border PJM transmission coordination needed. AEP leveraging fuel cell technology for DC power.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Jacksonville, FL</div><div class="market-sub">Nassau County / JIA corridor</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>JEA / Duke Energy FL / FPL</td>
+  <td><div class="queue-val">Early-stage pipeline</div><div class="queue-sub">23.57 GW FL statewide queue</div></td>
+  <td><span class="wait-val" style="color:#22c55e">2-4 yrs</span></td>
+  <td><span class="avail-badge avail-available">Available</span></td>
+  <td><span class="constraint-tag">Fiber connectivity gap vs Miami</span><span class="constraint-tag">Hurricane zone premium</span><span class="constraint-tag">JEA municipally owned utility</span></td>
+  <td class="dev-text">NextNRG Nassau County Campus: 200 MW smart microgrid on 1,600-acre site near JIA, designed for AI workloads, adjacent to Duke Hines complex. FL incentive packages reshaping DC growth (2025 legislation). Top 5 upcoming FL DC projects include Jacksonville corridor for 2026. JEA competitive rates attract early operators.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Omaha, NE</div><div class="market-sub">Sarpy County / La Vista / Papillion</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>OPPD / SPP</td>
+  <td><div class="queue-val">+470 MW peak load since 2019</div><div class="queue-sub">SPP GIAs expected Jan 2026</div></td>
+  <td><span class="wait-val" style="color:#22c55e">2-4 yrs</span></td>
+  <td><span class="avail-badge avail-moderate">Moderate</span></td>
+  <td><span class="constraint-tag">Coal retirement timing uncertainty</span><span class="constraint-tag">SPP GIA dependency</span><span class="constraint-tag">6.3% rate hike 2026</span><span class="constraint-tag">N. Omaha Station transition</span></td>
+  <td class="dev-text">Google + Meta hyperscale campuses anchor "Silicon Prairie" branding. OPPD expects SPP Generation Interconnection Agreements Jan 2026. North Omaha Station coal-to-gas conversion debated (vote delayed Oct 2025, Dec 2025 resolution). OPPD $2.98B 2026 plan approved; rates up 6.3%. Former Gov. Ricketts: OPPD was "linchpin" of Silicon Valley recruitment.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Spokane, WA</div><div class="market-sub">Liberty Lake / Post Falls ID border</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>Avista Utilities / BPA / WECC</td>
+  <td><div class="queue-val">Early-stage</div><div class="queue-sub">Avista 2025 IRP filed Dec 2024</div></td>
+  <td><span class="wait-val" style="color:#22c55e">2-3 yrs</span></td>
+  <td><span class="avail-badge avail-available">Available</span></td>
+  <td><span class="constraint-tag">Hydro-dependent grid</span><span class="constraint-tag">Colstrip TX system upgrade needed</span><span class="constraint-tag">WA DC regulations incoming 2026</span><span class="constraint-tag">Limited fiber vs Seattle</span></td>
+  <td class="dev-text">Avista 2025 IRP: upgrading 230 kV W. Spokane substation, Colstrip TX system (MT), Lolo-Oxbow line (Avista/Idaho Power interconnect). Avista downtown underground electric network attracts DC interest for reliable power. WA Dec 2025 DC workgroup report emphasizes Spokane region potential. WA regulation bills introduced Feb 2026.</td>
+  <td><span class="trend-down" title="Constraints improving">&#8681;</span></td>
+</tr>
+
+<tr data-tier="Emerging">
+  <td><div class="market-name">Las Vegas, NV</div><div class="market-sub">Henderson / North Las Vegas / Nellis</div></td>
+  <td><span class="tier-badge tier-em">Emerging</span></td>
+  <td>NV Energy (South) / WECC</td>
+  <td><div class="queue-val">Part of 49 GW NV total</div><div class="queue-sub">Southern NV demand growing</div></td>
+  <td><span class="wait-val" style="color:#f59e0b">3-5 yrs</span></td>
+  <td><span class="avail-badge avail-tight">Tight</span></td>
+  <td><span class="constraint-tag">Extreme heat load peaks</span><span class="constraint-tag">Colorado River water shortage</span><span class="constraint-tag">NV legislature 2026</span><span class="constraint-tag">PUCN Rule 9 cost-sharing</span></td>
+  <td class="dev-text">NV legislators considering DC regulations in 2026 session. NV Energy Greenlink Nevada transmission project unlocking southern NV capacity. Nevada "dirty data centers" debate active Dec 2025. Phoenix overflow demand driving Las Vegas consideration as alternative desert market. Water restrictions limit traditional cooling approaches.</td>
+  <td><span class="trend-flat" title="Stable / Mixed">&#8596;</span></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+<div class="section-title">Policy &amp; Regulatory Watch</div>
+<div class="policy-grid">
+
+  <div class="policy-card">
+    <h4><span class="dot" style="background:#ef4444"></span>Federal / FERC Actions</h4>
+    <div class="policy-item">
+      <div class="date">Dec 18, 2025</div>
+      <strong>FERC PJM Colocation Order</strong> — Directed PJM to create 3 new transmission service tiers (Firm, Non-Firm, Interim) for DC co-location at power plants. PJM compliance: Feb 16, 2026.
+    </div>
+    <div class="policy-item">
+      <div class="date">Oct 23, 2025</div>
+      <strong>DOE ANPR to FERC</strong> — Advanced Notice of Proposed Rulemaking with principles for all large-load interconnections nationwide. FERC must act by Apr 30, 2026.
+    </div>
+    <div class="policy-item">
+      <div class="date">Feb 2025</div>
+      <strong>FERC Show Cause Order (PJM)</strong> — Required PJM to justify tariff clarity for co-location arrangements; triggered the Dec 18 final colocation order.
+    </div>
+    <div class="policy-item">
+      <div class="date">2025-2026</div>
+      <strong>FERC BTMG Reform</strong> — Behind-the-meter generation studied only at actual grid injection amount (not full plant size), reducing DC study obligations where generator serves most load locally.
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h4><span class="dot" style="background:#f59e0b"></span>State Regulatory Actions</h4>
+    <div class="policy-item">
+      <div class="date">Nov 2025</div>
+      <strong>Virginia SCC</strong> — Approved new DC electricity rate class: 85% distribution demand minimum, 60% generation minimum, effective Jan 2027.
+    </div>
+    <div class="policy-item">
+      <div class="date">Jul 23, 2025</div>
+      <strong>Ohio PUCO</strong> — AEP Ohio DC tariff settlement effective: 8-yr contract min, 85% min demand, $100K study fee for 100 MW facility, early-exit fees.
+    </div>
+    <div class="policy-item">
+      <div class="date">Nov 6, 2025</div>
+      <strong>Kansas KCC + Michigan MPSC</strong> — Same-day approvals: Evergy (KS) large-load Power Service Rate Plan (75+ MW) and Consumers Energy (MI) framework (15-yr min, 80% billing).
+    </div>
+    <div class="policy-item">
+      <div class="date">Dec 19, 2025</div>
+      <strong>Georgia PSC</strong> — Unanimously approved Georgia Power 9,885 MW expansion (5 gas plants + storage/solar) primarily to serve data centers.
+    </div>
+    <div class="policy-item">
+      <div class="date">Dec 18, 2025</div>
+      <strong>Michigan MPSC</strong> — Conditionally approved DTE $7B / 1.4 GW DC contracts with mandatory ratepayer safeguards.
+    </div>
+    <div class="policy-item">
+      <div class="date">Nov 2025</div>
+      <strong>Missouri PSC</strong> — Approved Ameren Missouri large-load rate structure: 100% direct interconnect costs upfront, 2-yr minimum bill security.
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h4><span class="dot" style="background:#22c55e"></span>State Legislation &amp; Reform</h4>
+    <div class="policy-item">
+      <div class="date">2025</div>
+      <strong>Utah SB 132</strong> — Allows 100+ MW DC loads to self-supply power if Rocky Mountain Power cannot serve on reasonable timeline. 90-day evaluation window for utility.
+    </div>
+    <div class="policy-item">
+      <div class="date">Jan 2026</div>
+      <strong>Virginia 2026 GA Bills</strong> — Multiple bills (HB155, HB503) to slow DC growth, add review requirements, address PJM/Dominion capacity constraints.
+    </div>
+    <div class="policy-item">
+      <div class="date">Feb 2026</div>
+      <strong>Washington State</strong> — Lawmakers pushing DC regulation bills; Dec 2025 workgroup report released; Governor Ferguson ordered data center impact assessment.
+    </div>
+    <div class="policy-item">
+      <div class="date">2026 (Apr deadline)</div>
+      <strong>Colorado PUC / Xcel Tariff</strong> — CO PUC requires 15-yr contracts, upfront fees, security deposits, and early-exit penalties for all DC large loads. Xcel tariff filing due Apr 2, 2026.
+    </div>
+    <div class="policy-item">
+      <div class="date">2025-2026</div>
+      <strong>North Carolina NCUC</strong> — Requires semiannual large-load reports from Duke; IRP order due Dec 31, 2026; rate cases for Duke Carolinas (Jan 2026) and Duke Progress (Oct 2025).
+    </div>
+  </div>
+
+  <div class="policy-card">
+    <h4><span class="dot" style="background:#4f8ef7"></span>Grid Operator Reforms</h4>
+    <div class="policy-item">
+      <div class="date">Jun 25, 2025</div>
+      <strong>CAISO IPP Live</strong> — New Interconnection Prioritization Process replaces first-come-first-served with location / proximity-to-capacity scoring. ~65% of 2024 queue cleared.
+    </div>
+    <div class="policy-item">
+      <div class="date">Dec 2025</div>
+      <strong>MISO ERAS Cycle 2</strong> — 6.1 GW expedited resource study launched (mostly gas/storage). ERAS Cycle 3 starts Mar 2, 2026. MISO target: reduce queue time to 1 year.
+    </div>
+    <div class="policy-item">
+      <div class="date">2026</div>
+      <strong>ERCOT Batch Studies</strong> — "Batch Zero" first evaluations expected 2026. McKinsey framework for reformed large-load process targeting Q1 2026 delivery.
+    </div>
+    <div class="policy-item">
+      <div class="date">Oct 2025</div>
+      <strong>PGE + GridCARE DeFlex</strong> — First US deployment in Hillsboro OR: AI-driven flexible dispatch accelerates 400+ MW DC interconnection by years, avoiding multi-year upgrade waits.
+    </div>
+    <div class="policy-item">
+      <div class="date">Mar 1, 2026</div>
+      <strong>Idaho Power Online Portal</strong> — Transitioning to online application portal for all large generation interconnection requests.
+    </div>
+    <div class="policy-item">
+      <div class="date">Jan 2026</div>
+      <strong>SMUD 2026 Window</strong> — Jun 1 - Jul 15, 2026 is the sole annual interconnection application window (independent of CAISO).
+    </div>
+  </div>
+
+</div>
+
+<div class="section-title">Sources &amp; References</div>
+<div class="sources-grid">
+  <div class="source-item"><div class="src-label">ERCOT Queue Surge</div><a href="https://www.latitudemedia.com/news/ercots-large-load-queue-has-nearly-quadrupled-in-a-single-year/" target="_blank">Latitude Media — ERCOT Queue Quadrupled</a></div>
+  <div class="source-item"><div class="src-label">ERCOT 410 GW Record</div><a href="https://www.rtoinsider.com/129421-ercot-large-load-requests-soar-again/" target="_blank">RTO Insider — ERCOT Large Load Soar to 410 GW</a></div>
+  <div class="source-item"><div class="src-label">ERCOT Process Reform</div><a href="https://www.houstonpublicmedia.org/articles/news/energy-environment/2026/02/10/543043/ercot-to-update-planning-process-for-connecting-data-centers-other-large-loads-to-texas-power-grid/" target="_blank">Houston Public Media — ERCOT Batch Studies Feb 2026</a></div>
+  <div class="source-item"><div class="src-label">ERCOT Texas Bubble</div><a href="https://www.cnbc.com/2025/12/12/ai-data-center-flood-texas-on-massive-scale.html" target="_blank">CNBC — Texas DC Requests See Bubble Dec 2025</a></div>
+  <div class="source-item"><div class="src-label">PJM Large Load Fast Track</div><a href="https://insidelines.pjm.com/pjm-board-fast-tracks-effort-to-reliably-serve-large-loads/" target="_blank">PJM Inside Lines — Fast Track Board Action</a></div>
+  <div class="source-item"><div class="src-label">PJM 2025 Year in Review</div><a href="https://insidelines.pjm.com/2025-year-in-review-planning-prepares-for-burgeoning-electricity-demand/" target="_blank">PJM Inside Lines — 2025 Planning Review</a></div>
+  <div class="source-item"><div class="src-label">FERC PJM Colocation Order</div><a href="https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and" target="_blank">FERC — Dec 18, 2025 PJM Colocation Order</a></div>
+  <div class="source-item"><div class="src-label">FERC Colocation Complete Guide</div><a href="https://introl.com/blog/ferc-pjm-colocation-ruling-data-center-power-plant-guide-2025" target="_blank">Introl — FERC Colocation Ruling Guide</a></div>
+  <div class="source-item"><div class="src-label">MISO 1-Year Queue Goal</div><a href="https://www.spglobal.com/energy/en/news-research/latest-news/electric-power/022525-miso-on-path-to-reduce-queue-process-to-one-year-with-reforms-technology-executive" target="_blank">S&P Global — MISO 1-Year Queue Goal</a></div>
+  <div class="source-item"><div class="src-label">MISO Large Loads Page</div><a href="https://www.misoenergy.org/planning/large-loads---container-page/large-load-additions/" target="_blank">MISO.org — Large Load Additions</a></div>
+  <div class="source-item"><div class="src-label">CAISO Queue Status</div><a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank">CAISO — Queue Status Brief Jul 2025</a></div>
+  <div class="source-item"><div class="src-label">CAISO IPP Reforms</div><a href="https://www.zeroemissiongrid.com/iso-rto-meeting-summaries/caiso-interconnection-reforms-2025/" target="_blank">Zero Emission Grid — CAISO IPP 2025</a></div>
+  <div class="source-item"><div class="src-label">Dominion Can't Meet Demand</div><a href="https://www.datacenterdynamics.com/en/news/dominion-energy-admits-it-cant-meet-data-center-power-demands-in-virginia/" target="_blank">DCD — Dominion Admits Capacity Limits</a></div>
+  <div class="source-item"><div class="src-label">Virginia New Rates Jan 2026</div><a href="https://insideclimatenews.org/news/07012026/virginia-regulators-approve-new-dominion-rates/" target="_blank">Inside Climate News — VA Rates Approved</a></div>
+  <div class="source-item"><div class="src-label">Virginia 2026 DC Bills</div><a href="https://www.vpm.org/generalassembly/2026-01-16/2026-data-center-bills-thomas-hb155-mcauliff-hb503-pjm-dominion-energy" target="_blank">VPM — 2026 VA Data Center Reform Bills</a></div>
+  <div class="source-item"><div class="src-label">Phoenix APS Grid Risks</div><a href="https://www.utilitydive.com/news/data-center-grid-reliability-residential-cost-aps-load-growth/732480/" target="_blank">Utility Dive — APS Grid Reliability Risks</a></div>
+  <div class="source-item"><div class="src-label">Phoenix Grid at Limit Nov 2025</div><a href="https://www.azfamily.com/2025/11/11/data-centers-continue-push-phoenix-areas-power-grid-limit/" target="_blank">AZ Family — Phoenix Grid at Limit</a></div>
+  <div class="source-item"><div class="src-label">Georgia PSC Dec 2025</div><a href="https://georgiarecorder.com/2025/12/19/georgia-regulators-approve-massive-power-grid-expansion-to-serve-data-centers/" target="_blank">Georgia Recorder — PSC Approves 9,885 MW</a></div>
+  <div class="source-item"><div class="src-label">PGE GridCARE DeFlex</div><a href="https://www.prnewswire.com/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302577731.html" target="_blank">PRNewswire — PGE GridCARE Oct 2025</a></div>
+  <div class="source-item"><div class="src-label">Grant PUD Load Caps</div><a href="https://columbiabasinherald.com/news/2025/mar/31/grant-pud-places-limits-on-electrical-demand-from-data-centers/" target="_blank">Columbia Basin Herald — Load Caps Mar 2025</a></div>
+  <div class="source-item"><div class="src-label">Quincy QTEP Expansion</div><a href="https://grantpudqtep.org/" target="_blank">Grant PUD QTEP — Transmission Expansion Plan</a></div>
+  <div class="source-item"><div class="src-label">TVA 6.2 GW Build</div><a href="https://www.utilitydive.com/news/tva-tennessee-valley-authority-nuclear-gas-demand-growth/811306/" target="_blank">Utility Dive — TVA 6.2 GW Largest Program</a></div>
+  <div class="source-item"><div class="src-label">Tennessee 60 Data Centers</div><a href="https://wpln.org/post/tennessee-has-60-data-centers-nashville-probably-has-more-than-you-think/" target="_blank">WPLN — Tennessee 60 Data Centers</a></div>
+  <div class="source-item"><div class="src-label">Ohio AEP Tariff Approved</div><a href="https://www.utilitydive.com/news/Ohio-regulators-approve-aep-data-center-interconnection-rules/752690/" target="_blank">Utility Dive — Ohio Regulators Approve AEP Rules</a></div>
+  <div class="source-item"><div class="src-label">Ohio AEP Cost Burden Precedent</div><a href="https://www.datacenterfrontier.com/energy/article/55304787/ohio-sets-new-precedent-aeps-power-rules-shift-data-center-cost-burden" target="_blank">DC Frontier — Ohio AEP Precedent</a></div>
+  <div class="source-item"><div class="src-label">Utah Different Approach</div><a href="https://www.latitudemedia.com/news/utah-is-taking-a-different-approach-to-new-data-center-load/" target="_blank">Latitude Media — Utah SB 132 Approach</a></div>
+  <div class="source-item"><div class="src-label">Reno / NV Greenlink</div><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank">Nevada Current — Greenlink Jan 2026</a></div>
+  <div class="source-item"><div class="src-label">Denver Xcel $22B Plan</div><a href="https://coloradosun.com/2025/08/18/colorado-xcel-data-center-demand-spending/" target="_blank">Colorado Sun — Xcel $22B Aug 2025</a></div>
+  <div class="source-item"><div class="src-label">Charlotte Duke Data Centers</div><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank">Canary Media — Duke NC Data Centers</a></div>
+  <div class="source-item"><div class="src-label">St. Louis Ameren Contracts</div><a href="https://www.stlpr.org/health-science-environment/2026-02-12/ameren-missouri-signed-confidential-contracts-with-multiple-big-data-centers-this-week" target="_blank">St. Louis Public Radio — Ameren 2.2 GW Feb 2026</a></div>
+  <div class="source-item"><div class="src-label">Minneapolis Xcel Google</div><a href="https://newsroom.xcelenergy.com/news/xcel-energy-to-power-new-google-data-center-in-minnesota" target="_blank">Xcel Newsroom — Google Pine Island Feb 2026</a></div>
+  <div class="source-item"><div class="src-label">Houston CenterPoint ERCOT</div><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank">Inside Climate News — ERCOT Batch Zero</a></div>
+  <div class="source-item"><div class="src-label">San Antonio CPS Energy</div><a href="https://www.datacenterdynamics.com/en/news/cps-energy-to-invest-upwards-of-13bn-in-transmission-and-generation-to-meet-rapid-data-center-growth-in-texas/" target="_blank">DCD — CPS Energy $1.3B+ Investment</a></div>
+  <div class="source-item"><div class="src-label">Kansas City Evergy Rules</div><a href="https://www.utilitydive.com/news/kansas-michigan-data-center-large-load-evergy-consumers/805115/" target="_blank">Utility Dive — KS/MI Evergy Consumers Nov 2025</a></div>
+  <div class="source-item"><div class="src-label">Detroit DTE MPSC</div><a href="https://www.michigan.gov/mpsc/commission/news-releases/2025/12/18/mpsc-approves-dte-electric-energy-contracts-for-data-center" target="_blank">Michigan MPSC — DTE Dec 18, 2025</a></div>
+  <div class="source-item"><div class="src-label">Detroit Consumers 1 GW</div><a href="https://www.datacenterdynamics.com/en/news/michigan-utility-consumers-energy-to-provide-1gw-of-power-to-new-hyperscale-data-center/" target="_blank">DCD — Consumers Energy 1 GW Hyperscale</a></div>
+  <div class="source-item"><div class="src-label">Boise Idaho Power Plan</div><a href="https://idahocapitalsun.com/2025/08/06/idaho-powers-20-year-energy-plan-predicts-large-increase-in-customer-growth-and-peak-energy-load/" target="_blank">Idaho Capital Sun — Idaho Power 20-Year Plan</a></div>
+  <div class="source-item"><div class="src-label">Huntsville Demand Gut-Check</div><a href="https://www.axios.com/local/huntsville/2026/03/04/data-center-demand-gut-check" target="_blank">Axios Huntsville — DC Demand Gut Check Mar 2026</a></div>
+  <div class="source-item"><div class="src-label">Pittsburgh Homer City Gas</div><a href="https://www.utilitydive.com/news/homer-city-gas-fired-power-station-data-center-firstenergy/744332/" target="_blank">Utility Dive — Homer City 4.5 GW Gas Plant</a></div>
+  <div class="source-item"><div class="src-label">Omaha OPPD Jan 2026</div><a href="https://www.oppd.com/news-resources/news-releases/2026/january/oppd-updates-board-on-technology-upgrades-systems-planning/" target="_blank">OPPD — Jan 2026 Board Update</a></div>
+  <div class="source-item"><div class="src-label">Council Bluffs Iowa DCs</div><a href="https://insideclimatenews.org/news/28072025/big-beautiful-bill-iowa-data-centers/" target="_blank">Inside Climate News — Iowa Data Centers Jul 2025</a></div>
+  <div class="source-item"><div class="src-label">Live Queue Tracker</div><a href="https://www.interconnection.fyi/" target="_blank">Interconnection.fyi — Live Queue Tracker (Daily Updates)</a></div>
+  <div class="source-item"><div class="src-label">ISO/RTO Large Load Analysis</div><a href="https://www.yesenergy.com/blog/how-isos-and-rtos-are-addressing-large-load-growth-in-2025" target="_blank">Yes Energy — ISOs Addressing Large Load Growth 2025</a></div>
+  <div class="source-item"><div class="src-label">Grid Operator Innovations</div><a href="https://www.whitecase.com/insight-alert/grid-operators-propose-innovative-measures-manage-electricity-demand-data-centers" target="_blank">White &amp; Case — Grid Operator Measures for DCs</a></div>
+  <div class="source-item"><div class="src-label">ERCOT Large Load Q&amp;A</div><a href="https://www.ercot.com/files/docs/2025/12/24/Large-Load-Interconnection-Process-Q-A.pdf" target="_blank">ERCOT — Large Load Interconnection Process Q&amp;A Dec 2025</a></div>
+</div>
+
+<footer>
+  Data sourced from public utility filings, FERC orders, ISO/RTO publications, state regulatory commissions, and verified news sources &bull; Last updated April 2, 2026 &bull; For investment decisions, verify directly with utilities and regulators &bull; Trend key: <span style="color:#ef4444">&#8679;</span> worsening constraints &bull; <span style="color:#f59e0b">&#8596;</span> stable / mixed &bull; <span style="color:#22c55e">&#8681;</span> improving access
+</footer>
+
+</div>
+
+<script>
+function toggleCard(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+let sortDir={};
+function sortTable(col){
+  const tbody=document.getElementById('tableBody');
+  const rows=Array.from(tbody.querySelectorAll('tr:not(.hidden)'));
+  const dir=sortDir[col]===1?-1:1;
+  sortDir[col]=dir;
+  document.querySelectorAll('th').forEach((th,i)=>{
+    th.classList.toggle('sorted',i===col);
+  });
+  rows.sort((a,b)=>{
+    const aText=a.cells[col]?a.cells[col].innerText.trim():'';
+    const bText=b.cells[col]?b.cells[col].innerText.trim():'';
+    return aText.localeCompare(bText,undefined,{numeric:true})*dir;
+  });
+  rows.forEach(r=>tbody.appendChild(r));
+}
+
+let currentFilter='all';
+function setFilter(tier,btn){
+  currentFilter=tier;
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filterTable();
+}
+
+function filterTable(){
+  const search=document.getElementById('searchBox').value.toLowerCase();
+  const rows=document.querySelectorAll('#tableBody tr');
+  rows.forEach(row=>{
+    const tierMatch=currentFilter==='all'||row.dataset.tier===currentFilter;
+    const textMatch=!search||row.innerText.toLowerCase().includes(search);
+    row.classList.toggle('hidden',!(tierMatch&&textMatch));
+  });
+}
+</script>
+</body>
+</html>
