@@ -138,6 +138,32 @@ function resetStateView(stateId, info) {
 function handleDataProgress(stateId, stage, data, info) {
   if (stateId !== _currentStateId) return; // user navigated away
 
+  if (stage === 'generators_error') {
+    hide('generators-loading');
+    show('generators-error');
+    document.getElementById('generators-error').innerHTML = `<span>⚠️ ${data.errors.generators}</span>`;
+    setCard('capacity', '—', 'EIA error');
+    setCard('generators', '—', '');
+    setCard('headroom', '—', 'EIA error');
+    // Still render county map with transmission lines
+    renderCountyMap(stateId, []).then(bbox => {
+      if (stateId !== _currentStateId || !bbox) return;
+      fetchStateTransmission(stateId, bbox)
+        .then(({ lines, substations, sources }) => {
+          if (stateId !== _currentStateId) return;
+          addTransmissionToCountyMap(lines, substations);
+          applyTransmissionFilter();
+          const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
+          setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
+            `${substations.features.length} substations · 110–765 kV · ${srcLabel}`);
+          setSrcBadge('src-osm',   sources.osm);
+          setSrcBadge('src-hifld', sources.hifld);
+        })
+        .catch(e => setCard('transmission', '—', `OSM: ${e.message.slice(0, 50)}`));
+    });
+    return;
+  }
+
   if (stage === 'eia_error') {
     const msg = data.errors.eia || 'EIA API key not configured';
     show('generators-error');
