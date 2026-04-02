@@ -8,7 +8,8 @@ function eiaUrl(endpoint, parts) {
   let url = `https://api.eia.gov/v2/${endpoint}/data/?api_key=${CONFIG.EIA_API_KEY}`;
   for (const [k, v] of Object.entries(parts)) {
     if (Array.isArray(v)) {
-      v.forEach(item => url += `&${k}=${encodeURIComponent(item)}`);
+      // EIA v2 now requires indexed params: data[0]=x&data[1]=y (not repeated data[]=x)
+      v.forEach((item, i) => url += `&${k.replace('[]', `[${i}]`)}=${encodeURIComponent(item)}`);
     } else {
       url += `&${k}=${encodeURIComponent(v)}`;
     }
@@ -26,17 +27,24 @@ async function eiaFetch(endpoint, parts) {
 }
 
 // Fetch all operating generators for a state (up to 5000).
-// Returns array of objects; key fields: nameplate-capacity-mw, energy-source-code,
-// plant-name, county, latitude, longitude
+// EIA v2 field names (2025+): plantName, energy_source_code, nameplate-capacity-mw,
+// latitude, longitude, county
 async function fetchGenerators(stateId) {
-  return eiaFetch('electricity/operating-generator-capacity', {
+  const raw = await eiaFetch('electricity/operating-generator-capacity', {
     [`facets[stateid][]`]: stateId,
     [`facets[status][]`]: 'OP',
-    [`data[]`]: ['nameplate-capacity-mw','energy-source-code','latitude','longitude','plant-name','county'],
+    [`data[]`]: ['nameplate-capacity-mw','latitude','longitude','county'],
     [`sort[0][column]`]: 'nameplate-capacity-mw',
     [`sort[0][direction]`]: 'desc',
     length: 5000,
   });
+  // Normalise to legacy field names so the rest of the app doesn't need changing
+  return raw.map(g => ({
+    ...g,
+    'plant-name':            g.plantName           || g['plant-name']           || '',
+    'energy-source-code':    g.energy_source_code  || g['energy-source-code']   || 'OTH',
+    'nameplate-capacity-mw': g['nameplate-capacity-mw'] || 0,
+  }));
 }
 
 // Fetch recent commercial electricity price for a state.
