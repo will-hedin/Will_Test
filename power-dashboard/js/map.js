@@ -34,7 +34,7 @@ async function initUSMap(onStateClick) {
   }
 
   const { w, h } = getSize();
-  svg.attr('viewBox', `0 0 ${w} ${h}`).attr('preserveAspectRatio', 'xMidYMid meet');
+  svg.attr('viewBox', `0 0 ${w} ${h}`).attr('width', w).attr('height', h).attr('preserveAspectRatio', 'xMidYMid meet');
 
   _usProjection = d3.geoAlbersUsa().scale(w * 1.2).translate([w / 2, h / 2]);
   _usPath = d3.geoPath().projection(_usProjection);
@@ -70,7 +70,7 @@ async function initUSMap(onStateClick) {
   // Handle resize
   const ro = new ResizeObserver(() => {
     const { w: nw, h: nh } = getSize();
-    svg.attr('viewBox', `0 0 ${nw} ${nh}`);
+    svg.attr('viewBox', `0 0 ${nw} ${nh}`).attr('width', nw).attr('height', nh);
     _usProjection.scale(nw * 1.2).translate([nw / 2, nh / 2]);
     _usPath = d3.geoPath().projection(_usProjection);
     svg.selectAll('path.state').attr('d', _usPath);
