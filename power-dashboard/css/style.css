@@ -494,7 +494,11 @@ path.state-border {
 #county-map {
   width: 100%;
   height: 100%;
-  display: block;
+}
+
+/* Leaflet needs overflow visible on its container wrapper */
+#county-map-wrapper {
+  overflow: visible;
 }
 
 .loading-spinner {

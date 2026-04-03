@@ -135,10 +135,13 @@ function resetStateView(stateId, info) {
   if (regPanel) regPanel.style.display = 'none';
   renderRegulatoryPanel(stateId);
 
-  // Reset county map
+  // Reset county map — destroy Leaflet instance so the div is clean for re-init
+  if (typeof _leafletMap !== 'undefined' && _leafletMap) {
+    _leafletMap.remove();
+    _leafletMap = null;
+  }
   document.getElementById('county-loading').style.display = '';
   document.getElementById('county-loading').textContent = 'Loading map data...';
-  d3.select('#county-map').selectAll('*').remove();
 
   // Reset generators table
   show('generators-loading');
@@ -491,13 +494,16 @@ function resetTransmissionFilters() {
   // Don't call applyTransmissionFilter here — new lines haven't rendered yet
 }
 
-// Show/hide rendered SVG elements by their data-kv attribute
+// Show/hide Leaflet transmission layer groups by voltage class
 function applyTransmissionFilter() {
-  const svg = document.getElementById('county-map');
-  if (!svg) return;
-  svg.querySelectorAll('path.tx-line, circle.tx-sub').forEach(el => {
-    el.style.display = _txActive.has(el.getAttribute('data-kv')) ? '' : 'none';
-  });
+  if (typeof _leafletMap === 'undefined' || !_leafletMap) return;
+  for (const cls of TX_CLASSES) {
+    const show = _txActive.has(cls);
+    const ll = typeof _txLayersByClass     !== 'undefined' ? _txLayersByClass[cls]    : null;
+    const sl = typeof _txSubLayersByClass  !== 'undefined' ? _txSubLayersByClass[cls] : null;
+    if (ll) { show ? _leafletMap.addLayer(ll) : _leafletMap.removeLayer(ll); }
+    if (sl) { show ? _leafletMap.addLayer(sl) : _leafletMap.removeLayer(sl); }
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────

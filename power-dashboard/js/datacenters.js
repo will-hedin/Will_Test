@@ -7,21 +7,6 @@ let _dcProjection   = null;
 let _dcFiltered     = [];
 let _dcZoom         = null;
 let _dcSvgSel       = null;
-let _showGlobal     = false;
-
-const NA_COUNTRIES  = new Set(['United States', 'Canada', 'Mexico']);
-
-// ── Global / non-NA toggle ────────────────────────────────────────────────────
-
-function toggleGlobalDCs() {
-  _showGlobal = !_showGlobal;
-  const btn = document.getElementById('dc-global-toggle');
-  if (btn) {
-    btn.textContent = _showGlobal ? 'Non-NA Centers: ON' : 'Non-NA Centers: OFF';
-    btn.classList.toggle('active', _showGlobal);
-  }
-  applyDCFilters();
-}
 
 function dcZoomBy(factor) {
   if (_dcZoom && _dcSvgSel) _dcSvgSel.transition().duration(250).call(_dcZoom.scaleBy, factor);
@@ -54,9 +39,6 @@ async function initDataCentersView() {
 
   const ituBtn = document.getElementById('itu-toggle');
   if (ituBtn) ituBtn.addEventListener('click', toggleITULayer);
-
-  const globalBtn = document.getElementById('dc-global-toggle');
-  if (globalBtn) globalBtn.addEventListener('click', toggleGlobalDCs);
 
   document.getElementById('dc-zoom-in')?.addEventListener('click',  () => dcZoomBy(1.4));
   document.getElementById('dc-zoom-out')?.addEventListener('click', () => dcZoomBy(1/1.4));
@@ -97,7 +79,7 @@ function applyDCFilters() {
   const sortBy  = document.getElementById('dc-sort')?.value || 'power-desc';
 
   _dcFiltered = EPOCH_DATA_CENTERS.filter(d => {
-    if (!_showGlobal && !NA_COUNTRIES.has(d.country)) return false;
+    if (!['United States','Canada','Mexico'].includes(d.country)) return false;
     if (owner   && d.owner   !== owner)   return false;
     if (country && d.country !== country) return false;
     if (d.power < minPow)                 return false;
@@ -140,11 +122,17 @@ async function renderDCMap(data) {
   const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
   const countries = topojson.feature(world, world.objects.countries);
 
-  // North-America-focused Natural Earth projection — scaled to show full continent
+  // Fit projection to show full North America (US, Canada, Mexico, Caribbean)
+  const _naFitBounds = {
+    type: 'Feature',
+    geometry: {
+      type: 'Polygon',
+      coordinates: [[[-175, 14], [-45, 14], [-45, 75], [-175, 75], [-175, 14]]]
+    }
+  };
   _dcProjection = d3.geoNaturalEarth1()
-    .scale(W * 0.26)
-    .translate([W * 0.44, H * 0.56])
-    .rotate([100, 0]);  // center on North America
+    .rotate([97, 0])
+    .fitExtent([[25, 25], [W - 25, H - 25]], _naFitBounds);
 
   const path = d3.geoPath().projection(_dcProjection);
   const g    = svg.append('g');
