@@ -43,6 +43,10 @@ function initNavTabs() {
         _currentStateId = null;
         showView('parcels-view');
         initParcelsView();
+      } else if (tab === 'dc-view') {
+        _currentStateId = null;
+        showView('dc-view');
+        initDataCentersView();
       } else {
         showView('map-view');
       }
@@ -112,7 +116,7 @@ function resetStateView(stateId, info) {
   setCard('transmission', '—', 'Loading OSM + HIFLD…');
 
   // Reset source badges
-  ['src-eia', 'src-osm', 'src-hifld', 'src-gridstatus'].forEach(id => setSrcBadge(id, false));
+  ['src-eia', 'src-osm', 'src-hifld'].forEach(id => setSrcBadge(id, false));
 
   // eGRID CO₂ rate — static EPA data, available immediately
   const eg = egridForState(stateId);
@@ -142,25 +146,7 @@ function resetStateView(stateId, info) {
   hide('generators-error');
   document.getElementById('generators-tbody').innerHTML = '';
 
-  // Reset grid panel
-  document.getElementById('grid-panel-iso').textContent = info.iso !== 'Non-ISO' ? `(${info.iso})` : '';
-  show('grid-loading');
-  hide('grid-non-iso');
-  hide('grid-charts');
-  hide('grid-error');
   destroyCharts();
-
-  if (info.iso === 'Non-ISO') {
-    hide('grid-loading');
-    show('grid-non-iso');
-    document.getElementById('grid-non-iso').innerHTML = `
-      <div class="non-iso-card">
-        <strong>${info.name}</strong> is served by <strong>${info.utility}</strong>,
-        a vertically integrated non-ISO utility. No real-time public grid data is
-        available via GridStatus. EIA federal data (generators, prices, generation)
-        is available below.
-      </div>`;
-  }
 }
 
 function handleDataProgress(stateId, stage, data, info) {
@@ -219,13 +205,6 @@ function handleDataProgress(stateId, stage, data, info) {
         .catch(e => setCard('transmission', '—', `OSM: ${e.message.slice(0, 50)}`));
     });
 
-    if (info.iso !== 'Non-ISO') {
-      hide('grid-loading');
-      if (data.errors.grid) {
-        show('grid-error');
-        document.getElementById('grid-error').innerHTML = `⚠️ ${data.errors.grid}`;
-      }
-    }
     return;
   }
 
@@ -293,37 +272,6 @@ function handleDataProgress(stateId, stage, data, info) {
     setCard('price', price ? `${(+price).toFixed(2)}¢` : '—', price ? `${sales[0]?.period || ''} commercial rate` : 'No price data');
   }
 
-  if (stage === 'grid' || stage === 'cached') {
-    if (info.iso === 'Non-ISO') return;
-    const grid = data.grid;
-    hide('grid-loading');
-
-    if (!grid) {
-      if (data.errors.grid) {
-        show('grid-error');
-        document.getElementById('grid-error').innerHTML = `⚠️ ${data.errors.grid}`;
-      }
-      return;
-    }
-
-    show('grid-charts');
-    setSrcBadge('src-gridstatus', true);
-
-    if (grid.queue && grid.queue.length > 0) {
-      renderQueueChart(grid.queue);
-    } else if (grid.errors?.queue) {
-      document.getElementById('queue-stats').innerHTML =
-        `<p class="no-data">Queue data unavailable: ${grid.errors.queue}</p>`;
-    }
-
-    if (grid.fuelmix && grid.fuelmix.length > 0) {
-      renderFuelMixChart(grid.fuelmix);
-    } else if (grid.errors?.fuelmix) {
-      const ctx = document.getElementById('fuelmix-chart');
-      if (ctx) ctx.parentElement.innerHTML += `<p class="no-data">Fuel mix unavailable: ${grid.errors.fuelmix}</p>`;
-    }
-  }
-
   if (stage === 'baload' || (stage === 'cached' && data.baLoad)) {
     const ba = data.baLoad;
     if (ba && ba.demandMW > 0) {
@@ -358,7 +306,6 @@ function handleDataProgress(stateId, stage, data, info) {
 
   if (stage === 'done' || stage === 'cached') {
     hide('generators-loading');
-    hide('grid-loading');
   }
 }
 

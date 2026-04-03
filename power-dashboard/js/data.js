@@ -1,16 +1,5 @@
 // data.js — static reference data for US states
 
-// ISO name → GridStatus dataset prefix
-const ISO_GRID_PREFIXES = {
-  'PJM':    'pjm',
-  'ERCOT':  'ercot',
-  'MISO':   'miso',
-  'CAISO':  'caiso',
-  'NYISO':  'nyiso',
-  'ISO-NE': 'isone',
-  'SPP':    'spp',
-};
-
 // EIA energy source code → human label + fuel key for coloring
 const FUEL_META = {
   NG:  { label: 'Natural Gas',    key: 'gas'     },

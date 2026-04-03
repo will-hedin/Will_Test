@@ -97,82 +97,6 @@ async function fetchFacilityFuel(stateId) {
   });
 }
 
-// ── GridStatus helpers ────────────────────────────────────────────────────────
-
-const GS_BASE = 'https://api.gridstatus.io/v1';
-
-function gsHeaders() {
-  return { 'x-api-key': CONFIG.GRIDSTATUS_API_KEY };
-}
-
-async function gsFetch(path, params = {}) {
-  const qs = new URLSearchParams({ limit: 300, ...params }).toString();
-  const url = `${GS_BASE}${path}?${qs}`;
-  const resp = await fetchWithTimeout(url, { headers: gsHeaders() }, 15000);
-  if (resp.status === 404) {
-    const err = new Error('NOT_FOUND');
-    err.status = 404;
-    throw err;
-  }
-  if (!resp.ok) throw new Error(`GridStatus ${path} → HTTP ${resp.status}`);
-  const json = await resp.json();
-  return json.data || json;
-}
-
-// List available datasets and find one matching a pattern
-async function gsFindDataset(pattern) {
-  const datasets = await gsFetch('/datasets');
-  const list = Array.isArray(datasets) ? datasets : (datasets.data || []);
-  return list.find(d => (d.id || d.name || '').toLowerCase().includes(pattern.toLowerCase()));
-}
-
-async function gsDataset(datasetId, limit = 300) {
-  // The GridStatus API ignores sort=-interval_start_utc and always returns data oldest-first.
-  // Use start_time to limit results to the last 3 days so the last row is recent.
-  const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19);
-  try {
-    const rows = await gsFetch(`/datasets/${datasetId}/query`, { limit, start_time: cutoff });
-    // Fall back to unfiltered query if no recent rows returned
-    if (Array.isArray(rows) && rows.length === 0) {
-      return gsFetch(`/datasets/${datasetId}/query`, { limit });
-    }
-    return rows;
-  } catch (err) {
-    if (err.status === 404) {
-      // Try to find a matching dataset
-      const prefix = datasetId.split('_')[0];
-      const suffix = datasetId.split('_').slice(1).join('_');
-      const found = await gsFindDataset(`${prefix}_${suffix}`).catch(() => null);
-      if (found) {
-        const rows = await gsFetch(`/datasets/${found.id}/query`, { limit, start_time: cutoff });
-        if (Array.isArray(rows) && rows.length === 0) {
-          return gsFetch(`/datasets/${found.id}/query`, { limit });
-        }
-        return rows;
-      }
-    }
-    throw err;
-  }
-}
-
-// Fetch fuel mix for an ISO (queue/load datasets no longer available on GridStatus free tier)
-async function fetchGridStatus(isoName) {
-  const prefix = ISO_GRID_PREFIXES[isoName];
-  if (!prefix) throw new Error(`No GridStatus prefix for ISO: ${isoName}`);
-
-  const results = { queue: [], fuelmix: [], load: [], errors: {} };
-
-  const [fR] = await Promise.allSettled([
-    gsDataset(`${prefix}_fuel_mix`, 100),
-  ]);
-
-  if (fR.status === 'fulfilled') results.fuelmix = fR.value;
-  else results.errors.fuelmix = fR.reason?.message;
-
-  results.errors.queue = 'Interconnection queue data no longer available via GridStatus free tier';
-
-  return results;
-}
 
 // Fetch real-time BA demand + net generation from EIA RTO regional data.
 // Returns { period, demandMW, netGenMW } for the most recent hourly interval.
@@ -249,31 +173,16 @@ async function fetchStateData(stateId, onProgress) {
     }
   }
 
-  // GridStatus + EIA BA load (ISO states only, run in parallel)
+  // EIA BA load (ISO states only)
   const iso = stateInfo.iso;
   if (iso !== 'Non-ISO') {
     const baCode = ISO_BA_CODES[iso];
-
-    const [gsResult, baResult] = await Promise.allSettled([
-      hasGS ? fetchGridStatus(iso) : Promise.resolve(null),
-      (hasEIA && baCode) ? fetchBALoad(baCode) : Promise.resolve(null),
-    ]);
-
-    if (!hasGS) {
-      result.errors.grid = 'GridStatus API key not configured — add your key to config.js (get one free at gridstatus.io)';
-    } else if (gsResult.status === 'fulfilled') {
-      result.grid = gsResult.value;
-    } else {
-      result.errors.grid = gsResult.reason?.message;
-    }
-    // Always fire 'grid' so the panel updates (shows charts or error message)
-    onProgress('grid', result);
-
-    if (baResult.status === 'fulfilled' && baResult.value) {
-      result.baLoad = baResult.value;
-      onProgress('baload', result);
-    } else if (baResult.status === 'rejected') {
-      result.errors.baLoad = baResult.reason?.message;
+    if (hasEIA && baCode) {
+      const baResult = await Promise.allSettled([fetchBALoad(baCode)]);
+      if (baResult[0].status === 'fulfilled' && baResult[0].value) {
+        result.baLoad = baResult[0].value;
+        onProgress('baload', result);
+      }
     }
   }
 
