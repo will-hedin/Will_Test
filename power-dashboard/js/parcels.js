@@ -16,7 +16,7 @@ const MILE_KM      = 1.60934;
 const MILE_DEG_LAT = 0.01446;
 const MILE_DEG_LON = 0.01787;
 
-let _parcelsLoaded = false;
+let _parcelsLoaded = false;  // reset to false forces re-fetch on next tab click
 
 // ── Entry point ───────────────────────────────────────────────────────────────
 
@@ -39,7 +39,7 @@ async function initParcelsView() {
       return;
     }
 
-    setStatus(`Found ${lines.length} line segments. Querying parcels ≥100 acres…`);
+    setStatus(`Found ${lines.length} line segments. Querying parcels ≥25 acres…`);
     const lineBbox  = computeLineBbox(lines);
     const candidates = await fetchClarkParcels(lineBbox);
 
@@ -53,7 +53,7 @@ async function initParcelsView() {
 
     if (countEl) {
       countEl.textContent =
-        `${qualifying.length} parcel${qualifying.length !== 1 ? 's' : ''} ≥100 acres within 1 mile of 345/500 kV lines`;
+        `${qualifying.length} parcel${qualifying.length !== 1 ? 's' : ''} ≥25 acres within 1 mile of 345/500 kV lines`;
     }
 
     renderParcelsMap(lines, qualifying);
@@ -114,7 +114,7 @@ function computeLineBbox(lines) {
 
 async function fetchClarkParcels(bbox) {
   const params = new URLSearchParams({
-    where:             'CALC_ACRES >= 100',
+    where:             'CALC_ACRES >= 25',
     geometry:          JSON.stringify(bbox),
     geometryType:      'esriGeometryEnvelope',
     inSR:              '4326',
@@ -237,7 +237,7 @@ async function renderParcelsMap(lines, parcels) {
       })
       .attr('r', f => {
         // Scale dot size loosely by acreage
-        const ac = f.properties?.CALC_ACRES || 100;
+        const ac = f.properties?.CALC_ACRES || 25;
         return Math.max(4, Math.min(12, Math.sqrt(ac / 20)));
       })
       .attr('fill', '#f59e0b99')
@@ -272,7 +272,7 @@ async function renderParcelsMap(lines, parcels) {
   leg.append('circle').attr('cx', 9).attr('cy', 44).attr('r', 5)
     .attr('fill', '#f59e0b99').attr('stroke', '#f59e0b').attr('stroke-width', 1.2);
   leg.append('text').attr('x', 24).attr('y', 48)
-    .attr('fill', 'rgba(255,255,255,0.85)').attr('font-size', 11).text('≥100 ac parcel');
+    .attr('fill', 'rgba(255,255,255,0.85)').attr('font-size', 11).text('≥25 ac parcel');
 }
 
 // ── Results table ─────────────────────────────────────────────────────────────
