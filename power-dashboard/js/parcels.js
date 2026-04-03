@@ -303,16 +303,44 @@ function renderParcelsTable(parcels) {
     const apnFmt = apnRaw.length === 11
       ? `${apnRaw.slice(0,3)}-${apnRaw.slice(3,5)}-${apnRaw.slice(5,8)}-${apnRaw.slice(8,11)}`
       : apnRaw;
-    const link = apnFmt.length > 3
-      ? `<a href="${CLARK_ASSESSOR_BASE}${apnFmt}" target="_blank" rel="noopener" class="assessor-link">View Owner →</a>`
+    const hasApn = apnFmt.length > 3;
+    const link = hasApn
+      ? `<a href="${CLARK_ASSESSOR_BASE}${apnFmt}" target="_blank" rel="noopener" class="assessor-link">Search Owner →</a>`
       : '—';
+    const copyBtn = hasApn
+      ? `<button class="copy-apn-btn" data-apn="${apnFmt}" title="Copy APN to clipboard">Copy APN</button>`
+      : '';
     return `<tr>
       <td class="mono">${apnFmt}</td>
       <td class="num">${acres}</td>
       <td>${status}</td>
-      <td>${link}</td>
+      <td class="owner-cell">${copyBtn}${link}</td>
     </tr>`;
   }).join('');
 
   if (panel) panel.style.display = '';
+
+  // Copy APN buttons
+  tbody.querySelectorAll('.copy-apn-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const apn = btn.dataset.apn;
+      navigator.clipboard.writeText(apn).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+      }).catch(() => {
+        // Fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = apn;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy APN'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+  });
 }

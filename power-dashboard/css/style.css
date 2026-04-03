@@ -985,6 +985,23 @@ circle.tx-sub:hover { r: 7px; }
 
 .assessor-link:hover { opacity: 0.85; }
 
+.owner-cell { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+.copy-apn-btn {
+  display: inline-block;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid var(--accent, #0ea5e9);
+  color: var(--accent, #0ea5e9);
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.copy-apn-btn:hover { background: var(--accent, #0ea5e9); color: #fff; }
+.copy-apn-btn.copied { background: #22c55e; border-color: #22c55e; color: #fff; }
+
 .parcels-note {
   font-size: 10px;
   color: var(--text-sub);
