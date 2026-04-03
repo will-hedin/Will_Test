@@ -6,7 +6,9 @@
 //   Owner detail:       Clark County Assessor portal (per-parcel deep link)
 
 const CLARK_PARCELS_URL   = 'https://maps.clarkcountynv.gov/arcgis/rest/services/Assessor/LandApp/MapServer/0/query';
-const CLARK_ASSESSOR_BASE = 'https://maps.clarkcountynv.gov/assessor/AssessorParcelDetail/pcl.aspx?parcel=';
+// ParcelHistory.aspx?instance=pcl2 is a direct GET URL that returns owner history
+// (pcl.aspx is a POST-only form; this endpoint bypasses it)
+const CLARK_ASSESSOR_BASE = 'https://maps.clarkcountynv.gov/assessor/AssessorParcelDetail/ParcelHistory.aspx?instance=pcl2&parcel=';
 
 // Clark County NV bounding box [xmin, ymin, xmax, ymax]
 const CLARK_BBOX = [-116.1, 35.0, -113.9, 37.3];
@@ -298,14 +300,15 @@ function renderParcelsTable(parcels) {
     const apn    = p.APN || '—';
     const acres  = p.CALC_ACRES != null ? (+p.CALC_ACRES).toFixed(1) : (p.ASSR_ACRES != null ? (+p.ASSR_ACRES).toFixed(1) : '—');
     const status = p.status_cd || '—';
-    // Clark County APN: 11-digit string → formatted XXX-XX-XXX-XXX for portal
+    // Clark County APN: 11-digit raw string from API; display formatted, URL uses raw digits
     const apnRaw = apn.replace(/[-\s]/g, '');
     const apnFmt = apnRaw.length === 11
       ? `${apnRaw.slice(0,3)}-${apnRaw.slice(3,5)}-${apnRaw.slice(5,8)}-${apnRaw.slice(8,11)}`
       : apnRaw;
-    const hasApn = apnFmt.length > 3;
+    const hasApn = apnRaw.length >= 5;
+    // ParcelHistory.aspx expects the raw APN (no dashes)
     const link = hasApn
-      ? `<a href="${CLARK_ASSESSOR_BASE}${apnFmt}" target="_blank" rel="noopener" class="assessor-link">Search Owner →</a>`
+      ? `<a href="${CLARK_ASSESSOR_BASE}${apnRaw}" target="_blank" rel="noopener" class="assessor-link">View Owner →</a>`
       : '—';
     const copyBtn = hasApn
       ? `<button class="copy-apn-btn" data-apn="${apnFmt}" title="Copy APN to clipboard">Copy APN</button>`
