@@ -9,6 +9,7 @@ let _usProjection     = null;
 let _usPath           = null;
 let _statePaths       = null;   // d3 selection of state <path> elements
 let _currentView      = 'score';
+let _countyZoom       = null;
 
 // ── Haversine distance in km ─────────────────────────────────────────────────
 function haversineKm(lat1, lon1, lat2, lon2) {
@@ -351,6 +352,20 @@ async function renderCountyMap(stateId, generators) {
 
   // Store G for post-render transmission layer injection
   _countyG = g;
+
+  // Zoom + pan
+  _countyZoom = d3.zoom()
+    .scaleExtent([0.5, 16])
+    .on('zoom', event => g.attr('transform', event.transform));
+  svg.call(_countyZoom).on('dblclick.zoom', null);
+
+  // Wire county zoom buttons
+  const countyZoomIn    = document.getElementById('county-zoom-in');
+  const countyZoomOut   = document.getElementById('county-zoom-out');
+  const countyZoomReset = document.getElementById('county-zoom-reset');
+  if (countyZoomIn)    countyZoomIn.onclick    = () => svg.transition().duration(250).call(_countyZoom.scaleBy, 1.4);
+  if (countyZoomOut)   countyZoomOut.onclick   = () => svg.transition().duration(250).call(_countyZoom.scaleBy, 1/1.4);
+  if (countyZoomReset) countyZoomReset.onclick = () => svg.transition().duration(300).call(_countyZoom.transform, d3.zoomIdentity);
 
   // ── Generator overlay ────────────────────────────────────────────────────────
   if (generators && generators.length > 0) {

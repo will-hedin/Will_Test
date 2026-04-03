@@ -137,6 +137,11 @@
         <div id="county-loading" class="loading-spinner">Loading map data…</div>
         <svg id="county-map"></svg>
         <div id="county-tooltip" class="tooltip hidden"></div>
+        <div class="map-zoom-controls">
+          <button id="county-zoom-in"    class="zoom-btn" title="Zoom in">+</button>
+          <button id="county-zoom-reset" class="zoom-btn" title="Reset zoom">⊙</button>
+          <button id="county-zoom-out"   class="zoom-btn" title="Zoom out">−</button>
+        </div>
       </div>
       <div class="fuel-legend" id="fuel-legend"></div>
     </div>
@@ -271,8 +276,14 @@
     <!-- Map -->
     <div class="dc-map-panel">
       <div class="dc-map-controls">
+        <button id="dc-global-toggle" class="itu-toggle-btn" title="Show data centers outside North America">Non-NA Centers: OFF</button>
         <button id="itu-toggle" class="itu-toggle-btn" title="Show ITU submarine cables and IXPs">ITU Infrastructure: OFF</button>
         <span id="itu-status" class="itu-status"></span>
+        <div class="zoom-controls">
+          <button id="dc-zoom-in"    class="zoom-btn" title="Zoom in">+</button>
+          <button id="dc-zoom-reset" class="zoom-btn" title="Reset zoom">⊙</button>
+          <button id="dc-zoom-out"   class="zoom-btn" title="Zoom out">−</button>
+        </div>
       </div>
       <div class="map-wrapper" id="dc-map-wrapper">
         <svg id="dc-map"></svg>

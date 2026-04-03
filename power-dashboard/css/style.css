@@ -1251,6 +1251,42 @@ circle.tx-sub:hover { r: 7px; }
 .itu-toggle-btn:hover  { background: rgba(56,189,248,0.12); }
 .itu-toggle-btn.active { background: rgba(56,189,248,0.18); }
 
+.dc-map-controls { flex-wrap: wrap; }
+
+.zoom-controls {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.zoom-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+}
+.zoom-btn:hover { background: var(--bg-card); }
+
+/* Zoom buttons overlaid on county map */
+.map-zoom-controls {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 10;
+}
+
 .itu-status {
   font-size: 11px;
   color: var(--text-muted);
