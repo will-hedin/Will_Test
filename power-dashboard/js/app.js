@@ -163,6 +163,7 @@ function handleDataProgress(stateId, stage, data, info) {
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();
           try { renderTransmissionCapacity(computeCapacityByClass(lines), computeSubstationsByClass(substations), info.peak_gw); } catch (e) { console.warn('tx capacity render:', e); }
+          try { updateCountyTxCapacity(computeCountyTxCapacity(lines, _countyFeatures)); } catch (e) { console.warn('county tx:', e); }
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 110–765 kV · ${srcLabel}`);
@@ -192,6 +193,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           try { renderTransmissionCapacity(computeCapacityByClass(lines), computeSubstationsByClass(substations), info.peak_gw); } catch (e) { console.warn('tx capacity render:', e); }
+          try { updateCountyTxCapacity(computeCountyTxCapacity(lines, _countyFeatures)); } catch (e) { console.warn('county tx:', e); }
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 345/500/765 kV`);
         })
@@ -242,6 +244,7 @@ function handleDataProgress(stateId, stage, data, info) {
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();   // hide classes that are toggled off
           try { renderTransmissionCapacity(computeCapacityByClass(lines), computeSubstationsByClass(substations), info.peak_gw); } catch (e) { console.warn('tx capacity render:', e); }
+          try { updateCountyTxCapacity(computeCountyTxCapacity(lines, _countyFeatures)); } catch (e) { console.warn('county tx:', e); }
           const miles    = computeLineMiles(lines.features);
           const subCount = substations.features.length;
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');

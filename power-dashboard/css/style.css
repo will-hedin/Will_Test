@@ -816,6 +816,37 @@ circle.tx-sub:hover { r: 7px; }
   line-height: 1.4;
 }
 
+/* ── County map mode toggle ──────────────────────────────────────────────────── */
+
+.county-mode-toggle {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 12px;
+}
+
+.county-mode-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.county-mode-btn.active {
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  border-color: var(--accent, #3b82f6);
+}
+
+.county-mode-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .tx-util-badge {
   font-size: 10px;
   font-weight: 600;

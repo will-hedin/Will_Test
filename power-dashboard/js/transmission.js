@@ -325,3 +325,45 @@ function computeSubstationsByClass(substations) {
   }
   return counts;
 }
+
+// Assign transmission lines to counties by midpoint, summing estimated capacity per county.
+// countyFeatures: GeoJSON feature array from TopoJSON (us-atlas counties).
+// Returns { [countyId]: { estimatedMW, miles, lineCount } }
+function computeCountyTxCapacity(lines, countyFeatures) {
+  const byCounty = {};
+  for (const f of countyFeatures) {
+    byCounty[f.id] = { estimatedMW: 0, miles: 0, lineCount: 0 };
+  }
+
+  for (const line of (lines.features || [])) {
+    if (!line.geometry) continue;
+    const coords = line.geometry.type === 'MultiLineString'
+      ? line.geometry.coordinates[0] : line.geometry.coordinates;
+    if (!coords || coords.length === 0) continue;
+
+    const mid = coords[Math.floor(coords.length / 2)];
+    if (!mid) continue;
+
+    // Find county whose polygon contains this midpoint
+    for (const county of countyFeatures) {
+      if (d3.geoContains(county, mid)) {
+        const cls = voltageClass(line.properties?.voltage);
+        const segs = line.geometry.type === 'MultiLineString'
+          ? line.geometry.coordinates : [line.geometry.coordinates];
+        let km = 0;
+        for (const seg of segs)
+          for (let i = 1; i < seg.length; i++)
+            km += _hkm(seg[i-1][1], seg[i-1][0], seg[i][1], seg[i][0]);
+        const mi = km * 0.621371;
+        byCounty[county.id].estimatedMW += mi * TX_MW_PER_MILE[cls];
+        byCounty[county.id].miles       += mi;
+        byCounty[county.id].lineCount++;
+        break;
+      }
+    }
+  }
+
+  // Round MW values
+  for (const id in byCounty) byCounty[id].estimatedMW = Math.round(byCounty[id].estimatedMW);
+  return byCounty;
+}

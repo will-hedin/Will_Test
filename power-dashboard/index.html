@@ -108,7 +108,11 @@
     <!-- Left: County heatmap + generator overlay -->
     <div class="county-map-panel">
       <div class="panel-header">
-        <h3>Transmission Infrastructure Heat Map</h3>
+        <h3>County Infrastructure Map</h3>
+        <div class="county-mode-toggle">
+          <button class="county-mode-btn active" data-mode="generators">Gen Score</button>
+          <button class="county-mode-btn" data-mode="tx" disabled title="Loading transmission data…">TX Capacity</button>
+        </div>
         <div class="map-legend-inline" id="county-legend"></div>
       </div>
       <!-- Voltage-class filter pills — default: 230/345/500+ ON; 110/150 OFF -->

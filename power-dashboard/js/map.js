@@ -238,11 +238,17 @@ async function renderCountyMap(stateId, generators) {
     return;
   }
 
+  // Reset mode to generators when switching states
+  _countyMapMode  = 'generators';
+  _countyTxData   = null;
+  _countyFeatures = stateCounties;
+
   // County name lookup from properties
   const countyNames = {};
   for (const f of stateCounties) {
     countyNames[f.id] = f.properties?.name || `County ${f.id}`;
   }
+  _countyNames = countyNames;
 
   // Compute county infrastructure scores from generators
   const countyScores   = {};
@@ -284,10 +290,14 @@ async function renderCountyMap(stateId, generators) {
     }
   }
 
+  _countyScoresRaw   = countyScores;
+  _countyGenListsRaw = countyGenLists;
+
   // Color scale: dark-floor blue ramp — readable in both light and dark mode
   const colorScale = d3.scaleSequential()
     .domain([0, 100])
     .interpolator(d3.interpolateRgb('#1e3a5f', '#60a5fa'));
+  _countyColorScale = colorScale;
 
   // Setup SVG
   const wrapper = document.getElementById('county-map-wrapper');
@@ -312,7 +322,7 @@ async function renderCountyMap(stateId, generators) {
   const g = svg.append('g');
 
   // Draw counties
-  g.selectAll('path.county')
+  _countyPaths = g.selectAll('path.county')
     .data(stateCounties)
     .enter().append('path')
     .attr('class', 'county')
@@ -323,20 +333,7 @@ async function renderCountyMap(stateId, generators) {
     })
     .attr('stroke', 'rgba(255,255,255,0.25)')
     .attr('stroke-width', 0.8)
-    .on('mousemove', (event, f) => {
-      const score = countyScores[f.id] || 0;
-      const gens  = (countyGenLists[f.id] || []).slice(0, 5);
-      const genStr = gens.length
-        ? gens.map(g => `<li>${g['plant-name'] || '—'} (${Math.round(+(g['nameplate-capacity-mw']||0))} MW, ${fuelLabel(g['energy-source-code'])})</li>`).join('')
-        : '<li>No generators within 25 km</li>';
-      const html = `
-        <div class="tt-title">${countyNames[f.id] || f.id}</div>
-        <div class="tt-row"><span>Infra Score</span><strong>${score.toFixed(0)}/100</strong></div>
-        <div class="tt-subhead">Nearby generators:</div>
-        <ul class="tt-list">${genStr}</ul>
-      `;
-      showCountyTooltip(event, html);
-    })
+    .on('mousemove', (event, f) => _countyTooltipHandler(event, f))
     .on('mouseleave', hideCountyTooltip);
 
   // County borders mesh
@@ -395,8 +392,14 @@ async function renderCountyMap(stateId, generators) {
   document.getElementById('county-loading').style.display = 'none';
 
   // Render county legend
-  renderCountyLegend(colorScale);
+  renderCountyLegend(colorScale, 'Gen Score');
   renderFuelLegend();
+
+  // Wire map-mode toggle buttons
+  document.querySelectorAll('.county-mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === 'generators');
+    btn.onclick = () => setCountyMapMode(btn.dataset.mode);
+  });
 
   return stateBbox; // caller uses this for Overpass bbox query
 }
@@ -412,16 +415,96 @@ function hideCountyTooltip() {
   document.getElementById('county-tooltip').classList.add('hidden');
 }
 
-function renderCountyLegend(colorScale) {
+// Mode-aware county tooltip
+function _countyTooltipHandler(event, f) {
+  if (_countyMapMode === 'tx' && _countyTxData) {
+    const tx = _countyTxData[f.id] || { estimatedMW: 0, miles: 0, lineCount: 0 };
+    const mw = tx.estimatedMW >= 1000
+      ? `${(tx.estimatedMW / 1000).toFixed(1)} GW`
+      : `${tx.estimatedMW.toLocaleString()} MW`;
+    const html = `
+      <div class="tt-title">${_countyNames[f.id] || f.id}</div>
+      <div class="tt-row"><span>TX Capacity</span><strong>${mw}</strong></div>
+      <div class="tt-row"><span>Line Miles</span><strong>${Math.round(tx.miles).toLocaleString()} mi</strong></div>
+      <div class="tt-row"><span>Line Segments</span><strong>${tx.lineCount}</strong></div>
+    `;
+    showCountyTooltip(event, html);
+  } else {
+    const score = _countyScoresRaw[f.id] || 0;
+    const gens  = (_countyGenListsRaw[f.id] || []).slice(0, 5);
+    const genStr = gens.length
+      ? gens.map(g => `<li>${g['plant-name'] || '—'} (${Math.round(+(g['nameplate-capacity-mw']||0))} MW, ${fuelLabel(g['energy-source-code'])})</li>`).join('')
+      : '<li>No generators within 25 km</li>';
+    const html = `
+      <div class="tt-title">${_countyNames[f.id] || f.id}</div>
+      <div class="tt-row"><span>Infra Score</span><strong>${score.toFixed(0)}/100</strong></div>
+      <div class="tt-subhead">Nearby generators:</div>
+      <ul class="tt-list">${genStr}</ul>
+    `;
+    showCountyTooltip(event, html);
+  }
+}
+
+// Switch county choropleth between 'generators' and 'tx' modes
+function setCountyMapMode(mode) {
+  if (!_countyPaths) return;
+  _countyMapMode = mode;
+
+  document.querySelectorAll('.county-mode-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.mode === mode)
+  );
+
+  if (mode === 'tx' && _countyTxData) {
+    _applyTxColoring();
+  } else {
+    // Revert to generator score coloring
+    if (!_countyColorScale) return;
+    _countyPaths.attr('fill', f => {
+      const score = _countyScoresRaw[f.id];
+      return score != null ? _countyColorScale(score) : '#1e3a5f';
+    });
+    renderCountyLegend(_countyColorScale, 'Gen Score');
+  }
+}
+
+function _applyTxColoring() {
+  if (!_countyPaths || !_countyTxData) return;
+  const vals = Object.values(_countyTxData).map(d => d.estimatedMW).filter(v => v > 0);
+  const maxMW = vals.length ? Math.max(...vals) : 1;
+  const txScale = d3.scaleSequential()
+    .domain([0, maxMW])
+    .interpolator(d3.interpolateRgb('#1e3a5f', '#f59e0b'));
+
+  _countyPaths.attr('fill', f => {
+    const mw = _countyTxData[f.id]?.estimatedMW || 0;
+    return mw > 0 ? txScale(mw) : '#1e3a5f';
+  });
+
+  renderCountyLegend(txScale, 'TX Capacity', maxMW);
+}
+
+// Called from app.js after transmission data loads
+function updateCountyTxCapacity(byCounty) {
+  _countyTxData = byCounty;
+  // Enable the TX toggle button now that data is available
+  document.querySelectorAll('.county-mode-btn[data-mode="tx"]').forEach(btn => {
+    btn.disabled = false;
+    btn.title = '';
+  });
+  if (_countyMapMode === 'tx') _applyTxColoring();
+}
+
+function renderCountyLegend(colorScale, title, maxVal) {
   const el = document.getElementById('county-legend');
   if (!el) return;
   const steps = 5;
   let html = '<span class="cl-label">Low</span>';
   for (let i = 0; i <= steps; i++) {
     const t = i / steps;
-    html += `<span class="cl-swatch" style="background:${colorScale(t * 100)}"></span>`;
+    const val = maxVal != null ? t * maxVal : t * 100;
+    html += `<span class="cl-swatch" style="background:${colorScale(val)}"></span>`;
   }
-  html += '<span class="cl-label">High</span> <span class="cl-title">Infra Score</span>';
+  html += `<span class="cl-label">High</span> <span class="cl-title">${title || 'Score'}</span>`;
   el.innerHTML = html;
 }
 
@@ -439,8 +522,16 @@ function renderFuelLegend() {
 
 // ── Transmission layer (added after county map renders) ───────────────────────
 
-let _countyProjection = null;
-let _countyG          = null;
+let _countyProjection  = null;
+let _countyG           = null;
+let _countyPaths       = null;   // d3 selection of county <path> elements
+let _countyFeatures    = [];     // GeoJSON feature array for current state
+let _countyNames       = {};     // fips → name
+let _countyScoresRaw   = {};     // fips → normalized generator score 0-100
+let _countyGenListsRaw = {};     // fips → generator array
+let _countyTxData      = null;   // fips → { estimatedMW, miles, lineCount } (set after tx loads)
+let _countyColorScale  = null;   // current d3 color scale
+let _countyMapMode     = 'generators';  // 'generators' | 'tx'
 
 // Called by app.js after fetchStateTransmission resolves
 function addTransmissionToCountyMap(lines, substations) {
