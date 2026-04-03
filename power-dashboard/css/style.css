@@ -589,6 +589,12 @@ path.state-border {
   white-space: nowrap;
 }
 
+.parcels-table tbody td {
+  max-width: none;
+  overflow: visible;
+  white-space: normal;
+}
+
 .data-table tbody tr:last-child td { border-bottom: none; }
 .data-table tbody tr:hover td { background: var(--bg-secondary); }
 
