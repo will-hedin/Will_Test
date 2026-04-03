@@ -272,42 +272,42 @@ function clearTransmissionCache(stateId) {
 
 // ── Capacity estimation ────────────────────────────────────────────────────────
 
-// Typical Surge Impedance Loading (SIL) in MW per circuit — a standard proxy for
-// single-circuit natural load rating. SIL scales roughly with voltage².
-const TX_SIL_MW = {
-  '110':  130,   // 110–138 kV
-  '150':  250,   // 150–161 kV
-  '230':  510,   // 230 kV
-  '345': 1100,   // 345 kV
-  '500': 2300,   // 500+ kV (incl. 765 kV)
+// Typical thermal capacity in MW per route-mile for each voltage class.
+// Using line-miles avoids overcounting from OSM segment fragmentation
+// (a single physical line split into 50 OSM ways would otherwise multiply SIL × 50).
+// Values reflect representative US single-circuit thermal ratings per corridor-mile.
+const TX_MW_PER_MILE = {
+  '110': 0.8,    // 110–138 kV
+  '150': 1.5,    // 150–161 kV
+  '230': 2.5,    // 230 kV
+  '345': 5.0,    // 345 kV
+  '500': 10.0,   // 500+ kV (incl. 765 kV)
 };
 
-// Returns { byClass: { cls: { miles, lineCount, circuits, estimatedMW } }, totalMW }
-// estimatedMW = circuits × SIL — rough upper bound on throughput capacity per class.
+// Returns { byClass: { cls: { miles, lineCount, estimatedMW } }, totalMW }
+// estimatedMW = miles × MW/mile — avoids inflation from OSM segment fragmentation.
 function computeCapacityByClass(lines) {
   const stats = {};
   for (const cls of TX_CLASSES) {
-    stats[cls] = { miles: 0, circuits: 0, lineCount: 0, estimatedMW: 0 };
+    stats[cls] = { miles: 0, lineCount: 0, estimatedMW: 0 };
   }
 
   for (const f of (lines.features || [])) {
-    const cls      = voltageClass(f.properties?.voltage);
-    const circuits = Math.max(1, parseInt(f.properties?.circuits) || 1);
-    const segs     = f.geometry?.type === 'MultiLineString'
+    const cls  = voltageClass(f.properties?.voltage);
+    const segs = f.geometry?.type === 'MultiLineString'
       ? f.geometry.coordinates : [f.geometry.coordinates || []];
     let km = 0;
     for (const seg of segs)
       for (let i = 1; i < seg.length; i++)
         km += _hkm(seg[i-1][1], seg[i-1][0], seg[i][1], seg[i][0]);
     stats[cls].miles    += km * 0.621371;
-    stats[cls].circuits += circuits;
     stats[cls].lineCount++;
   }
 
   let totalMW = 0;
   for (const cls of TX_CLASSES) {
     stats[cls].miles       = Math.round(stats[cls].miles);
-    stats[cls].estimatedMW = stats[cls].circuits * TX_SIL_MW[cls];
+    stats[cls].estimatedMW = Math.round(stats[cls].miles * TX_MW_PER_MILE[cls]);
     totalMW += stats[cls].estimatedMW;
   }
 
