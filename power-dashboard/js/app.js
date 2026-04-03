@@ -29,6 +29,25 @@ function applyTheme(theme) {
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
+  // Sync nav tab active state (only for top-level tabs)
+  document.querySelectorAll('.nav-tab').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.tab === id)
+  );
+}
+
+function initNavTabs() {
+  document.querySelectorAll('.nav-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      if (tab === 'parcels-view') {
+        _currentStateId = null;
+        showView('parcels-view');
+        initParcelsView();
+      } else {
+        showView('map-view');
+      }
+    });
+  });
 }
 
 // ── US map view ───────────────────────────────────────────────────────────────
@@ -538,6 +557,7 @@ function applyTransmissionFilter() {
 
 async function init() {
   initTheme();
+  initNavTabs();
   initTransmissionFilters();
   showView('map-view');
   await initMapView();

@@ -21,6 +21,12 @@
     <h1>US Power Infrastructure</h1>
     <span class="subtitle">Data Center Site Selection</span>
   </div>
+  <div class="header-center">
+    <nav class="main-nav">
+      <button class="nav-tab active" data-tab="map-view">US Grid Map</button>
+      <button class="nav-tab" data-tab="parcels-view">Land Parcels · Clark County NV</button>
+    </nav>
+  </div>
   <div class="header-right">
     <button id="theme-toggle">Dark Mode</button>
   </div>
@@ -240,6 +246,50 @@
 
 </div><!-- #state-view -->
 
+<!-- ── Land Parcels View ─────────────────────────────────────────────────────── -->
+<div id="parcels-view" class="view hidden">
+
+  <div class="parcels-header">
+    <h2>Land Parcels Near 345/500 kV Lines — Clark County, NV</h2>
+    <p class="parcels-subtitle">Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via Clark County Assessor.</p>
+  </div>
+
+  <div class="parcels-body">
+
+    <!-- Left: map -->
+    <div class="parcels-map-panel">
+      <div class="map-wrapper" id="parcels-map-wrapper">
+        <svg id="parcels-map"></svg>
+      </div>
+      <div id="parcels-status" class="parcels-status">Loading…</div>
+    </div>
+
+    <!-- Right: results -->
+    <div class="parcels-results-panel">
+
+      <div id="parcels-count" class="parcels-count"></div>
+
+      <div id="parcels-table-panel" class="panel" style="display:none">
+        <table class="data-table parcels-table">
+          <thead>
+            <tr>
+              <th style="width:30%">APN</th>
+              <th style="width:18%;text-align:right">Acres</th>
+              <th style="width:18%">Status</th>
+              <th style="width:34%">Owner Info</th>
+            </tr>
+          </thead>
+          <tbody id="parcels-tbody"></tbody>
+        </table>
+        <p class="parcels-note">Owner name and mailing address available on the Clark County Assessor page (opens in new tab). Contact info is not held in public property records.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div><!-- #parcels-view -->
+
 <!-- Scripts: config first so CONFIG is available to all modules -->
 <script src="config.js"></script>
 <script src="js/data.js"></script>
@@ -247,6 +297,7 @@
 <script src="js/charts.js"></script>
 <script src="js/transmission.js"></script>
 <script src="js/map.js"></script>
+<script src="js/parcels.js"></script>
 <script src="js/app.js"></script>
 
 </body>
