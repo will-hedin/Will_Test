@@ -33,7 +33,6 @@
     <div class="toggle-group">
       <button class="toggle-btn active" data-view="score">Infrastructure Score</button>
       <button class="toggle-btn" data-view="iso">ISO Coverage</button>
-      <button class="toggle-btn" data-view="demand">DC Demand</button>
       <button class="toggle-btn" data-view="supply">Available Supply</button>
       <button class="toggle-btn" data-view="345kv">345 kV Network</button>
     </div>
@@ -181,6 +180,48 @@
 
     </div><!-- .charts-panel -->
   </div><!-- .state-content -->
+
+  <!-- Regulatory environment section -->
+  <div class="reg-section" id="reg-section" style="display:none">
+    <div class="reg-section-header">
+      <h3>Power Plant Development — Regulatory Environment</h3>
+      <span id="reg-structure-badge" class="reg-badge"></span>
+    </div>
+    <div class="reg-stat-grid">
+      <div class="reg-stat-card">
+        <div class="reg-stat-label">State Regulator</div>
+        <div class="reg-stat-value" id="reg-regulator-val">—</div>
+      </div>
+      <div class="reg-stat-card">
+        <div class="reg-stat-label">Market Structure</div>
+        <div class="reg-stat-value" id="reg-market-val">—</div>
+        <div class="reg-stat-sub" id="reg-cpcn-val"></div>
+      </div>
+      <div class="reg-stat-card">
+        <div class="reg-stat-label">Clean Energy / RPS</div>
+        <div class="reg-stat-value" id="reg-rps-val">—</div>
+      </div>
+      <div class="reg-stat-card">
+        <div class="reg-stat-label">Typical Timeline</div>
+        <div class="reg-stat-value" id="reg-timeline-val">—</div>
+        <div class="reg-stat-sub">plant-to-commercial</div>
+      </div>
+      <div class="reg-stat-card">
+        <div class="reg-stat-label">Dev. Complexity</div>
+        <div class="reg-stat-value" id="reg-complexity-val">—</div>
+      </div>
+    </div>
+    <div class="reg-body">
+      <div class="reg-permits-col">
+        <div class="reg-col-title">Key Permits &amp; Approvals</div>
+        <ul class="reg-permits-list" id="reg-permits-list"></ul>
+      </div>
+      <div class="reg-notes-col">
+        <div class="reg-col-title">Regulatory Pathway Notes</div>
+        <p class="reg-notes-text" id="reg-notes-text"></p>
+      </div>
+    </div>
+  </div>
 
   <!-- Data sources attribution bar -->
   <div class="sources-bar" id="sources-bar">

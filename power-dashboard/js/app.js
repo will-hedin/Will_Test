@@ -107,6 +107,11 @@ function resetStateView(stateId, info) {
   const txCapPanel = document.getElementById('tx-capacity-panel');
   if (txCapPanel) txCapPanel.style.display = 'none';
 
+  // Render static regulatory panel immediately (no API calls needed)
+  const regPanel = document.getElementById('reg-section');
+  if (regPanel) regPanel.style.display = 'none';
+  renderRegulatoryPanel(stateId);
+
   // Reset county map
   document.getElementById('county-loading').style.display = '';
   document.getElementById('county-loading').textContent = 'Loading map data...';
@@ -157,7 +162,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();
-          try { renderTransmissionCapacity(computeCapacityByClass(lines)); } catch (e) { console.warn('tx capacity render:', e); }
+          try { renderTransmissionCapacity(computeCapacityByClass(lines), computeSubstationsByClass(substations), info.peak_gw); } catch (e) { console.warn('tx capacity render:', e); }
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 110–765 kV · ${srcLabel}`);
@@ -186,7 +191,7 @@ function handleDataProgress(stateId, stage, data, info) {
         .then(({ lines, substations }) => {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
-          try { renderTransmissionCapacity(computeCapacityByClass(lines)); } catch (e) { console.warn('tx capacity render:', e); }
+          try { renderTransmissionCapacity(computeCapacityByClass(lines), computeSubstationsByClass(substations), info.peak_gw); } catch (e) { console.warn('tx capacity render:', e); }
           setCard('transmission', `${computeLineMiles(lines.features).toLocaleString()} mi`,
             `${substations.features.length} substations · 345/500/765 kV`);
         })
@@ -236,7 +241,7 @@ function handleDataProgress(stateId, stage, data, info) {
           if (stateId !== _currentStateId) return;
           addTransmissionToCountyMap(lines, substations);
           applyTransmissionFilter();   // hide classes that are toggled off
-          try { renderTransmissionCapacity(computeCapacityByClass(lines)); } catch (e) { console.warn('tx capacity render:', e); }
+          try { renderTransmissionCapacity(computeCapacityByClass(lines), computeSubstationsByClass(substations), info.peak_gw); } catch (e) { console.warn('tx capacity render:', e); }
           const miles    = computeLineMiles(lines.features);
           const subCount = substations.features.length;
           const srcLabel = [sources.osm && 'OSM', sources.hifld && 'HIFLD'].filter(Boolean).join('+');
@@ -368,25 +373,44 @@ function renderGeneratorsTable(generators) {
 
 // ── Transmission capacity panel ───────────────────────────────────────────────
 
-function renderTransmissionCapacity({ byClass, totalMW }) {
+// Estimated fraction of peak demand carried per voltage class (bulk→local)
+const TX_DEMAND_SHARE = { '500': 0.33, '345': 0.35, '230': 0.18, '150': 0.08, '110': 0.06 };
+
+function utilColor(pct) {
+  if (pct < 40)  return '#22c55e';   // green — ample
+  if (pct < 65)  return '#eab308';   // yellow — moderate
+  if (pct < 80)  return '#f97316';   // orange — busy
+  return '#ef4444';                   // red — congested
+}
+
+function renderTransmissionCapacity({ byClass, totalMW }, subsByClass, peakGW) {
   const panel  = document.getElementById('tx-capacity-panel');
   const barsEl = document.getElementById('tx-capacity-bars');
   const totEl  = document.getElementById('tx-cap-total');
   if (!panel || !barsEl) return;
 
   panel.style.display = '';
-  totEl.textContent = `~${(totalMW / 1000).toFixed(0)} GW estimated`;
+  const peakMW = (peakGW || 0) * 1000;
+  totEl.textContent = `~${(totalMW / 1000).toFixed(0)} GW estimated capacity`;
 
   const LABELS = { '110':'110 kV', '150':'150 kV', '230':'230 kV', '345':'345 kV', '500':'500+ kV' };
   const active = TX_CLASSES.filter(cls => byClass[cls].miles > 0);
   const maxMW  = Math.max(1, ...active.map(cls => byClass[cls].estimatedMW));
 
   barsEl.innerHTML = active.map(cls => {
-    const s   = byClass[cls];
-    const pct = (s.estimatedMW / maxMW * 100).toFixed(1);
-    const mw  = s.estimatedMW >= 1000
+    const s    = byClass[cls];
+    const pct  = (s.estimatedMW / maxMW * 100).toFixed(1);
+    const mw   = s.estimatedMW >= 1000
       ? `${(s.estimatedMW / 1000).toFixed(1)} GW`
       : `${s.estimatedMW.toLocaleString()} MW`;
+    const utilPct = peakMW > 0
+      ? Math.min(99, Math.round((peakMW * TX_DEMAND_SHARE[cls]) / s.estimatedMW * 100))
+      : null;
+    const utilBadge = utilPct !== null
+      ? `<span class="tx-util-badge" style="background:${utilColor(utilPct)}22;color:${utilColor(utilPct)};border-color:${utilColor(utilPct)}66">${utilPct}% util</span>`
+      : '';
+    const subCount = subsByClass ? (subsByClass[cls] || 0) : 0;
+    const subStr = subCount > 0 ? `${subCount} sub` : '';
     return `
       <div class="tx-cap-row">
         <span class="tx-cap-label">${LABELS[cls]}</span>
@@ -394,9 +418,42 @@ function renderTransmissionCapacity({ byClass, totalMW }) {
           <div class="tx-cap-bar" style="width:${pct}%;background:${TX_COLORS[cls]}"></div>
         </div>
         <span class="tx-cap-val">${mw}</span>
-        <span class="tx-cap-sub">${s.miles.toLocaleString()} mi · ${s.lineCount.toLocaleString()} seg</span>
+        ${utilBadge}
+        <span class="tx-cap-sub">${[`${s.miles.toLocaleString()} mi`, subStr].filter(Boolean).join(' · ')}</span>
       </div>`;
   }).join('');
+}
+
+// ── Regulatory environment panel ──────────────────────────────────────────────
+
+function renderRegulatoryPanel(stateId) {
+  const reg = STATE_REGULATORY[stateId];
+  const panel = document.getElementById('reg-section');
+  if (!reg || !panel) return;
+
+  panel.style.display = '';
+
+  const badge = document.getElementById('reg-structure-badge');
+  badge.textContent = reg.structure;
+  badge.style.background = (REG_STRUCTURE_COLOR[reg.structure] || '#94a3b8') + '22';
+  badge.style.color       = REG_STRUCTURE_COLOR[reg.structure] || '#94a3b8';
+  badge.style.borderColor = (REG_STRUCTURE_COLOR[reg.structure] || '#94a3b8') + '88';
+
+  document.getElementById('reg-regulator-val').textContent  = reg.regulator;
+  document.getElementById('reg-market-val').textContent     = reg.structure;
+  document.getElementById('reg-market-val').style.color     = REG_STRUCTURE_COLOR[reg.structure] || 'var(--text)';
+  document.getElementById('reg-cpcn-val').textContent       = reg.cpcn ? 'CPCN required for new generation' : 'No CPCN for competitive generators';
+  document.getElementById('reg-rps-val').textContent        = reg.rps;
+  document.getElementById('reg-timeline-val').textContent   = reg.timeline;
+
+  const cxEl = document.getElementById('reg-complexity-val');
+  cxEl.textContent   = reg.complexity;
+  cxEl.style.color   = REG_COMPLEXITY_COLOR[reg.complexity] || 'var(--text)';
+
+  document.getElementById('reg-permits-list').innerHTML = reg.permits
+    .map(p => `<li class="reg-permit-item">${p}</li>`).join('');
+
+  document.getElementById('reg-notes-text').textContent = reg.notes;
 }
 
 // ── Back button ───────────────────────────────────────────────────────────────

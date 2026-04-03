@@ -36,7 +36,7 @@ async function initUSMap(onStateClick) {
   const { w, h } = getSize();
   svg.attr('viewBox', `0 0 ${w} ${h}`).attr('width', w).attr('height', h).attr('preserveAspectRatio', 'xMidYMid meet');
 
-  _usProjection = d3.geoAlbersUsa().scale(w * 1.2).translate([w / 2, h / 2]);
+  _usProjection = d3.geoAlbersUsa().scale(w * 0.9).translate([w * 0.5, h * 0.48]);
   _usPath = d3.geoPath().projection(_usProjection);
 
   // Load TopoJSON
@@ -72,7 +72,7 @@ async function initUSMap(onStateClick) {
     requestAnimationFrame(() => {
       const { w: nw, h: nh } = getSize();
       svg.attr('viewBox', `0 0 ${nw} ${nh}`).attr('width', nw).attr('height', nh);
-      _usProjection.scale(nw * 1.2).translate([nw / 2, nh / 2]);
+      _usProjection.scale(nw * 0.9).translate([nw * 0.5, nh * 0.48]);
       _usPath = d3.geoPath().projection(_usProjection);
       svg.selectAll('path.state').attr('d', _usPath);
       svg.selectAll('path.state-border').attr('d', _usPath);

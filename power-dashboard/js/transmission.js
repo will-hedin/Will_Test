@@ -313,3 +313,15 @@ function computeCapacityByClass(lines) {
 
   return { byClass: stats, totalMW };
 }
+
+// Returns { byClass: { cls: count } } — substation count per voltage class
+function computeSubstationsByClass(substations) {
+  const counts = {};
+  for (const cls of TX_CLASSES) counts[cls] = 0;
+
+  for (const f of (substations.features || [])) {
+    const cls = voltageClass(f.properties?.voltage);
+    counts[cls]++;
+  }
+  return counts;
+}
