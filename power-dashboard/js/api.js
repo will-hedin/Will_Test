@@ -127,15 +127,29 @@ async function gsFindDataset(pattern) {
 }
 
 async function gsDataset(datasetId, limit = 300) {
+  // The GridStatus API ignores sort=-interval_start_utc and always returns data oldest-first.
+  // Use start_time to limit results to the last 3 days so the last row is recent.
+  const cutoff = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19);
   try {
-    return await gsFetch(`/datasets/${datasetId}/query`, { limit, sort: '-interval_start_utc' });
+    const rows = await gsFetch(`/datasets/${datasetId}/query`, { limit, start_time: cutoff });
+    // Fall back to unfiltered query if no recent rows returned
+    if (Array.isArray(rows) && rows.length === 0) {
+      return gsFetch(`/datasets/${datasetId}/query`, { limit });
+    }
+    return rows;
   } catch (err) {
     if (err.status === 404) {
       // Try to find a matching dataset
       const prefix = datasetId.split('_')[0];
       const suffix = datasetId.split('_').slice(1).join('_');
       const found = await gsFindDataset(`${prefix}_${suffix}`).catch(() => null);
-      if (found) return gsFetch(`/datasets/${found.id}/query`, { limit, sort: '-interval_start_utc' });
+      if (found) {
+        const rows = await gsFetch(`/datasets/${found.id}/query`, { limit, start_time: cutoff });
+        if (Array.isArray(rows) && rows.length === 0) {
+          return gsFetch(`/datasets/${found.id}/query`, { limit });
+        }
+        return rows;
+      }
     }
     throw err;
   }

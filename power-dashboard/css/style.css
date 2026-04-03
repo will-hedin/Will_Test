@@ -767,7 +767,7 @@ circle.tx-sub:hover { r: 7px; }
 
 .tx-cap-row {
   display: grid;
-  grid-template-columns: 58px 1fr 68px 74px 90px;
+  grid-template-columns: 58px 1fr 68px 90px;
   align-items: center;
   gap: 8px;
   margin-bottom: 9px;

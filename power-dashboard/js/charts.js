@@ -77,14 +77,16 @@ function aggregateFuelMix(rows) {
   );
 
   if (mwCols.length > 2) {
-    const recent = rows[0];
+    // API returns oldest-first; last row is most recent
+    const recent = rows[rows.length - 1];
     for (const col of mwCols) {
       const key = normFuel(col.replace(/_mw$/, ''));
       const val = +(recent[col] || 0);
       if (val > 0) groups[key] = (groups[key] || 0) + val;
     }
   } else if (plainCols.length > 2) {
-    const recent = rows[0];
+    // API returns oldest-first; last row is most recent
+    const recent = rows[rows.length - 1];
     for (const col of plainCols) {
       const key = normFuel(col);
       const val = +(recent[col] || 0);

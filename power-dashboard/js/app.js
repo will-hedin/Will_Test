@@ -373,9 +373,6 @@ function renderGeneratorsTable(generators) {
 
 // ── Transmission capacity panel ───────────────────────────────────────────────
 
-// Estimated fraction of peak demand carried per voltage class (bulk→local)
-const TX_DEMAND_SHARE = { '500': 0.33, '345': 0.35, '230': 0.18, '150': 0.08, '110': 0.06 };
-
 function utilColor(pct) {
   if (pct < 40)  return '#22c55e';   // green — ample
   if (pct < 65)  return '#eab308';   // yellow — moderate
@@ -391,7 +388,18 @@ function renderTransmissionCapacity({ byClass, totalMW }, subsByClass, peakGW) {
 
   panel.style.display = '';
   const peakMW = (peakGW || 0) * 1000;
-  totEl.textContent = `~${(totalMW / 1000).toFixed(0)} GW estimated capacity`;
+
+  // System-level utilization: peak demand / total estimated capacity.
+  // Per-class utilization cannot be calculated without actual power flow data
+  // (we have capacity by voltage class but not actual MW flowing on each class).
+  const systemUtil = (peakMW > 0 && totalMW > 0)
+    ? Math.min(99, Math.round(peakMW / totalMW * 100))
+    : null;
+
+  const utilSuffix = systemUtil !== null
+    ? ` · <span style="color:${utilColor(systemUtil)}">${systemUtil}% system utilized</span>`
+    : '';
+  totEl.innerHTML = `~${(totalMW / 1000).toFixed(0)} GW estimated capacity${utilSuffix}`;
 
   const LABELS = { '110':'110 kV', '150':'150 kV', '230':'230 kV', '345':'345 kV', '500':'500+ kV' };
   const active = TX_CLASSES.filter(cls => byClass[cls].miles > 0);
@@ -403,12 +411,6 @@ function renderTransmissionCapacity({ byClass, totalMW }, subsByClass, peakGW) {
     const mw   = s.estimatedMW >= 1000
       ? `${(s.estimatedMW / 1000).toFixed(1)} GW`
       : `${s.estimatedMW.toLocaleString()} MW`;
-    const utilPct = peakMW > 0
-      ? Math.min(99, Math.round((peakMW * TX_DEMAND_SHARE[cls]) / s.estimatedMW * 100))
-      : null;
-    const utilBadge = utilPct !== null
-      ? `<span class="tx-util-badge" style="background:${utilColor(utilPct)}22;color:${utilColor(utilPct)};border-color:${utilColor(utilPct)}66">${utilPct}% util</span>`
-      : '';
     const subCount = subsByClass ? (subsByClass[cls] || 0) : 0;
     const subStr = subCount > 0 ? `${subCount} sub` : '';
     return `
@@ -418,7 +420,6 @@ function renderTransmissionCapacity({ byClass, totalMW }, subsByClass, peakGW) {
           <div class="tx-cap-bar" style="width:${pct}%;background:${TX_COLORS[cls]}"></div>
         </div>
         <span class="tx-cap-val">${mw}</span>
-        ${utilBadge}
         <span class="tx-cap-sub">${[`${s.miles.toLocaleString()} mi`, subStr].filter(Boolean).join(' · ')}</span>
       </div>`;
   }).join('');
