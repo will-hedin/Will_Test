@@ -283,6 +283,9 @@ async function renderCountyMap(stateId, generators) {
       countyGenLists[f.id] = genList;
     }
 
+    // Save raw MW before normalizing (used for utilization demand proxy)
+    _countyGenMWRaw = Object.assign({}, countyScores);
+
     // Normalize 0–100
     const maxScore = Math.max(1, ...Object.values(countyScores));
     for (const k in countyScores) {
@@ -417,7 +420,22 @@ function hideCountyTooltip() {
 
 // Mode-aware county tooltip
 function _countyTooltipHandler(event, f) {
-  if (_countyMapMode === 'tx' && _countyTxData) {
+  if (_countyMapMode === 'util' && _countyTxData) {
+    const tx   = _countyTxData[f.id] || { estimatedMW: 0, miles: 0 };
+    const pct  = _countyUtilData[f.id];
+    const mw   = tx.estimatedMW >= 1000
+      ? `${(tx.estimatedMW / 1000).toFixed(1)} GW`
+      : `${tx.estimatedMW.toLocaleString()} MW`;
+    const utilStr = pct != null ? `${pct}%` : 'No TX data';
+    const html = `
+      <div class="tt-title">${_countyNames[f.id] || f.id}</div>
+      <div class="tt-row"><span>TX Utilization</span><strong>${utilStr}</strong></div>
+      <div class="tt-row"><span>TX Capacity</span><strong>${mw}</strong></div>
+      <div class="tt-row"><span>Line Miles</span><strong>${Math.round(tx.miles).toLocaleString()} mi</strong></div>
+      <div class="tt-note" style="margin-top:5px;font-size:10px">Utilization = estimated local demand ÷ TX capacity</div>
+    `;
+    showCountyTooltip(event, html);
+  } else if (_countyMapMode === 'tx' && _countyTxData) {
     const tx = _countyTxData[f.id] || { estimatedMW: 0, miles: 0, lineCount: 0 };
     const mw = tx.estimatedMW >= 1000
       ? `${(tx.estimatedMW / 1000).toFixed(1)} GW`
@@ -456,6 +474,8 @@ function setCountyMapMode(mode) {
 
   if (mode === 'tx' && _countyTxData) {
     _applyTxColoring();
+  } else if (mode === 'util' && _countyTxData) {
+    _applyUtilColoring();
   } else {
     // Revert to generator score coloring
     if (!_countyColorScale) return;
@@ -484,14 +504,62 @@ function _applyTxColoring() {
 }
 
 // Called from app.js after transmission data loads
-function updateCountyTxCapacity(byCounty) {
+function updateCountyTxCapacity(byCounty, peakGW) {
   _countyTxData = byCounty;
-  // Enable the TX toggle button now that data is available
-  document.querySelectorAll('.county-mode-btn[data-mode="tx"]').forEach(btn => {
+  _countyStatePeakMW = (peakGW || 0) * 1000;
+  // Enable TX and Utilization toggle buttons now that data is available
+  document.querySelectorAll('.county-mode-btn[data-mode="tx"], .county-mode-btn[data-mode="util"]').forEach(btn => {
     btn.disabled = false;
     btn.title = '';
   });
-  if (_countyMapMode === 'tx') _applyTxColoring();
+  if (_countyMapMode === 'tx')   _applyTxColoring();
+  if (_countyMapMode === 'util') _applyUtilColoring();
+}
+
+function _applyUtilColoring() {
+  if (!_countyPaths || !_countyTxData) return;
+
+  // Demand proxy: allocate state peak demand to counties proportional to their
+  // installed generation MW (generators = proxy for local load activity).
+  const totalGenMW = Object.values(_countyGenMWRaw).reduce((s, v) => s + v, 0);
+
+  const utilByCounty = {};
+  for (const id in _countyTxData) {
+    const txMW = _countyTxData[id]?.estimatedMW || 0;
+    if (txMW === 0) { utilByCounty[id] = null; continue; }
+    const genMW = _countyGenMWRaw[id] || 0;
+    const demandProxy = totalGenMW > 0
+      ? _countyStatePeakMW * (genMW / totalGenMW)
+      : 0;
+    utilByCounty[id] = Math.min(99, Math.round(demandProxy / txMW * 100));
+  }
+
+  // Color scale: green (low util) → red (high util), anchored at 0–80%
+  const utilScale = d3.scaleSequential()
+    .domain([0, 80])
+    .interpolator(d3.interpolateRgb('#1e4620', '#ef4444'))
+    .clamp(true);
+
+  _countyPaths.attr('fill', f => {
+    const pct = utilByCounty[f.id];
+    if (pct == null) return '#1e3a5f';
+    return utilScale(pct);
+  });
+
+  // Custom gradient legend for util (0% → 80%+)
+  const el = document.getElementById('county-legend');
+  if (el) {
+    const steps = 5;
+    let html = '<span class="cl-label">0%</span>';
+    for (let i = 0; i <= steps; i++) {
+      html += `<span class="cl-swatch" style="background:${utilScale(i / steps * 80)}"></span>`;
+    }
+    html += '<span class="cl-label">80%+</span> <span class="cl-title">TX Util</span>';
+    el.innerHTML = html;
+  }
+
+  // Store for tooltip use
+  _countyUtilData = utilByCounty;
 }
 
 function renderCountyLegend(colorScale, title, maxVal) {
@@ -531,7 +599,10 @@ let _countyScoresRaw   = {};     // fips → normalized generator score 0-100
 let _countyGenListsRaw = {};     // fips → generator array
 let _countyTxData      = null;   // fips → { estimatedMW, miles, lineCount } (set after tx loads)
 let _countyColorScale  = null;   // current d3 color scale
-let _countyMapMode     = 'generators';  // 'generators' | 'tx'
+let _countyMapMode     = 'generators';  // 'generators' | 'tx' | 'util'
+let _countyGenMWRaw    = {};     // fips → raw generator MW (before normalization)
+let _countyStatePeakMW = 0;     // state peak demand in MW (for utilization calc)
+let _countyUtilData    = {};     // fips → utilization % (computed in _applyUtilColoring)
 
 // Called by app.js after fetchStateTransmission resolves
 function addTransmissionToCountyMap(lines, substations) {
