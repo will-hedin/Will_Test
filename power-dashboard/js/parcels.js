@@ -60,6 +60,7 @@ async function initParcelsView() {
     renderParcelsTable(qualifying);
 
   } catch (e) {
+    _parcelsLoaded = false;  // allow retry on next tab click
     setStatus(`Error: ${e.message}`);
     console.error('Parcels view:', e);
   }
@@ -132,8 +133,13 @@ async function fetchClarkParcels(bbox) {
 
 // ── Spatial helpers ───────────────────────────────────────────────────────────
 
+// Returns [lon, lat] centroid for any geometry type.
+// The Clark County LandApp layer returns Point centroids directly.
 function polygonCentroid(geometry) {
   if (!geometry) return null;
+  // Point — already a centroid
+  if (geometry.type === 'Point') return geometry.coordinates;
+  // Polygon / MultiPolygon — compute centroid from ring
   const ring = geometry.type === 'Polygon'
     ? geometry.coordinates[0]
     : geometry.type === 'MultiPolygon'
@@ -213,16 +219,30 @@ async function renderParcelsMap(lines, parcels) {
     .attr('stroke', 'rgba(255,255,255,0.3)')
     .attr('stroke-width', 1);
 
-  // Qualifying parcel polygons
+  // Qualifying parcels — draw as circles (API returns centroids, not polygons)
   if (parcels.length) {
-    g.selectAll('path.parcel')
+    g.selectAll('circle.parcel')
       .data(parcels)
-      .enter().append('path')
+      .enter().append('circle')
       .attr('class', 'parcel')
-      .attr('d', path)
-      .attr('fill', '#f59e0b33')
+      .attr('cx', f => {
+        const c = polygonCentroid(f.geometry);
+        const pt = c ? projection(c) : null;
+        return pt ? pt[0] : -999;
+      })
+      .attr('cy', f => {
+        const c = polygonCentroid(f.geometry);
+        const pt = c ? projection(c) : null;
+        return pt ? pt[1] : -999;
+      })
+      .attr('r', f => {
+        // Scale dot size loosely by acreage
+        const ac = f.properties?.CALC_ACRES || 100;
+        return Math.max(4, Math.min(12, Math.sqrt(ac / 20)));
+      })
+      .attr('fill', '#f59e0b99')
       .attr('stroke', '#f59e0b')
-      .attr('stroke-width', 0.8);
+      .attr('stroke-width', 1.2);
   }
 
   // Transmission lines
@@ -240,14 +260,19 @@ async function renderParcelsMap(lines, parcels) {
     .attr('opacity', 0.95);
 
   // Map legend
-  const leg = g.append('g').attr('transform', `translate(12,${H - 60})`);
-  [['#f59e0b', '345 kV'], ['#f97316', '500+ kV'], ['#f59e0b33', '≥100 ac parcel']].forEach(([color, label], i) => {
+  const leg = g.append('g').attr('transform', `translate(12,${H - 64})`);
+  [['#f59e0b', '345 kV line'], ['#f97316', '500+ kV line']].forEach(([color, label], i) => {
     const y = i * 18;
-    leg.append('rect').attr('x', 0).attr('y', y).attr('width', 18).attr('height', 10)
-      .attr('fill', color).attr('stroke', color.length > 7 ? '#f59e0b' : 'none').attr('stroke-width', 1);
+    leg.append('rect').attr('x', 0).attr('y', y).attr('width', 18).attr('height', 4).attr('y', y + 4)
+      .attr('fill', color);
     leg.append('text').attr('x', 24).attr('y', y + 9)
       .attr('fill', 'rgba(255,255,255,0.85)').attr('font-size', 11).text(label);
   });
+  // Parcel dot legend entry
+  leg.append('circle').attr('cx', 9).attr('cy', 44).attr('r', 5)
+    .attr('fill', '#f59e0b99').attr('stroke', '#f59e0b').attr('stroke-width', 1.2);
+  leg.append('text').attr('x', 24).attr('y', 48)
+    .attr('fill', 'rgba(255,255,255,0.85)').attr('font-size', 11).text('≥100 ac parcel');
 }
 
 // ── Results table ─────────────────────────────────────────────────────────────
