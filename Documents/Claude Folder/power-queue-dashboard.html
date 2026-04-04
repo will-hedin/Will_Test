@@ -110,13 +110,17 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 .op-toggle.open{color:#22c55e;border-color:#22c55e40}
 .op-expand-row{display:none;background:#0c0f18}
 .op-expand-row.open{display:table-row}
-.op-expand-content{display:flex;flex-wrap:wrap;gap:6px 16px;padding:12px 16px 14px}
-.op-entry{font-size:11px;color:#e2e8f0;display:flex;align-items:center;gap:5px;min-width:210px}
-.op-entry a{color:#4f8ef7;font-size:11px}
-.op-mw{background:#1e2235;border:1px solid #2d3148;border-radius:3px;padding:1px 5px;font-size:10px;color:#94a3b8;white-space:nowrap}
-.op-mw.in-queue{border-color:#f59e0b40;color:#f59e0b}
-.op-mw.under-const{border-color:#22c55e40;color:#22c55e}
-.op-mw.expanding{border-color:#4f8ef740;color:#4f8ef7}
+.iq-wrap{padding:10px 16px 14px}
+.iq-table{width:100%;border-collapse:collapse;font-size:12px}
+.iq-table th{padding:6px 10px;text-align:left;font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #2d3148;white-space:nowrap}
+.iq-table td{padding:6px 10px;border-bottom:1px solid #1a1d27;color:#94a3b8;vertical-align:middle}
+.iq-table td:first-child{color:#e2e8f0}
+.iq-table tr:last-child td{border-bottom:none}
+.iq-status{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.iq-status.expanding{background:#22c55e20;color:#22c55e;border:1px solid #22c55e40}
+.iq-status.in-queue{background:#4f8ef720;color:#4f8ef7;border:1px solid #4f8ef740}
+.iq-status.under-const{background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40}
+.iq-note{font-size:10px;color:#64748b;font-style:italic;padding:6px 10px}
 @media(max-width:768px){
   header{flex-direction:column;align-items:flex-start}
   .search-box{width:100%}
@@ -337,7 +341,7 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 <tbody id="tableBody">
 
 <tr data-tier="Tier 1" data-market="nova">
-  <td><div class="market-name">Northern Virginia</div><div class="market-sub">Ashburn / Loudoun / Fairfax</div><button class="op-toggle" onclick="toggleOp('nova')">&#9654; Operators</button></td>
+  <td><div class="market-name">Northern Virginia</div><div class="market-sub">Ashburn / Loudoun / Fairfax</div><button class="op-toggle" onclick="toggleOp('nova')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>Dominion Energy / PJM</td>
   <td><div class="queue-val">47.2 GW contracted</div><div class="queue-sub">Beyond current production</div></td>
@@ -349,28 +353,33 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-nova">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/amazon-web-services-expanding-data-center-virginia/" target="_blank" rel="noopener">Amazon (AWS)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/microsoft-announces-new-loudoun-county-data-center/" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/google-virginia-data-center-expansion/" target="_blank" rel="noopener">Google</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/meta-virginia-data-center-expansion/" target="_blank" rel="noopener">Meta</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/digital-realty-ashburn-campus-expansion/" target="_blank" rel="noopener">Digital Realty</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/equinix-northern-virginia-expansion/" target="_blank" rel="noopener">Equinix</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/cyrusone-loudoun-county-expansion/" target="_blank" rel="noopener">CyrusOne</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">NTT Global</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/stack-infrastructure-loudoun-county-144mw/" target="_blank" rel="noopener">STACK Infrastructure</a> <span class="op-mw in-queue">144 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Vantage Data Centers</a> <span class="op-mw under-const">192 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">TA Realty</a> <span class="op-mw in-queue">300 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Cloud HQ</a> <span class="op-mw in-queue">Loudoun Co. queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a> <span class="op-mw in-queue">Prince William queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain RCH-1</a> <span class="op-mw in-queue">48 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS Realty Trust</a> <span class="op-mw expanding">Expanding</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/amazon-web-services-expanding-data-center-virginia/" target="_blank" rel="noopener">Amazon (AWS)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/microsoft-announces-new-loudoun-county-data-center/" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/google-virginia-data-center-expansion/" target="_blank" rel="noopener">Google</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/meta-virginia-data-center-expansion/" target="_blank" rel="noopener">Meta</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/digital-realty-ashburn-campus-expansion/" target="_blank" rel="noopener">Digital Realty</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/equinix-northern-virginia-expansion/" target="_blank" rel="noopener">Equinix</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/cyrusone-loudoun-county-expansion/" target="_blank" rel="noopener">CyrusOne</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">NTT Global</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS Realty Trust</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Vantage Data Centers</a></td><td>192 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/stack-infrastructure-loudoun-county-144mw/" target="_blank" rel="noopener">STACK Infrastructure</a></td><td>144 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">TA Realty</a></td><td>300 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain RCH-1</a></td><td>48 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Cloud HQ</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Loudoun Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Prince William</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="dfw">
-  <td><div class="market-name">Dallas-Fort Worth</div><div class="market-sub">Midlothian / Red Oak / Irving</div><button class="op-toggle" onclick="toggleOp('dfw')">&#9654; Operators</button></td>
+  <td><div class="market-name">Dallas-Fort Worth</div><div class="market-sub">Midlothian / Red Oak / Irving</div><button class="op-toggle" onclick="toggleOp('dfw')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>Oncor / ERCOT</td>
   <td><div class="queue-val">410 GW (TX total)</div><div class="queue-sub">DFW is primary cluster</div></td>
@@ -382,23 +391,29 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-dfw">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/stream-data-centers-dfw-hyperscale-campus/" target="_blank" rel="noopener">Stream Data Centers</a> <span class="op-mw under-const">372 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/aligned-data-centers-plano-161m/" target="_blank" rel="noopener">Aligned Data Centers</a> <span class="op-mw under-const">~200 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/cyrusone-dfw7-fort-worth-70mw/" target="_blank" rel="noopener">CyrusOne</a> <span class="op-mw under-const">470 MW (DFW7+10)</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/equinix-dallas-542m-campus/" target="_blank" rel="noopener">Equinix</a> <span class="op-mw in-queue">~300 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">QTS Realty Trust</a> <span class="op-mw in-queue">250+ MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Diode Ventures</a> <span class="op-mw in-queue">900+ acres queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Digital Realty</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw expanding">Expanding (8 sites TX)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain</a> <span class="op-mw in-queue">DFW campus queued</span></div>
-      <div class="op-entry"><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">ERCOT batch queue</a> <span class="op-mw in-queue">700–800 MW avg/site</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/stream-data-centers-dfw-hyperscale-campus/" target="_blank" rel="noopener">Stream Data Centers</a></td><td>372 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/aligned-data-centers-plano-161m/" target="_blank" rel="noopener">Aligned Data Centers</a></td><td>~200 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/cyrusone-dfw7-fort-worth-70mw/" target="_blank" rel="noopener">CyrusOne</a></td><td>470 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>DFW7+10</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Digital Realty</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>8 TX sites</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/equinix-dallas-542m-campus/" target="_blank" rel="noopener">Equinix</a></td><td>~300 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">QTS Realty Trust</a></td><td>250+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>DFW campus</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Diode Ventures</a></td><td>900+ acres</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">ERCOT batch queue</a></td><td>700–800 MW avg/site</td><td><span class="iq-status in-queue">In Queue</span></td><td>Batch Zero 2026</td></tr>
+          <tr><td colspan="4" class="iq-note">ERCOT applicants not named publicly — Batch Zero evaluations begin 2026</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="phx">
-  <td><div class="market-name">Phoenix Metro</div><div class="market-sub">Chandler / Mesa / Goodyear</div><button class="op-toggle" onclick="toggleOp('phx')">&#9654; Operators</button></td>
+  <td><div class="market-name">Phoenix Metro</div><div class="market-sub">Chandler / Mesa / Goodyear</div><button class="op-toggle" onclick="toggleOp('phx')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>APS / SRP</td>
   <td><div class="queue-val">10+ GW pending (APS)</div><div class="queue-sub">4.7 GW contracted (2/3 DC)</div></td>
@@ -410,24 +425,29 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-phx">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/qts-phoenix-750mw-campus-west-valley/" target="_blank" rel="noopener">QTS Realty Trust</a> <span class="op-mw in-queue">750 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Tract (land dev.)</a> <span class="op-mw in-queue">$14B / 1,000 acres</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google</a> <span class="op-mw in-queue">250+ MW proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Compass Datacenters</a> <span class="op-mw in-queue">250+ MW proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a> <span class="op-mw in-queue">New sites queued</span></div>
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/data-center-grid-reliability-residential-cost-aps-load-growth/732480/" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw expanding">Expanding (Goodyear)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">STACK Infrastructure</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne</a> <span class="op-mw expanding">Expanding (Chandler)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Vantage Data Centers</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/data-center-grid-reliability-residential-cost-aps-load-growth/732480/" target="_blank" rel="noopener">APS queue total</a> <span class="op-mw in-queue">10+ GW pending</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.utilitydive.com/news/data-center-grid-reliability-residential-cost-aps-load-growth/732480/" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Goodyear</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">STACK Infrastructure</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Chandler</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Vantage Data Centers</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google</a></td><td>250+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Compass Datacenters</a></td><td>250+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/qts-phoenix-750mw-campus-west-valley/" target="_blank" rel="noopener">QTS Realty Trust</a></td><td>750 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Tract (land dev.)</a></td><td>$14B / 1,000 acres</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.utilitydive.com/news/data-center-grid-reliability-residential-cost-aps-load-growth/732480/" target="_blank" rel="noopener">APS queue total</a></td><td>10+ GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>2030-2032+</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="chi">
-  <td><div class="market-name">Chicago / Chicagoland</div><div class="market-sub">Elk Grove Village / Carol Stream</div><button class="op-toggle" onclick="toggleOp('chi')">&#9654; Operators</button></td>
+  <td><div class="market-name">Chicago / Chicagoland</div><div class="market-sub">Elk Grove Village / Carol Stream</div><button class="op-toggle" onclick="toggleOp('chi')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>ComEd / MISO</td>
   <td><div class="queue-val">309 GW (MISO total)</div><div class="queue-sub">IL is top MISO load area</div></td>
@@ -439,23 +459,28 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-chi">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a> <span class="op-mw in-queue">250+ MW (EGV) queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">T5 Chicago II</a> <span class="op-mw in-queue">50 MW proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Equinix (2 new sites)</a> <span class="op-mw in-queue">25–50 MW each</span></div>
-      <div class="op-entry"><a href="https://www.spglobal.com/energy/en/news-research/latest-news/electric-power/022525-miso-on-path-to-reduce-queue-process-to-one-year-with-reforms-technology-executive" target="_blank" rel="noopener">CyrusOne</a> <span class="op-mw expanding">Expanding (Aurora)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">STACK Infrastructure</a> <span class="op-mw expanding">Expanding (EGV)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS Realty Trust</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (DeKalb Co.)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Stream Data Centers</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/ameren-illinois-850mw-data-center-construction-agreements/" target="_blank" rel="noopener">Ameren IL customers</a> <span class="op-mw in-queue">850 MW contracted</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Aurora</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">STACK Infrastructure</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>EGV</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS Realty Trust</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (DeKalb Co.)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Stream Data Centers</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a></td><td>250+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>EGV</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">T5 Chicago II</a></td><td>50 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Equinix (2 new sites)</a></td><td>25–50 MW each</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.utilitydive.com/news/ameren-illinois-850mw-data-center-construction-agreements/" target="_blank" rel="noopener">Ameren IL customers</a></td><td>850 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="sva">
-  <td><div class="market-name">Silicon Valley</div><div class="market-sub">San Jose / Santa Clara / Sunnyvale</div><button class="op-toggle" onclick="toggleOp('sva')">&#9654; Operators</button></td>
+  <td><div class="market-name">Silicon Valley</div><div class="market-sub">San Jose / Santa Clara / Sunnyvale</div><button class="op-toggle" onclick="toggleOp('sva')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>PG&amp;E / SVP / CAISO</td>
   <td><div class="queue-val">126 GW (CAISO)</div><div class="queue-sub">4.5 GW DC in 2025-26 study</div></td>
@@ -467,16 +492,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-sva">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank" rel="noopener">18 PG&amp;E projects</a> <span class="op-mw in-queue">2026–30 pipeline</span></div>
-      <div class="op-entry"><a href="https://www.zeroemissiongrid.com/iso-rto-meeting-summaries/caiso-interconnection-reforms-2025/" target="_blank" rel="noopener">CAISO IPP queue</a> <span class="op-mw in-queue">4.5 GW DC studied</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">Applicants not publicly named per CAISO rules</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank" rel="noopener">18 PG&amp;E projects</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>2026–2030</td></tr>
+          <tr><td><a href="https://www.zeroemissiongrid.com/iso-rto-meeting-summaries/caiso-interconnection-reforms-2025/" target="_blank" rel="noopener">CAISO IPP queue</a></td><td>4.5 GW DC</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td colspan="4" class="iq-note">Applicants not publicly named per CAISO rules</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="atl">
-  <td><div class="market-name">Atlanta Metro</div><div class="market-sub">Douglasville / Lithia Springs / Norcross</div><button class="op-toggle" onclick="toggleOp('atl')">&#9654; Operators</button></td>
+  <td><div class="market-name">Atlanta Metro</div><div class="market-sub">Douglasville / Lithia Springs / Norcross</div><button class="op-toggle" onclick="toggleOp('atl')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>Georgia Power / Southern Co.</td>
   <td><div class="queue-val">9,885 MW approved (PSC)</div><div class="queue-sub">17.9 GW gas in gen queue</div></td>
@@ -488,23 +518,28 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-atl">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterfrontier.com/hyperscale/article/55126626/details-emerge-on-microsofts-18-billion-investment-in-atlanta-data-centers-amid-tax-development-wrangles" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw under-const">324 MW 3-campus const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">T5 Data Centers (ATL-IV)</a> <span class="op-mw under-const">200 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DC BLOX (Lithia Springs)</a> <span class="op-mw under-const">80 MW const.</span></div>
-      <div class="op-entry"><a href="https://georgiarecorder.com/2025/12/19/georgia-regulators-approve-massive-power-grid-expansion-to-serve-data-centers/" target="_blank" rel="noopener">Meta (Walton Co.)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Douglas Co.)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS (Fulton + Fayette)</a> <span class="op-mw in-queue">250+ MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a> <span class="op-mw in-queue">Douglas Co. queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a> <span class="op-mw in-queue">Fulton Co. queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Edged Energy</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://georgiarecorder.com/2025/12/19/georgia-regulators-approve-massive-power-grid-expansion-to-serve-data-centers/" target="_blank" rel="noopener">Georgia Power queue</a> <span class="op-mw in-queue">26 DCs under const.</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterfrontier.com/hyperscale/article/55126626/details-emerge-on-microsofts-18-billion-investment-in-atlanta-data-centers-amid-tax-development-wrangles" target="_blank" rel="noopener">Microsoft</a></td><td>324 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>3-campus</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">T5 Data Centers (ATL-IV)</a></td><td>200 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DC BLOX (Lithia Springs)</a></td><td>80 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://georgiarecorder.com/2025/12/19/georgia-regulators-approve-massive-power-grid-expansion-to-serve-data-centers/" target="_blank" rel="noopener">Meta (Walton Co.)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Douglas Co.)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Edged Energy</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS (Fulton + Fayette)</a></td><td>250+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Aligned Data Centers</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Douglas Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Fulton Co.</td></tr>
+          <tr><td><a href="https://georgiarecorder.com/2025/12/19/georgia-regulators-approve-massive-power-grid-expansion-to-serve-data-centers/" target="_blank" rel="noopener">Georgia Power queue</a></td><td>26 DCs</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="pdx">
-  <td><div class="market-name">Portland / Hillsboro</div><div class="market-sub">Hillsboro / Beaverton / Boardman</div><button class="op-toggle" onclick="toggleOp('pdx')">&#9654; Operators</button></td>
+  <td><div class="market-name">Portland / Hillsboro</div><div class="market-sub">Hillsboro / Beaverton / Boardman</div><button class="op-toggle" onclick="toggleOp('pdx')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>Portland General Electric / WECC</td>
   <td><div class="queue-val">400+ MW pipeline</div><div class="queue-sub">DeFlex methodology deployed</div></td>
@@ -516,19 +551,24 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-pdx">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.prnewswire.com/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302577731.html" target="_blank" rel="noopener">PGE/GridCARE pipeline</a> <span class="op-mw in-queue">400+ MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Intel (Hillsboro)</a> <span class="op-mw expanding">Expanding (major anchor)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Metro Portland)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Oregon)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Flexential (3 sites)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">New applicant names not disclosed by PGE; DeFlex unlocks 80 MW 2026</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Intel (Hillsboro)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Metro Portland)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Oregon)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Flexential (3 sites)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://www.prnewswire.com/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302577731.html" target="_blank" rel="noopener">PGE/GridCARE pipeline</a></td><td>400+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>80 MW 2026; 400 MW by 2029</td></tr>
+          <tr><td colspan="4" class="iq-note">New applicant names not disclosed by PGE; DeFlex unlocks 80 MW in 2026</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 1" data-market="nyc">
-  <td><div class="market-name">New York / New Jersey</div><div class="market-sub">NYC Metro / NNJ corridor</div><button class="op-toggle" onclick="toggleOp('nyc')">&#9654; Operators</button></td>
+  <td><div class="market-name">New York / New Jersey</div><div class="market-sub">NYC Metro / NNJ corridor</div><button class="op-toggle" onclick="toggleOp('nyc')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-1">Tier 1</span></td>
   <td>ConEd / PSE&amp;G / PJM</td>
   <td><div class="queue-val">~1,700 MW PSE&amp;G queued</div><div class="queue-sub">Solar / storage / offshore wind</div></td>
@@ -540,16 +580,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-nyc">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://insidelines.pjm.com/pjm-board-fast-tracks-effort-to-reliably-serve-large-loads/" target="_blank" rel="noopener">PJM load queue</a> <span class="op-mw in-queue">~1,700 MW pipeline</span></div>
-      <div class="op-entry"><a href="https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and" target="_blank" rel="noopener">FERC colocation path</a> <span class="op-mw in-queue">8 PSE&amp;G projects</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">PJM does not disclose applicant names publicly</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://insidelines.pjm.com/pjm-board-fast-tracks-effort-to-reliably-serve-large-loads/" target="_blank" rel="noopener">PJM load queue</a></td><td>~1,700 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.ferc.gov/news-events/news/ferc-directs-nations-largest-grid-operator-create-new-rules-embrace-innovation-and" target="_blank" rel="noopener">FERC colocation path</a></td><td>8 PSE&amp;G projects</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td colspan="4" class="iq-note">PJM does not disclose applicant names publicly</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="col">
-  <td><div class="market-name">Columbus, OH</div><div class="market-sub">New Albany / Dublin / Gahanna</div><button class="op-toggle" onclick="toggleOp('col')">&#9654; Operators</button></td>
+  <td><div class="market-name">Columbus, OH</div><div class="market-sub">New Albany / Dublin / Gahanna</div><button class="op-toggle" onclick="toggleOp('col')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>AEP Ohio / PJM</td>
   <td><div class="queue-val">30+ GW requests</div><div class="queue-sub">vs ~5 GW 2030 forecast</div></td>
@@ -561,22 +606,27 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-col">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/amazon-aws-new-albany-ohio-expansion/" target="_blank" rel="noopener">Amazon (AWS)</a> <span class="op-mw expanding">Expanding (New Albany)</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/microsoft-new-albany-ohio-420m-data-center/" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw in-queue">$420M New Albany queued</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/google-central-ohio-data-center-expansion/" target="_blank" rel="noopener">Google</a> <span class="op-mw in-queue">Central OH proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta</a> <span class="op-mw in-queue">Multiple sites queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Switch (CMH sites)</a> <span class="op-mw in-queue">4 proposed Franklin Co.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne</a> <span class="op-mw in-queue">Columbus area queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a> <span class="op-mw in-queue">Franklin Co. proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Cologix</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.aepohio.com/company/about/rates/data-center-tariff/" target="_blank" rel="noopener">AEP queue total</a> <span class="op-mw in-queue">36 studies / 13 GW</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/amazon-aws-new-albany-ohio-expansion/" target="_blank" rel="noopener">Amazon (AWS)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>New Albany</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Cologix</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/microsoft-new-albany-ohio-420m-data-center/" target="_blank" rel="noopener">Microsoft</a></td><td>$420M</td><td><span class="iq-status in-queue">In Queue</span></td><td>New Albany</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/google-central-ohio-data-center-expansion/" target="_blank" rel="noopener">Google</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Central OH</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Multiple sites</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Switch (CMH sites)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>4 Franklin Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Columbus area</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Franklin Co.</td></tr>
+          <tr><td><a href="https://www.aepohio.com/company/about/rates/data-center-tariff/" target="_blank" rel="noopener">AEP queue total</a></td><td>36 studies / 13 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>2029-2031+</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="slc">
-  <td><div class="market-name">Salt Lake City, UT</div><div class="market-sub">West Jordan / Bluffdale / Draper</div><button class="op-toggle" onclick="toggleOp('slc')">&#9654; Operators</button></td>
+  <td><div class="market-name">Salt Lake City, UT</div><div class="market-sub">West Jordan / Bluffdale / Draper</div><button class="op-toggle" onclick="toggleOp('slc')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Rocky Mountain Power / WECC</td>
   <td><div class="queue-val">Severely constrained</div><div class="queue-sub">Cannot fully serve until 2031+</div></td>
@@ -588,17 +638,23 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-slc">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a> <span class="op-mw in-queue">4 sites, Bluffdale</span></div>
-      <div class="op-entry"><a href="https://www.latitudemedia.com/news/utah-is-taking-a-different-approach-to-new-data-center-load/" target="_blank" rel="noopener">SB 132 self-supply devs</a> <span class="op-mw in-queue">100+ MW threshold</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft / Google / Meta</a> <span class="op-mw in-queue">Regional interest</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Novva (off-grid)</a> <span class="op-mw in-queue">20 MW self-supply</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>4 sites, Bluffdale</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Novva (off-grid)</a></td><td>20 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Self-supply</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft / Google / Meta</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>2031+</td></tr>
+          <tr><td><a href="https://www.latitudemedia.com/news/utah-is-taking-a-different-approach-to-new-data-center-load/" target="_blank" rel="noopener">SB 132 self-supply devs</a></td><td>100+ MW threshold</td><td><span class="iq-status in-queue">In Queue</span></td><td>2031+ (RMP cannot serve until then)</td></tr>
+          <tr><td colspan="4" class="iq-note">Rocky Mountain Power cannot guarantee power before 2031; Utah SB 132 allows self-supply for 100+ MW loads</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="ind">
-  <td><div class="market-name">Indianapolis, IN</div><div class="market-sub">Decatur Twp / Franklin Twp / Lawrence</div><button class="op-toggle" onclick="toggleOp('ind')">&#9654; Operators</button></td>
+  <td><div class="market-name">Indianapolis, IN</div><div class="market-sub">Decatur Twp / Franklin Twp / Lawrence</div><button class="op-toggle" onclick="toggleOp('ind')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>AES Indiana / Duke Energy IN / MISO</td>
   <td><div class="queue-val">~300 MW active pipeline</div><div class="queue-sub">MISO queue further delayed</div></td>
@@ -610,25 +666,30 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-ind">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Amazon (New Carlisle)</a> <span class="op-mw under-const">1,092 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Fort Wayne)</a> <span class="op-mw under-const">250+ MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Lebanon)</a> <span class="op-mw under-const">250+ MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Jeffersonville)</a> <span class="op-mw under-const">250+ MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Sabey Corp.</a> <span class="op-mw in-queue">250 MW Indianapolis</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Metrobloks</a> <span class="op-mw in-queue">500 MW campus</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Wanamaker)</a> <span class="op-mw in-queue">Marion Co. proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (Granger)</a> <span class="op-mw in-queue">St. Joseph Co. queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (LaPorte)</a> <span class="op-mw in-queue">LaPorte Co. queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Karis Critical (Merrillville)</a> <span class="op-mw in-queue">Lake Co. queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Sentinel (Hebron)</a> <span class="op-mw in-queue">250+ MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Hobart Devco</a> <span class="op-mw in-queue">Lake Co. queued</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Amazon (New Carlisle)</a></td><td>1,092 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Fort Wayne)</a></td><td>250+ MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Lebanon)</a></td><td>250+ MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Jeffersonville)</a></td><td>250+ MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Sabey Corp.</a></td><td>250 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Indianapolis</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Metrobloks</a></td><td>500 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Wanamaker)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Marion Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (Granger)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>St. Joseph Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (LaPorte)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>LaPorte Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Karis Critical (Merrillville)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Lake Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Sentinel (Hebron)</a></td><td>250+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Hobart Devco</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Lake Co.</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="rno">
-  <td><div class="market-name">Reno / Sparks, NV</div><div class="market-sub">Tahoe-Reno Industrial Center</div><button class="op-toggle" onclick="toggleOp('rno')">&#9654; Operators</button></td>
+  <td><div class="market-name">Reno / Sparks, NV</div><div class="market-sub">Tahoe-Reno Industrial Center</div><button class="op-toggle" onclick="toggleOp('rno')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>NV Energy / WECC</td>
   <td><div class="queue-val">49 GW (NV total)</div><div class="queue-sub">5,900 MW needed in N. Nevada</div></td>
@@ -640,17 +701,22 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-rno">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank" rel="noopener">Novva Data Centers</a> <span class="op-mw under-const">205 acres const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Switch (TRIC Phase 2)</a> <span class="op-mw expanding">300+ acres queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">PowerHouse Data Centers</a> <span class="op-mw in-queue">In Queue</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (N. NV expansion)</a> <span class="op-mw in-queue">50–100 MW proposed</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank" rel="noopener">Novva Data Centers</a></td><td>205 acres</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Switch (TRIC Phase 2)</a></td><td>300+ acres</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">PowerHouse Data Centers</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (N. NV expansion)</a></td><td>50–100 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="sat">
-  <td><div class="market-name">San Antonio, TX</div><div class="market-sub">West Side / Castroville corridor</div><button class="op-toggle" onclick="toggleOp('sat')">&#9654; Operators</button></td>
+  <td><div class="market-name">San Antonio, TX</div><div class="market-sub">West Side / Castroville corridor</div><button class="op-toggle" onclick="toggleOp('sat')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>CPS Energy / ERCOT</td>
   <td><div class="queue-val">2 GW in queue</div><div class="queue-sub">vs 6,000 MW summer peak</div></td>
@@ -662,19 +728,24 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-sat">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/cps-energy-to-invest-upwards-of-13bn-in-transmission-and-generation-to-meet-rapid-data-center-growth-in-texas/" target="_blank" rel="noopener">Stream Data Centers</a> <span class="op-mw under-const">200 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/microsoft-san-antonio-castroville-datacenter/" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw expanding">8 DCs + $482M Castroville</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne (Bexar Co.)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">H5 Data Centers</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">ERCOT batch queue</a> <span class="op-mw in-queue">2 GW Bexar Co. pipeline</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">ERCOT applicants not named publicly — Batch Zero evals 2026</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/cps-energy-to-invest-upwards-of-13bn-in-transmission-and-generation-to-meet-rapid-data-center-growth-in-texas/" target="_blank" rel="noopener">Stream Data Centers</a></td><td>200 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>Broke ground Jul 2025</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/microsoft-san-antonio-castroville-datacenter/" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>8 DCs + $482M Castroville</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne (Bexar Co.)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">H5 Data Centers</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">ERCOT batch queue</a></td><td>2 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Batch Zero 2026</td></tr>
+          <tr><td colspan="4" class="iq-note">ERCOT applicants not named publicly — Batch Zero evaluations 2026</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="kci">
-  <td><div class="market-name">Kansas City, MO/KS</div><div class="market-sub">Lenexa / Overland Park / North KC</div><button class="op-toggle" onclick="toggleOp('kci')">&#9654; Operators</button></td>
+  <td><div class="market-name">Kansas City, MO/KS</div><div class="market-sub">Lenexa / Overland Park / North KC</div><button class="op-toggle" onclick="toggleOp('kci')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Evergy / MISO / SPP</td>
   <td><div class="queue-val">15 GW total pipeline</div><div class="queue-sub">~5 GW advanced stage</div></td>
@@ -686,17 +757,22 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-kci">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/google-kansas-city-second-campus-project-mica-10b/" target="_blank" rel="noopener">Google (Project Mica)</a> <span class="op-mw under-const">$10B campus</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta</a> <span class="op-mw in-queue">Platte Co. proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Diode Ventures</a> <span class="op-mw in-queue">First hyperscale KC</span></div>
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/kansas-michigan-data-center-large-load-evergy-consumers/805115/" target="_blank" rel="noopener">20+ large-load customers</a> <span class="op-mw in-queue">~6 GW advanced</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/google-kansas-city-second-campus-project-mica-10b/" target="_blank" rel="noopener">Google (Project Mica)</a></td><td>$10B campus</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Platte Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Diode Ventures</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>First hyperscale KC</td></tr>
+          <tr><td><a href="https://www.utilitydive.com/news/kansas-michigan-data-center-large-load-evergy-consumers/805115/" target="_blank" rel="noopener">20+ large-load customers</a></td><td>~6 GW advanced</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="bna">
-  <td><div class="market-name">Nashville, TN</div><div class="market-sub">Gallatin / Murfreesboro / Smyrna</div><button class="op-toggle" onclick="toggleOp('bna')">&#9654; Operators</button></td>
+  <td><div class="market-name">Nashville, TN</div><div class="market-sub">Gallatin / Murfreesboro / Smyrna</div><button class="op-toggle" onclick="toggleOp('bna')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>TVA / Nashville Electric</td>
   <td><div class="queue-val">27 DCs in Nashville area</div><div class="queue-sub">DCs = 18% TVA industrial load</div></td>
@@ -708,20 +784,25 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-bna">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/meta-gallatin-tennessee-campus-expansion/" target="_blank" rel="noopener">Meta (Gallatin)</a> <span class="op-mw expanding">300 MW + Ph.2 expanding</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/xai-colossus-memphis-tennessee-power/" target="_blank" rel="noopener">xAI (Colossus — Memphis)</a> <span class="op-mw expanding">250+ MW expanding</span></div>
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/tva-tennessee-valley-authority-nuclear-gas-demand-growth/811306/" target="_blank" rel="noopener">Google (Clarksville)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DC BLOX (Huntsville)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Flexential (3 sites)</a> <span class="op-mw expanding">Williamson Co.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">TierPoint</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">TVA load queue not publicly searchable; 27 DCs in Nashville area total</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/meta-gallatin-tennessee-campus-expansion/" target="_blank" rel="noopener">Meta (Gallatin)</a></td><td>300 MW</td><td><span class="iq-status expanding">Expanding</span></td><td>Phase 2 underway</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/xai-colossus-memphis-tennessee-power/" target="_blank" rel="noopener">xAI (Colossus — Memphis)</a></td><td>250+ MW</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.utilitydive.com/news/tva-tennessee-valley-authority-nuclear-gas-demand-growth/811306/" target="_blank" rel="noopener">Google (Clarksville)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DC BLOX (Huntsville)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Flexential (3 sites)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Williamson Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">TierPoint</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td colspan="4" class="iq-note">TVA load queue not publicly searchable; 27 DCs in Nashville area total</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="ric">
-  <td><div class="market-name">Richmond, VA</div><div class="market-sub">Henrico / Chester / Chesterfield</div><button class="op-toggle" onclick="toggleOp('ric')">&#9654; Operators</button></td>
+  <td><div class="market-name">Richmond, VA</div><div class="market-sub">Henrico / Chester / Chesterfield</div><button class="op-toggle" onclick="toggleOp('ric')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Dominion Energy / PJM</td>
   <td><div class="queue-val">Part of 47.2 GW VA total</div><div class="queue-sub">NoVA spillover market</div></td>
@@ -733,16 +814,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-ric">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Chirisa Tech Parks</a> <span class="op-mw in-queue">1,000 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/google-project-peanut-chesterfield-virginia/" target="_blank" rel="noopener">Google (Project Peanut)</a> <span class="op-mw under-const">300 acres const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain RCH-1</a> <span class="op-mw in-queue">48 MW queued</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/google-project-peanut-chesterfield-virginia/" target="_blank" rel="noopener">Google (Project Peanut)</a></td><td>300 acres</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Chirisa Tech Parks</a></td><td>1,000 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain RCH-1</a></td><td>48 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="smf">
-  <td><div class="market-name">Sacramento, CA</div><div class="market-sub">Elk Grove / Rancho Cordova / Natomas</div><button class="op-toggle" onclick="toggleOp('smf')">&#9654; Operators</button></td>
+  <td><div class="market-name">Sacramento, CA</div><div class="market-sub">Elk Grove / Rancho Cordova / Natomas</div><button class="op-toggle" onclick="toggleOp('smf')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>SMUD / CAISO</td>
   <td><div class="queue-val">CAISO: 126 GW total</div><div class="queue-sub">SMUD independent framework</div></td>
@@ -754,15 +840,20 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-smf">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank" rel="noopener">SMUD 2026 window</a> <span class="op-mw in-queue">Jun 1–Jul 15</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">Applicant names not published by SMUD</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank" rel="noopener">SMUD 2026 window</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Window: Jun 1 – Jul 15</td></tr>
+          <tr><td colspan="4" class="iq-note">Applicant names not published by SMUD; sole annual application window</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="qcy">
-  <td><div class="market-name">Quincy, WA</div><div class="market-sub">Central Washington / Grant County</div><button class="op-toggle" onclick="toggleOp('qcy')">&#9654; Operators</button></td>
+  <td><div class="market-name">Quincy, WA</div><div class="market-sub">Central Washington / Grant County</div><button class="op-toggle" onclick="toggleOp('qcy')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Grant County PUD / BPA / WECC</td>
   <td><div class="queue-val">~3,000 MW queued</div><div class="queue-sub">3x PUD peak demand; 1,578 MW Quincy</div></td>
@@ -774,16 +865,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-qcy">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://grantpudqtep.org/" target="_blank" rel="noopener">9 existing DCs</a> <span class="op-mw expanding">All expanding</span></div>
-      <div class="op-entry"><a href="https://columbiabasinherald.com/news/2025/mar/31/grant-pud-places-limits-on-electrical-demand-from-data-centers/" target="_blank" rel="noopener">New entrants</a> <span class="op-mw in-queue">Load caps in effect</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">No new load accepted until QTEP complete (2027-29)</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://grantpudqtep.org/" target="_blank" rel="noopener">9 existing DCs</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>All expanding (capped)</td></tr>
+          <tr><td><a href="https://columbiabasinherald.com/news/2025/mar/31/grant-pud-places-limits-on-electrical-demand-from-data-centers/" target="_blank" rel="noopener">New entrants</a></td><td>~3,000 MW queue</td><td><span class="iq-status in-queue">In Queue</span></td><td>2027–2029 (QTEP required)</td></tr>
+          <tr><td colspan="4" class="iq-note">No new load accepted until QTEP transmission project complete (2027-29)</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="cbl">
-  <td><div class="market-name">Council Bluffs, IA</div><div class="market-sub">Omaha Metro / Iowa side</div><button class="op-toggle" onclick="toggleOp('cbl')">&#9654; Operators</button></td>
+  <td><div class="market-name">Council Bluffs, IA</div><div class="market-sub">Omaha Metro / Iowa side</div><button class="op-toggle" onclick="toggleOp('cbl')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>MidAmerican Energy / MISO</td>
   <td><div class="queue-val">800 MW solar approved</div><div class="queue-sub">518 MW gas plant pending IUC</div></td>
@@ -795,18 +891,23 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-cbl">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/28072025/big-beautiful-bill-iowa-data-centers/" target="_blank" rel="noopener">Google</a> <span class="op-mw expanding">$5.5B / 500+ MW expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Council Bluffs)</a> <span class="op-mw expanding">Expanding (largest IA campus)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (W. Des Moines)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Springfield NE)</a> <span class="op-mw in-queue">Adjacent Sarpy Co.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Edged Energy</a> <span class="op-mw in-queue">Scope reduced 2025</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://insideclimatenews.org/news/28072025/big-beautiful-bill-iowa-data-centers/" target="_blank" rel="noopener">Google</a></td><td>500+ MW</td><td><span class="iq-status expanding">Expanding</span></td><td>$5.5B invested</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Council Bluffs)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Largest IA campus</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (W. Des Moines)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Springfield NE)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Sarpy Co., NE</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Edged Energy</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Scope reduced 2025</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="den">
-  <td><div class="market-name">Denver / Boulder, CO</div><div class="market-sub">Data Center Row (Denver / Aurora)</div><button class="op-toggle" onclick="toggleOp('den')">&#9654; Operators</button></td>
+  <td><div class="market-name">Denver / Boulder, CO</div><div class="market-sub">Data Center Row (Denver / Aurora)</div><button class="op-toggle" onclick="toggleOp('den')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Xcel Energy / SPP / WECC</td>
   <td><div class="queue-val">5.8 GW pending</div><div class="queue-sub">8.5 GW expected by 2040</div></td>
@@ -818,20 +919,25 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-den">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://coloradosun.com/2025/08/18/colorado-xcel-data-center-demand-spending/" target="_blank" rel="noopener">QTS Realty Trust</a> <span class="op-mw under-const">177 MW Aurora const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Amazon</a> <span class="op-mw expanding">Arapahoe Co. expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CoreSite</a> <span class="op-mw expanding">Expanding + new queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Flexential</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://coloradosun.com/2025/08/18/colorado-xcel-data-center-demand-spending/" target="_blank" rel="noopener">Xcel CO pipeline</a> <span class="op-mw in-queue">5.8 GW (most confidential)</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://coloradosun.com/2025/08/18/colorado-xcel-data-center-demand-spending/" target="_blank" rel="noopener">QTS Realty Trust</a></td><td>177 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>Aurora</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Amazon</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Arapahoe Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CoreSite</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Flexential</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">DataBank</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Iron Mountain</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://coloradosun.com/2025/08/18/colorado-xcel-data-center-demand-spending/" target="_blank" rel="noopener">Xcel CO pipeline</a></td><td>5.8 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Most confidential; 2029-2031+</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="clt">
-  <td><div class="market-name">Charlotte / Carolinas</div><div class="market-sub">Charlotte / Kannapolis / Research Triangle</div><button class="op-toggle" onclick="toggleOp('clt')">&#9654; Operators</button></td>
+  <td><div class="market-name">Charlotte / Carolinas</div><div class="market-sub">Charlotte / Kannapolis / Research Triangle</div><button class="op-toggle" onclick="toggleOp('clt')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Duke Energy / SERC</td>
   <td><div class="queue-val">Tranche-based system</div><div class="queue-sub">2025 Carolinas Resource Plan filed</div></td>
@@ -843,19 +949,24 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-clt">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/amazon-breaks-ground-on-10bn-data-center-complex-in-richmond-county-north-carolina/" target="_blank" rel="noopener">Amazon (Richmond Co.)</a> <span class="op-mw under-const">$10B campus const.</span></div>
-      <div class="op-entry"><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Digital Realty</a> <span class="op-mw in-queue">155 acres / 400 MW</span></div>
-      <div class="op-entry"><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw in-queue">Duke power deal signed</span></div>
-      <div class="op-entry"><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Compass Datacenters</a> <span class="op-mw in-queue">Duke power deal signed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Mapletree Industrial</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Duke queue total</a> <span class="op-mw in-queue">75 projects / 11.3 GW</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/amazon-breaks-ground-on-10bn-data-center-complex-in-richmond-county-north-carolina/" target="_blank" rel="noopener">Amazon (Richmond Co.)</a></td><td>$10B</td><td><span class="iq-status under-const">Under Construction</span></td><td>Richmond County, NC</td></tr>
+          <tr><td><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Digital Realty</a></td><td>400 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>155 acres Charlotte</td></tr>
+          <tr><td><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Duke deal signed</td></tr>
+          <tr><td><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Compass Datacenters</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Duke deal signed</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Mapletree Industrial</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.canarymedia.com/articles/utilities/north-carolina-duke-plans-data-center-demand" target="_blank" rel="noopener">Duke queue total</a></td><td>11.3 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>75 projects; 2028-2031+</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="stl">
-  <td><div class="market-name">St. Louis, MO</div><div class="market-sub">St. Charles County / Metro East IL</div><button class="op-toggle" onclick="toggleOp('stl')">&#9654; Operators</button></td>
+  <td><div class="market-name">St. Louis, MO</div><div class="market-sub">St. Charles County / Metro East IL</div><button class="op-toggle" onclick="toggleOp('stl')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Ameren Missouri / MISO</td>
   <td><div class="queue-val">3 GW construction agreements</div><div class="queue-sub">2.2 GW new signed Feb 2026</div></td>
@@ -867,15 +978,20 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-stl">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.stlpr.org/government-politics-issues/2026-03-31/festus-data-center-development-approval/" target="_blank" rel="noopener">CRG / Clayco (Festus)</a> <span class="op-mw in-queue">$6B / 361 acres</span></div>
-      <div class="op-entry"><a href="https://www.stlpr.org/health-science-environment/2026-02-12/ameren-missouri-signed-confidential-contracts-with-multiple-big-data-centers-this-week" target="_blank" rel="noopener">Ameren confidential</a> <span class="op-mw in-queue">2.2 GW (undisclosed)</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.stlpr.org/government-politics-issues/2026-03-31/festus-data-center-development-approval/" target="_blank" rel="noopener">CRG / Clayco (Festus)</a></td><td>$6B / 361 acres</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.stlpr.org/health-science-environment/2026-02-12/ameren-missouri-signed-confidential-contracts-with-multiple-big-data-centers-this-week" target="_blank" rel="noopener">Ameren confidential</a></td><td>2.2 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Undisclosed companies</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="msp">
-  <td><div class="market-name">Minneapolis / Twin Cities</div><div class="market-sub">Eagan / Eden Prairie / Shakopee</div><button class="op-toggle" onclick="toggleOp('msp')">&#9654; Operators</button></td>
+  <td><div class="market-name">Minneapolis / Twin Cities</div><div class="market-sub">Eagan / Eden Prairie / Shakopee</div><button class="op-toggle" onclick="toggleOp('msp')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Xcel Energy / MISO</td>
   <td><div class="queue-val">2+ GW contracted</div><div class="queue-sub">6 GW expected in queue by 2027</div></td>
@@ -887,17 +1003,22 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-msp">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.mprnews.org/story/2024/03/14/meta-to-open-data-center-in-rosemount-in-2026/" target="_blank" rel="noopener">Meta (Rosemount)</a> <span class="op-mw under-const">800 MW const.</span></div>
-      <div class="op-entry"><a href="https://newsroom.xcelenergy.com/news/xcel-energy-to-power-new-google-data-center-in-minnesota" target="_blank" rel="noopener">Google (Pine Island)</a> <span class="op-mw in-queue">1,900 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Tract (land dev.)</a> <span class="op-mw in-queue">Farmington campus</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (Becker)</a> <span class="op-mw in-queue">Land acquired</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.mprnews.org/story/2024/03/14/meta-to-open-data-center-in-rosemount-in-2026/" target="_blank" rel="noopener">Meta (Rosemount)</a></td><td>800 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>2026</td></tr>
+          <tr><td><a href="https://newsroom.xcelenergy.com/news/xcel-energy-to-power-new-google-data-center-in-minnesota" target="_blank" rel="noopener">Google (Pine Island)</a></td><td>1,900 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Announced Feb 2026</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Tract (land dev.)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Farmington campus</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (Becker)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Land acquired</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="hou">
-  <td><div class="market-name">Houston, TX</div><div class="market-sub">Katy / Sugar Land / The Woodlands</div><button class="op-toggle" onclick="toggleOp('hou')">&#9654; Operators</button></td>
+  <td><div class="market-name">Houston, TX</div><div class="market-sub">Katy / Sugar Land / The Woodlands</div><button class="op-toggle" onclick="toggleOp('hou')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>CenterPoint Energy / ERCOT</td>
   <td><div class="queue-val">1 GW to 8 GW</div><div class="queue-sub">Under 1 year jump</div></td>
@@ -909,22 +1030,27 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-hou">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/cyrusone-calpine-thad-hill-400mw-colocation/" target="_blank" rel="noopener">CyrusOne / Calpine</a> <span class="op-mw under-const">400 MW const. (Bosque Co.)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne (Houston)</a> <span class="op-mw expanding">Multiple sites expanding</span></div>
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">Google</a> <span class="op-mw in-queue">Seeking grid capacity</span></div>
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">Meta</a> <span class="op-mw in-queue">Seeking grid capacity</span></div>
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">Amazon</a> <span class="op-mw in-queue">Seeking grid capacity</span></div>
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">OpenAI</a> <span class="op-mw in-queue">Seeking grid capacity</span></div>
-      <div class="op-entry"><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">Data Foundry</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">CenterPoint queue</a> <span class="op-mw in-queue">1 GW → 8 GW in 12 months</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">ERCOT applicants not named publicly — Batch Zero evals 2026</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/cyrusone-calpine-thad-hill-400mw-colocation/" target="_blank" rel="noopener">CyrusOne / Calpine</a></td><td>400 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>Bosque Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">CyrusOne (Houston)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Multiple sites</td></tr>
+          <tr><td><a href="https://www.ercot.com/services/rq/large-load-integration" target="_blank" rel="noopener">Data Foundry</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">Google</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">Meta</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">Amazon</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">OpenAI</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://insideclimatenews.org/news/15012026/texas-ercot-rules-for-data-center-grid-connection/" target="_blank" rel="noopener">CenterPoint queue</a></td><td>1 GW → 8 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Batch Zero 2026</td></tr>
+          <tr><td colspan="4" class="iq-note">ERCOT applicants not named publicly — Batch Zero evaluations 2026</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="mia">
-  <td><div class="market-name">Miami / South Florida</div><div class="market-sub">Doral / Boca Raton / Fort Lauderdale</div><button class="op-toggle" onclick="toggleOp('mia')">&#9654; Operators</button></td>
+  <td><div class="market-name">Miami / South Florida</div><div class="market-sub">Doral / Boca Raton / Fort Lauderdale</div><button class="op-toggle" onclick="toggleOp('mia')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>FPL / SERC (non-ISO)</td>
   <td><div class="queue-val">23.57 GW (FL statewide)</div><div class="queue-sub">FPL gen interconnection queue</div></td>
@@ -936,18 +1062,23 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-mia">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/iron-mountain-miami-mia1-gpu-facility/" target="_blank" rel="noopener">Iron Mountain MIA-1</a> <span class="op-mw under-const">16 MW const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS (Miami-Dade)</a> <span class="op-mw in-queue">100–250 MW queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Project Tango (land dev.)</a> <span class="op-mw in-queue">200 acres / Palm Beach</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Metrobloks</a> <span class="op-mw in-queue">15 MW proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">EdgeConneX (expansion)</a> <span class="op-mw in-queue">In Queue</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/iron-mountain-miami-mia1-gpu-facility/" target="_blank" rel="noopener">Iron Mountain MIA-1</a></td><td>16 MW</td><td><span class="iq-status under-const">Under Construction</span></td><td>Mid-2026</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">QTS (Miami-Dade)</a></td><td>100–250 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Project Tango (land dev.)</a></td><td>200 acres</td><td><span class="iq-status in-queue">In Queue</span></td><td>Palm Beach</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Metrobloks</a></td><td>15 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">EdgeConneX (expansion)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="sea">
-  <td><div class="market-name">Seattle / Puget Sound</div><div class="market-sub">Redmond / Bellevue / Tukwila</div><button class="op-toggle" onclick="toggleOp('sea')">&#9654; Operators</button></td>
+  <td><div class="market-name">Seattle / Puget Sound</div><div class="market-sub">Redmond / Bellevue / Tukwila</div><button class="op-toggle" onclick="toggleOp('sea')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Puget Sound Energy / BPA / WECC</td>
   <td><div class="queue-val">Constrained</div><div class="queue-sub">First WA Integrated System Plan in dev.</div></td>
@@ -959,20 +1090,25 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-sea">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/microsoft-puget-sound-data-center-expansion/" target="_blank" rel="noopener">Microsoft</a> <span class="op-mw expanding">Expanding (Redmond + King Co.)</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/amazon-aws-seattle-data-center-expansion/" target="_blank" rel="noopener">Amazon (AWS)</a> <span class="op-mw expanding">Expanding (multiple King Co.)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Equinix (Seattle)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">ViaWest / Flexential</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">PSE load queue</a> <span class="op-mw in-queue">3,000+ MW pipeline</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">PSE does not disclose new applicant names publicly</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/microsoft-puget-sound-data-center-expansion/" target="_blank" rel="noopener">Microsoft</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Redmond + King Co.</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/amazon-aws-seattle-data-center-expansion/" target="_blank" rel="noopener">Amazon (AWS)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Multiple King Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Equinix (Seattle)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">ViaWest / Flexential</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">PSE load queue</a></td><td>3,000+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td colspan="4" class="iq-note">PSE does not disclose new applicant names publicly</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Tier 2" data-market="boi">
-  <td><div class="market-name">Boise, ID</div><div class="market-sub">Kuna / Meridian / Nampa</div><button class="op-toggle" onclick="toggleOp('boi')">&#9654; Operators</button></td>
+  <td><div class="market-name">Boise, ID</div><div class="market-sub">Kuna / Meridian / Nampa</div><button class="op-toggle" onclick="toggleOp('boi')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-2">Tier 2</span></td>
   <td>Idaho Power / WECC</td>
   <td><div class="queue-val">1,700 MW peak growth (20yr)</div><div class="queue-sub">1,000 MW over next 5 yrs</div></td>
@@ -984,15 +1120,20 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-boi">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://idahocapitalsun.com/2025/08/06/idaho-powers-20-year-energy-plan-predicts-large-increase-in-customer-growth-and-peak-energy-load/" target="_blank" rel="noopener">Meta (Kuna)</a> <span class="op-mw under-const">$800M const.</span></div>
-      <div class="op-entry"><a href="https://www.diodeventures.com/projects/kuna-idaho-usa" target="_blank" rel="noopener">Diode Ventures (Gemstone)</a> <span class="op-mw in-queue">620 acres / 600–800 MW</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://idahocapitalsun.com/2025/08/06/idaho-powers-20-year-energy-plan-predicts-large-increase-in-customer-growth-and-peak-energy-load/" target="_blank" rel="noopener">Meta (Kuna)</a></td><td>$800M</td><td><span class="iq-status under-const">Under Construction</span></td><td>2026</td></tr>
+          <tr><td><a href="https://www.diodeventures.com/projects/kuna-idaho-usa" target="_blank" rel="noopener">Diode Ventures (Gemstone)</a></td><td>600–800 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>620 acres / 10-yr buildout</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="dtw">
-  <td><div class="market-name">Detroit / SE Michigan</div><div class="market-sub">Ann Arbor / Saline / Washtenaw Co.</div><button class="op-toggle" onclick="toggleOp('dtw')">&#9654; Operators</button></td>
+  <td><div class="market-name">Detroit / SE Michigan</div><div class="market-sub">Ann Arbor / Saline / Washtenaw Co.</div><button class="op-toggle" onclick="toggleOp('dtw')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>DTE Energy / Consumers Energy / MISO</td>
   <td><div class="queue-val">1.4 GW DTE deal signed</div><div class="queue-sub">15 GW Consumers pipeline</div></td>
@@ -1004,20 +1145,25 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-dtw">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.michigan.gov/mpsc/commission/news-releases/2025/12/18/mpsc-approves-dte-electric-energy-contracts-for-data-center" target="_blank" rel="noopener">Oracle / Stargate (OpenAI)</a> <span class="op-mw under-const">1.4 GW Saline (Washtenaw)</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (Gaines Twp.)</a> <span class="op-mw in-queue">57 acres queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Michigan)</a> <span class="op-mw in-queue">In Queue</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Project Cannoli (DTE)</a> <span class="op-mw in-queue">Undisclosed GW pending</span></div>
-      <div class="op-entry"><a href="https://www.datacenterdynamics.com/en/news/michigan-utility-consumers-energy-to-provide-1gw-of-power-to-new-hyperscale-data-center/" target="_blank" rel="noopener">Consumers 1 GW hyperscale</a> <span class="op-mw under-const">W. Michigan const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Switch (Caledonia)</a> <span class="op-mw expanding">Kent Co. expanding</span></div>
-      <div class="op-entry"><a href="https://planetdetroit.org/2026/03/dte-data-center-pipeline/" target="_blank" rel="noopener">DTE pipeline total</a> <span class="op-mw in-queue">4.4 GW (6 plants equiv.)</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.michigan.gov/mpsc/commission/news-releases/2025/12/18/mpsc-approves-dte-electric-energy-contracts-for-data-center" target="_blank" rel="noopener">Oracle / Stargate (OpenAI)</a></td><td>1.4 GW</td><td><span class="iq-status under-const">Under Construction</span></td><td>Saline (Washtenaw Co.)</td></tr>
+          <tr><td><a href="https://www.datacenterdynamics.com/en/news/michigan-utility-consumers-energy-to-provide-1gw-of-power-to-new-hyperscale-data-center/" target="_blank" rel="noopener">Consumers 1 GW hyperscale</a></td><td>1 GW</td><td><span class="iq-status under-const">Under Construction</span></td><td>W. Michigan</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Switch (Caledonia)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Kent Co.</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Microsoft (Gaines Twp.)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>57 acres</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Michigan)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Project Cannoli (DTE)</a></td><td>GW-scale</td><td><span class="iq-status in-queue">In Queue</span></td><td>Undisclosed</td></tr>
+          <tr><td><a href="https://planetdetroit.org/2026/03/dte-data-center-pipeline/" target="_blank" rel="noopener">DTE pipeline total</a></td><td>4.4 GW</td><td><span class="iq-status in-queue">In Queue</span></td><td>6 power plants equiv.</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="hsv">
-  <td><div class="market-name">Huntsville, AL</div><div class="market-sub">Madison County / Decatur corridor</div><button class="op-toggle" onclick="toggleOp('hsv')">&#9654; Operators</button></td>
+  <td><div class="market-name">Huntsville, AL</div><div class="market-sub">Madison County / Decatur corridor</div><button class="op-toggle" onclick="toggleOp('hsv')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>TVA / Huntsville Utilities</td>
   <td><div class="queue-val">8 DCs operational</div><div class="queue-sub">DC = 18% TVA industrial load</div></td>
@@ -1029,19 +1175,24 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-hsv">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.axios.com/local/huntsville/2026/03/04/data-center-demand-gut-check" target="_blank" rel="noopener">Meta (Huntsville)</a> <span class="op-mw expanding">Ph.2 under const. → 2.5M sqft</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Montgomery)</a> <span class="op-mw under-const">$800M under const.</span></div>
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/tva-tennessee-valley-authority-nuclear-gas-demand-growth/811306/" target="_blank" rel="noopener">DC BLOX (Huntsville)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Redstone Arsenal</a> <span class="op-mw expanding">+39 MW by 2026–27</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (AL interest)</a> <span class="op-mw in-queue">TVA region proposed</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">TVA load queue not publicly searchable; 23 DCs in AL total</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.axios.com/local/huntsville/2026/03/04/data-center-demand-gut-check" target="_blank" rel="noopener">Meta (Huntsville)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>Phase 2 → 2.5M sqft</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Montgomery)</a></td><td>$800M</td><td><span class="iq-status under-const">Under Construction</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.utilitydive.com/news/tva-tennessee-valley-authority-nuclear-gas-demand-growth/811306/" target="_blank" rel="noopener">DC BLOX (Huntsville)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Redstone Arsenal</a></td><td>+39 MW</td><td><span class="iq-status expanding">Expanding</span></td><td>2026–27</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (AL interest)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>TVA region</td></tr>
+          <tr><td colspan="4" class="iq-note">TVA load queue not publicly searchable; 23 DCs in Alabama total</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="pit">
-  <td><div class="market-name">Pittsburgh, PA</div><div class="market-sub">Homer City / Monroeville / Coraopolis</div><button class="op-toggle" onclick="toggleOp('pit')">&#9654; Operators</button></td>
+  <td><div class="market-name">Pittsburgh, PA</div><div class="market-sub">Homer City / Monroeville / Coraopolis</div><button class="op-toggle" onclick="toggleOp('pit')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>FirstEnergy / Duquesne Light / PJM</td>
   <td><div class="queue-val">Homer City: 4.5 GW planned</div><div class="queue-sub">PJM + NYISO dual grid connection</div></td>
@@ -1053,16 +1204,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-pit">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.utilitydive.com/news/homer-city-gas-fired-power-station-data-center-firstenergy/744332/" target="_blank" rel="noopener">Homer City / Kiewit</a> <span class="op-mw under-const">4.5 GW campus</span></div>
-      <div class="op-entry"><a href="https://insidelines.pjm.com/pjm-board-fast-tracks-effort-to-reliably-serve-large-loads/" target="_blank" rel="noopener">PJM queue (FirstEnergy)</a> <span class="op-mw in-queue">100 MW avg / facility</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">PJM does not disclose applicant names</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.utilitydive.com/news/homer-city-gas-fired-power-station-data-center-firstenergy/744332/" target="_blank" rel="noopener">Homer City / Kiewit</a></td><td>4.5 GW</td><td><span class="iq-status under-const">Under Construction</span></td><td>$10B campus; ~50 mi E of Pittsburgh</td></tr>
+          <tr><td><a href="https://insidelines.pjm.com/pjm-board-fast-tracks-effort-to-reliably-serve-large-loads/" target="_blank" rel="noopener">PJM queue (FirstEnergy)</a></td><td>~100 MW avg/facility</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td colspan="4" class="iq-note">PJM does not disclose applicant names</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="cvg">
-  <td><div class="market-name">Cincinnati, OH</div><div class="market-sub">West Chester / Mason / Florence KY</div><button class="op-toggle" onclick="toggleOp('cvg')">&#9654; Operators</button></td>
+  <td><div class="market-name">Cincinnati, OH</div><div class="market-sub">West Chester / Mason / Florence KY</div><button class="op-toggle" onclick="toggleOp('cvg')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>Duke Energy Ohio / AEP / PJM</td>
   <td><div class="queue-val">Limited - Columbus overflow</div><div class="queue-sub">PJM coordination required</div></td>
@@ -1074,16 +1230,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-cvg">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.aepohio.com/company/about/rates/data-center-tariff/" target="_blank" rel="noopener">AEP Ohio queue</a> <span class="op-mw in-queue">9.8–13 GW statewide</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Columbus overflow devs</a> <span class="op-mw in-queue">Cincinnati corridor</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">Cincinnati-specific named applicants not public</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.aepohio.com/company/about/rates/data-center-tariff/" target="_blank" rel="noopener">AEP Ohio queue</a></td><td>9.8–13 GW statewide</td><td><span class="iq-status in-queue">In Queue</span></td><td>2029-2031+</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Columbus overflow devs</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Cincinnati corridor</td></tr>
+          <tr><td colspan="4" class="iq-note">Cincinnati-specific named applicants not public; market primarily Columbus overflow</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="jax">
-  <td><div class="market-name">Jacksonville, FL</div><div class="market-sub">Nassau County / JIA corridor</div><button class="op-toggle" onclick="toggleOp('jax')">&#9654; Operators</button></td>
+  <td><div class="market-name">Jacksonville, FL</div><div class="market-sub">Nassau County / JIA corridor</div><button class="op-toggle" onclick="toggleOp('jax')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>JEA / Duke Energy FL / FPL</td>
   <td><div class="queue-val">Early-stage pipeline</div><div class="queue-sub">23.57 GW FL statewide queue</div></td>
@@ -1095,16 +1256,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-jax">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">NextNRG (Nassau Co.)</a> <span class="op-mw in-queue">200 MW smart microgrid</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">JEA supply (675 MW)</a> <span class="op-mw in-queue">New gas approved 2025</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">No hyperscale announcements yet; market early stage</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">NextNRG (Nassau Co.)</a></td><td>200 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>Smart microgrid / 1,600 acres</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">JEA supply (675 MW)</a></td><td>675 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>New gas approved 2025</td></tr>
+          <tr><td colspan="4" class="iq-note">No hyperscale announcements yet; market early stage</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="oma">
-  <td><div class="market-name">Omaha, NE</div><div class="market-sub">Sarpy County / La Vista / Papillion</div><button class="op-toggle" onclick="toggleOp('oma')">&#9654; Operators</button></td>
+  <td><div class="market-name">Omaha, NE</div><div class="market-sub">Sarpy County / La Vista / Papillion</div><button class="op-toggle" onclick="toggleOp('oma')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>OPPD / SPP</td>
   <td><div class="queue-val">+470 MW peak load since 2019</div><div class="queue-sub">SPP GIAs expected Jan 2026</div></td>
@@ -1116,18 +1282,23 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-oma">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://insideclimatenews.org/news/28072025/big-beautiful-bill-iowa-data-centers/" target="_blank" rel="noopener">Google (Douglas Co.)</a> <span class="op-mw expanding">$6B+ / 1 GW+ expanding</span></div>
-      <div class="op-entry"><a href="https://www.oppd.com/news-resources/news-releases/2026/january/oppd-updates-board-on-technology-upgrades-systems-planning/" target="_blank" rel="noopener">Google (Sarpy Co.)</a> <span class="op-mw under-const">Papillion, under const.</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Springfield NE)</a> <span class="op-mw in-queue">Sarpy Co. proposed</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Fiserv (Douglas Co.)</a> <span class="op-mw expanding">Expanding</span></div>
-      <div class="op-entry"><a href="https://www.oppd.com/news-resources/news-releases/2026/january/oppd-updates-board-on-technology-upgrades-systems-planning/" target="_blank" rel="noopener">OPPD pipeline</a> <span class="op-mw in-queue">~19 requests pending</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://insideclimatenews.org/news/28072025/big-beautiful-bill-iowa-data-centers/" target="_blank" rel="noopener">Google (Douglas Co.)</a></td><td>1 GW+</td><td><span class="iq-status expanding">Expanding</span></td><td>$6B+ invested</td></tr>
+          <tr><td><a href="https://www.oppd.com/news-resources/news-releases/2026/january/oppd-updates-board-on-technology-upgrades-systems-planning/" target="_blank" rel="noopener">Google (Sarpy Co.)</a></td><td>—</td><td><span class="iq-status under-const">Under Construction</span></td><td>Papillion</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Fiserv (Douglas Co.)</a></td><td>—</td><td><span class="iq-status expanding">Expanding</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Meta (Springfield NE)</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>Sarpy Co.</td></tr>
+          <tr><td><a href="https://www.oppd.com/news-resources/news-releases/2026/january/oppd-updates-board-on-technology-upgrades-systems-planning/" target="_blank" rel="noopener">OPPD pipeline</a></td><td>~19 requests</td><td><span class="iq-status in-queue">In Queue</span></td><td>SPP GIAs expected 2026</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="geg">
-  <td><div class="market-name">Spokane, WA</div><div class="market-sub">Liberty Lake / Post Falls ID border</div><button class="op-toggle" onclick="toggleOp('geg')">&#9654; Operators</button></td>
+  <td><div class="market-name">Spokane, WA</div><div class="market-sub">Liberty Lake / Post Falls ID border</div><button class="op-toggle" onclick="toggleOp('geg')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>Avista Utilities / BPA / WECC</td>
   <td><div class="queue-val">Early-stage</div><div class="queue-sub">Avista 2025 IRP filed Dec 2024</div></td>
@@ -1139,16 +1310,21 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-geg">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://www.spokanejournal.com/articles/17505-power-cooling-carbon-spokane-firms-brace-for-ais-energy-demands" target="_blank" rel="noopener">Avista load queue</a> <span class="op-mw in-queue">3,000+ MW requests</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">WA tax break targets</a> <span class="op-mw in-queue">2 named cos. (undisclosed)</span></div>
-      <div class="op-entry"><span style="font-size:10px;color:#64748b">Microsoft rumored; not confirmed. Avista 2,000 MW peak load total.</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://www.spokanejournal.com/articles/17505-power-cooling-carbon-spokane-firms-brace-for-ais-energy-demands" target="_blank" rel="noopener">Avista load queue</a></td><td>3,000+ MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">WA tax break targets</a></td><td>—</td><td><span class="iq-status in-queue">In Queue</span></td><td>2 named cos. (undisclosed)</td></tr>
+          <tr><td colspan="4" class="iq-note">Microsoft rumored but not confirmed. Avista 2,000 MW peak load total.</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
 
 <tr data-tier="Emerging" data-market="las">
-  <td><div class="market-name">Las Vegas, NV</div><div class="market-sub">Henderson / North Las Vegas / Nellis</div><button class="op-toggle" onclick="toggleOp('las')">&#9654; Operators</button></td>
+  <td><div class="market-name">Las Vegas, NV</div><div class="market-sub">Henderson / North Las Vegas / Nellis</div><button class="op-toggle" onclick="toggleOp('las')">&#9654; Interconnection Queue</button></td>
   <td><span class="tier-badge tier-em">Emerging</span></td>
   <td>NV Energy (South) / WECC</td>
   <td><div class="queue-val">Part of 49 GW NV total</div><div class="queue-sub">Southern NV demand growing</div></td>
@@ -1160,10 +1336,15 @@ footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
 </tr>
 <tr class="op-expand-row" id="op-las">
   <td colspan="9">
-    <div class="op-expand-content">
-      <div class="op-entry"><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank" rel="noopener">Switch (AI factories)</a> <span class="op-mw expanding">495 MW expanding</span></div>
-      <div class="op-entry"><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank" rel="noopener">Novva (Apex Park)</a> <span class="op-mw in-queue">205 acres queued</span></div>
-      <div class="op-entry"><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Henderson)</a> <span class="op-mw in-queue">50–100 MW proposed</span></div>
+    <div class="iq-wrap">
+      <table class="iq-table">
+        <thead><tr><th>Operator / Developer / Hyperscaler</th><th>MW Requested</th><th>Status</th><th>Proj. Delivery</th></tr></thead>
+        <tbody>
+          <tr><td><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank" rel="noopener">Switch (AI factories)</a></td><td>495 MW</td><td><span class="iq-status expanding">Expanding</span></td><td>Ongoing</td></tr>
+          <tr><td><a href="https://nevadacurrent.com/2026/01/12/data-centers-greenlink-and-your-electricity-bill/" target="_blank" rel="noopener">Novva (Apex Park)</a></td><td>205 acres</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+          <tr><td><a href="https://www.interconnection.fyi/data-center" target="_blank" rel="noopener">Google (Henderson)</a></td><td>50–100 MW</td><td><span class="iq-status in-queue">In Queue</span></td><td>—</td></tr>
+        </tbody>
+      </table>
     </div>
   </td>
 </tr>
@@ -1395,7 +1576,7 @@ function toggleOp(id){
   if(!row)return;
   const isOpen=row.classList.toggle('open');
   if(btn)btn.classList.toggle('open',isOpen);
-  if(btn)btn.textContent=(isOpen?'▼':'▶')+' Operators';
+  if(btn)btn.textContent=(isOpen?'▼':'▶')+' Interconnection Queue';
 }
 </script>
 </body>
