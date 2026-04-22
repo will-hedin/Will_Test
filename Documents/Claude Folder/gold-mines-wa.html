@@ -5,1303 +5,1074 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Distressed Gold Mines — Western Australia</title>
 <style>
-  :root {
-    --bg: #0d1117;
-    --bg2: #161b22;
-    --card: #1c2128;
-    --gold: #D4AF37;
-    --gold-light: #F0C93A;
-    --positive: #22c55e;
-    --danger: #ef4444;
-    --warning: #f59e0b;
-    --purple: #a855f7;
-    --blue: #3b82f6;
-    --border: #2d3148;
-    --text: #e6edf3;
-    --text2: #8b949e;
-    --text3: #6e7681;
-  }
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --card: #1c2128;
+  --gold: #D4AF37;
+  --gold-light: #F0C93A;
+  --positive: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --purple: #a855f7;
+  --blue: #3b82f6;
+  --border: #2d3148;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #6e7681;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 14px; line-height: 1.5; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+.header { position: sticky; top: 0; z-index: 100; background: var(--bg2); border-bottom: 2px solid var(--gold); padding: 12px 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.header-title { font-size: 18px; font-weight: 700; color: var(--gold); }
+.header-meta { color: var(--text2); font-size: 12px; }
+.wa-badge { background: var(--gold); color: #000; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+.source-count { margin-left: auto; background: #1c2128; border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--text2); }
+.gold-price { background: rgba(212,175,55,0.15); border: 1px solid var(--gold); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--gold); }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-  }
+/* KPI GRID */
+.kpi-section { padding: 20px 24px 0; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.kpi-label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.kpi-value { font-size: 28px; font-weight: 700; }
+.kpi-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.kpi-gold .kpi-value { color: var(--gold); }
+.kpi-red .kpi-value { color: var(--danger); }
+.kpi-amber .kpi-value { color: var(--warning); }
+.kpi-blue .kpi-value { color: var(--blue); }
+.kpi-purple .kpi-value { color: var(--purple); }
+.kpi-green .kpi-value { color: var(--positive); }
 
-  /* STICKY HEADER */
-  .header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .header-title {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gold);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .badge-gold { background: rgba(212,175,55,0.15); color: var(--gold); border: 1px solid rgba(212,175,55,0.3); }
-  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); border: 1px solid rgba(59,130,246,0.3); }
-  .badge-danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
-  .badge-warning { background: rgba(245,158,11,0.15); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
-  .badge-positive { background: rgba(34,197,94,0.15); color: var(--positive); border: 1px solid rgba(34,197,94,0.3); }
-  .badge-purple { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
-  .header-meta {
-    margin-left: auto;
-    font-size: 11px;
-    color: var(--text3);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+/* TABS */
+.tabs-section { padding: 20px 24px 0; }
+.tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+.tab-btn { padding: 10px 24px; font-size: 14px; font-weight: 600; color: var(--text2); background: none; border: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+.tab-btn:hover:not(.active) { color: var(--text); }
 
-  /* MAIN LAYOUT */
-  .main { max-width: 1600px; margin: 0 auto; padding: 24px; }
+/* FILTER BAR */
+.filter-bar { padding: 16px 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.filter-btn { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); background: var(--card); color: var(--text2); cursor: pointer; transition: all 0.2s; }
+.filter-btn.active { background: var(--gold); color: #000; border-color: var(--gold); }
+.filter-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
+.filter-sep { width: 1px; height: 24px; background: var(--border); }
+.filter-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 5px 10px; border-radius: 6px; font-size: 12px; }
+.search-input { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 6px; font-size: 12px; width: 220px; }
+.search-input::placeholder { color: var(--text3); }
+.result-count { margin-left: auto; font-size: 12px; color: var(--text3); }
 
-  /* KPI CARDS */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
-  }
-  .kpi-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-  }
-  .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-  .kpi-card.gold::before { background: var(--gold); }
-  .kpi-card.danger::before { background: var(--danger); }
-  .kpi-card.warning::before { background: var(--warning); }
-  .kpi-card.positive::before { background: var(--positive); }
-  .kpi-card.purple::before { background: var(--purple); }
-  .kpi-card.blue::before { background: var(--blue); }
-  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 8px; }
-  .kpi-value { font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; }
-  .kpi-value.gold-text { color: var(--gold); }
-  .kpi-value.danger-text { color: var(--danger); }
-  .kpi-value.warning-text { color: var(--warning); }
-  .kpi-value.positive-text { color: var(--positive); }
-  .kpi-sub { font-size: 11px; color: var(--text3); margin-top: 6px; }
+/* TABLE */
+.table-section { padding: 0 24px 24px; }
+.table-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 16px; }
+table { width: 100%; border-collapse: collapse; }
+thead { background: var(--bg2); }
+th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; user-select: none; white-space: nowrap; border-bottom: 1px solid var(--border); }
+th:hover { color: var(--gold); }
+th .sort-arrow { margin-left: 4px; opacity: 0.4; }
+th.sort-asc .sort-arrow::after { content: ' ▲'; opacity: 1; color: var(--gold); }
+th.sort-desc .sort-arrow::after { content: ' ▼'; opacity: 1; color: var(--gold); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr { transition: background 0.15s; cursor: pointer; }
+tbody tr:hover { background: rgba(212,175,55,0.05); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr.expanded { background: rgba(212,175,55,0.07); }
 
-  /* TABS */
-  .tab-bar {
-    display: flex;
-    gap: 4px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
-  }
-  .tab-btn {
-    padding: 10px 20px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    color: var(--text2);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-    margin-bottom: -1px;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+/* STATUS BADGES */
+.badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.badge-admin { background: rgba(239,68,68,0.2); color: var(--danger); border: 1px solid rgba(239,68,68,0.4); }
+.badge-cm { background: rgba(245,158,11,0.2); color: var(--warning); border: 1px solid rgba(245,158,11,0.4); }
+.badge-sale { background: rgba(59,130,246,0.2); color: var(--blue); border: 1px solid rgba(59,130,246,0.4); }
+.badge-doca { background: rgba(168,85,247,0.2); color: var(--purple); border: 1px solid rgba(168,85,247,0.4); }
+.badge-suspended { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.badge-critical { background: rgba(239,68,68,0.2); color: var(--danger); border: 1px solid rgba(239,68,68,0.4); }
+.badge-high { background: rgba(245,158,11,0.2); color: var(--warning); border: 1px solid rgba(245,158,11,0.4); }
+.badge-moderate { background: rgba(59,130,246,0.2); color: var(--blue); border: 1px solid rgba(59,130,246,0.4); }
+.badge-low { background: rgba(34,197,94,0.15); color: var(--positive); border: 1px solid rgba(34,197,94,0.3); }
+.trend-up { color: var(--danger); }
+.trend-down { color: var(--positive); }
+.trend-flat { color: var(--text2); }
 
-  /* FILTERS */
-  .filter-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-    padding: 14px 16px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-  }
-  .filter-label { font-size: 12px; color: var(--text3); white-space: nowrap; }
-  .filter-btn {
-    padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    color: var(--text2);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .filter-btn:hover { border-color: var(--gold); color: var(--text); }
-  .filter-btn.active { background: rgba(212,175,55,0.15); border-color: var(--gold); color: var(--gold); }
-  .filter-divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
-  .search-box {
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    color: var(--text);
-    font-size: 13px;
-    width: 200px;
-    outline: none;
-  }
-  .search-box:focus { border-color: var(--gold); }
-  .search-box::placeholder { color: var(--text3); }
-  select.filter-select {
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    color: var(--text2);
-    font-size: 12px;
-    cursor: pointer;
-    outline: none;
-  }
-  .result-count {
-    margin-left: auto;
-    font-size: 12px;
-    color: var(--text3);
-    white-space: nowrap;
-  }
+/* EXPAND ROW */
+.expand-row td { padding: 0; }
+.expand-inner { display: none; padding: 20px 24px; background: #0f1419; border-top: 1px solid var(--border); }
+.expand-inner.open { display: block; }
+.detail-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; flex-wrap: wrap; }
+.detail-tab { padding: 7px 16px; font-size: 12px; font-weight: 600; color: var(--text2); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+.detail-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.detail-panel { display: none; }
+.detail-panel.active { display: block; }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.detail-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+.detail-card h4 { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.detail-card p, .detail-card li { font-size: 13px; color: var(--text); margin-bottom: 4px; }
+.detail-card ul { padding-left: 16px; }
+.detail-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.detail-table th { padding: 7px 10px; background: var(--bg2); color: var(--text2); text-align: left; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+.detail-table td { padding: 7px 10px; border-bottom: 1px solid rgba(45,49,72,0.5); }
+.signal-fire { color: var(--danger); font-weight: 700; }
+.signal-ok { color: var(--text3); }
+.warn-flag { color: var(--warning); font-size: 11px; }
+.source-link { color: var(--blue); text-decoration: none; font-size: 11px; }
+.source-link:hover { text-decoration: underline; color: var(--gold); }
 
-  /* TABLE */
-  .table-wrap {
-    overflow-x: auto;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  thead th {
-    background: var(--bg2);
-    padding: 11px 14px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--text3);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-  }
-  thead th:hover { color: var(--gold); }
-  thead th .sort-icon { margin-left: 4px; font-size: 10px; }
-  thead th.sort-asc .sort-icon::after { content: ' \25B2'; }
-  thead th.sort-desc .sort-icon::after { content: ' \25BC'; }
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-    cursor: pointer;
-  }
-  tbody tr:hover { background: rgba(255,255,255,0.03); }
-  tbody tr.expanded { background: rgba(212,175,55,0.04); }
-  tbody tr.detail-row { background: var(--bg2); cursor: default; }
-  tbody tr.detail-row:hover { background: var(--bg2); }
-  tbody tr.hidden-row { display: none; }
-  td {
-    padding: 11px 14px;
-    color: var(--text2);
-    font-size: 13px;
-    vertical-align: middle;
-  }
-  td:first-child { color: var(--text); font-weight: 500; }
-  .expand-btn {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg2);
-    color: var(--text3);
-    font-size: 14px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    line-height: 1;
-  }
-  .expand-btn:hover { border-color: var(--gold); color: var(--gold); }
+/* SOURCES SECTION */
+.sources-section { padding: 24px; border-top: 1px solid var(--border); }
+.sources-section h2 { font-size: 16px; font-weight: 700; color: var(--gold); margin-bottom: 16px; }
+.sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.source-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.source-card-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.source-card-url a { font-size: 11px; color: var(--blue); word-break: break-all; text-decoration: none; }
+.source-card-url a:hover { color: var(--gold); }
+.source-card-meta { font-size: 10px; color: var(--text3); margin-top: 4px; }
+.source-type { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+.type-asic { background: rgba(239,68,68,0.2); color: var(--danger); }
+.type-asx { background: rgba(212,175,55,0.2); color: var(--gold); }
+.type-news { background: rgba(59,130,246,0.2); color: var(--blue); }
+.type-company { background: rgba(34,197,94,0.2); color: var(--positive); }
+.type-insolvency { background: rgba(168,85,247,0.2); color: var(--purple); }
 
-  /* STATUS PILLS */
-  .status-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .status-pill .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .s-admin { background: rgba(239,68,68,0.12); color: var(--danger); }
-  .s-admin .dot { background: var(--danger); }
-  .s-cm { background: rgba(245,158,11,0.12); color: var(--warning); }
-  .s-cm .dot { background: var(--warning); }
-  .s-sale { background: rgba(168,85,247,0.12); color: var(--purple); }
-  .s-sale .dot { background: var(--purple); }
-  .s-doca { background: rgba(239,68,68,0.15); color: #ff8080; }
-  .s-doca .dot { background: #ff8080; }
-  .s-forfeited { background: rgba(110,118,129,0.15); color: var(--text3); }
-  .s-forfeited .dot { background: var(--text3); }
+/* TAB CONTENT */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
 
-  /* PROBABILITY BAR */
-  .prob-bar-wrap { display: flex; align-items: center; gap: 8px; min-width: 100px; }
-  .prob-bar {
-    flex: 1;
-    height: 6px;
-    background: var(--bg);
-    border-radius: 3px;
-    overflow: hidden;
-    min-width: 50px;
-  }
-  .prob-fill { height: 100%; border-radius: 3px; }
-  .prob-num { font-size: 12px; font-weight: 600; white-space: nowrap; min-width: 36px; }
-  .prob-critical .prob-fill { background: var(--danger); }
-  .prob-critical .prob-num { color: var(--danger); }
-  .prob-high .prob-fill { background: var(--warning); }
-  .prob-high .prob-num { color: var(--warning); }
-  .prob-moderate .prob-fill { background: var(--purple); }
-  .prob-moderate .prob-num { color: var(--purple); }
-  .prob-low .prob-fill { background: var(--blue); }
-  .prob-low .prob-num { color: var(--blue); }
-
-  /* TREND */
-  .trend-up { color: var(--positive); }
-  .trend-down { color: var(--danger); }
-  .trend-flat { color: var(--text3); }
-
-  /* DETAIL PANEL */
-  .detail-cell { padding: 0 !important; }
-  .detail-inner {
-    padding: 20px 24px;
-    border-top: 1px solid var(--border);
-  }
-  .detail-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  .detail-tab-btn {
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text3);
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .detail-tab-btn.active {
-    background: rgba(212,175,55,0.12);
-    border-color: rgba(212,175,55,0.3);
-    color: var(--gold);
-  }
-  .detail-content { display: none; }
-  .detail-content.active { display: block; }
-  .detail-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-  .detail-field label {
-    display: block;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text3);
-    margin-bottom: 3px;
-  }
-  .detail-field span { font-size: 13px; color: var(--text); }
-  .signal-table { width: 100%; border-collapse: collapse; }
-  .signal-table th {
-    text-align: left;
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--text3);
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    cursor: default;
-  }
-  .signal-table td {
-    padding: 8px 12px;
-    font-size: 12px;
-    border-bottom: 1px solid rgba(45,49,72,0.5);
-    cursor: default;
-  }
-  .signal-table td:first-child { color: var(--text2); }
-  .signal-ok { color: var(--positive); }
-  .signal-warn { color: var(--warning); }
-  .signal-bad { color: var(--danger); }
-  .signal-na { color: var(--text3); }
-  .source-link { color: var(--blue); text-decoration: none; font-size: 12px; }
-  .source-link:hover { text-decoration: underline; }
-  .timeline-item {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 10px;
-    align-items: flex-start;
-  }
-  .timeline-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--gold);
-    margin-top: 3px;
-    flex-shrink: 0;
-  }
-  .timeline-date { font-size: 11px; color: var(--text3); white-space: nowrap; min-width: 80px; }
-  .timeline-text { font-size: 12px; color: var(--text2); }
-
-  /* SOURCES */
-  .sources-section { margin-top: 40px; }
-  .sources-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text2);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .sources-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 10px;
-  }
-  .source-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 14px;
-  }
-  .source-card-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .source-card-url {
-    font-size: 11px; color: var(--blue); text-decoration: none;
-    word-break: break-all; display: block; margin-bottom: 6px;
-  }
-  .source-card-url:hover { text-decoration: underline; }
-  .source-card-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .type-badge {
-    display: inline-block; padding: 2px 7px;
-    border-radius: 10px; font-size: 10px; font-weight: 600;
-  }
-  .type-news { background: rgba(59,130,246,0.12); color: var(--blue); }
-  .type-company { background: rgba(212,175,55,0.12); color: var(--gold); }
-  .type-analyst { background: rgba(168,85,247,0.12); color: var(--purple); }
-  .type-govt { background: rgba(34,197,94,0.12); color: var(--positive); }
-  .type-wiki { background: rgba(110,118,129,0.12); color: var(--text3); }
-
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    .main { padding: 12px; }
-    .header { padding: 10px 12px; }
-    .header-meta { display: none; }
-    .kpi-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-    .kpi-value { font-size: 22px; }
-    td.hide-mobile, th.hide-mobile { display: none; }
-    .search-box { width: 130px; }
-  }
-
-  .na { color: var(--text3); font-style: italic; }
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header { padding: 10px 14px; }
+  .kpi-section, .tabs-section, .table-section, .sources-section { padding-left: 14px; padding-right: 14px; }
+  .filter-bar { padding: 12px 14px; }
+  .hide-mobile { display: none; }
+  .search-input { width: 150px; }
+}
 </style>
 </head>
 <body>
 
-<!-- STICKY HEADER -->
-<header class="header">
-  <div class="header-title">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-    </svg>
-    Distressed Gold Mines &mdash; Western Australia
-  </div>
-  <span class="badge badge-gold">WA Region</span>
-  <span class="badge badge-blue">17 Sources</span>
-  <span class="badge badge-danger">Research-Backed</span>
-  <div class="header-meta">
-    <span>Last updated: 2026-04-21</span>
-    <span>&nbsp;|&nbsp;</span>
-    <span>Gold spot: A$6,715/oz</span>
-  </div>
-</header>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-title">Distressed Gold Mines — Western Australia</div>
+  <span class="wa-badge">WA</span>
+  <div class="header-meta">Last Updated: April 22, 2026</div>
+  <div class="gold-price">AUD Gold: ~$5,200/oz | USD ~$3,200/oz</div>
+  <div class="source-count" id="sourceCountHeader">28 sources</div>
+</div>
 
-<!-- MAIN -->
-<main class="main">
-
-  <!-- KPI CARDS -->
+<!-- KPI CARDS -->
+<div class="kpi-section">
   <div class="kpi-grid">
-    <div class="kpi-card danger">
+    <div class="kpi-card kpi-gold">
       <div class="kpi-label">Total Distressed Assets</div>
-      <div class="kpi-value danger-text">8</div>
-      <div class="kpi-sub">Confirmed distressed mines/projects</div>
+      <div class="kpi-value">5</div>
+      <div class="kpi-sub">Confirmed distressed mines/companies</div>
     </div>
-    <div class="kpi-card gold">
-      <div class="kpi-label">Contained Gold (Distressed)</div>
-      <div class="kpi-value gold-text">~14.8M</div>
-      <div class="kpi-sub">oz aggregate (distressed assets with known resources)</div>
+    <div class="kpi-card kpi-gold">
+      <div class="kpi-label">Total Contained Gold</div>
+      <div class="kpi-value">~16.0Moz</div>
+      <div class="kpi-sub">Across all distressed JORC resources</div>
     </div>
-    <div class="kpi-card danger">
+    <div class="kpi-card kpi-red">
       <div class="kpi-label">In Administration / DOCA</div>
-      <div class="kpi-value danger-text">1</div>
-      <div class="kpi-sub">Wiluna Mining (DOCA, delisted ASX)</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-sub">Wiluna (DOCA), Calidus (DOCA executed)</div>
     </div>
-    <div class="kpi-card warning">
+    <div class="kpi-card kpi-amber">
       <div class="kpi-label">Care &amp; Maintenance</div>
-      <div class="kpi-value warning-text">3</div>
-      <div class="kpi-sub">Dalgaranga, Burnakura, Sandstone</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-sub">Warrawoona, Edna May</div>
     </div>
-    <div class="kpi-card purple">
-      <div class="kpi-label">Asset Sales / Former Distress</div>
-      <div class="kpi-value" style="color:var(--purple)">4</div>
-      <div class="kpi-sub">Bullabulling sold, Gascoyne rebranded, Mt Henry divested, Coyote restart</div>
+    <div class="kpi-card kpi-blue">
+      <div class="kpi-label">Suspended / Review</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-sub">Bellevue Gold (production issues / strat. review)</div>
     </div>
-    <div class="kpi-card danger">
-      <div class="kpi-label">Watch List High/Critical</div>
-      <div class="kpi-value danger-text">3</div>
-      <div class="kpi-sub">OBM (68%), BC8 (62%), Monument WA (72%)</div>
+    <div class="kpi-card kpi-purple">
+      <div class="kpi-label">Watch List Critical/High</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-sub">High-risk underperformers</div>
     </div>
-    <div class="kpi-card gold">
-      <div class="kpi-label">Gold Price AUD/oz</div>
-      <div class="kpi-value gold-text">$6,715</div>
-      <div class="kpi-sub">Spot price 21 Apr 2026 (USD $4,782)</div>
-    </div>
-    <div class="kpi-card blue">
-      <div class="kpi-label">Avg Industry AISC (WA/NZ)</div>
-      <div class="kpi-value" style="color:var(--blue)">$2,278</div>
-      <div class="kpi-sub">Q1 2025 average A$/oz (Aurum Analytics)</div>
+    <div class="kpi-card kpi-gold">
+      <div class="kpi-label">Avg Resource Grade</div>
+      <div class="kpi-value">3.8 g/t</div>
+      <div class="kpi-sub">Weighted avg across distressed assets</div>
     </div>
   </div>
+</div>
 
-  <!-- TABS -->
+<!-- TABS -->
+<div class="tabs-section">
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('distressed',this)">Distressed Mines (8)</button>
-    <button class="tab-btn" onclick="switchTab('watchlist',this)">Watch List (8)</button>
+    <button class="tab-btn active" onclick="switchTab('distressed', this)">Distressed Mines</button>
+    <button class="tab-btn" onclick="switchTab('watchlist', this)">Watch List</button>
   </div>
+</div>
 
-  <!-- TAB 1: DISTRESSED MINES -->
-  <div id="tab-distressed" class="tab-panel active">
-    <div class="filter-bar">
-      <span class="filter-label">Status:</span>
-      <button class="filter-btn active" data-filter="all" onclick="filterDistressed('all',this)">All</button>
-      <button class="filter-btn" data-filter="Administration" onclick="filterDistressed('Administration',this)">Administration / DOCA</button>
-      <button class="filter-btn" data-filter="Care & Maintenance" onclick="filterDistressed('Care & Maintenance',this)">Care &amp; Maintenance</button>
-      <button class="filter-btn" data-filter="For Sale" onclick="filterDistressed('For Sale',this)">Sold / For Sale</button>
-      <button class="filter-btn" data-filter="Rebranded" onclick="filterDistressed('Rebranded',this)">Former Distress</button>
-      <div class="filter-divider"></div>
-      <span class="filter-label">Region:</span>
-      <select class="filter-select" id="region-select" onchange="filterDistressed(null,null)">
-        <option value="">All Regions</option>
-        <option value="Goldfields">Goldfields</option>
-        <option value="Murchison">Murchison</option>
-        <option value="Sandstone">Sandstone</option>
-        <option value="Pilbara">Pilbara/Kimberley</option>
-        <option value="Yilgarn">Yilgarn</option>
-      </select>
-      <div class="filter-divider"></div>
-      <input type="text" class="search-box" id="distressed-search" placeholder="Search mines..." oninput="filterDistressed(null,null)">
-      <span class="result-count" id="distressed-count"></span>
-    </div>
+<!-- ===== DISTRESSED TAB ===== -->
+<div id="tab-distressed" class="tab-content active">
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterDistressed('all', this)">All</button>
+    <button class="filter-btn" onclick="filterDistressed('Administration',this)">Administration</button>
+    <button class="filter-btn" onclick="filterDistressed('Care & Maintenance',this)">Care &amp; Maintenance</button>
+    <button class="filter-btn" onclick="filterDistressed('DOCA',this)">DOCA</button>
+    <button class="filter-btn" onclick="filterDistressed('Suspended',this)">Suspended</button>
+    <div class="filter-sep"></div>
+    <select class="filter-select" id="distressedRegion" onchange="applyDistressedFilters()">
+      <option value="all">All Regions</option>
+      <option value="Pilbara">Pilbara</option>
+      <option value="Goldfields">Goldfields-Esperance</option>
+      <option value="Murchison">Murchison</option>
+      <option value="Yilgarn">Yilgarn</option>
+    </select>
+    <input class="search-input" id="distressedSearch" placeholder="Search mine, company..." oninput="applyDistressedFilters()">
+    <span class="result-count" id="distressedCount">Showing 5 of 5</span>
+  </div>
+  <div class="table-section">
     <div class="table-wrap">
-      <table id="distressed-table">
+      <table id="distressedTable">
         <thead>
           <tr>
-            <th onclick="sortDTable(0,this)">Mine Name <span class="sort-icon"></span></th>
-            <th onclick="sortDTable(1,this)">Company <span class="sort-icon"></span></th>
-            <th onclick="sortDTable(2,this)">Region <span class="sort-icon"></span></th>
-            <th onclick="sortDTable(3,this)">Status <span class="sort-icon"></span></th>
-            <th onclick="sortDTable(4,this)" class="hide-mobile">Resource (oz) <span class="sort-icon"></span></th>
-            <th onclick="sortDTable(5,this)" class="hide-mobile">Grade (g/t) <span class="sort-icon"></span></th>
-            <th class="hide-mobile">Processing Plant</th>
-            <th style="width:40px"></th>
+            <th onclick="sortTable('distressedTable',0,this)">Mine / Project<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('distressedTable',1,this)">Company (ASX)<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('distressedTable',2,this)">Region<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('distressedTable',3,this)">Status<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('distressedTable',4,this)" class="hide-mobile">Resource (oz)<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('distressedTable',5,this)" class="hide-mobile">Grade (g/t)<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('distressedTable',6,this)" class="hide-mobile">Distress Indicator<span class="sort-arrow"></span></th>
+            <th>Sources</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id="distressed-tbody"></tbody>
+        <tbody id="distressedBody">
+        </tbody>
       </table>
     </div>
   </div>
+</div>
 
-  <!-- TAB 2: WATCH LIST -->
-  <div id="tab-watchlist" class="tab-panel">
-    <div class="filter-bar">
-      <span class="filter-label">Probability:</span>
-      <button class="filter-btn active" data-wfilter="all" onclick="filterWatch('all',this)">All</button>
-      <button class="filter-btn" data-wfilter="Critical" onclick="filterWatch('Critical',this)">Critical (80-100%)</button>
-      <button class="filter-btn" data-wfilter="High" onclick="filterWatch('High',this)">High (60-79%)</button>
-      <button class="filter-btn" data-wfilter="Moderate" onclick="filterWatch('Moderate',this)">Moderate (40-59%)</button>
-      <button class="filter-btn" data-wfilter="Low" onclick="filterWatch('Low',this)">Low (20-39%)</button>
-      <div class="filter-divider"></div>
-      <input type="text" class="search-box" id="watch-search" placeholder="Search companies..." oninput="filterWatch(null,null)">
-      <span class="result-count" id="watch-count"></span>
-    </div>
+<!-- ===== WATCH LIST TAB ===== -->
+<div id="tab-watchlist" class="tab-content">
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterWatch('all',this)">All</button>
+    <button class="filter-btn" onclick="filterWatch('Critical',this)">Critical</button>
+    <button class="filter-btn" onclick="filterWatch('High',this)">High</button>
+    <button class="filter-btn" onclick="filterWatch('Moderate',this)">Moderate</button>
+    <button class="filter-btn" onclick="filterWatch('Low',this)">Low</button>
+    <div class="filter-sep"></div>
+    <input class="search-input" id="watchSearch" placeholder="Search company, mine..." oninput="applyWatchFilters()">
+    <span class="result-count" id="watchCount">Showing 7 of 7</span>
+  </div>
+  <div class="table-section">
     <div class="table-wrap">
-      <table id="watch-table">
+      <table id="watchTable">
         <thead>
           <tr>
-            <th onclick="sortWTable(0,this)">Company (ASX) <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(1,this)">Mine / Operation <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(2,this)" class="hide-mobile">Region <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(3,this)">Distress Prob % <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(4,this)" class="hide-mobile">AISC (A$/oz) <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(5,this)" class="hide-mobile">Prod Trend <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(6,this)" class="hide-mobile">Cash Position <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(7,this)" class="hide-mobile">Reserve Life <span class="sort-icon"></span></th>
-            <th onclick="sortWTable(8,this)" class="hide-mobile">Share Price (52w) <span class="sort-icon"></span></th>
-            <th style="width:40px"></th>
+            <th onclick="sortTable('watchTable',0,this)">Company (ASX)<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',1,this)">Mine / Project<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',2,this)">Region<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',3,this)">Probability<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',4,this)" class="hide-mobile">AISC (A$/oz)<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',5,this)" class="hide-mobile">Prod Trend<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',6,this)" class="hide-mobile">Cash (A$M)<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',7,this)" class="hide-mobile">Reserve Life<span class="sort-arrow"></span></th>
+            <th onclick="sortTable('watchTable',8,this)" class="hide-mobile">Price Δ%<span class="sort-arrow"></span></th>
+            <th>Signals</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id="watch-tbody"></tbody>
+        <tbody id="watchBody">
+        </tbody>
       </table>
     </div>
   </div>
+</div>
 
-  <!-- SOURCES -->
-  <div class="sources-section">
-    <div class="sources-title">
-      Sources (17)
-    </div>
-    <div class="sources-grid" id="sources-grid"></div>
-  </div>
-
-</main>
+<!-- MASTER SOURCES -->
+<div class="sources-section">
+  <h2>Master Sources</h2>
+  <div class="sources-grid" id="sourcesGrid"></div>
+</div>
 
 <script>
-'use strict';
+// ============================================================
+// DATA
+// ============================================================
 
-// ──────────────────────────────────────────────
-// DATA — DISTRESSED MINES
-// ──────────────────────────────────────────────
-var DISTRESSED = [
+const DISTRESSED = [
   {
-    id:'d1', mine:'Wiluna Gold Mine', company:'Wiluna Mining Corporation', asx:'WMC (delisted)',
-    region:'Yilgarn', status:'Administration', statusClass:'s-doca', statusLabel:'DOCA / Delisted',
-    resource:7000000, resourceLabel:'7,000,000', grade:2.38, area:'1,100+ km\u00b2 tenements',
-    processing:'CIL + Wiltails circuit (limited ops/care & maintenance)',
-    overview:'Wiluna Mining entered voluntary administration in 2022 and was removed from the ASX. The company continues under a Deed of Company Arrangement (DOCA). Limited production restarted via BML Ventures open pit mining agreement (Jan 2025). DOCA standstill with OR Royalties International Ltd extended to 30 June 2026. April 2026: Notice of General Meeting convened by AIM shareholders; s.203D notice received indicating potential control dispute.',
-    jorc:'Mineral Resource: 91.5 Mt at 2.38 g/t for 7,000,000 oz (December 2024 MRE, JORC 2012). Located at northern end of the Yilgarn Craton, Australia\'s largest gold mining system.',
-    production:'Golden Age Cutback (GAC) open pit completed: 22,035 oz total at avg 2.01 g/t. Sep 2025 quarter tailings retreatment: 2,957 oz at realised A$5,197/oz. Prefeasibility Study (PFS) outlines restart pathway targeting ~750 ktpa ore production; pre-tax NPV8 A$198.6M at A$2,880/oz base case.',
-    tenements:'Over 1,100 km\u00b2 of active/pending tenements plus gold rights over 500 km\u00b2 additional contiguous tenements via Piper Preston agreement. 40-year production history.',
-    timeline:[
-      {date:'2022',text:'Wiluna Mining enters voluntary administration.'},
-      {date:'2024',text:'Delisted from ASX after approximately two years in administration.'},
-      {date:'Jan 2025',text:'Agreement with BML Ventures for Golden Age Cutback open pit mining and processing.'},
-      {date:'Jun 2025',text:'DOCA standstill with OR Royalties extended to 30 June 2026. Convertible notes extended.'},
-      {date:'Apr 2026',text:'Notice of General Meeting convened by AIM; section 203D notice received regarding potential control dispute.'}
+    id: 'd1',
+    mine: 'Warrawoona Gold Project',
+    company: 'Calidus Resources (CAI) → Ample Resources',
+    asx: 'CAI (delisted Jan 2025)',
+    region: 'Pilbara',
+    statusKey: 'Care & Maintenance',
+    statusBadge: 'badge-cm',
+    resource: '1,500,000',
+    resourceNum: 1500000,
+    grade: '1.01',
+    gradeNum: 1.01,
+    aisc: 'N/A (ceased)',
+    indicator: 'Receivership Jun 2024; hedging losses; resource model underperformed',
+    askingPrice: 'Acquired via DOCA by Mark Creasy/Ample Resources',
+    administrator: 'KordaMentha (Receivers: Richard Tucker, John Bumbak); FTI Consulting (Admins: Hayden White, Daniel Woodhouse)',
+    sources: ['s1','s2','s3','s4'],
+    overview: 'Calidus Resources entered voluntary administration and was placed in receivership by secured creditor Macquarie on 28 June 2024. Mining activity ceased 5 July 2024 and the mine near Marble Bar, Pilbara, was transitioned to care and maintenance. The primary causes were an underperforming geological resource model and a hedging position that prevented Calidus from capturing the improved gold price from late 2023. Calidus was delisted from ASX on 16 January 2025 after the DOCA was executed on 9 October 2024, with control passing to Mark Creasy\'s Ample Resources Pty Ltd.',
+    jorc: [
+      {category:'Klondyke deposit', measured:'-', indicated:'41.4Mt @ 1.01g/t', inferred:'-', contained:'~1.35Moz', year:'2023'},
+      {category:'Satellite deposits (Copenhagen, Coronation, Fieldings Gully)', measured:'-', indicated:'-', inferred:'-', contained:'~113,000oz', year:'2023'},
     ],
-    contacts:'Wiluna Mining Corporation — wilunamining.com.au',
-    sources:[
-      {title:'Wiluna Mining enters administration | Mining Digital',url:'https://miningdigital.com/supply-chain-and-operations/wiluna-mining-enters-administration'},
-      {title:'Wiluna Mining removed from ASX | Australian Mining',url:'https://www.australianmining.com.au/wiluna-mining-removed-from-asx/'},
-      {title:'Wiluna Mining Corporate Update April 2025',url:'https://wilunamining.com.au/wp-content/uploads/2025/04/WilunaMiningCorporateUpdateApril2025.pdf'},
-      {title:'Wiluna Gold Mine — Wikipedia',url:'https://en.wikipedia.org/wiki/Wiluna_Gold_Mine'}
-    ]
+    production: [
+      {year:'FY2023', oz:'~53,000', aisc:'~A$2,600'},
+      {year:'FY2024 (partial)', oz:'~35,000', aisc:'~A$2,900'},
+      {year:'Jul 2024', oz:'Nil (C&M)', aisc:'N/A'},
+    ],
+    processing: 'CIL plant; ~1.8Mtpa capacity; located near Marble Bar, East Pilbara',
+    tenements: 'Warrawoona Gold Project, East Pilbara Shire, Western Australia (~150km SE of Port Hedland)',
+    filings: [
+      {date:'28 Jun 2024', type:'ASIC Notice', desc:'Receivers & Managers Appointed (KordaMentha); Administrators Appointed (FTI Consulting)', url:'https://publishednotices.asic.gov.au/browsesearch-notices/notice-details/CALIDUS-RESOURCES-LIMITED-Receivers-and-Managers-Appointed-006640553/91002063-8dc3-467b-b2e3-7594826b3fcb'},
+      {date:'5 Jul 2024', type:'Industry News', desc:'Warrawoona placed into care and maintenance', url:'https://www.miningweekly.com/article/warrawoona-gold-mine-enters-care-and-maintenance-2024-07-11'},
+      {date:'27 Sep 2024', type:'DOCA', desc:'DOCA proposals approved at second creditors meeting', url:'https://www.insolvencyinsider-au.com/p/calidus-resources-case-update'},
+      {date:'8 Jan 2025', type:'ASX', desc:'Shares transferred to Ample Resources; Calidus delisted 16 Jan 2025', url:'https://www.delisted.com.au/company/calidus-resources-limited/'},
+    ],
+    contacts: 'KordaMentha: Richard Tucker, John Bumbak | FTI Consulting: Hayden White, Daniel Woodhouse | Hamilton Locke (legal advisors)',
+    sourceIds: ['s1','s2','s3','s4']
   },
   {
-    id:'d2', mine:'Dalgaranga Gold Mine', company:'Ramelius Resources (ex-Spartan Resources)', asx:'RMS',
-    region:'Murchison', status:'Care & Maintenance', statusClass:'s-cm', statusLabel:'Care & Maintenance',
-    resource:2900000, resourceLabel:'2,900,000', grade:5.6, area:'Not available',
-    processing:'2.5 Mtpa CIL plant — care & maintenance, restart underway (underground development)',
-    overview:'Dalgaranga was placed in care & maintenance after the operator (Gascoyne Resources, later Spartan Resources) paused surface mining due to cost inflation and low head grades. Spartan then discovered the high-grade Never Never deposit (8.8 g/t) adjacent to the plant. Ramelius Resources acquired Spartan in July 2025 for A$270.6M plus 752.9M shares. A$300M Barminco underground contract awarded Sep 2025. First ore from Never Never targeted ~2027.',
-    jorc:'Total project Mineral Resource: 2.9 Moz Au at 5.6 g/t. Never Never deposit: 7.5 Mt at 8.8 g/t for 2.1 Moz. Ore Reserve (Never Never): 7.0 Mt at 7.3 g/t for 1.6 Moz. Mine plan: 9.2 Mt at 6.5 g/t for 1.9 Moz total production. Target AISC from Never Never: A$1,128/oz.',
-    production:'Processing plant in care & maintenance. Barminco contracted for 48 months of underground development. 11,000m of underground development planned for 2025-2026. Ramelius-Mt Magnet integration PFS delivered Q4 2025.',
-    tenements:'Extensive landholding in Mid West WA. Spartan acquired full control of Dalgaranga exploration tenure April 2025.',
-    timeline:[
-      {date:'2022',text:'Dalgaranga operations placed in care & maintenance due to sustained cost inflation and low head grades.'},
-      {date:'2022 mid',text:'High-grade Never Never discovery announced — 1 km from existing plant.'},
-      {date:'Aug 2023',text:'Gascoyne Resources rebrands to Spartan Resources (ASX: SPR).'},
-      {date:'Mar 2025',text:'Ramelius Resources announces transformational acquisition of Spartan.'},
-      {date:'Apr 2025',text:'Spartan consolidates full Dalgaranga exploration tenure.'},
-      {date:'Jul 2025',text:'Ramelius completes Spartan acquisition. SPR delisted from ASX.'},
-      {date:'Sep 2025',text:'Barminco awarded A$300M underground development and production contract at Dalgaranga.'},
-      {date:'Q4 2025',text:'Dalgaranga-Mt Magnet integration PFS delivered; restart capital confirmed.'}
+    id: 'd2',
+    mine: 'Wiluna Gold Mine (Matilda-Wiluna Operation)',
+    company: 'Wiluna Mining Corporation',
+    asx: 'WMC (delisted Apr 2024)',
+    region: 'Murchison',
+    statusKey: 'DOCA',
+    statusBadge: 'badge-doca',
+    resource: '7,000,000',
+    resourceNum: 7000000,
+    grade: '2.38',
+    gradeNum: 2.38,
+    aisc: 'Tailings retreatment only',
+    indicator: 'VA Jul 2022; DOCA extended to Jun 2026; ASIC sued for disclosure breaches; delisted Apr 2024',
+    askingPrice: 'DOCA effectuated Dec 2025; restart study ongoing',
+    administrator: 'FTI Consulting (Deed Administrators: Michael Ryan, Kate Warwick, Ian Francis, Daniel Woodhouse)',
+    sources: ['s5','s6','s7'],
+    overview: 'Wiluna Mining Corporation was placed into voluntary administration on 21 July 2022. The company was de-listed by the ASX on 5 April 2024 after failing to lodge the half-year report for the period ended 31 December 2022. The DOCA sunset date was extended to 30 June 2026. On 8 December 2025, Deed Administrators succeeded in court application for DOCA rectification. The DOCA was effectuated 31 December 2025, transitioning control to a new board. ASIC sued Wiluna in March 2025 for continuous disclosure and directors\' duties breaches. The mine holds a massive 7.0Moz JORC resource and is focused on tailings retreatment while a full restart study is conducted. Convertible note repayment extended to 30 June 2026 at zero interest.',
+    jorc: [
+      {category:'Total (91.5Mt @ 2.38g/t)', measured:'10.5Mt @ 3.31g/t (1.44Moz)', indicated:'Incl. in above', inferred:'Significant inferred', contained:'7.0Moz', year:'2024/2025'},
+      {category:'Underground Central (38.37Mt @ 4.01g/t)', measured:'-', indicated:'-', inferred:'-', contained:'4.9Moz', year:'2025'},
+      {category:'Open Pit Central (14.98Mt @ 2.33g/t)', measured:'-', indicated:'-', inferred:'-', contained:'1.1Moz', year:'2025'},
     ],
-    contacts:'Ramelius Resources — rameliusresources.com.au/dalgarangagoldmine',
-    sources:[
-      {title:'Ramelius completes acquisition of Spartan Resources | Mining Technology',url:'https://www.mining-technology.com/news/ramelius-completes-acquisition-of-spartan/'},
-      {title:'Barminco bags A$300M Dalgaranga contract | International Mining',url:'https://im-mining.com/2025/09/11/barminco-bags-a300-million-dalgaranga-contract-with-ramelius-resources/'},
-      {title:'Dalgaranga Gold Mine — Ramelius Resources',url:'https://www.rameliusresources.com.au/dalgarangagoldmine/'},
-      {title:'Gascoyne Resources deListed Australia',url:'https://www.delisted.com.au/company/gascoyne-resources-limited/'}
-    ]
+    production: [
+      {year:'FY2021', oz:'~77,000 (concentrate)', aisc:'~A$2,200'},
+      {year:'FY2022', oz:'Limited (VA Jul 2022)', aisc:'N/A'},
+      {year:'2023-2026', oz:'Tailings retreatment only', aisc:'N/A'},
+    ],
+    processing: 'Gold concentrator (sulphide flotation); ~2.5Mtpa; Golden Age Cutback (GAC) open pit; toll milling MOU with High-Tech Minerals (late 2025)',
+    tenements: 'Wiluna Mining Centre, Wiluna, WA — Murchison Goldfield. Multiple MLs and ELs in Wiluna district.',
+    filings: [
+      {date:'21 Jul 2022', type:'VA Notice', desc:'Voluntary Administration commenced; FTI Consulting appointed', url:'https://wilunamining.com.au/'},
+      {date:'5 Apr 2024', type:'ASX', desc:'Wiluna delisted by ASX for failure to lodge financial reports', url:'https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-058mr-asic-sues-wa-gold-mining-company-wiluna-mining-corporation-for-continuous-disclosure-and-directors-duties-breaches/'},
+      {date:'Mar 2025', type:'ASIC Action', desc:'ASIC sues Wiluna for continuous disclosure and directors\' duties breaches', url:'https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-058mr-asic-sues-wa-gold-mining-company-wiluna-mining-corporation-for-continuous-disclosure-and-directors-duties-breaches/'},
+      {date:'31 Dec 2025', type:'DOCA', desc:'DOCA effectuated; new board of directors assumes control', url:'https://wilunamining.com.au/wp-content/uploads/2025/04/WilunaMiningQuarterlyReportDecember2024.pdf'},
+    ],
+    contacts: 'FTI Consulting Deed Administrators: Michael Ryan, Kate Warwick, Ian Francis, Daniel Woodhouse | COO: Evan Spencer | Strategic Adviser: Stuart Pether',
+    sourceIds: ['s5','s6','s7','s8']
   },
   {
-    id:'d3', mine:'Burnakura Gold Project', company:'Monument Mining', asx:'MMY (TSX-V)',
-    region:'Murchison', status:'Care & Maintenance', statusClass:'s-cm', statusLabel:'Care & Maintenance',
-    resource:381000, resourceLabel:'381,000', grade:2.12, area:'~40 km SE of Meekatharra',
-    processing:'260 ktpa CIL plant — care & maintenance (restart being studied; upgrade to 750 ktpa evaluated)',
-    overview:'Monument Mining\'s Burnakura project in the Murchison Goldfield holds a 381,000 oz resource with a 260 ktpa CIL plant in care & maintenance. Monument is evaluating restart options and potential throughput upgrade to 750 ktpa. In April 2025, Monument signed MOUs with both Great Boulder Resources (GBR) and Odyssey Gold to potentially toll-treat third-party ore through the Burnakura mill as a path to restart economics.',
-    jorc:'Mineral Resource: 5.59 Mt at 2.12 g/t for 381,000 oz. Indicated: 4.04 Mt at 2.3 g/t for 293 koz. Inferred: 1.55 Mt at 1.8 g/t for 88 koz. High-grade intersections documented: 4m at 32.0 g/t; 3m at 71.8 g/t.',
-    production:'Zero current production. SRK Consulting engaged for economic assessments including 260 ktpa restart and potential 750 ktpa upgrade. Three-stage crushing circuit rebuilt and refurbished. Site camp fully operational. Monument FY2025 total revenue (Selinsing + Murchison) US$98.64M; cash cost US$814/oz (Selinsing only).',
-    tenements:'Murchison Gold Portfolio includes Burnakura, Gabanintha and Tuckanarra (20% free carry to mine decision). Located ~765 km NE of Perth.',
-    timeline:[
-      {date:'Pre-2020',text:'Burnakura CIL plant placed in care & maintenance.'},
-      {date:'2024',text:'Monument acquires Murchison Gold Portfolio. Exploration drilling commences. MRE confirmed at 381 koz.'},
-      {date:'Apr 2 2025',text:'Collaboration agreement with Great Boulder Resources for toll-treatment at Burnakura.'},
-      {date:'Apr 14 2025',text:'Separate collaboration agreement with Odyssey Gold for Burnakura mill access.'},
-      {date:'FY2026',text:'Restart feasibility studies ongoing. SRK engaged. Toll-treatment partnerships being explored with multiple parties.'}
+    id: 'd3',
+    mine: 'Edna May Gold Mine',
+    company: 'Ramelius Resources',
+    asx: 'RMS',
+    region: 'Yilgarn',
+    statusKey: 'Care & Maintenance',
+    statusBadge: 'badge-cm',
+    resource: '~1,200,000',
+    resourceNum: 1200000,
+    grade: '~1.1',
+    gradeNum: 1.1,
+    aisc: 'C&M costs ~A$4.1M/yr',
+    indicator: 'Placed C&M mid-April 2025 after stockpile depletion; economic restart uncertain at current grade',
+    askingPrice: 'Not for sale; held by Ramelius',
+    administrator: 'N/A (operating company decision)',
+    sources: ['s9','s10'],
+    overview: 'The Edna May operation was placed into care and maintenance by Ramelius Resources in mid-April 2025 following depletion of the lower-grade open pit stockpiles. The mine processed 1,482kt at 1.19g/t for 55,682oz in FY2025 before transitioning to C&M. The operation is held on standby at a cost of approximately A$4.1M per year while the company assesses restart economics. Ramelius acquired Edna May from Evolution Mining in September 2017 for A$90M. The mine is located near Westonia in the Yilgarn Craton region of WA.',
+    jorc: [
+      {category:'Open pit + underground (approx, pre-C&M)', measured:'Not published post-C&M', indicated:'Not published post-C&M', inferred:'Not published post-C&M', contained:'~1.2Moz est. ⚠️ (pre-2025)', year:'⚠️ 2023 estimate'},
     ],
-    contacts:'Monument Mining Ltd — monumentmining.com',
-    sources:[
-      {title:'Burnakura | Monument Mining',url:'https://monumentmining.com/projects/murchison-gold-portfolio/burnakura/'},
-      {title:'Monument collaboration with GBR for Burnakura mill | GlobeNewswire',url:'https://www.globenewswire.com/news-release/2025/04/02/3054310/0/en/Monument-Entered-Into-a-Collaboration-Agreement-Gives-GBR-Access-to-Burnakura-Mill.html'},
-      {title:'Monument Q4 FY2025 Results | Monument Mining',url:'https://monumentmining.com/news-media/news/2025/monument-reports-fourth-quarter-and-fiscal-2025-results-gross-revenue-of-us-98.64-million-and-cash-cost-of-us-814-oz/'}
-    ]
+    production: [
+      {year:'FY2023', oz:'~70,000', aisc:'~A$1,800'},
+      {year:'FY2024', oz:'~62,000', aisc:'~A$2,000'},
+      {year:'FY2025 (to Apr 2025)', oz:'55,682', aisc:'Bottom of guidance'},
+      {year:'FY2026', oz:'Nil (C&M)', aisc:'C&M ~A$4.1M total'},
+    ],
+    processing: 'CIL plant; ~2.5Mtpa; open pit mining; near Westonia, Yilgarn region WA',
+    tenements: 'Westonia, Shire of Westonia, Western Australia. Multiple MLs in the Yilgarn Craton.',
+    filings: [
+      {date:'Apr 2025', type:'ASX Quarterly', desc:'Ramelius Q3 FY25: Edna May transitions to care and maintenance; $4.1M C&M costs noted', url:'https://www.rameliusresources.com.au/wp-content/uploads/bsk-pdf-manager/2025/07/March-2025-Quarterly-Activities-Rep.pdf'},
+      {date:'Jul 2025', type:'ASX Annual', desc:'Ramelius FY25 Annual Report: Record production 301,664oz; AISC A$1,551/oz', url:'https://www.rameliusresources.com.au/wp-content/uploads/bsk-pdf-manager/2025/08/2025-08-25-Financial-Report-and-Appendix-4E-or-FY25.pdf'},
+    ],
+    contacts: 'Ramelius Resources Limited (ASX: RMS) | investor.relations@rameliusresources.com.au',
+    sourceIds: ['s9','s10']
   },
   {
-    id:'d4', mine:'Sandstone Gold Project', company:'Brightstar Resources (ex-Aurumin)', asx:'BTR',
-    region:'Sandstone', status:'Care & Maintenance', statusClass:'s-cm', statusLabel:'Care & Maintenance',
-    resource:2400000, resourceLabel:'~2,400,000', grade:1.5, area:'Sandstone Gold Belt, central WA',
-    processing:'Processing plant in care & maintenance since September 2010 (15+ years offline)',
-    overview:'The Sandstone Gold Project has been in care & maintenance since September 2010. Aurumin acquired it in March 2022 and ran a 70,000+ metre drilling campaign. Brightstar Resources acquired Aurumin in November 2025, consolidating the Sandstone Gold Belt. Combined Brightstar/Sandstone resource ~2.4 Moz at 1.5 g/t. A Consolidated Pre-Feasibility Study is underway with Final Investment Decision targeted H2 2027. Brightstar currently produces from Second Fortune and Fish mines (Laverton/Goldfields) under ore purchase agreement with Genesis Minerals.',
-    jorc:'Combined resource (Brightstar + Aurumin/Sandstone): ~2.4 Moz at 1.5 g/t, largely within top 15m from surface. Aurumin pre-acquisition: 746,500 oz; 2020 drilling doubled this and found 5 new shallow satellite deposits. Brightstar Menzies: 22% resource upgrade to 0.7 Moz (2025). Menzies DFS (Jun 2025): ~70,000 oz/pa over 5 years.',
-    production:'No production from Sandstone since September 2010. 70,000+ metres of exploration drilling completed to 2025. MRE upgrade targeted H1 2026. Engineering, metallurgical, geotechnical, approvals and permitting work underway. Brightstar targets 30-40 koz/pa near-term, scaling to 200+ koz/pa by 2029 (whole portfolio).',
-    tenements:'Sandstone Gold Belt, central Western Australia. Non-gold/silver rights sold to Newcam Minerals (Sep 2025). 20% JV interest in Mt Palmer Gold Project also divested.',
-    timeline:[
-      {date:'Sep 2010',text:'Sandstone processing plant placed in care & maintenance.'},
-      {date:'Mar 2022',text:'Aurumin acquires Sandstone project from Middle Island Resources.'},
-      {date:'2022-2024',text:'Aggressive drilling campaign; >70,000m drilled, MRE doubled.'},
-      {date:'Sep 2025',text:'Non-gold/silver tenement rights and Mt Palmer JV interest divested.'},
-      {date:'Nov 2025',text:'Brightstar Resources acquires Aurumin; schemes become legally effective. Sandstone Belt now consolidated.'},
-      {date:'H2 2027',text:'Final Investment Decision targeted for Sandstone recommissioning.'}
+    id: 'd4',
+    mine: 'Bellevue Gold Mine',
+    company: 'Bellevue Gold Limited',
+    asx: 'BGL',
+    region: 'Goldfields',
+    statusKey: 'Suspended',
+    statusBadge: 'badge-suspended',
+    resource: '3,100,000',
+    resourceNum: 3100000,
+    grade: '9.0',
+    gradeNum: 9.0,
+    aisc: 'A$2,600–2,900 (FY26 guidance)',
+    indicator: 'Trading halt Mar 2025; production shortfall; guidance cut x2; A$156.5M emergency capital raise; strategic review; takeover interest received; cash -40% in Q1 2025',
+    askingPrice: 'Strategic review underway; unsolicited takeover interest received',
+    administrator: 'N/A; advisors: UBS, Lisle Group, King & Wood Mallesons',
+    sources: ['s11','s12','s13'],
+    overview: 'Bellevue Gold (ASX:BGL) entered a trading halt on 26 March 2025 following March quarter gold production of approximately 25,700oz, significantly below market expectations. The shortfall was attributed to stopes at the edges of the orebody underperforming geological models, combined with grade dilution from accelerated mining rates. Cash and gold on hand fell 39.5% in a single quarter from A$81M to A$49M. The company cut full-year FY25 guidance twice. In April 2025, Bellevue completed a A$156.5M equity raise primarily to close out near-term hedging contracts and strengthen its balance sheet. A concurrent strategic review was launched; unsolicited takeover interest was received though no formal offers were made. The mine holds one of the highest-grade gold resources in Australia at 9.0g/t.',
+    jorc: [
+      {category:'Indicated', measured:'-', indicated:'6.3Mt @ 9.7g/t', inferred:'-', contained:'2.0Moz', year:'2025 (Aug ASX)'},
+      {category:'Inferred', measured:'-', indicated:'-', inferred:'4.4Mt @ 7.9g/t', contained:'1.1Moz', year:'2025 (Aug ASX)'},
+      {category:'TOTAL', measured:'-', indicated:'-', inferred:'-', contained:'3.1Moz @ 9.0g/t', year:'2025 (Aug ASX)'},
     ],
-    contacts:'Brightstar Resources Limited — brightstarresources.com.au',
-    sources:[
-      {title:'Brightstar consolidates major WA gold project | Australian Mining',url:'https://www.australianmining.com.au/brightstar-consolidates-major-wa-gold-project/'},
-      {title:'Sandstone Project — Aurumin Limited',url:'https://aurumin.com.au/projects/central-sandstone/'},
-      {title:'Brightstar secures court approval for Aurumin acquisition | Mining Technology',url:'https://www.mining-technology.com/news/brightstar-approval-for-aurumin-acquisition/'},
-      {title:'Sandstone Gold Mine — Wikipedia',url:'https://en.wikipedia.org/wiki/Sandstone_Gold_Mine'}
-    ]
+    production: [
+      {year:'FY2025 full year', oz:'129,000–134,000 (revised)', aisc:'A$2,425–2,525'},
+      {year:'Q1 FY2025 (Mar qtr)', oz:'~25,700', aisc:'Above guidance'},
+      {year:'FY2026 guidance', oz:'130,000–150,000', aisc:'A$2,600–2,900'},
+    ],
+    processing: 'Underground CIL; Bellevue mine, Eastern Goldfields WA; ~1.0Mtpa processing',
+    tenements: 'Bellevue Gold Project, Eastern Goldfields Province, Western Australia',
+    filings: [
+      {date:'26 Mar 2025', type:'ASX Halt', desc:'Trading halt: production review, downward guidance adjustment likely', url:'https://announcements.asx.com.au/asxpdf/20250414/pdf/06hpz61qb48yfw.pdf'},
+      {date:'Apr 2025', type:'ASX Capital Raise', desc:'A$156.5M placement to close hedges and strengthen balance sheet; strategic review launched', url:'https://www.mining.com/bellevue-gold-raises-funds-weighs-options-after-weak-quarter/'},
+      {date:'1 Aug 2025', type:'ASX Annual', desc:'FY26 guidance: 130,000-150,000oz at AISC A$2,600-2,900; resource 3.1Moz @ 9.0g/t', url:'https://announcements.asx.com.au/asxpdf/20250801/pdf/06mdzqxnpry6q4.pdf'},
+    ],
+    contacts: 'Bellevue Gold Limited | ASX:BGL | bellevuegold.com.au | Advisors: UBS, Lisle Group, King & Wood Mallesons',
+    sourceIds: ['s11','s12','s13']
   },
   {
-    id:'d5', mine:'Bullabulling Gold Project', company:'Minerals 260 (ex-Norton Gold Fields / Zijin Mining)', asx:'M260 (unlisted)',
-    region:'Goldfields', status:'For Sale', statusClass:'s-sale', statusLabel:'Sold (3 Apr 2025)',
-    resource:2300000, resourceLabel:'2,300,000', grade:'Not available', area:'127 km\u00b2 (59 tenements)',
-    processing:'No current processing plant — undeveloped open-pit project (4 deposits)',
-    overview:'Bullabulling is a 2.3 Moz undeveloped open-pit gold project ~65 km SW of Kalgoorlie, 25 km W of Coolgardie. Norton Gold Fields (Zijin Mining subsidiary) sold to Minerals 260 for A$166.5M (A$156.5M cash + A$10M shares). Sale completed 3 April 2025. Minerals 260 raised A$220M for acquisition and development. Features four open-pit deposits: Dicksons, Phoenix, Bacchus, and Kraken. Historical production in the 1990s: 3.9 Mt ore for 179,000 oz gold. Metallurgical testing shows 87% recovery.',
-    jorc:'Mineral Resource: 2.3 Moz (total project). Located in Archaean Yilgarn Craton. Historical production 1990s: 179,000 oz recovered from 3.9 Mt ore (avg ~1.45 g/t). Metallurgical recovery: 87%. 80,000m RC and diamond drilling campaign planned post-acquisition.',
-    production:'No current production. Minerals 260 launched 80,000m drilling campaign post-acquisition. Permitting and approvals being lodged with relevant WA authorities. Development capital to be confirmed from pre-feasibility/feasibility studies.',
-    tenements:'127 km\u00b2 tenement package comprising 59 tenements. Located ~65 km SW of Kalgoorlie in the Archaean Yilgarn Craton, Southern Cross-Coolgardie greenstone belt.',
-    timeline:[
-      {date:'1990s',text:'Historical open pit mining: 3.9 Mt for 179,000 oz gold recovered.'},
-      {date:'2013',text:'Chalice Gold Mines completes feasibility study; project stalls at gold price below A$1,800/oz.'},
-      {date:'2014-2024',text:'Held by Norton Gold Fields (Zijin Mining Group). No development proceeds.'},
-      {date:'Jan 2025',text:'Minerals 260 announces binding agreement to acquire Bullabulling from Norton for A$166.5M.'},
-      {date:'3 Apr 2025',text:'Acquisition completed. A$220M capital raise closed.'},
-      {date:'2025+',text:'80,000m drilling campaign launched; permitting being progressed.'}
+    id: 'd5',
+    mine: 'Dalgaranga Gold Mine (Never Never / Pepper deposits)',
+    company: 'Spartan Resources (formerly Gascoyne Resources)',
+    asx: 'SPR',
+    region: 'Murchison',
+    statusKey: 'Care & Maintenance',
+    statusBadge: 'badge-cm',
+    resource: '2,320,000',
+    resourceNum: 2320000,
+    grade: '9.32',
+    gradeNum: 9.32,
+    aisc: 'Not producing (C&M transitioning to restart)',
+    indicator: 'C&M from Nov 2022 after Gascoyne Resources entered administration; high-grade discovery (Never Never) triggered recapitalisation; restart underway 2024–2026',
+    askingPrice: 'Not for sale; A$220M raise completed for restart',
+    administrator: 'N/A (post-administration; new management)',
+    sources: ['s14','s15','s16'],
+    overview: 'Gascoyne Resources placed the Dalgaranga gold mine into care and maintenance in November 2022 after entering administration. The company was rebranded as Spartan Resources in August 2023 following the discovery of the exceptional high-grade Never Never and Pepper gold deposits less than 1km from the existing 2.5Mtpa CIL processing facility. The combined Never Never and Pepper mineral resource is 2.32Moz at 9.32g/t, which is among the highest-grade undeveloped gold projects in Australia. Spartan completed a A$220M institutional placement and received all regulatory approvals for underground mining. An underground exploration decline is underway with first production expected within 2 years of approvals (late 2025 / 2026). The existing processing plant is being maintained in readiness.',
+    jorc: [
+      {category:'Never Never + Pepper combined', measured:'-', indicated:'-', inferred:'-', contained:'2.32Moz @ 9.32g/t', year:'2024'},
     ],
-    contacts:'Minerals 260 — minerals260.com.au | Norton Gold Fields — nortongoldfields.com.au',
-    sources:[
-      {title:'Minerals 260 seals deal for Bullabulling | Mining Technology',url:'https://www.mining-technology.com/news/minerals-260-deal-acquire-bullabulling-gold-project/'},
-      {title:'Minerals 260 completes $220m capital raise | Mining Technology',url:'https://www.mining-technology.com/news/minerals-260-bullabulling-gold/'},
-      {title:'HFW advises Norton Gold Fields on A$166.5M sale | HFW',url:'https://www.hfw.com/about-us/news/hfw-advises-norton-gold-fields-on-a166-5-million-sale-of-one-of-australias-largest-undeveloped-gold-mines/'}
-    ]
-  },
-  {
-    id:'d6', mine:'Gascoyne Resources / Dalgaranga (distress history)', company:'Spartan Resources (formerly Gascoyne Resources; acquired by Ramelius)', asx:'GCY (delisted) \u2192 SPR (delisted)',
-    region:'Murchison', status:'Rebranded', statusClass:'s-forfeited', statusLabel:'Former Distress / Rebranded',
-    resource:2100000, resourceLabel:'2,100,000', grade:8.8, area:'Mid West WA',
-    processing:'2.5 Mtpa CIL plant (see Dalgaranga entry; plant in care & maintenance)',
-    overview:'Gascoyne Resources (ASX: GCY) entered administration/receivership circa 2019, recapitalised and relisted. After placing Dalgaranga in care & maintenance in 2022 due to cost inflation and low grades, a high-grade Never Never discovery (8.8 g/t) 1 km from the plant transformed the company. GCY rebranded to Spartan Resources (ASX: SPR) in August 2023. Ramelius acquired Spartan in July 2025. This entry documents the distress history of the Dalgaranga/Gascoyne asset.',
-    jorc:'Never Never deposit: 7.5 Mt at 8.8 g/t for 2.1 Moz (as at 2025). Ore Reserve: 7.0 Mt at 7.3 g/t for 1.6 Moz. Mine plan: 9.2 Mt at 6.5 g/t for 1.9 Moz. Target AISC: A$1,128/oz.',
-    production:'Previously produced at Dalgaranga before 2022 care & maintenance. Never Never development commenced under Ramelius ownership. Barminco contracted for underground development; first production targeted ~2027.',
-    tenements:'Dalgaranga exploration tenure consolidated under Spartan (April 2025). All tenure now held by Ramelius Resources.',
-    timeline:[
-      {date:'2019',text:'Gascoyne Resources enters administration/receivership following operational difficulties at Dalgaranga.'},
-      {date:'2020',text:'Gascoyne recapitalises and relists on ASX.'},
-      {date:'2022',text:'Dalgaranga surface mining placed in care & maintenance: sustained cost inflation, low head grades.'},
-      {date:'2022 mid',text:'Never Never high-grade discovery: 8.8 g/t, 2.1 Moz, just 1 km from existing plant.'},
-      {date:'Aug 2023',text:'Rebrands to Spartan Resources (ASX: SPR).'},
-      {date:'2024-2025',text:'Extensive drilling at Never Never; A$142-220M capital raised for development.'},
-      {date:'Jul 2025',text:'Ramelius Resources acquires Spartan. SPR delisted from ASX.'}
+    production: [
+      {year:'Pre-C&M (FY2022)', oz:'~70,000 (open pit)', aisc:'~A$2,500 ⚠️'},
+      {year:'Nov 2022 – 2025', oz:'Nil (C&M)', aisc:'N/A'},
+      {year:'2026–2027 target', oz:'High-grade underground restart', aisc:'TBD'},
     ],
-    contacts:'Ramelius Resources — rameliusresources.com.au',
-    sources:[
-      {title:'Gascoyne Resources Reinstatement to ASX | Mining Review',url:'https://www.miningreview.com.au/gascoyne-resources-reinstatement-to-the-asx/'},
-      {title:'Ramelius outlines five-year gold plan | Australian Mining',url:'https://www.australianmining.com.au/ramelius-outlines-fully-funded-five-year-gold-plan/'}
-    ]
-  },
-  {
-    id:'d7', mine:'Mt Henry\u2013Selene Gold Project', company:'Westgold Resources (divested to Alicanto Minerals)', asx:'WGX (seller) / AQI (buyer)',
-    region:'Goldfields', status:'For Sale', statusClass:'s-sale', statusLabel:'Divested (Feb 2026)',
-    resource:'Not available', resourceLabel:'Not available', grade:'Not available', area:'Near Norseman, WA',
-    processing:'Not available',
-    overview:'Westgold Resources executed a binding Asset Sale Agreement with Alicanto Minerals for divestment of the non-core Mt Henry\u2013Selene Gold Project near Norseman, WA. Transaction closed February 2026 for A$64.6M total consideration. The asset was identified as non-core as Westgold focuses on its Central Murchison operations. This represents a controlled strategic divestment rather than a distressed forced sale, but signals the asset was underperforming relative to Westgold\'s core portfolio requirements.',
-    jorc:'Not available in reviewed sources. Specific JORC resource data for Mt Henry-Selene not disclosed.',
-    production:'Not available. Project appeared to be non-producing or development-stage at time of sale.',
-    tenements:'Near Norseman, Eastern Goldfields, Western Australia.',
-    timeline:[
-      {date:'2025',text:'Westgold Resources executes binding Asset Sale Agreement with Alicanto Minerals Limited.'},
-      {date:'Feb 2026',text:'Transaction closes. Total consideration: A$64.6M. Alicanto acquires 100% of Mt Henry-Selene.'}
+    processing: '2.5Mtpa CIL facility on care & maintenance, maintained for rapid restart; Dalgaranga, Mid West/Murchison WA',
+    tenements: 'Dalgaranga Gold Project, Mid West / Murchison region, Western Australia',
+    filings: [
+      {date:'Nov 2022', type:'C&M Notice', desc:'Dalgaranga put into care and maintenance after Gascoyne administration', url:'https://www.australianmining.com.au/dalgaranga-put-into-care-and-maintenance/'},
+      {date:'Nov 2024', type:'Regulatory Approval', desc:'All regulatory approvals received for underground mining and processing', url:'https://www.miningweekly.com/article/spartan-receives-regulatory-green-light-for-dalgaranga-gold-project-2024-11-25'},
+      {date:'2024', type:'Capital Raise', desc:'A$220M institutional placement for Dalgaranga restart; A$106M for underground development', url:'https://www.australianmining.com.au/spartan-raises-220-million-for-dalgaranga/'},
     ],
-    contacts:'Alicanto Minerals Limited | Westgold Resources — westgold.com.au',
-    sources:[
-      {title:'Western Australia gold mining ripe for more M&A | MINING.COM',url:'https://www.mining.com/consolidation-in-western-australian-gold-sector-to-continue-amid-record-prices/'},
-      {title:'Westgold Resources December 2025 Quarterly Results | Newswire',url:'https://www.newswire.ca/news-releases/december-2025-quarterly-results-817174855.html'}
-    ]
-  },
-  {
-    id:'d8', mine:'Coyote Gold Operation', company:'Black Cat Syndicate', asx:'BC8',
-    region:'Pilbara', status:'Care & Maintenance', statusClass:'s-cm', statusLabel:'Restart (first pour Dec 2024)',
-    resource:'Not available', resourceLabel:'Not available', grade:'High-grade underground', area:'Kimberley, WA',
-    processing:'Refurbished processing plant \u2014 commissioned Dec 2024; first gravity gold pour 22 Dec 2024',
-    overview:'Coyote is one of Australia\'s highest-grade underground gold mines, in the Kimberley region of WA. Black Cat Syndicate refurbished the plant and achieved first gold pour 22 December 2024 \u2014 on schedule and within budget. The company also operates Paulsens (Gascoyne/Pilbara WA, production commenced Dec 2024) and Kal East (Myhree open pit commenced H2 2024). Despite ramping revenues, the company reported TTM net profit of only A$18.4M on A$205M revenue, with historically negative EBITDA (-6.3% margin) during the ramp-up phase, indicating execution risk.',
-    jorc:'JORC resource not published in reviewed sources. All three operations described as high-grade. Coyote AISC target: A$1,586/oz. Paulsens AISC target: A$1,892/oz.',
-    production:'First gold pour at Coyote: 22 December 2024. Paulsens commenced production December 2024. Myhree open pit (Kal East) commenced H2 2024. TTM revenue: A$205M. TTM net profit: A$18.4M (marginal; net profit margin -69.5% historically; EBITDA margin -6.3%).',
-    tenements:'Coyote: Kimberley region, WA. Paulsens: Gascoyne/Pilbara, WA. Kal East: Eastern Goldfields, WA.',
-    timeline:[
-      {date:'2023',text:'Black Cat Syndicate acquires Coyote project; refurbishment commences.'},
-      {date:'H2 2024',text:'Myhree open pit at Kal East begins gold production.'},
-      {date:'Dec 2024',text:'Paulsens Gold Operation commences production.'},
-      {date:'22 Dec 2024',text:'Coyote refurbished processing plant achieves first gravity gold pour \u2014 on schedule, within budget.'},
-      {date:'2025',text:'TTM revenue A$205M. Net profit A$18.4M. Company in ramp-up phase with heavy capex.'}
-    ],
-    contacts:'Black Cat Syndicate Limited \u2014 bc8.com.au',
-    sources:[
-      {title:'Black Cat Syndicate (ASX:BC8) | bc8.com.au',url:'https://bc8.com.au/'},
-      {title:'Black Cat Syndicate: Undervalued Junior Gold Producer WA | AInvest',url:'https://www.ainvest.com/news/black-cat-syndicate-promising-undervalued-junior-gold-producer-wa-gold-belt-2510/'}
-    ]
+    contacts: 'Spartan Resources Limited | ASX: SPR | spartanresources.com.au',
+    sourceIds: ['s14','s15','s16']
   }
 ];
 
-// ──────────────────────────────────────────────
-// DATA — WATCH LIST
-// ──────────────────────────────────────────────
-var WATCHLIST = [
+const WATCHLIST = [
   {
-    id:'w1', company:'Northern Star Resources', asx:'NST',
-    mine:'KCGM (Super Pit) + Jundee, WA', region:'Goldfields',
-    prob:55, tier:'Moderate',
-    aisc:2700, aiscLabel:'$2,600-2,800 (FY26 guidance)',
-    prodTrend:'down', prodTrendLabel:'\u2193 2x FY26 downgrades',
-    cash:'Not available', reserveLife:'Not available',
-    shareChange:-19.4, shareChangeLabel:'-19.4% (post Mar 2026 cut)',
-    overview:'Northern Star is Australia\'s largest pure-play gold producer but has twice cut FY26 production guidance. Jan 2026 downgrade: from 1,700-1,850 koz to 1,600-1,700 koz. March 2026 downgrade: to "above 1.50 Moz" (~9% below prior midpoint). The KCGM mill aging issues and weaker Jundee productivity are the primary drivers. AISC guidance raised to $2,600-2,800/oz. Stock down ~19% since the second downgrade — largest selloff since 2010.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'bad',note:'Two consecutive FY26 guidance cuts; production tracking ~9% below prior midpoint'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'warn',note:'AISC raised from $2,300-2,700 to $2,600-2,800/oz; strong gold price limits immediate danger'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'ok',note:'Cash flow positive; strong gold price (A$6,715/oz) supports margins'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'na',note:'Not available from reviewed sources'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'ok',note:'No emergency capital raises noted'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'warn',note:'KCGM mill throughput issues cited as cause of production shortfall'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'ok',note:'Long-life Kalgoorlie and Jundee assets; not a near-term risk'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'bad',note:'Hemi (De Grey) construction running to 2026 then ramp to 2027-2029; KCGM mill upgrades delayed'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'warn',note:'Down ~19.4% — significant but below 50% threshold'}
+    id: 'w1',
+    company: 'Brightstar Resources',
+    asx: 'BTR',
+    mine: 'Sandstone / Menzies / Lady Shenton (Goldfields Hub)',
+    region: 'Goldfields',
+    probability: 'High',
+    probScore: 10,
+    probBadge: 'badge-high',
+    aisc: 'Pre-production',
+    prodTrend: 'N/A (pre-prod)',
+    prodTrendClass: 'trend-flat',
+    cash: '~A$41M (Sep 2025); A$175M raise (Apr 2026)',
+    cashNum: 41,
+    reserveLife: 'Not established',
+    priceChange: '-25%',
+    priceChangeNum: -25,
+    signals: [
+      {signal:'Ongoing losses (A$62M cumulative)', type:'HIGH', score:3, firing:true, source:'https://simplywall.st/stocks/au/materials/asx-btr/brightstar-resources-shares/news/how-brightstars-a175m-equity-raise-and-2026-loss-outlook-wil'},
+      {signal:'Going concern flag from auditors', type:'HIGH', score:3, firing:true, source:'https://finance.yahoo.com/markets/stocks/articles/brightstar-resources-limited-asx-btr-043455497.html'},
+      {signal:'Negative operating cash flow (pre-production)', type:'HIGH', score:3, firing:true, source:'https://simplywall.st/stocks/au/materials/asx-btr/brightstar-resources-shares/news/a-look-at-brightstar-resources-asxbtr-valuation-after-2026-e'},
+      {signal:'Repeated capital raises (A$175M Apr 2026)', type:'MEDIUM', score:2, firing:true, source:'https://finance.yahoo.com/markets/stocks/articles/brightstar-resources-limited-asx-btr-043455497.html'},
+      {signal:'Share price -25% from 12-month high', type:'LOW-MED', score:1, firing:true, source:'https://www.marketindex.com.au/asx/btr'},
+      {signal:'Analyst earnings estimate cuts (2026 loss expected)', type:'MEDIUM', score:2, firing:true, source:'https://finance.yahoo.com/markets/stocks/articles/brightstar-resources-limited-asx-btr-043455497.html'},
     ],
-    sources:[
-      {title:'NST second FY26 guidance downgrade | Market Index',url:'https://www.marketindex.com.au/news/northern-star-resources-second-fy26-guidance-downgrade-triggers-sharpest'},
-      {title:'Northern Star lifts FY26 cost guidance | TipRanks',url:'https://www.tipranks.com/news/company-announcements/northern-star-lifts-fy26-cost-guidance-after-production-downgrade'},
-      {title:'NST down 19.4% after second guidance cut | Simply Wall St',url:'https://simplywall.st/stocks/au/materials/asx-nst/northern-star-resources-shares/news/northern-star-resources-asxnst-is-down-194-after-second-fy26'}
-    ]
+    totalScore: 14,
+    overview: 'Brightstar Resources (ASX:BTR) is a pre-production WA gold developer with projects at Sandstone, Menzies, and the Goldfields region. Completed five toll milling campaigns through Genesis Minerals generating A$138M gross revenue. The final campaign cleared all drawn debt. However, auditors have flagged a going concern, cumulative losses exceed A$62M, and the company is not yet generating sustainable operating cash flow. A A$175M capital raise was completed in April 2026 to fund the Goldfields processing plant construction (first gold Q2 FY27). Analysts have cut FY26 estimates and expect a loss. The company is executing on its plan but relies entirely on equity funding for the next 12+ months.',
+    financials: {cash:'~A$41M (Sep 2025), A$175M raised Apr 2026', debt:'US$120M undrawn bond facility', revenue:'A$138M gross (toll milling, Mar 2025–2026)', ebitda:'Negative (pre-production)', ocf:'Negative', hedging:'None noted'},
+    production: [
+      {period:'Mar 2025 – Apr 2026', oz:'~24,000 (toll milled via Genesis)', aisc:'N/A (toll milling)'},
+      {period:'FY2027 target', oz:'~35,000–70,000 (own plant)', aisc:'TBD'},
+    ],
+    sourceIds: ['s17','s18','s19']
   },
   {
-    id:'w2', company:'Ora Banda Mining', asx:'OBM',
-    mine:'Davyhurst Gold Project, Eastern Goldfields WA', region:'Goldfields',
-    prob:68, tier:'High',
-    aisc:3505, aiscLabel:'$3,505 (Dec Q 2025) / FY26 guide $3,250-3,450',
-    prodTrend:'up', prodTrendLabel:'\u2191 production up but AISC spiking',
-    cash:'Not available', reserveLife:'Not available',
-    shareChange:-23.3, shareChangeLabel:'-23.3% from 52w high (A$1.72 \u2192 A$1.32)',
-    overview:'Ora Banda Mining\'s FY25 was strong (AISC A$2,693/oz, 92,399 oz, record revenue A$404.3M). FY26 AISC guidance was then revised upward to A$3,250-3,450/oz (from prior A$2,800-2,900) and the Dec 2025 quarter AISC rose to A$3,505/oz \u2014 a 22% rise in one quarter, driven by higher third-party processing costs and Sand King moving through a lower-grade mining sequence. With gold at A$6,715/oz margins remain but rapid AISC escalation and production trending toward lower end of 140-155 koz guidance are significant watch signals. Share price 52w range: A$0.62\u2013A$1.72.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'warn',note:'FY26 production tracking toward lower end of 140-155 koz guidance'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'bad',note:'AISC up 30%+ YoY in FY26; Dec Q A$3,505/oz vs FY25 avg A$2,693/oz. FY26 guide raised twice'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'ok',note:'Record revenue A$336.3M H1 FY26; EBITDA positive. Margins compressed but not negative'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'ok',note:'Not noted in reviewed sources'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'bad',note:'Sand King moving through lower-grade sequence; third-party processing costs elevated'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'warn',note:'FY25 production guidance trimmed mid-year; FY26 AISC guidance raised twice from original'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'warn',note:'Down from A$1.72 to A$1.32 (23.3% from 52w high)'}
+    id: 'w2',
+    company: 'Bellevue Gold (Watch List)',
+    asx: 'BGL',
+    mine: 'Bellevue Gold Mine, Eastern Goldfields',
+    region: 'Goldfields',
+    probability: 'Critical',
+    probScore: 15,
+    probBadge: 'badge-critical',
+    aisc: 'A$2,600–2,900',
+    prodTrend: '↓ Declining',
+    prodTrendClass: 'trend-down',
+    cash: 'A$49M (Mar 2025); A$152M post-raise (Jun 2025)',
+    cashNum: 152,
+    reserveLife: '~8 yrs (resource based)',
+    priceChange: '-55%',
+    priceChangeNum: -55,
+    signals: [
+      {signal:'Declining production YoY (Q1 FY25: 25,700oz vs 40,000+ expected)', type:'HIGH', score:3, firing:true, source:'https://discoveryalert.com.au/news/bellevue-gold-production-issues-2025/'},
+      {signal:'Guidance cut twice in FY2025', type:'HIGH', score:3, firing:true, source:'https://kosec.com.au/bellevue-slashes-guidance-raises-156-5m-to-stabilise-operations/'},
+      {signal:'Negative operating cash flow (Q1 FY25)', type:'HIGH', score:3, firing:true, source:'https://kalkine.com.au/news/mining/bellevue-gold-asxbgl-shares-under-pressure-amid-production-shortfalls-and-cash-burn-concerns'},
+      {signal:'Hedging losses ~A$52M (H1 FY25)', type:'MEDIUM', score:2, firing:true, source:'https://www.mining.com/bellevue-gold-raises-funds-weighs-options-after-weak-quarter/'},
+      {signal:'Emergency capital raise A$156.5M (Apr 2025)', type:'MEDIUM', score:2, firing:true, source:'https://kosec.com.au/bellevue-slashes-guidance-raises-156-5m-to-stabilise-operations/'},
+      {signal:'Share price -55%+ from 12-month high', type:'LOW-MED', score:1, firing:true, source:'https://stocksdownunder.com/bellevue-gold-asxbgl/'},
+      {signal:'Strategic review and unsolicited takeover interest (Apr 2025)', type:'LOW-MED', score:1, firing:true, source:'https://www.mining.com/bellevue-gold-raises-funds-weighs-options-after-weak-quarter/'},
     ],
-    sources:[
-      {title:'Ora Banda trims production guidance | Mining Weekly',url:'https://www.miningweekly.com/article/ora-banda-trims-25-prodution-guidance-2025-06-06'},
-      {title:'Ora Banda record $336.3M H1 revenue | Proactive Investors',url:'https://www.proactiveinvestors.com/companies/news/1088032/ora-banda-posts-record-336-3m-half-year-revenue-as-ebitda-more-than-doubles-1088032.html'},
-      {title:'Ora Banda revises FY26 AISC guidance | Proactive Investors',url:'https://www.proactiveinvestors.com.au/companies/news/1070572/ora-banda-boosts-cash-and-drilling-success-as-sand-king-ramps-up-1070572.html'}
-    ]
+    totalScore: 15,
+    overview: 'Bellevue Gold (BGL) is on the watch list due to its severe production shortfall in early 2025, emergency capital raise, ongoing strategic review, and high AISC relative to peers. Despite the high-grade resource (3.1Moz @ 9.0g/t), operational execution has been poor. The balance sheet was repaired by the A$156.5M raise, but FY26 production guidance of 130,000–150,000oz at A$2,600–2,900/oz still represents a challenging cost profile. Unsolicited takeover interest remains unresolved. Classified separately from the confirmed distressed section as the company remains operational and listed.',
+    financials: {cash:'A$152M (Jun 2025, post-raise)', debt:'A$100M (Macquarie, due 2027)', revenue:'Not confirmed H2 FY25', ebitda:'Not confirmed', ocf:'Negative Q1 FY25', hedging:'Closed out via capital raise proceeds'},
+    production: [
+      {period:'Q1 FY25 (Mar 2025)', oz:'25,700', aisc:'Above A$2,500'},
+      {period:'FY25 full year revised guidance', oz:'129,000–134,000', aisc:'A$2,425–2,525'},
+      {period:'FY26 guidance', oz:'130,000–150,000', aisc:'A$2,600–2,900'},
+    ],
+    sourceIds: ['s11','s12','s13']
   },
   {
-    id:'w3', company:'Monument Mining (WA asset)', asx:'MMY (TSX-V)',
-    mine:'Burnakura Gold Project, Murchison WA', region:'Murchison',
-    prob:72, tier:'High',
-    aisc:null, aiscLabel:'N/A (no WA production)',
-    prodTrend:'flat', prodTrendLabel:'\u2192 zero WA production (C&M)',
-    cash:'Not available', reserveLife:'No timeline set',
-    shareChange:'Not available', shareChangeLabel:'Not available',
-    overview:'Monument Mining\'s Burnakura WA asset has been in care & maintenance with zero production. All revenue (FY2025: US$98.64M, cash cost US$814/oz) comes from Selinsing mine in Malaysia. The WA asset represents an ongoing cost burden with no committed restart date or capital commitment after years of study. Monument has signed toll-treatment MOUs with GBR and Odyssey Gold, suggesting restart economics remain challenged without third-party ore. High distress score driven by zero WA production, no FID timeline, and prolonged C&M status.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'bad',note:'Burnakura WA: zero production since placed in C&M. All gold revenue from Selinsing, Malaysia'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'ok',note:'Selinsing cash cost US$814/oz (competitive). No WA AISC applicable'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'warn',note:'Selinsing cash flow positive but WA asset represents ongoing care & maintenance cost with no revenue'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'na',note:'381 koz resource at 2.12 g/t average; high-grade intercepts noted; no mining to confirm grade'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'bad',note:'No Ore Reserve declared at Burnakura; no restart committed; effective reserve life = zero'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'bad',note:'Plant in C&M for multiple years; toll-treatment partnerships still only MOU stage; no FDI date'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'na',note:'Not available from reviewed sources'}
+    id: 'w3',
+    company: 'Westgold Resources',
+    asx: 'WGX',
+    mine: 'Murchison Goldfields (Bluebird-South Junction, Great Fingall, Meekatharra)',
+    region: 'Murchison',
+    probability: 'Moderate',
+    probScore: 7,
+    probBadge: 'badge-moderate',
+    aisc: 'A$2,871–3,500/oz (H1 FY26)',
+    prodTrend: '→ Flat/growth',
+    prodTrendClass: 'trend-flat',
+    cash: 'Strong (record production FY25)',
+    cashNum: 200,
+    reserveLife: '~10 yrs',
+    priceChange: 'Positive',
+    priceChangeNum: 10,
+    signals: [
+      {signal:'AISC A$3,500/oz (Dec 2025 qtr incl. ore purchases)', type:'HIGH', score:3, firing:true, source:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/195428-december-2025-quarterly-results.html'},
+      {signal:'OPA ore purchases at AISC A$5,644/oz (H1 FY26) — significantly above spot margins', type:'HIGH', score:3, firing:true, source:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/198161-half-year-financial-results-summary-h1-fy26.html'},
+      {signal:'A$270M capex program creating significant financial leverage', type:'MEDIUM', score:2, firing:true, source:'https://www.westgold.com.au/pdf/17d97034-c8a9-46b2-afb3-03c58b624d35/Westgold-Provides-3Year-Outlook.pdf'},
+      {signal:'Rising AISC trend; own-ore AISC A$2,945/oz H1 FY26', type:'LOW-MED', score:1, firing:true, source:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/198161-half-year-financial-results-summary-h1-fy26.html'},
     ],
-    sources:[
-      {title:'Monument FY2025 Results | Monument Mining',url:'https://monumentmining.com/news-media/news/2025/monument-reports-fourth-quarter-and-fiscal-2025-results-gross-revenue-of-us-98.64-million-and-cash-cost-of-us-814-oz/'},
-      {title:'Burnakura | Monument Mining',url:'https://monumentmining.com/projects/murchison-gold-portfolio/burnakura/'},
-      {title:'Monument collaboration with GBR for Burnakura mill | GlobeNewswire',url:'https://www.globenewswire.com/news-release/2025/04/02/3054310/0/en/Monument-Entered-Into-a-Collaboration-Agreement-Gives-GBR-Access-to-Burnakura-Mill.html'}
-    ]
+    totalScore: 9,
+    overview: 'Westgold Resources (WGX) is a major WA gold producer but is showing cost pressure signals. H1 FY26 own-ore AISC was A$2,945/oz and total group AISC including ore purchases reached A$3,500/oz in the December 2025 quarter. The company is executing an ambitious A$270M capital investment program at Bluebird-South Junction and Great Fingall in the Murchison. High ore-purchase costs (A$5,644/oz AISC) dilute overall margins. FY26 guidance of 345–385koz at A$2,600–2,900/oz is achievable at current gold prices but leaves limited margin for operational surprises.',
+    financials: {cash:'Record production FY25; strong balance sheet', debt:'Minimal (dual listed ASX/TSX)', revenue:'Record FY25', ebitda:'Strong FY25', ocf:'Positive', hedging:'Minimal disclosed'},
+    production: [
+      {period:'FY25', oz:'326,384', aisc:'A$2,666'},
+      {period:'H1 FY26', oz:'195,000 (est)', aisc:'A$2,871 own-ore; A$3,500 total'},
+      {period:'FY26 guidance', oz:'345,000–385,000', aisc:'A$2,600–2,900'},
+    ],
+    sourceIds: ['s20','s21']
   },
   {
-    id:'w4', company:'Black Cat Syndicate', asx:'BC8',
-    mine:'Coyote + Paulsens + Kal East, WA', region:'Pilbara/Goldfields',
-    prob:62, tier:'High',
-    aisc:1586, aiscLabel:'~A$1,586 (Coyote target)',
-    prodTrend:'up', prodTrendLabel:'\u2191 ramp-up all three mines',
-    cash:'Not available', reserveLife:'Not available',
-    shareChange:87.4, shareChangeLabel:'+87.4% (12-month)',
-    overview:'Black Cat Syndicate is ramping three WA gold mines simultaneously: Coyote (Kimberley), Paulsens (Gascoyne/Pilbara), and Kal East (Eastern Goldfields). Despite strong share price performance (+87.4% over 12 months), the company historically ran a negative net profit margin (-69.5%) and negative EBITDA margin (-6.3%) during its build-out phase. TTM revenue A$205M; TTM net profit A$18.4M (marginal). Multi-mine simultaneous ramp-up is capital-intensive and execution risk remains elevated.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'ok',note:'All three mines ramping up: Coyote (Dec 2024), Paulsens (Dec 2024), Myhree/Kal East (H2 2024)'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'ok',note:'Coyote target AISC A$1,586/oz; Paulsens A$1,892/oz \u2014 competitive targets if achieved'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'bad',note:'Historical net profit margin -69.5%; EBITDA margin -6.3%. Heavy capital spend during ramp-up'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'warn',note:'Multiple equity raisings during Coyote and Paulsens acquisition and refurbishment phases'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'ok',note:'High-grade operations; grade risk not yet evident in production data'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'na',note:'JORC resources not published in reviewed sources for individual mines'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'ok',note:'Coyote first gold pour achieved on schedule (22 Dec 2024) and within budget'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'ok',note:'Up +87.4% over 12 months \u2014 significantly outperforming'}
+    id: 'w4',
+    company: 'Regis Resources',
+    asx: 'RRL',
+    mine: 'Duketon Gold Operations (Rosemont, Garden Well, McPhillamys NSW)',
+    region: 'Goldfields',
+    probability: 'Low',
+    probScore: 4,
+    probBadge: 'badge-low',
+    aisc: 'A$2,610–2,990 (FY26)',
+    prodTrend: '→ Flat',
+    prodTrendClass: 'trend-flat',
+    cash: 'A$930M (Dec 2025)',
+    cashNum: 930,
+    reserveLife: '~12 yrs',
+    priceChange: 'Positive',
+    priceChangeNum: 5,
+    signals: [
+      {signal:'Rising AISC: A$2,531/oz FY25 → A$2,610–2,990/oz FY26', type:'LOW-MED', score:1, firing:true, source:'https://www.mining.com/gold-boom-drives-rising-costs-for-aussie-producers/'},
+      {signal:'Production slightly declining: 373koz FY25 → 350–380koz FY26', type:'LOW-MED', score:1, firing:true, source:'https://kalkine.com.au/news/mining/regis-resources-asxrrl-advances-growth-strategy-after-record-profit-and-duketon-expansion-approval'},
+      {signal:'New underground mines (capital-intensive launch Jul–Sep 2026)', type:'LOW-MED', score:1, firing:true, source:'https://kalkine.com.au/news/mining/regis-resources-asxrrl-advances-growth-strategy-after-record-profit-and-duketon-expansion-approval'},
+      {signal:'Labour cost inflation 4–5% (sector-wide)', type:'LOW-MED', score:1, firing:true, source:'https://www.mining.com/gold-boom-drives-rising-costs-for-aussie-producers/'},
     ],
-    sources:[
-      {title:'Black Cat Syndicate (ASX:BC8) | bc8.com.au',url:'https://bc8.com.au/'},
-      {title:'Black Cat Syndicate: Undervalued Junior Producer WA | AInvest',url:'https://www.ainvest.com/news/black-cat-syndicate-promising-undervalued-junior-gold-producer-wa-gold-belt-2510/'}
-    ]
+    totalScore: 4,
+    overview: 'Regis Resources (RRL) is one of WA\'s more financially robust mid-tier gold producers with A$930M cash, zero debt, and record HY26 results. However, rising AISC, new underground mine capex, and slightly declining production warrant monitoring. AISC is forecast at A$2,610–2,990/oz for FY26, near the upper range for WA producers. At current gold prices of ~A$5,200/oz the margins are adequate, but any gold price decline or further cost blowout would pressure the company.',
+    financials: {cash:'A$930M (Dec 2025)', debt:'Zero debt', revenue:'Record HY26', ebitda:'Record', ocf:'Strongly positive', hedging:'Minimal'},
+    production: [
+      {period:'FY25', oz:'373,000', aisc:'A$2,531'},
+      {period:'FY26 guidance', oz:'350,000–380,000', aisc:'A$2,610–2,990'},
+    ],
+    sourceIds: ['s22','s23']
   },
   {
-    id:'w5', company:'Brightstar Resources', asx:'BTR',
-    mine:'Second Fortune, Fish (Laverton) + Sandstone (WA)', region:'Goldfields/Sandstone',
-    prob:58, tier:'Moderate',
-    aisc:null, aiscLabel:'Not available',
-    prodTrend:'up', prodTrendLabel:'\u2191 early production (ore sale to GMD)',
-    cash:'~A$41M (Sep 2025)', reserveLife:'Menzies ~5yr; Sandstone FDI 2027',
-    shareChange:-25.5, shareChangeLabel:'-25.5% (1yr)',
-    overview:'Brightstar Resources operates Second Fortune and Fish underground mines (Laverton area) under an ore purchase agreement with Genesis Minerals. Acquired Aurumin (Sandstone project) in November 2025. Analysts cut FY26 estimates; consensus price target fell 10% to A$1.80. Business expected to remain loss-making in FY26 despite projected 192% revenue growth. Cash ~A$41M (Sep 2025). Share down ~25.5% over 1 year and 19.6% in 90 days.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'ok',note:'Production growing from Second Fortune and Fish; Sandstone not yet producing (FDI H2 2027)'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'na',note:'AISC not disclosed in reviewed sources; ore sold to Genesis Minerals'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'bad',note:'Loss-making in FY26 per analyst consensus; losses growing over 5 years'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'warn',note:'Capital required for Aurumin acquisition; revolving stockpile finance facility in use'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'na',note:'Not available'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'warn',note:'Menzies DFS guides ~5yr life from FDI March 2026; Sandstone FDI only H2 2027'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'warn',note:'Menzies FDI March 2026; Sandstone FDI H2 2027; analyst estimates being cut'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'warn',note:'Down ~25.5% over 1 year; 90-day decline of ~19.6%'}
+    id: 'w5',
+    company: 'Vault Minerals (fmr Silver Lake Resources)',
+    asx: 'VAU',
+    mine: 'Mount Monger, Deflector, King of the Hills, Darlot',
+    region: 'Goldfields / Murchison',
+    probability: 'Moderate',
+    probScore: 7,
+    probBadge: 'badge-moderate',
+    aisc: 'A$2,650–2,850 (FY26)',
+    prodTrend: '↓ Declining FY26',
+    prodTrendClass: 'trend-down',
+    cash: 'A$685.9M (Jun 2025)',
+    cashNum: 685,
+    reserveLife: '~9 yrs',
+    priceChange: '-10%',
+    priceChangeNum: -10,
+    signals: [
+      {signal:'Declining production FY26: 332–360koz vs 381koz FY25', type:'HIGH', score:3, firing:true, source:'https://cdn-api.markitdigital.com/apiman-gateway/ASX/asx-research/1.0/file/2924-02996012-6A1284955'},
+      {signal:'AISC rising to A$2,650–2,850/oz FY26', type:'LOW-MED', score:1, firing:true, source:'https://www.proactiveinvestors.com.au/companies/news/1083124/vault-boosts-gold-price-exposure-with-early-fy26-hedge-settlement-1083124.html'},
+      {signal:'Deflector transition to owner-operator (temporary cost/production impact)', type:'MEDIUM', score:2, firing:true, source:'https://cdn-api.markitdigital.com/apiman-gateway/ASX/asx-research/1.0/file/2924-02996012-6A1284955'},
+      {signal:'Prior hedge book being settled (FY26 early settlement)', type:'MEDIUM', score:2, firing:true, source:'https://www.proactiveinvestors.com.au/companies/news/1083124/vault-boosts-gold-price-exposure-with-early-fy26-hedge-settlement-1083124.html'},
     ],
-    sources:[
-      {title:'Brightstar Resources analysts slash estimates | Yahoo Finance',url:'https://finance.yahoo.com/markets/stocks/articles/brightstar-resources-limited-asx-btr-043455497.html'},
-      {title:'Brightstar Resources Limited | brightstarresources.com.au',url:'https://brightstarresources.com.au/'}
-    ]
+    totalScore: 8,
+    overview: 'Vault Minerals (ASX:VAU), formed from the merger of Silver Lake Resources and Red 5 in mid-2024, is experiencing a transitional dip in production in FY26. The Deflector operation is moving from a contractor model to owner-operator, temporarily lifting costs and reducing output. FY26 production is guided 6-13% lower than FY25. The company has a strong balance sheet (A$685.9M cash) and no debt, but the transition year and higher AISC place it on the watch list. Recovery to 360–400koz is expected in FY27–FY28.',
+    financials: {cash:'A$685.9M (Jun 2025)', debt:'Zero', revenue:'Record (A$5,000/oz+ gold price)', ebitda:'221% jump FY25', ocf:'Strongly positive', hedging:'Early settlement FY26 to increase spot exposure'},
+    production: [
+      {period:'FY25', oz:'380,985', aisc:'~A$2,100 (est)'},
+      {period:'FY26 guidance', oz:'332,000–360,000', aisc:'A$2,650–2,850'},
+      {period:'FY27 guidance', oz:'360,000–390,000', aisc:'Improving'},
+    ],
+    sourceIds: ['s24','s25']
   },
   {
-    id:'w6', company:'Westgold Resources', asx:'WGX',
-    mine:'Murchison Operations (Cue, Tuckabianna, Big Bell), WA', region:'Murchison',
-    prob:22, tier:'Low',
-    aisc:3225, aiscLabel:'$3,225 consolidated H1 FY26 ($2,871 own-asset)',
-    prodTrend:'up', prodTrendLabel:'\u2191 record H1 FY26 +23% YoY',
-    cash:'Not available', reserveLife:'FY28 target 470 koz/pa',
-    shareChange:'Not available', shareChangeLabel:'Not available',
-    overview:'Westgold Resources H1 FY26: 195,355 oz at AISC A$3,225/oz consolidated (own-asset: 170 koz at A$2,871/oz). Record revenue A$1,238M; record EBITDA A$612M (49% margin); record NPAT A$314M. FY26 guidance maintained: 345-385 koz at A$2,600-2,900/oz. Strategic divestment of Mt Henry-Selene for A$64.6M (Feb 2026). Low distress probability but elevated consolidated AISC warrants monitoring. 3-year target to 470 koz by FY28.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'ok',note:'H1 FY26 production up 23% vs pcp; FY26 guidance 345-385 koz maintained'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'warn',note:'Consolidated AISC A$3,225/oz in H1 FY26 (includes third-party). Own-asset A$2,871/oz'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'ok',note:'EBITDA A$612M; NPAT A$314M; record cash generation'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'ok',note:'Strong balance sheet; growing cash reserves'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'ok',note:'No emergency raises; asset sales generating cash inflows'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'na',note:'Not available at individual mine level in reviewed sources'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'ok',note:'3-year outlook targets 470 koz/pa by FY28; long-life Central Murchison operations'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'ok',note:'FY26 guidance maintained; Mt Henry-Selene sale completed on schedule'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'na',note:'Not available from reviewed sources'}
+    id: 'w6',
+    company: 'Catalyst Metals',
+    asx: 'CYL',
+    mine: 'Plutonic Gold Belt (Plutonic, Plutonic East, Trident)',
+    region: 'Murchison',
+    probability: 'Moderate',
+    probScore: 6,
+    probBadge: 'badge-moderate',
+    aisc: 'A$2,200–2,650 (FY26 guidance)',
+    prodTrend: '↑ Growing',
+    prodTrendClass: 'trend-up',
+    cash: 'A$238M, zero debt (Dec 2025)',
+    cashNum: 238,
+    reserveLife: '~10 yrs+',
+    priceChange: 'Positive (but stock hit hard in gold selloff)',
+    priceChangeNum: -15,
+    signals: [
+      {signal:'AISC Dec 2025 qtr: A$2,565/oz (high for a ramp-up)', type:'HIGH', score:3, firing:true, source:'https://www.argonaut.com/catalyst-metals-cyl-solid-production-and-cash-flow-beat/'},
+      {signal:'Stock underperformed Australian Metals & Mining index', type:'LOW-MED', score:1, firing:true, source:'https://simplywall.st/stocks/au/materials/asx-cyl/catalyst-metals-shares'},
+      {signal:'Sector-wide gold price selloff hit stock hardest', type:'LOW-MED', score:1, firing:true, source:'https://thebull.com.au/news/catalyst-metals-shares-hit-hardest-as-gold-selloff-causes-sector-bleed/'},
+      {signal:'Capital raise to fund Plutonic development (execution risk)', type:'MEDIUM', score:2, firing:true, source:'https://kodarimagazine.com.au/catalyst-metals-builds-momentum-with-major-capital-raise-and-strategic-expansion-into-gold-rich-regions/'},
     ],
-    sources:[
-      {title:'Westgold Resources H1 FY26 Results | Junior Mining Network',url:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/198161-half-year-financial-results-summary-h1-fy26.html'},
-      {title:'Westgold Resources H1 Earnings Call Highlights | The Cerbat Gem',url:'https://www.thecerbatgem.com/2026/02/28/westgold-resources-h1-earnings-call-highlights.html'}
-    ]
+    totalScore: 7,
+    overview: 'Catalyst Metals (ASX:CYL) operates the Plutonic Gold Belt in WA\'s Murchison region and is ramping up toward 100,000+ oz/yr production. Record quarterly production of 28,176oz in Dec 2025 quarter. However, AISC remains high at A$2,565/oz during ramp-up and the stock has underperformed peers. With A$238M cash and zero debt the balance sheet is strong, but execution risk during the scale-up to 200,000oz ambition warrants monitoring. The company\'s longer-term target of doubling production to 200,000oz/yr requires significant additional capital and technical execution.',
+    financials: {cash:'A$238M, zero debt (Dec 2025)', debt:'None', revenue:'A$74M operating cash Q4 2025', ebitda:'Positive and growing', ocf:'A$74M Q4 2025', hedging:'Minimal disclosed'},
+    production: [
+      {period:'Dec 2025 qtr', oz:'28,176 (record)', aisc:'A$2,565'},
+      {period:'FY26 guidance', oz:'100,000–110,000', aisc:'A$2,200–2,650'},
+      {period:'Long-term target', oz:'200,000', aisc:'TBD'},
+    ],
+    sourceIds: ['s26','s27']
   },
   {
-    id:'w7', company:'Meeka Metals', asx:'MEK',
-    mine:'Murchison Gold Project, WA', region:'Murchison',
-    prob:45, tier:'Moderate',
-    aisc:2365, aiscLabel:'$2,365 (Sep Q 2025)',
-    prodTrend:'up', prodTrendLabel:'\u2191 ramp-up (+28% QoQ Sep Q)',
-    cash:'Not available', reserveLife:'10 years (DFS)',
-    shareChange:'Not available', shareChangeLabel:'Not available',
-    overview:'Meeka Metals achieved first gold pour at Murchison Gold Project on 1 July 2025 \u2014 12 months after breaking ground. Production ramped 28% QoQ in Sep Q 2025 to 9,174 oz at AISC A$2,365/oz. Full DFS targets 65 koz/pa avg (76 koz peak) over 10 years. Company targeting 80 koz/pa capacity in FY26 as throughput reaches 600 ktpa. DFS AISC target A$1,982/oz. During ramp-up, actual AISC is above target and cash position is uncertain. Key risk: failure to achieve 600 ktpa throughput by Mar Q 2026 would trigger a distress re-rating.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'ok',note:'Production growing: 28% QoQ in Sep Q 2025. First full year of production (FY26)'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'warn',note:'Sep Q AISC A$2,365/oz vs DFS target A$1,982/oz \u2014 18% above target during ramp-up'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'warn',note:'Ramp-up phase; cash position not confirmed as cash-generative yet in reviewed sources'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'na',note:'Project financed via equity raises; debt level not available'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'warn',note:'Multiple equity raises for project construction and commissioning evident'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'ok',note:'1.2 Moz at 3 g/t resource; high-grade for open pit WA gold'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'ok',note:'DFS outlines 10-year mine life at 65 koz/pa average'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'ok',note:'First gold pour achieved on schedule (1 July 2025)'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'na',note:'Not available from reviewed sources'}
+    id: 'w7',
+    company: 'Horizon Minerals',
+    asx: 'HRZ',
+    mine: 'Boorara, Phillips Find, Black Swan (refurbishment)',
+    region: 'Goldfields',
+    probability: 'Low',
+    probScore: 3,
+    probBadge: 'badge-low',
+    aisc: 'Toll milling (pre own-plant)',
+    prodTrend: '→ Building',
+    prodTrendClass: 'trend-flat',
+    cash: 'A$114M + A$175M raise (Mar 2026)',
+    cashNum: 289,
+    reserveLife: 'Black Swan: ~10 yrs (1.88Moz)',
+    priceChange: '-5%',
+    priceChangeNum: -5,
+    signals: [
+      {signal:'Pre-production / toll milling phase — no own-plant cash flow yet', type:'MEDIUM', score:2, firing:true, source:'https://investingnews.com/stocks/asx-hrz/horizon-minerals/'},
+      {signal:'Black Swan refurbishment execution risk (first gold late 2026)', type:'LOW-MED', score:1, firing:true, source:'https://stocksdownunder.com/horizon-minerals-175m-capital-raise/'},
     ],
-    sources:[
-      {title:'Meeka Metals first gold pour at Murchison | Investing News',url:'https://investingnews.com/meeka-first-gold-pour-murchison/'},
-      {title:'Meeka Metals begins gold production | Mining Technology',url:'https://www.mining-technology.com/news/meeka-metals-murchison-gold-project-2/'},
-      {title:'Meeka Metals (ASX:MEK) enters production phase | Kalkine',url:'https://kalkine.com.au/news/mining/meeka-metals-asxmek-enters-production-phase-as-murchison-project-drives-growth-outlook'}
-    ]
-  },
-  {
-    id:'w8', company:'Pantoro Gold', asx:'PNR',
-    mine:'Norseman Gold Project, Eastern Goldfields WA', region:'Goldfields',
-    prob:18, tier:'Low',
-    aisc:2571, aiscLabel:'$2,571 (Dec Q 2025)',
-    prodTrend:'up', prodTrendLabel:'\u2191 steady 6+ quarters growth',
-    cash:'A$216.5M cash+gold (Dec Q 2025)', reserveLife:'Multi-decade (4.7 Moz resource)',
-    shareChange:'Not available', shareChangeLabel:'Not available',
-    overview:'Pantoro Gold is a well-capitalised WA gold producer at Norseman (Eastern Goldfields). Dec Q 2025: 22,071 oz at AISC A$2,571/oz; EBITDA A$83.6M. Cash and gold: A$216.5M. Debt-free. FY26 guidance 100-110 koz expected toward lower end due to accelerated growth drilling at Scotia underground. Pantoro sold Halls Creek project for A$8M in 2025, fully focused on Norseman. Resource: 44.9 Mt at 3.3 g/t for 4.7 Moz. Very low distress probability.',
-    signals:[
-      {signal:'Declining production YoY',weight:'HIGH',rating:'ok',note:'Steady production growth for 6+ consecutive quarters at Norseman'},
-      {signal:'AISC rising vs gold price',weight:'HIGH',rating:'ok',note:'AISC A$2,571/oz vs gold A$6,715/oz; healthy ~62% margin'},
-      {signal:'Negative operating cash flow',weight:'HIGH',rating:'ok',note:'EBITDA A$83.6M Dec Q; debt-free; A$216.5M cash+gold'},
-      {signal:'Debt/equity > 1.0',weight:'MEDIUM',rating:'ok',note:'Debt-free balance sheet'},
-      {signal:'Multiple capital raises',weight:'MEDIUM',rating:'ok',note:'Self-funded; no dilutive raises required'},
-      {signal:'Grade declining',weight:'MEDIUM',rating:'ok',note:'High-grade resource: 44.9 Mt at 3.3 g/t for 4.7 Moz; grades stable'},
-      {signal:'Reserve life < 3 years',weight:'MEDIUM',rating:'ok',note:'4.7 Moz resource; multiple decades of mine life at current production rates'},
-      {signal:'Management turnover',weight:'LOW-MED',rating:'na',note:'Not available'},
-      {signal:'Delayed milestones',weight:'LOW-MED',rating:'ok',note:'FY26 guided toward lower end of 100-110 koz \u2014 minor, not a distress signal'},
-      {signal:'Share price down >50% from 12mo high',weight:'LOW',rating:'na',note:'Not available from reviewed sources'}
+    totalScore: 3,
+    overview: 'Horizon Minerals (ASX:HRZ) is transitioning from gold explorer/toll miller to standalone producer with the Black Swan Processing Hub near Kalgoorlie. The 2.2Mtpa concentrator (ex-Poseidon Nickel) is being refurbished into a gold CIL circuit, targeting first production in late 2026. The company has secured A$175M via placement and reports A$114M cash (March 2026). The total resource base is 1.88Moz across 34.32Mt @ 1.7g/t. The risk is construction and commissioning execution for late 2026.',
+    financials: {cash:'A$114M (Mar 2026) + A$175M placement', debt:'None confirmed', revenue:'Near-term from Boorara/Phillips Find toll milling', ebitda:'Pre-production', ocf:'Building', hedging:'None noted'},
+    production: [
+      {period:'2025 (toll milling)', oz:'Revenue from ore sales under agreements', aisc:'N/A'},
+      {period:'Late 2026 target', oz:'First standalone gold production', aisc:'TBD'},
     ],
-    sources:[
-      {title:'Pantoro Gold builds cash, Norseman gains momentum | Proactive',url:'https://www.proactiveinvestors.com/companies/news/1086050/pantoro-gold-builds-cash-as-norseman-production-and-growth-drilling-gain-momentum-1086050.html'},
-      {title:'Pantoro Q4 FY2025: Record output drives debt elimination | Investing.com',url:'https://www.investing.com/news/company-news/pantoro-q4-fy2025-presentation-record-gold-output-drives-debt-elimination-93CH-4142830'}
-    ]
+    sourceIds: ['s28','s29']
   }
 ];
 
-// ──────────────────────────────────────────────
-// DATA — SOURCES
-// ──────────────────────────────────────────────
-var ALL_SOURCES = [
-  {title:'Wiluna Mining enters administration | Mining Digital',url:'https://miningdigital.com/supply-chain-and-operations/wiluna-mining-enters-administration',date:'2022',type:'news'},
-  {title:'Wiluna Mining removed from ASX | Australian Mining',url:'https://www.australianmining.com.au/wiluna-mining-removed-from-asx/',date:'2024',type:'news'},
-  {title:'Wiluna Mining Corporate Update April 2025',url:'https://wilunamining.com.au/wp-content/uploads/2025/04/WilunaMiningCorporateUpdateApril2025.pdf',date:'Apr 2025',type:'company'},
-  {title:'Wiluna Gold Mine — Wikipedia',url:'https://en.wikipedia.org/wiki/Wiluna_Gold_Mine',date:'2025',type:'wiki'},
-  {title:'Ramelius completes acquisition of Spartan Resources | Mining Technology',url:'https://www.mining-technology.com/news/ramelius-completes-acquisition-of-spartan/',date:'Jul 2025',type:'news'},
-  {title:'Barminco bags A$300M Dalgaranga contract | International Mining',url:'https://im-mining.com/2025/09/11/barminco-bags-a300-million-dalgaranga-contract-with-ramelius-resources/',date:'Sep 2025',type:'news'},
-  {title:'Minerals 260 seals Bullabulling deal | Mining Technology',url:'https://www.mining-technology.com/news/minerals-260-deal-acquire-bullabulling-gold-project/',date:'Jan 2025',type:'news'},
-  {title:'HFW advises Norton Gold Fields on A$166.5M sale | HFW',url:'https://www.hfw.com/about-us/news/hfw-advises-norton-gold-fields-on-a166-5-million-sale-of-one-of-australias-largest-undeveloped-gold-mines/',date:'Apr 2025',type:'news'},
-  {title:'Monument Burnakura collaboration with GBR | GlobeNewswire',url:'https://www.globenewswire.com/news-release/2025/04/02/3054310/0/en/Monument-Entered-Into-a-Collaboration-Agreement-Gives-GBR-Access-to-Burnakura-Mill.html',date:'Apr 2025',type:'company'},
-  {title:'Brightstar consolidates major WA gold project | Australian Mining',url:'https://www.australianmining.com.au/brightstar-consolidates-major-wa-gold-project/',date:'2025',type:'news'},
-  {title:'Northern Star second FY26 guidance downgrade | Market Index',url:'https://www.marketindex.com.au/news/northern-star-resources-second-fy26-guidance-downgrade-triggers-sharpest',date:'Mar 2026',type:'analyst'},
-  {title:'Ora Banda trims FY25 production guidance | Mining Weekly',url:'https://www.miningweekly.com/article/ora-banda-trims-25-prodution-guidance-2025-06-06',date:'Jun 2025',type:'news'},
-  {title:'Westgold Resources H1 FY26 Results | Junior Mining Network',url:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/198161-half-year-financial-results-summary-h1-fy26.html',date:'Feb 2026',type:'company'},
-  {title:'Meeka Metals first gold pour at Murchison | Investing News',url:'https://investingnews.com/meeka-first-gold-pour-murchison/',date:'Jul 2025',type:'news'},
-  {title:'Pantoro Gold builds cash, Norseman gains momentum | Proactive',url:'https://www.proactiveinvestors.com/companies/news/1086050/pantoro-gold-builds-cash-as-norseman-production-and-growth-drilling-gain-momentum-1086050.html',date:'Jan 2026',type:'news'},
-  {title:'Gold Price in Australia April 2026 | 150currency.com',url:'https://www.150currency.com/gold-price/australia/',date:'Apr 2026',type:'analyst'},
-  {title:'AISC Gold Production Trends Q1 2025 | Discovery Alert',url:'https://discoveryalert.com.au/all-in-sustaining-costs-gold-mining-2025/',date:'Mar 2025',type:'analyst'}
+const ALL_SOURCES = [
+  {id:'s1', title:'ASIC Notice: Calidus Resources Receivers & Managers Appointed', url:'https://publishednotices.asic.gov.au/browsesearch-notices/notice-details/CALIDUS-RESOURCES-LIMITED-Receivers-and-Managers-Appointed-006640553/91002063-8dc3-467b-b2e3-7594826b3fcb', date:'2 Jul 2024', type:'asic'},
+  {id:'s2', title:'Warrawoona gold mine enters care and maintenance — Mining Weekly', url:'https://www.miningweekly.com/article/warrawoona-gold-mine-enters-care-and-maintenance-2024-07-11', date:'11 Jul 2024', type:'news'},
+  {id:'s3', title:'Calidus Resources Case Update — Insolvency Insider Australia', url:'https://www.insolvencyinsider-au.com/p/calidus-resources-case-update', date:'Oct 2024', type:'insolvency'},
+  {id:'s4', title:'Hamilton Locke advises FTI Consulting on Calidus restructure', url:'https://hamiltonlocke.com.au/hamilton-locke-advises-fti-consulting-on-successful-restructure-of-calidus-resources-limited/', date:'Oct 2024', type:'news'},
+  {id:'s5', title:'ASIC sues Wiluna Mining for continuous disclosure breaches', url:'https://www.asic.gov.au/about-asic/news-centre/find-a-media-release/2025-releases/25-058mr-asic-sues-wa-gold-mining-company-wiluna-mining-corporation-for-continuous-disclosure-and-directors-duties-breaches/', date:'Mar 2025', type:'asic'},
+  {id:'s6', title:'Wiluna Mining Corporation — Corporate Update April 2025', url:'https://wilunamining.com.au/wp-content/uploads/2025/04/WilunaMiningCorporateUpdateApril2025.pdf', date:'11 Apr 2025', type:'company'},
+  {id:'s7', title:'Wiluna Mining — Quarterly Activities Report June 2025', url:'https://wilunamining.com.au/wp-content/uploads/2025/07/QuarterlyActivitiesReportJune2025.pdf', date:'18 Jul 2025', type:'company'},
+  {id:'s8', title:'Wiluna Mining — JORC Resource Assessment May 2025', url:'https://wilunamining.com.au/wp-content/uploads/2025/05/MSOAssessmentOfMineralResource05May25.pdf', date:'5 May 2025', type:'company'},
+  {id:'s9', title:'Ramelius Resources March 2025 Quarterly Report — Edna May C&M', url:'https://www.rameliusresources.com.au/wp-content/uploads/bsk-pdf-manager/2025/07/March-2025-Quarterly-Activities-Rep.pdf', date:'Apr 2025', type:'asx'},
+  {id:'s10', title:'Ramelius Resources FY25 Annual Report & Appendix 4E', url:'https://www.rameliusresources.com.au/wp-content/uploads/bsk-pdf-manager/2025/08/2025-08-25-Financial-Report-and-Appendix-4E-or-FY25.pdf', date:'Aug 2025', type:'asx'},
+  {id:'s11', title:'Bellevue Gold Production Shortfall Triggers Market Suspension — Discovery Alert', url:'https://discoveryalert.com.au/news/bellevue-gold-production-issues-2025/', date:'Mar 2025', type:'news'},
+  {id:'s12', title:'Bellevue Gold raises funds, weighs options after weak quarter — Mining.com', url:'https://www.mining.com/bellevue-gold-raises-funds-weighs-options-after-weak-quarter/', date:'Apr 2025', type:'news'},
+  {id:'s13', title:'Bellevue Gold FY26 Guidance & Annual Resource Statement (ASX)', url:'https://announcements.asx.com.au/asxpdf/20250801/pdf/06mdzqxnpry6q4.pdf', date:'1 Aug 2025', type:'asx'},
+  {id:'s14', title:'Dalgaranga put into care and maintenance — Australian Mining', url:'https://www.australianmining.com.au/dalgaranga-put-into-care-and-maintenance/', date:'Nov 2022', type:'news'},
+  {id:'s15', title:'Spartan raises $220 million for Dalgaranga — Australian Mining', url:'https://www.australianmining.com.au/spartan-raises-220-million-for-dalgaranga/', date:'2024', type:'news'},
+  {id:'s16', title:'Spartan receives regulatory green light for Dalgaranga — Mining Weekly', url:'https://www.miningweekly.com/article/spartan-receives-regulatory-green-light-for-dalgaranga-gold-project-2024-11-25', date:'25 Nov 2024', type:'news'},
+  {id:'s17', title:'Brightstar Resources: A$175M raise and 2026 loss outlook — Simply Wall St', url:'https://simplywall.st/stocks/au/materials/asx-btr/brightstar-resources-shares/news/how-brightstars-a175m-equity-raise-and-2026-loss-outlook-wil', date:'Apr 2026', type:'news'},
+  {id:'s18', title:'Brightstar Resources analysts slash estimates — Yahoo Finance', url:'https://finance.yahoo.com/markets/stocks/articles/brightstar-resources-limited-asx-btr-043455497.html', date:'2026', type:'news'},
+  {id:'s19', title:'Brightstar posts record ore campaign, clears debt — TipRanks', url:'https://www.tipranks.com/news/company-announcements/brightstar-posts-record-ore-campaign-as-it-clears-debt-and-advances-goldfields-plant', date:'2026', type:'news'},
+  {id:'s20', title:'Westgold Resources December 2025 Quarterly Results — Junior Mining Network', url:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/195428-december-2025-quarterly-results.html', date:'Jan 2026', type:'company'},
+  {id:'s21', title:'Westgold Resources H1 FY26 Financial Results — Junior Mining Network', url:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/198161-half-year-financial-results-summary-h1-fy26.html', date:'Feb 2026', type:'company'},
+  {id:'s22', title:'Gold boom drives rising costs for Aussie producers — Mining.com', url:'https://www.mining.com/gold-boom-drives-rising-costs-for-aussie-producers/', date:'2025', type:'news'},
+  {id:'s23', title:'Regis Resources Record Cash Build December Quarter 2025 — Kalkine', url:'https://kalkine.com.au/news/mining/regis-resources-asxrrl-advances-growth-strategy-after-record-profit-and-duketon-expansion-approval', date:'2026', type:'news'},
+  {id:'s24', title:'Vault Minerals FY26 Guidance and Three Year Outlook', url:'https://cdn-api.markitdigital.com/apiman-gateway/ASX/asx-research/1.0/file/2924-02996012-6A1284955', date:'Aug 2025', type:'asx'},
+  {id:'s25', title:'Vault Minerals — Vault boosts gold exposure with early FY26 hedge settlement', url:'https://www.proactiveinvestors.com.au/companies/news/1083124/vault-boosts-gold-price-exposure-with-early-fy26-hedge-settlement-1083124.html', date:'2025', type:'news'},
+  {id:'s26', title:'Catalyst Metals CYL — Solid production and cash flow beat — Argonaut', url:'https://www.argonaut.com/catalyst-metals-cyl-solid-production-and-cash-flow-beat/', date:'Jan 2026', type:'news'},
+  {id:'s27', title:'Catalyst Metals Shares Hit Hardest as Gold Selloff Causes Sector Bleed — The Bull', url:'https://thebull.com.au/news/catalyst-metals-shares-hit-hardest-as-gold-selloff-causes-sector-bleed/', date:'2026', type:'news'},
+  {id:'s28', title:'Horizon Minerals A$175M raise for Black Swan Gold Hub — Stocks Down Under', url:'https://stocksdownunder.com/horizon-minerals-175m-capital-raise/', date:'Mar 2026', type:'news'},
+  {id:'s29', title:'Horizon Minerals strengthens cash position — TipRanks', url:'https://www.tipranks.com/news/company-announcements/horizon-minerals-strengthens-cash-position-as-phillips-find-wraps-up-and-funds-black-swan-gold-hub', date:'Mar 2026', type:'news'},
 ];
 
-// ──────────────────────────────────────────────
-// STATE
-// ──────────────────────────────────────────────
-var dFilter='all', wFilter='all';
-var dSort={col:-1,dir:1}, wSort={col:-1,dir:1};
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
 
-// ──────────────────────────────────────────────
-// RENDER DISTRESSED
-// ──────────────────────────────────────────────
-function renderDistressed(){
-  var tbody=document.getElementById('distressed-tbody');
-  var search=document.getElementById('distressed-search').value.toLowerCase();
-  var regionVal=document.getElementById('region-select').value;
-  tbody.innerHTML='';
-  var rows=DISTRESSED.filter(function(d){
-    if(dFilter!=='all'&&d.status!==dFilter)return false;
-    if(regionVal&&d.region.indexOf(regionVal)<0)return false;
-    if(search&&d.mine.toLowerCase().indexOf(search)<0&&d.company.toLowerCase().indexOf(search)<0&&d.region.toLowerCase().indexOf(search)<0)return false;
-    return true;
-  });
-  if(dSort.col>=0){
-    var keys=['mine','company','region','status','resource','grade','processing'];
-    rows=rows.slice().sort(function(a,b){
-      var av=a[keys[dSort.col]],bv=b[keys[dSort.col]];
-      if(typeof av==='number'&&typeof bv==='number')return(av-bv)*dSort.dir;
-      if(av==='Not available')return 1;
-      if(bv==='Not available')return -1;
-      return String(av).localeCompare(String(bv))*dSort.dir;
-    });
-  }
-  document.getElementById('distressed-count').textContent='Showing '+rows.length+' of '+DISTRESSED.length;
-  rows.forEach(function(d){
-    var tr=document.createElement('tr');
-    tr.id='row-'+d.id;
-    tr.onclick=function(){toggleDetail(d.id);};
-    var gradeDisp=typeof d.grade==='number'?d.grade+' g/t':'<span class="na">N/A</span>';
-    var resDisp=d.resourceLabel!=='Not available'?parseInt(d.resourceLabel.replace(/,/g,'')).toLocaleString():'<span class="na">N/A</span>';
-    tr.innerHTML='<td>'+d.mine+'</td>'
-      +'<td>'+d.company+' <span style="color:var(--text3);font-size:11px">['+d.asx+']</span></td>'
-      +'<td>'+d.region+'</td>'
-      +'<td><span class="status-pill '+d.statusClass+'"><span class="dot"></span>'+d.statusLabel+'</span></td>'
-      +'<td class="hide-mobile">'+resDisp+'</td>'
-      +'<td class="hide-mobile">'+gradeDisp+'</td>'
-      +'<td class="hide-mobile" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+d.processing+'</td>'
-      +'<td style="text-align:center"><button class="expand-btn" id="btn-'+d.id+'" onclick="event.stopPropagation();toggleDetail(\''+d.id+'\')">+</button></td>';
+function statusBadgeHtml(statusKey, cls) {
+  return `<span class="badge ${cls}">${statusKey}</span>`;
+}
+
+function probBadgeHtml(prob, cls) {
+  return `<span class="badge ${cls}">${prob}</span>`;
+}
+
+function sourceLinks(ids) {
+  return ids.map((id, i) => {
+    const s = ALL_SOURCES.find(x => x.id === id);
+    if (!s) return '';
+    return `<a href="${s.url}" target="_blank" class="source-link">[${i+1}]</a>`;
+  }).join(' ');
+}
+
+function renderDistressed() {
+  const tbody = document.getElementById('distressedBody');
+  tbody.innerHTML = '';
+  DISTRESSED.forEach((d, idx) => {
+    // Main row
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-id', d.id);
+    tr.setAttribute('data-status', d.statusKey);
+    tr.setAttribute('data-region', d.region);
+    tr.setAttribute('onclick', `toggleExpand('${d.id}')`);
+    tr.innerHTML = `
+      <td><strong>${d.mine}</strong></td>
+      <td>${d.company}<br><small style="color:var(--text3)">${d.asx}</small></td>
+      <td>${d.region}</td>
+      <td>${statusBadgeHtml(d.statusKey, d.statusBadge)}</td>
+      <td class="hide-mobile">${parseInt(d.resource).toLocaleString()} oz</td>
+      <td class="hide-mobile">${d.grade} g/t</td>
+      <td class="hide-mobile" style="max-width:280px;font-size:12px">${d.indicator}</td>
+      <td>${sourceLinks(d.sourceIds)}</td>
+      <td style="color:var(--gold);font-size:18px" id="expand-arrow-${d.id}">▶</td>
+    `;
     tbody.appendChild(tr);
-    var dr=document.createElement('tr');
-    dr.className='detail-row hidden-row';
-    dr.id='detail-'+d.id;
-    dr.innerHTML='<td class="detail-cell" colspan="8">'+buildDetailPanel(d)+'</td>';
-    tbody.appendChild(dr);
+
+    // Expand row
+    const expandTr = document.createElement('tr');
+    expandTr.className = 'expand-row';
+    expandTr.setAttribute('data-expand', d.id);
+    expandTr.innerHTML = `<td colspan="9"><div class="expand-inner" id="expand-${d.id}">
+      <div class="detail-tabs">
+        <button class="detail-tab active" onclick="switchDetail('${d.id}','overview',this)">Overview</button>
+        <button class="detail-tab" onclick="switchDetail('${d.id}','jorc',this)">JORC Resources</button>
+        <button class="detail-tab" onclick="switchDetail('${d.id}','production',this)">Production</button>
+        <button class="detail-tab" onclick="switchDetail('${d.id}','processing',this)">Processing</button>
+        <button class="detail-tab" onclick="switchDetail('${d.id}','filings',this)">ASX/ASIC Filings</button>
+        <button class="detail-tab" onclick="switchDetail('${d.id}','contacts',this)">Contacts</button>
+        <button class="detail-tab" onclick="switchDetail('${d.id}','sources',this)">Sources</button>
+      </div>
+      <div class="detail-panel active" id="${d.id}-overview">
+        <div class="detail-grid">
+          <div class="detail-card" style="grid-column:1/-1"><h4>Overview</h4><p>${d.overview}</p></div>
+          <div class="detail-card"><h4>Administrator / Receiver</h4><p>${d.administrator}</p></div>
+          <div class="detail-card"><h4>Asking Price / Valuation</h4><p>${d.askingPrice}</p></div>
+          <div class="detail-card"><h4>Distress Indicators</h4><p>${d.indicator}</p></div>
+        </div>
+      </div>
+      <div class="detail-panel" id="${d.id}-jorc">
+        <table class="detail-table">
+          <thead><tr><th>Category</th><th>Measured</th><th>Indicated</th><th>Inferred</th><th>Contained Gold</th><th>JORC Year</th></tr></thead>
+          <tbody>${d.jorc.map(j=>`<tr><td>${j.category}</td><td>${j.measured}</td><td>${j.indicated}</td><td>${j.inferred}</td><td><strong>${j.contained}</strong></td><td>${j.year}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="${d.id}-production">
+        <table class="detail-table">
+          <thead><tr><th>Period</th><th>Production (oz)</th><th>AISC (A$/oz)</th></tr></thead>
+          <tbody>${d.production.map(p=>`<tr><td>${p.year||p.period}</td><td>${p.oz}</td><td>${p.aisc}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="${d.id}-processing">
+        <div class="detail-card"><h4>Processing &amp; Infrastructure</h4><p>${d.processing}</p></div>
+        <div class="detail-card" style="margin-top:12px"><h4>Tenements</h4><p>${d.tenements}</p></div>
+      </div>
+      <div class="detail-panel" id="${d.id}-filings">
+        <table class="detail-table">
+          <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>Link</th></tr></thead>
+          <tbody>${d.filings.map(f=>`<tr><td>${f.date}</td><td>${f.type}</td><td>${f.desc}</td><td><a href="${f.url}" target="_blank" class="source-link">View ↗</a></td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="${d.id}-contacts">
+        <div class="detail-card"><h4>Key Contacts &amp; Advisors</h4><p>${d.contacts}</p></div>
+      </div>
+      <div class="detail-panel" id="${d.id}-sources">
+        ${d.sourceIds.map(id=>{
+          const s = ALL_SOURCES.find(x=>x.id===id);
+          if(!s) return '';
+          return `<div class="detail-card" style="margin-bottom:8px"><p><strong>${s.title}</strong></p><p><a href="${s.url}" target="_blank" class="source-link">${s.url}</a></p><p class="warn-flag">${s.date} · ${s.type.toUpperCase()}</p></div>`;
+        }).join('')}
+      </div>
+    </div></td>`;
+    tbody.appendChild(expandTr);
   });
 }
 
-function buildDetailPanel(d){
-  var tabs=['Overview','JORC Resources','Production History','Processing','Tenements','Distress Timeline','Sources'];
-  var tabBtns=tabs.map(function(t,i){return '<button class="detail-tab-btn'+(i===0?' active':'')+'" onclick="switchDetailTab(\''+d.id+'\','+i+',this)">'+t+'</button>';}).join('');
-  var timelineHtml=d.timeline.map(function(t){return '<div class="timeline-item"><div class="timeline-dot"></div><span class="timeline-date">'+t.date+'</span><span class="timeline-text">'+t.text+'</span></div>';}).join('');
-  var srcHtml=d.sources.map(function(s){return '<div style="margin-bottom:6px"><a class="source-link" href="'+s.url+'" target="_blank" rel="noopener">'+s.title+'</a></div>';}).join('');
-  return '<div class="detail-inner">'
-    +'<div class="detail-tabs">'+tabBtns+'</div>'
-    +'<div class="detail-content active" id="dc-'+d.id+'-0"><div class="detail-grid">'
-    +'<div class="detail-field"><label>Mine Name</label><span>'+d.mine+'</span></div>'
-    +'<div class="detail-field"><label>Company</label><span>'+d.company+' ['+d.asx+']</span></div>'
-    +'<div class="detail-field"><label>Region</label><span>'+d.region+'</span></div>'
-    +'<div class="detail-field"><label>Status</label><span><span class="status-pill '+d.statusClass+'"><span class="dot"></span>'+d.statusLabel+'</span></span></div>'
-    +'<div class="detail-field"><label>Area</label><span>'+d.area+'</span></div>'
-    +'</div><p style="color:var(--text2);font-size:13px;line-height:1.7">'+d.overview+'</p></div>'
-    +'<div class="detail-content" id="dc-'+d.id+'-1"><p style="color:var(--text2);font-size:13px;line-height:1.7">'+d.jorc+'</p></div>'
-    +'<div class="detail-content" id="dc-'+d.id+'-2"><p style="color:var(--text2);font-size:13px;line-height:1.7">'+d.production+'</p></div>'
-    +'<div class="detail-content" id="dc-'+d.id+'-3"><p style="color:var(--text2);font-size:13px;line-height:1.7">'+d.processing+'</p></div>'
-    +'<div class="detail-content" id="dc-'+d.id+'-4"><p style="color:var(--text2);font-size:13px;line-height:1.7">'+d.tenements+'</p></div>'
-    +'<div class="detail-content" id="dc-'+d.id+'-5">'+timelineHtml+'</div>'
-    +'<div class="detail-content" id="dc-'+d.id+'-6">'+srcHtml+'<div style="margin-top:10px;font-size:11px;color:var(--text3)">Contacts: '+d.contacts+'</div></div>'
-    +'</div>';
-}
-
-// ──────────────────────────────────────────────
-// RENDER WATCHLIST
-// ──────────────────────────────────────────────
-function renderWatch(){
-  var tbody=document.getElementById('watch-tbody');
-  var search=document.getElementById('watch-search').value.toLowerCase();
-  tbody.innerHTML='';
-  var rows=WATCHLIST.filter(function(w){
-    if(wFilter!=='all'&&w.tier!==wFilter)return false;
-    if(search&&w.company.toLowerCase().indexOf(search)<0&&w.mine.toLowerCase().indexOf(search)<0&&w.asx.toLowerCase().indexOf(search)<0)return false;
-    return true;
-  });
-  if(wSort.col>=0){
-    rows=rows.slice().sort(function(a,b){
-      var avals=[a.company,a.mine,a.region,a.prob,a.aisc,a.prodTrendLabel,a.cash,a.reserveLife,a.shareChange];
-      var bvals=[b.company,b.mine,b.region,b.prob,b.aisc,b.prodTrendLabel,b.cash,b.reserveLife,b.shareChange];
-      var av=avals[wSort.col],bv=bvals[wSort.col];
-      if(typeof av==='number'&&typeof bv==='number')return(av-bv)*wSort.dir;
-      if(av==='Not available'||av===null)return 1;
-      if(bv==='Not available'||bv===null)return -1;
-      return String(av).localeCompare(String(bv))*wSort.dir;
-    });
-  }
-  document.getElementById('watch-count').textContent='Showing '+rows.length+' of '+WATCHLIST.length;
-  rows.forEach(function(w){
-    var tierClass={Critical:'prob-critical',High:'prob-high',Moderate:'prob-moderate',Low:'prob-low'}[w.tier];
-    var probHtml='<div class="prob-bar-wrap '+tierClass+'"><div class="prob-bar"><div class="prob-fill" style="width:'+w.prob+'%"></div></div><span class="prob-num">'+w.prob+'%</span></div>';
-    var trendHtml=w.prodTrend==='up'?'<span class="trend-up">'+w.prodTrendLabel+'</span>':w.prodTrend==='down'?'<span class="trend-down">'+w.prodTrendLabel+'</span>':'<span class="trend-flat">'+w.prodTrendLabel+'</span>';
-    var shareHtml=w.shareChange==='Not available'?'<span class="na">N/A</span>':(typeof w.shareChange==='number'?(w.shareChange>=0?'<span class="trend-up">'+w.shareChangeLabel+'</span>':'<span class="trend-down">'+w.shareChangeLabel+'</span>'):'<span class="na">N/A</span>');
-    var aiscDisp=typeof w.aisc==='number'?'A$'+w.aisc.toLocaleString():'<span class="na">N/A</span>';
-    var tr=document.createElement('tr');
-    tr.id='wrow-'+w.id;
-    tr.onclick=function(){toggleWatchDetail(w.id);};
-    tr.innerHTML='<td>'+w.company+' <span style="color:var(--text3);font-size:11px">['+w.asx+']</span></td>'
-      +'<td>'+w.mine+'</td>'
-      +'<td class="hide-mobile">'+w.region+'</td>'
-      +'<td>'+probHtml+'</td>'
-      +'<td class="hide-mobile">'+aiscDisp+'<span style="font-size:10px;color:var(--text3)"> '+w.aiscLabel+'</span></td>'
-      +'<td class="hide-mobile">'+trendHtml+'</td>'
-      +'<td class="hide-mobile">'+(w.cash!=='Not available'?'<span style="color:var(--positive)">'+w.cash+'</span>':'<span class="na">N/A</span>')+'</td>'
-      +'<td class="hide-mobile">'+(w.reserveLife!=='Not available'?w.reserveLife:'<span class="na">N/A</span>')+'</td>'
-      +'<td class="hide-mobile">'+shareHtml+'</td>'
-      +'<td style="text-align:center"><button class="expand-btn" id="wbtn-'+w.id+'" onclick="event.stopPropagation();toggleWatchDetail(\''+w.id+'\')">+</button></td>';
+function renderWatchlist() {
+  const tbody = document.getElementById('watchBody');
+  tbody.innerHTML = '';
+  WATCHLIST.forEach(w => {
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-id', w.id);
+    tr.setAttribute('data-prob', w.probability);
+    tr.setAttribute('onclick', `toggleExpand('w${w.id}')`);
+    tr.innerHTML = `
+      <td><strong>${w.company}</strong><br><small style="color:var(--text3)">ASX: ${w.asx}</small></td>
+      <td>${w.mine}</td>
+      <td>${w.region}</td>
+      <td>${probBadgeHtml(w.probability, w.probBadge)}<br><small style="color:var(--text3)">${w.totalScore} pts</small></td>
+      <td class="hide-mobile">${w.aisc}</td>
+      <td class="hide-mobile"><span class="${w.prodTrendClass}">${w.prodTrend}</span></td>
+      <td class="hide-mobile">${w.cash}</td>
+      <td class="hide-mobile">${w.reserveLife}</td>
+      <td class="hide-mobile" style="color:${w.priceChangeNum<-20?'var(--danger)':w.priceChangeNum<0?'var(--warning)':'var(--positive)'}">${w.priceChange}</td>
+      <td>${sourceLinks(w.sourceIds)}</td>
+      <td style="color:var(--gold);font-size:18px" id="expand-arrow-w${w.id}">▶</td>
+    `;
     tbody.appendChild(tr);
-    var dr=document.createElement('tr');
-    dr.className='detail-row hidden-row';
-    dr.id='wdetail-'+w.id;
-    dr.innerHTML='<td class="detail-cell" colspan="10">'+buildWatchDetail(w)+'</td>';
-    tbody.appendChild(dr);
+
+    const expandTr = document.createElement('tr');
+    expandTr.className = 'expand-row';
+    expandTr.setAttribute('data-expand', `w${w.id}`);
+    expandTr.innerHTML = `<td colspan="11"><div class="expand-inner" id="expand-w${w.id}">
+      <div class="detail-tabs">
+        <button class="detail-tab active" onclick="switchDetail('w${w.id}','signals',this)">Signals</button>
+        <button class="detail-tab" onclick="switchDetail('w${w.id}','financials',this)">Financials</button>
+        <button class="detail-tab" onclick="switchDetail('w${w.id}','production',this)">Production</button>
+        <button class="detail-tab" onclick="switchDetail('w${w.id}','overview',this)">Overview</button>
+        <button class="detail-tab" onclick="switchDetail('w${w.id}','sources',this)">Sources</button>
+      </div>
+      <div class="detail-panel active" id="w${w.id}-signals">
+        <table class="detail-table">
+          <thead><tr><th>Signal</th><th>Type</th><th>Score</th><th>Firing?</th><th>Source</th></tr></thead>
+          <tbody>${w.signals.map(s=>`<tr>
+            <td>${s.signal}</td>
+            <td><span style="color:${s.type==='HIGH'?'var(--danger)':s.type==='MEDIUM'?'var(--warning)':'var(--text2)'};font-size:11px;font-weight:700">${s.type}</span></td>
+            <td style="font-weight:700;color:var(--gold)">${s.score}</td>
+            <td class="${s.firing?'signal-fire':'signal-ok'}">${s.firing?'YES':'No'}</td>
+            <td><a href="${s.source}" target="_blank" class="source-link">View ↗</a></td>
+          </tr>`).join('')}
+          <tr style="background:var(--bg2)"><td colspan="2"><strong>TOTAL SCORE</strong></td><td style="font-weight:700;color:var(--gold)">${w.totalScore}</td><td colspan="2"><strong>${w.probability} (${w.probScore}+ pts)</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="w${w.id}-financials">
+        <div class="detail-grid">
+          <div class="detail-card"><h4>Cash Position</h4><p>${w.financials.cash}</p></div>
+          <div class="detail-card"><h4>Debt</h4><p>${w.financials.debt}</p></div>
+          <div class="detail-card"><h4>Revenue</h4><p>${w.financials.revenue}</p></div>
+          <div class="detail-card"><h4>EBITDA</h4><p>${w.financials.ebitda}</p></div>
+          <div class="detail-card"><h4>Operating Cash Flow</h4><p>${w.financials.ocf}</p></div>
+          <div class="detail-card"><h4>Hedging</h4><p>${w.financials.hedging}</p></div>
+        </div>
+      </div>
+      <div class="detail-panel" id="w${w.id}-production">
+        <table class="detail-table">
+          <thead><tr><th>Period</th><th>Production</th><th>AISC (A$/oz)</th></tr></thead>
+          <tbody>${w.production.map(p=>`<tr><td>${p.period}</td><td>${p.oz}</td><td>${p.aisc}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="detail-panel" id="w${w.id}-overview">
+        <div class="detail-card"><h4>Overview</h4><p>${w.overview}</p></div>
+      </div>
+      <div class="detail-panel" id="w${w.id}-sources">
+        ${w.sourceIds.map(id=>{
+          const s = ALL_SOURCES.find(x=>x.id===id);
+          if(!s) return '';
+          return `<div class="detail-card" style="margin-bottom:8px"><p><strong>${s.title}</strong></p><p><a href="${s.url}" target="_blank" class="source-link">${s.url}</a></p><p class="warn-flag">${s.date} · ${s.type.toUpperCase()}</p></div>`;
+        }).join('')}
+      </div>
+    </div></td>`;
+    tbody.appendChild(expandTr);
   });
 }
 
-function buildWatchDetail(w){
-  var ratingLabel={bad:'Firing',warn:'Caution',ok:'OK',na:'N/A'};
-  var ratingClass={bad:'signal-bad',warn:'signal-warn',ok:'signal-ok',na:'signal-na'};
-  var signalRows=w.signals.map(function(s){
-    return '<tr><td>'+s.signal+'</td><td style="color:var(--text3)">'+s.weight+'</td><td class="'+ratingClass[s.rating]+'">'+ratingLabel[s.rating]+'</td><td style="color:var(--text2)">'+s.note+'</td></tr>';
-  }).join('');
-  var srcHtml=w.sources.map(function(s){return '<div style="margin-bottom:6px"><a class="source-link" href="'+s.url+'" target="_blank" rel="noopener">'+s.title+'</a></div>';}).join('');
-  var tierBadgeClass={Critical:'badge-danger',High:'badge-warning',Moderate:'badge-purple',Low:'badge-blue'}[w.tier];
-  return '<div class="detail-inner">'
-    +'<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap">'
-    +'<span class="badge '+tierBadgeClass+'">'+w.tier+' Risk &mdash; '+w.prob+'%</span>'
-    +'<p style="color:var(--text2);font-size:13px;line-height:1.7;flex:1;min-width:240px">'+w.overview+'</p>'
-    +'</div>'
-    +'<div style="margin-bottom:16px">'
-    +'<div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:8px">Signal Breakdown (10 indicators)</div>'
-    +'<div style="overflow-x:auto"><table class="signal-table"><thead><tr><th>Signal</th><th>Weight</th><th>Status</th><th>Detail</th></tr></thead><tbody>'+signalRows+'</tbody></table></div>'
-    +'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:14px">'
-    +'<div class="detail-field"><label>AISC</label><span>'+w.aiscLabel+'</span></div>'
-    +'<div class="detail-field"><label>Production Trend</label><span>'+w.prodTrendLabel+'</span></div>'
-    +'<div class="detail-field"><label>Cash Position</label><span>'+w.cash+'</span></div>'
-    +'<div class="detail-field"><label>Reserve Life</label><span>'+w.reserveLife+'</span></div>'
-    +'<div class="detail-field"><label>Share Price \u0394 (52w)</label><span>'+w.shareChangeLabel+'</span></div>'
-    +'<div class="detail-field"><label>Distress Probability</label><span style="color:var(--gold);font-weight:700">'+w.prob+'%</span></div>'
-    +'</div>'
-    +'<div><div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:8px">Sources</div>'+srcHtml+'</div>'
-    +'</div>';
+function renderSources() {
+  const grid = document.getElementById('sourcesGrid');
+  grid.innerHTML = '';
+  ALL_SOURCES.forEach(s => {
+    const typeClass = {asic:'type-asic', asx:'type-asx', news:'type-news', company:'type-company', insolvency:'type-insolvency'}[s.type] || 'type-news';
+    const div = document.createElement('div');
+    div.className = 'source-card';
+    div.innerHTML = `
+      <div class="source-card-title">${s.title}</div>
+      <div class="source-card-url"><a href="${s.url}" target="_blank">${s.url}</a></div>
+      <div class="source-card-meta"><span class="source-type ${typeClass}">${s.type.toUpperCase()}</span>${s.date}</div>
+    `;
+    grid.appendChild(div);
+  });
 }
 
-// ──────────────────────────────────────────────
-// TOGGLE DETAIL ROWS
-// ──────────────────────────────────────────────
-function toggleDetail(id){
-  var dr=document.getElementById('detail-'+id);
-  var btn=document.getElementById('btn-'+id);
-  var row=document.getElementById('row-'+id);
-  var hidden=dr.classList.contains('hidden-row');
-  dr.classList.toggle('hidden-row',!hidden);
-  btn.textContent=hidden?'\u2212':'+';
-  row.classList.toggle('expanded',hidden);
-}
-function toggleWatchDetail(id){
-  var dr=document.getElementById('wdetail-'+id);
-  var btn=document.getElementById('wbtn-'+id);
-  var row=document.getElementById('wrow-'+id);
-  var hidden=dr.classList.contains('hidden-row');
-  dr.classList.toggle('hidden-row',!hidden);
-  btn.textContent=hidden?'\u2212':'+';
-  row.classList.toggle('expanded',hidden);
-}
-function switchDetailTab(id,idx,btn){
-  var inner=btn.closest('.detail-inner');
-  inner.querySelectorAll('.detail-tab-btn').forEach(function(b){b.classList.remove('active');});
-  inner.querySelectorAll('.detail-content').forEach(function(c){c.classList.remove('active');});
-  btn.classList.add('active');
-  document.getElementById('dc-'+id+'-'+idx).classList.add('active');
-}
+// ============================================================
+// INTERACTION
+// ============================================================
 
-// ──────────────────────────────────────────────
-// TAB SWITCHING
-// ──────────────────────────────────────────────
-function switchTab(name,btn){
-  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
-  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('tab-'+name).classList.add('active');
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
   btn.classList.add('active');
 }
 
-// ──────────────────────────────────────────────
-// FILTERS
-// ──────────────────────────────────────────────
-function filterDistressed(status,btn){
-  if(status!==null){
-    dFilter=status;
-    document.querySelectorAll('[data-filter]').forEach(function(b){b.classList.remove('active');});
-    if(btn)btn.classList.add('active');
-  }
-  renderDistressed();
-}
-function filterWatch(tier,btn){
-  if(tier!==null){
-    wFilter=tier;
-    document.querySelectorAll('[data-wfilter]').forEach(function(b){b.classList.remove('active');});
-    if(btn)btn.classList.add('active');
-  }
-  renderWatch();
+let distressedStatusFilter = 'all';
+let distressedRegionFilter = 'all';
+
+function filterDistressed(status, btn) {
+  distressedStatusFilter = status;
+  document.querySelectorAll('#tab-distressed .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyDistressedFilters();
 }
 
-// ──────────────────────────────────────────────
-// SORT
-// ──────────────────────────────────────────────
-function sortDTable(colIdx,th){
-  if(dSort.col===colIdx)dSort.dir*=-1;
-  else{dSort.col=colIdx;dSort.dir=1;}
-  th.closest('thead').querySelectorAll('th').forEach(function(h){h.classList.remove('sort-asc','sort-desc');});
-  th.classList.add(dSort.dir===1?'sort-asc':'sort-desc');
-  renderDistressed();
-}
-function sortWTable(colIdx,th){
-  if(wSort.col===colIdx)wSort.dir*=-1;
-  else{wSort.col=colIdx;wSort.dir=1;}
-  th.closest('thead').querySelectorAll('th').forEach(function(h){h.classList.remove('sort-asc','sort-desc');});
-  th.classList.add(wSort.dir===1?'sort-asc':'sort-desc');
-  renderWatch();
-}
-
-// ──────────────────────────────────────────────
-// SOURCES GRID
-// ──────────────────────────────────────────────
-function renderSources(){
-  var grid=document.getElementById('sources-grid');
-  var typeLabel={news:'News',company:'Company',analyst:'Analyst',govt:'Government',wiki:'Wikipedia'};
-  grid.innerHTML=ALL_SOURCES.map(function(s){
-    var shortUrl=s.url.replace(/^https?:\/\//,'');
-    if(shortUrl.length>58)shortUrl=shortUrl.substring(0,58)+'\u2026';
-    return '<div class="source-card"><div class="source-card-title">'+s.title+'</div>'
-      +'<a class="source-card-url" href="'+s.url+'" target="_blank" rel="noopener">'+shortUrl+'</a>'
-      +'<div class="source-card-meta"><span class="type-badge type-'+s.type+'">'+typeLabel[s.type]+'</span>'
-      +'<span style="font-size:10px;color:var(--text3)">'+s.date+'</span></div></div>';
-  }).join('');
+function applyDistressedFilters() {
+  const region = document.getElementById('distressedRegion').value;
+  const search = document.getElementById('distressedSearch').value.toLowerCase();
+  distressedRegionFilter = region;
+  let count = 0, total = 0;
+  const rows = document.querySelectorAll('#distressedBody tr[data-id]');
+  rows.forEach(tr => {
+    total++;
+    const id = tr.getAttribute('data-id');
+    const status = tr.getAttribute('data-status');
+    const regionVal = tr.getAttribute('data-region');
+    const text = tr.innerText.toLowerCase();
+    const expandRow = document.querySelector(`tr[data-expand="${id}"]`);
+    const matchStatus = distressedStatusFilter === 'all' || status === distressedStatusFilter;
+    const matchRegion = region === 'all' || regionVal.includes(region);
+    const matchSearch = !search || text.includes(search);
+    const show = matchStatus && matchRegion && matchSearch;
+    tr.style.display = show ? '' : 'none';
+    if (expandRow) expandRow.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('distressedCount').textContent = `Showing ${count} of ${total}`;
 }
 
-// ──────────────────────────────────────────────
+let watchProbFilter = 'all';
+
+function filterWatch(prob, btn) {
+  watchProbFilter = prob;
+  document.querySelectorAll('#tab-watchlist .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyWatchFilters();
+}
+
+function applyWatchFilters() {
+  const search = document.getElementById('watchSearch').value.toLowerCase();
+  let count = 0, total = 0;
+  const rows = document.querySelectorAll('#watchBody tr[data-id]');
+  rows.forEach(tr => {
+    total++;
+    const id = tr.getAttribute('data-id');
+    const prob = tr.getAttribute('data-prob');
+    const text = tr.innerText.toLowerCase();
+    const expandRow = document.querySelector(`tr[data-expand="w${id}"]`);
+    const matchProb = watchProbFilter === 'all' || prob === watchProbFilter;
+    const matchSearch = !search || text.includes(search);
+    const show = matchProb && matchSearch;
+    tr.style.display = show ? '' : 'none';
+    if (expandRow) expandRow.style.display = show ? '' : 'none';
+    if (show) count++;
+  });
+  document.getElementById('watchCount').textContent = `Showing ${count} of ${total}`;
+}
+
+function toggleExpand(id) {
+  const panel = document.getElementById('expand-' + id);
+  const arrow = document.getElementById('expand-arrow-' + id);
+  if (!panel) return;
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  if (arrow) arrow.textContent = isOpen ? '▶' : '▼';
+}
+
+function switchDetail(rowId, panel, btn) {
+  const container = document.getElementById('expand-' + rowId);
+  container.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('active'));
+  container.querySelectorAll('.detail-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById(rowId + '-' + panel).classList.add('active');
+  btn.classList.add('active');
+  event.stopPropagation();
+}
+
+function sortTable(tableId, colIdx, th) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const rows = Array.from(tbody.querySelectorAll('tr[data-id]'));
+  const asc = th.classList.contains('sort-asc') ? false : true;
+  table.querySelectorAll('th').forEach(h => { h.classList.remove('sort-asc','sort-desc'); });
+  th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+  rows.sort((a, b) => {
+    const aVal = a.cells[colIdx] ? a.cells[colIdx].innerText.trim() : '';
+    const bVal = b.cells[colIdx] ? b.cells[colIdx].innerText.trim() : '';
+    const aNum = parseFloat(aVal.replace(/[^0-9.-]/g,''));
+    const bNum = parseFloat(bVal.replace(/[^0-9.-]/g,''));
+    if (!isNaN(aNum) && !isNaN(bNum)) return asc ? aNum - bNum : bNum - aNum;
+    return asc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+  });
+  rows.forEach(row => {
+    const expandRow = tbody.querySelector(`tr[data-expand="${row.getAttribute('data-id')}"]`) ||
+                      tbody.querySelector(`tr[data-expand="w${row.getAttribute('data-id')}"]`);
+    tbody.appendChild(row);
+    if (expandRow) tbody.appendChild(expandRow);
+  });
+}
+
+// ============================================================
 // INIT
-// ──────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',function(){
-  renderDistressed();
-  renderWatch();
-  renderSources();
-});
+// ============================================================
+renderDistressed();
+renderWatchlist();
+renderSources();
+document.getElementById('sourceCountHeader').textContent = ALL_SOURCES.length + ' sources';
 </script>
 </body>
 </html>

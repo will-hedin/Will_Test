@@ -449,6 +449,18 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 }
 .section-title span { color: var(--accent-blue); }
 
+/* IMPACT NOTES */
+.impact-note {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(240,136,62,0.1);
+  border-left: 3px solid var(--orange);
+  border-radius: 0 4px 4px 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .header { padding: 16px; }
@@ -471,7 +483,7 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
     </div>
     <div class="header-meta">
       <span class="badge badge-live">● LIVE</span>
-      <span style="font-size:12px;color:var(--text-muted);">Last updated: March 31, 2026</span>
+      <span style="font-size:12px;color:var(--text-muted);">Last updated: April 9, 2026</span>
     </div>
   </div>
 </div>
@@ -480,12 +492,12 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 
 <!-- KPI CARDS -->
 <div class="kpi-grid">
-  <div class="kpi-card"><div class="kpi-value">52</div><div class="kpi-label">Utilities Tracked</div></div>
+  <div class="kpi-card"><div class="kpi-value">34</div><div class="kpi-label">Utilities Tracked</div></div>
   <div class="kpi-card"><div class="kpi-value">28</div><div class="kpi-label">States Covered</div></div>
-  <div class="kpi-card kpi-success"><div class="kpi-value">38</div><div class="kpi-label">Active DC Programs</div></div>
-  <div class="kpi-card kpi-danger"><div class="kpi-value">6</div><div class="kpi-label">Moratoriums / Constraints</div></div>
+  <div class="kpi-card kpi-success"><div class="kpi-value">28</div><div class="kpi-label">Active DC Programs</div></div>
+  <div class="kpi-card kpi-danger"><div class="kpi-value">5</div><div class="kpi-label">Moratoriums / Constraints</div></div>
   <div class="kpi-card kpi-warn"><div class="kpi-value">65+</div><div class="kpi-label">Large Load Tariffs (US)</div></div>
-  <div class="kpi-card kpi-purple"><div class="kpi-value">$50K–$2M</div><div class="kpi-label">Collateral Range (per MW)</div></div>
+  <div class="kpi-card kpi-purple"><div class="kpi-value">$50K–$2.7M</div><div class="kpi-label">Collateral Range (per MW)</div></div>
 </div>
 
 <!-- ALERT BAR -->
@@ -745,12 +757,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Policy Overview</h4><ul>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No DC-specific tariff; bilateral contracts negotiated individually</li>
+    <li>No published minimum billing floor</li>
+    <li>Terms governed by PJM tariff and individual bilateral agreements</li>
+    <li>No regulatory backstop on take-or-pay minimums</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Terms are entirely at PPL's discretion — applicants have no regulatory backstop on take-or-pay floors; unfavorable terms cannot be appealed to any tariff standard.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per PJM interconnection deposit rules</li>
+    <li>Typically <strong>25% of assigned network upgrade costs</strong></li>
+    <li>Accepted instruments: LC, cash, or parent guarantee</li>
+    <li>Posted at Interconnection Agreement execution</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Must queue through PJM CIFP (Cluster Interconnection Facilities Study Process)</li>
     <li>PA PUC issued large load interconnection guidance (Nov 2025)</li>
-    <li>Follows PJM interconnection study process</li>
     <li>No DC-specific tariff published as of March 2026</li>
     <li>Large load applications increasing in Lehigh Valley corridor</li>
   </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>PJM application fee: <strong>$10K</strong></li>
+    <li>Feasibility study deposit: ~<strong>$50K</strong></li>
+    <li>System impact study: ~<strong>$150K–$300K</strong></li>
+    <li>Network upgrade deposit at IA execution</li>
+    <li>Monthly demand charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Applicants face full PJM queue timeline (typically 3–5 years); no tariff protections; all terms negotiated case-by-case with no regulatory floor.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -769,12 +804,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Policy Overview</h4><ul>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No published minimum demand floor for data centers</li>
     <li>Pipeline jumped <strong>47% to 9.4 GW</strong> — much speculative</li>
-    <li>Interconnection requests grew from 400 MW to 4,700 MW (2024→2025)</li>
-    <li>No dedicated DC tariff published; follows PJM process</li>
-    <li>Electric Tariff B.P.U.N.J. No. 17 effective Feb 1, 2026</li>
+    <li>Per PJM tariff and individual bilateral agreement</li>
+    <li>NJ BPU has not issued large load rules as of Q1 2026</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No regulatory minimum demand protections — applicants face congested Northern NJ grid with no tariff backstop on take-or-pay terms.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per PJM interconnection rules</li>
+    <li>Security deposit = <strong>25% of assigned network upgrade costs</strong></li>
+    <li>Accepted: LC or cash</li>
+    <li>Posted at IA execution</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Electric Tariff B.P.U.N.J. No. 17 effective Feb 1, 2026</li>
+    <li>Follows PJM CIFP process; no DC-specific tariff</li>
+    <li>NJ BPU has not issued dedicated large load rules</li>
+    <li>Interconnection requests grew from 400 MW to 4,700 MW (2024→2025)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>PJM study fee sequence applies (application → feasibility → SIS → IA)</li>
+    <li>Substantial interconnection upgrade costs in congested Northern NJ grid</li>
+    <li>Network upgrade deposit at IA execution</li>
+    <li>Monthly demand charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Congested Northern NJ grid means applicants face high network upgrade costs and long PJM queue timelines (3–5 years); no DC tariff protections in any phase.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -793,13 +850,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Policy Overview</h4><ul>
-    <li>NY PSC large-load interconnection rulemaking underway</li>
-    <li>FERC 100% participant funding model expected for network upgrades</li>
-    <li>Wholesale Distribution Service (WDS) tariff for generators on ConEd system</li>
-    <li>No dedicated DC tariff yet — regulatory guidance in development</li>
-    <li>Limited transmission capacity in NYC constrains large loads</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No published minimum billing floor for data centers</li>
+    <li>NY PSC rulemaking ongoing — 100% participant funding model expected</li>
+    <li>Standard commercial terms apply pending PSC outcome</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: PSC rulemaking (Case 23-E-0378) may impose retroactive requirements on pending projects; applicants cannot lock in current terms against future regulatory action.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>NYISO interconnection deposit: <strong>$20K/MW</strong> for Class Year studies</li>
+    <li>Accepted: LC or cash</li>
+    <li>Refundable if project withdraws with study complete</li>
+    <li>Network upgrade cost deposit at IA execution</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>NY PSC Case 23-E-0378 — large load interconnection rulemaking</li>
+    <li>NYISO Class Year Interconnection Study process governs transmission-level</li>
+    <li>WDS (Wholesale Distribution Service) tariff for distribution-level generators on ConEd system</li>
+    <li>Limited transmission capacity in NYC constrains large loads</li>
+    <li>No dedicated DC tariff yet — regulatory guidance in development</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>NYISO application fee: <strong>$10K</strong></li>
+    <li>Feasibility study: <strong>$25K</strong></li>
+    <li>Class Year study deposit: <strong>$20K/MW</strong></li>
+    <li>Transmission upgrade cost deposit at IA execution</li>
+    <li>Monthly charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: NYC-specific capacity constraints make large load service expensive and slow; no dedicated DC tariff means standard commercial terms apply with full NYC transmission upgrade cost exposure.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -818,12 +897,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Policy Overview</h4><ul>
-    <li>Supports retail and ISO-NE RNS/LNS customers</li>
-    <li>Transmission load interconnections subject to ISO-NE tariff or Eversource state tariff</li>
-    <li>No DC-specific large load tariff published</li>
-    <li>DOE pushing for expedited study process — potentially 60 days</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No DC-specific minimum billing floor</li>
+    <li>Standard large commercial/industrial tariff applies</li>
+    <li>ISO-NE RNS/LNS service for transmission-level customers</li>
+    <li>No published take-or-pay minimum in CT, MA, or NH jurisdictions</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No DC-specific protections in any of the three state jurisdictions — applicants face standard commercial terms with no tariff-mandated minimums or ramp protections.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>ISO-NE Interconnection Security Agreement: <strong>100% of network upgrade costs</strong> secured</li>
+    <li>Accepted: LC or cash</li>
+    <li>Posted before construction of interconnection facilities begins</li>
+    <li>State-level distribution upgrade costs per individual utility tariff</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>ISO-NE Tariff Section I.3.9 governs large load interconnections</li>
+    <li>State-level tariffs vary by jurisdiction (CT, MA, NH)</li>
+    <li>DOE pushing for 60-day expedited interconnection study timeline</li>
+    <li>No DC-specific tariff in any of the three Eversource state territories</li>
+    <li>MA: DOER clean energy requirements may layer onto interconnection</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>ISO-NE cluster study fee: ~<strong>$150K</strong> for full cluster study</li>
+    <li>State application fees vary by jurisdiction</li>
+    <li>100% network upgrade cost posted at IA execution</li>
+    <li>Monthly charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Full ISO-NE queue timeline (3–5 years); applicants in MA face DOER clean energy requirements layered onto interconnection obligations; 100% upgrade cost security is front-loaded cash exposure.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -842,11 +944,33 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Policy Overview</h4><ul>
-    <li>Serves portions of NY (NYISO) and MA/RI (ISO-NE)</li>
-    <li>No published DC-specific large load tariff</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No published DC-specific minimum billing floor</li>
+    <li>Depends on ISO jurisdiction: NYISO (NY downstate) or ISO-NE (MA/RI)</li>
+    <li>No standalone DC tariff in either territory</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Applicants must navigate two separate ISO tariff structures depending on territory; Brooklyn/Queens faces same NYC transmission constraints as ConEd with no DC tariff protections.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>NY territory: per NYISO rules (typically 25% of upgrade costs or $20K/MW Class Year deposit)</li>
+    <li>MA/RI territory: per ISO-NE Interconnection Security Agreement (100% of upgrade costs)</li>
+    <li>Accepted: LC or cash per applicable ISO rules</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Serves both NYISO (downstate NY) and ISO-NE (MA/RI) — separate tariff structures by territory</li>
+    <li>No standalone DC tariff in either territory</li>
+    <li>NY territory: NYISO Class Year study process + NY PSC Case 23-E-0378 rulemaking</li>
+    <li>MA/RI territory: ISO-NE tariff Section I.3.9 governs</li>
     <li>Large load demand growing in both territories</li>
   </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>NY territory: per NYISO study fee sequence (application, feasibility, Class Year)</li>
+    <li>MA/RI territory: per ISO-NE study sequence (~$150K cluster study)</li>
+    <li>Network upgrade costs posted at IA execution per applicable ISO</li>
+    <li>Monthly charges from energization per applicable state tariff</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Dual-ISO territory means no single tariff framework; applicants must verify which ISO governs their specific interconnection point; Brooklyn/Queens territory has severe transmission constraints.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -914,13 +1038,36 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Queue: <strong>~8 GW DC interconnection requests</strong></li>
-    <li><strong>700% increase</strong> in DC interconnection requests (2024→2025)</li>
-    <li>~2/3 of new Houston load growth from data centers</li>
-    <li>Customers targeting interconnections in late 2026-2028</li>
-    <li>All SB 6 / PUC 25.194 requirements apply</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per SB 6: <strong>$50K/MW</strong> financial security; <strong>20% refund / 80% penalty</strong> to TSP rate base on withdrawal</li>
+    <li>Full refund after 5 years sustained operations at contracted demand</li>
+    <li>Milestone failure (6+ months late): same 20/80 split</li>
+    <li>Queue: ~8 GW DC interconnection requests; <strong>700% increase</strong> 2024→2025</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: $50K/MW = $50M for a 1 GW data center; Houston faces explosive demand growth with limited near-term capacity — applicants need 2026–2028 COD targets to avoid multi-year delays.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>LC (bank rated A-/A3+), cash, or corporate guaranty (BBB-/Baa3+)</li>
+    <li><strong>$50K/MW</strong> due before technical feasibility study</li>
+    <li>Refunded 20% at energization; remainder over 5 years sustained ops</li>
+    <li>80% forfeited on withdrawal</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>SB 6 / PUC 25.194 applies; Intermediate Agreement required</li>
+    <li>Site control proof required (deed, 5-yr+ lease, or purchase option)</li>
+    <li>Remote disconnect capability required (post-Dec 2025)</li>
+    <li>Must disclose backup generation and duplicative requests</li>
+    <li>~2/3 of new Houston load growth from data centers</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Study fee: <strong>$100K–$300K</strong> at application</li>
+    <li>$50K/MW security before technical feasibility study</li>
+    <li>ERCOT Batch Study target: Aug 2026</li>
+    <li>Quarterly Stability Assessment before energization</li>
+    <li>Monthly demand charges from service commencement</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Houston grid faces the fastest-growing DC queue in ERCOT; applicants should plan for 2026–2028 energization window and model full SB 6 withdrawal penalty in deal economics.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -939,12 +1086,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>AEP expects <strong>24 GW of new load by 2030</strong>, mainly DCs</li>
-    <li>~300 miles of 765-kV transmission planned (Permian Basin Reliability Plan)</li>
-    <li>Operates at 69 kV, 138 kV, 345 kV; planned 765 kV</li>
-    <li>All SB 6 / PUC 25.194 requirements apply</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per SB 6: same as all ERCOT TSPs — <strong>$50K/MW</strong> security</li>
+    <li><strong>20% refund / 80% to TSP rate base</strong> on withdrawal or milestone failure</li>
+    <li>Full refund after 5 years sustained operations</li>
+    <li>AEP expects <strong>24 GW of new load by 2030</strong>, predominantly data centers</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Permian Basin DCs face more severe transmission constraints than DFW; major infrastructure build-out underway but capacity timeline is 3–5 years out — applicants must plan for COD uncertainty.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Same SB 6 framework as all ERCOT TSPs</li>
+    <li>LC, cash, or corporate guaranty (same rating requirements)</li>
+    <li><strong>$50K/MW</strong> posted before technical feasibility study</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>SB 6 / PUC 25.194 fully applies; Intermediate Agreement required</li>
+    <li>Permian Basin Reliability Plan: ~300 miles of 765-kV transmission planned</li>
+    <li>Operates at 69 kV, 138 kV, 345 kV; planned 765 kV expansion</li>
+    <li>Site control proof, backup gen disclosure, remote disconnect all required</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Study fee: <strong>$100K–$300K</strong> at application</li>
+    <li>$50K/MW security before technical feasibility study</li>
+    <li>ERCOT Batch Study target: Aug 2026</li>
+    <li>Quarterly Stability Assessment before energization</li>
+    <li>Monthly demand charges from service commencement</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Permian Basin infrastructure build-out is necessary but years away; applicants should assume 3–5 year timeline and model significant transmission upgrade costs on top of SB 6 security requirements.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -963,13 +1132,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Current peak: ~3 GW; DCs requesting <strong>5-11 GW</strong> — exceeds entire system</li>
-    <li>Infrastructure cannot deliver power for proposed data centers</li>
-    <li>No formal moratorium but <strong>effectively capacity-constrained</strong></li>
-    <li>Transmission outage moratorium May-September limits upgrade windows</li>
-    <li>Nearby San Marcos blocked a DC proposal (Feb 2026)</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per SB 6 framework + additional CIAC (Contribution in Aid of Construction) for all incremental grid costs</li>
+    <li><strong>$50K/MW</strong> SB 6 security; 20/80 withdrawal penalty</li>
+    <li>All incremental infrastructure costs passed to DC customer</li>
+    <li>DC requests (5–11 GW) exceed entire Austin Energy system peak (~3 GW)</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Effectively cannot serve new large DC loads without multi-billion dollar infrastructure investment; applicants should assume 5–7 year minimum timeline; moratorium risk during summer outage windows (May–September).</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>SB 6 security: <strong>$50K/MW</strong> (LC, cash, or guaranty)</li>
+    <li>Additional CIAC deposit for distribution infrastructure upgrades</li>
+    <li>Austin Energy does not waive infrastructure cost recovery</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>SB 6 / PUC 25.194 applies; CIAC policy applies for distribution costs</li>
+    <li>Transmission outage moratorium May–September limits upgrade windows</li>
+    <li>No formal moratorium but de facto capacity cap given infrastructure limits</li>
+    <li>Nearby San Marcos DC proposal blocked (Feb 2026)</li>
+    <li>Site control, backup gen disclosure, remote disconnect required per SB 6</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>SB 6 study fee: <strong>$100K–$300K</strong> at application</li>
+    <li>SB 6 security ($50K/MW) before technical feasibility study</li>
+    <li>Additional CIAC deposit before distribution construction</li>
+    <li>Monthly charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Austin Energy is effectively closed to new large DC loads in the near term; applicants must model both SB 6 security and CIAC deposit, plus assume 5–7 year timeline to service.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -988,15 +1178,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li><strong>40 MW threshold</strong> for CPS own Large Load program (below SB 6's 75 MW)</li>
-    <li>~2 GW of DC load in contracting</li>
-    <li>Pre-LLIS Screening Study to identify optimal POI</li>
-    <li>All incremental costs borne by data center, not ratepayers</li>
-    <li>Acquiring ~1,632 MW gas-fired plants (~$1.4B) for reliability</li>
-    <li>$1.3B+ planned for transmission & generation</li>
-    <li>Key customer: Microsoft (8 DCs, $1.2B+ investment)</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>SB 6 framework ($50K/MW) + full incremental cost recovery</li>
+    <li><strong>40 MW threshold</strong> for CPS's own Large Load program (below SB 6's 75 MW)</li>
+    <li>20/80 withdrawal penalty applies per SB 6</li>
+    <li>~2 GW DC load currently in contracting</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: CPS's 40 MW threshold (vs SB 6's 75 MW) means smaller DCs face full SB 6-style cost recovery requirements earlier than at other ERCOT TSPs; $1.3B+ infrastructure investment underway reduces near-term constraint risk vs. Austin Energy.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>SB 6 security: <strong>$50K/MW</strong> (LC, cash, or guaranty per SB 6 standards)</li>
+    <li>Additional CIAC deposit for distribution infrastructure upgrades</li>
+    <li>All incremental costs borne by DC customer, not ratepayers</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Pre-LLIS Screening Study required to identify optimal Point of Interconnection</li>
+    <li>SB 6 / PUC 25.194 applies; Intermediate Agreement required</li>
+    <li>Site control, backup gen disclosure, remote disconnect required</li>
+    <li>Key reference customer: Microsoft (8 DCs, $1.2B+ investment)</li>
+    <li>Acquiring ~1,632 MW gas-fired capacity (~$1.4B) for reliability</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>SB 6 study fee: <strong>$100K–$300K</strong> at application</li>
+    <li>SB 6 security ($50K/MW) before technical feasibility study</li>
+    <li>CIAC deposit before distribution construction begins</li>
+    <li>Quarterly Stability Assessment before energization</li>
+    <li>Monthly demand charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Lower 40 MW threshold means smaller DCs trigger the full SB 6 security and cost recovery process; San Antonio market is more accessible than Austin Energy but still subject to full ERCOT queue timing.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1016,13 +1226,33 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Policy Overview</h4><ul>
-    <li>CAISO interconnection process governs large load connections</li>
-    <li>Significant transmission constraints in Silicon Valley corridor</li>
-    <li>High electricity costs ($0.20-0.30+/kWh) impact DC economics</li>
-    <li>No DC-specific tariff; standard commercial/industrial rates apply</li>
-    <li>CPUC oversight for rate-related matters</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No DC-specific minimum billing floor</li>
+    <li>CAISO Rule 30 (interim): transmission-level customers fund interconnection upfront, reimbursed as load materializes</li>
+    <li>Standard GCID/TOU commercial rates apply; no DC tariff</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No tariff protections — applicants face standard commercial terms with full CAISO interconnection cost exposure; Silicon Valley transmission constraints mean high upgrade costs are unavoidable.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>100% of assigned network upgrade costs posted at IA execution</li>
+    <li>CAISO participant funding model (FERC ANOPR framework)</li>
+    <li>Accepted: LC or cash</li>
+    <li>Reimbursed over time as load materializes on the system</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>CAISO interconnection process governs large load connections</li>
+    <li>CPUC oversight for rate-related matters</li>
+    <li>No standalone DC tariff — standard commercial/industrial rates apply</li>
+    <li>Significant transmission constraints in Silicon Valley corridor</li>
+    <li>High electricity costs ($0.20–0.30+/kWh base) impact DC economics</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>CAISO cluster study deposit: <strong>$150K–$300K</strong></li>
+    <li>100% network upgrade deposit at IA execution</li>
+    <li>Monthly TOU charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 100% participant funding means applicants bear full network upgrade cost upfront with reimbursement only as load materializes — significant front-loaded cash risk; high base electricity costs compound operating expenses.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1041,15 +1271,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li><strong>4.7 GW contractually committed</strong> large load (2/3 from DCs)</li>
-    <li><strong>10 GW pending</strong> DC interconnection requests — cannot serve all</li>
-    <li>20 GW of other potential large customers in pipeline</li>
-    <li>Collateral: <strong>$1.5M–$2M per MW</strong> (among highest in US)</li>
-    <li>Electric sales growing 4-6% annually through 2027</li>
-    <li>$2.7B generation investment (2025-2027)</li>
-    <li>New tariff framework under development — exploring DC-specific terms</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No published tariff; currently negotiated case-by-case</li>
+    <li>Long-term contract expected; terms at APS's discretion</li>
+    <li><strong>4.7 GW</strong> already committed; 10 GW additional requests pending</li>
+    <li>New tariff framework under development — formal DC-specific terms expected</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Extremely high collateral ($1.5M–$2M/MW means $150–200M for a 100 MW DC) and capacity-constrained queue create major entry barriers; early bilateral engagement is essential before formal tariff is filed.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li><strong>$1.5M–$2M per MW</strong> (among highest reported in US)</li>
+    <li>Instrument type and posting timeline TBD pending formal tariff</li>
+    <li>Historically LC or cash per bilateral contract</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>10 GW of pending DC requests vs. 4.7 GW committed — cannot serve all</li>
+    <li>20 GW additional pipeline of other potential large customers</li>
+    <li>$2.7B generation investment (2025–2027)</li>
+    <li>Tariff framework under development; formally expected 2026</li>
+    <li>Electric sales growing 4–6% annually through 2027</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Currently all bilateral — no standardized study fee schedule</li>
+    <li>Formal tariff expected to codify upfront security and study fee structure</li>
+    <li>Contract execution deposit before construction</li>
+    <li>Monthly demand charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Applicants engaging APS pre-tariff face pricing and terms that could be superseded by the formal tariff; engaging early to lock in bilateral terms before tariff filing is recommended strategy.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1068,12 +1317,33 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li><strong>E-67 pricing guidelines</strong> amended for projects >20 MW (effective 2026)</li>
-    <li><strong>80% minimum billing</strong> of requested demand, even if unused</li>
-    <li>Municipal utility — not regulated by Arizona Corporation Commission</li>
-    <li>Significant DC development activity in East Valley</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li><strong>80% minimum billing</strong> of requested demand under E-67 (effective 2026)</li>
+    <li>Threshold: >20 MW</li>
+    <li>Baseline demand payment regardless of actual consumption</li>
+    <li>No ramp provision publicly disclosed</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 80% minimum billing from service start means no ramp protection — applicants must model revenue-in-service timing against fixed billing floor from day one; municipal utility status means no ACC appeals process.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per individual contract negotiation</li>
+    <li>Municipal utility sets own collateral terms</li>
+    <li>Not regulated by Arizona Corporation Commission</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>E-67 pricing guidelines amended for projects >20 MW (effective 2026)</li>
+    <li>Not regulated by Arizona Corporation Commission — SRP sets own terms</li>
+    <li>Significant DC development activity in East Valley</li>
+    <li>Competitive with APS for Phoenix-area data center projects</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Contract negotiation timeline (no standardized study fee schedule)</li>
+    <li>E-67 terms negotiated prior to interconnection</li>
+    <li>80% minimum billing begins at service start</li>
+    <li>Monthly demand charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Municipal utility status provides flexibility in negotiations but also removes regulatory oversight protections — applicants have no PUC recourse if terms are unfavorable; E-67 80% floor is firm from service start.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1092,14 +1362,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li><strong>Clean Transition Tariff</strong> (approved Mar 2025): monthly demand >5 MW</li>
-    <li>Premium for 24/7 clean energy from new resources</li>
-    <li>Non-refundable application fee + study deposit scaled to MW</li>
-    <li>Site control required through study phases and construction</li>
-    <li>Large Standby Service Rider (LSR) revision filed Mar 6, 2026</li>
-    <li>FERC rejected free exit from interconnection study (2026)</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Clean Transition Tariff (Mar 2025): backstop provisions if load doesn't materialize</li>
+    <li>Exit fees apply if customer withdraws after study</li>
+    <li>Capacity reassignment provisions if DC fails to reach committed demand</li>
+    <li>Monthly demand >5 MW triggers Clean Transition Tariff eligibility</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: FERC's rejection of free study withdrawal (2026) means applicants are financially committed once study begins — exit becomes costly even pre-construction; clean energy premium is a real cost for hyperscalers with sustainability mandates.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Non-refundable application fee at filing</li>
+    <li>Study deposit scaled to MW size (required for study to proceed)</li>
+    <li>Site control required through all study phases and construction</li>
+    <li>Cash or LC accepted</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Clean Transition Tariff for loads >5 MW wanting 24/7 clean energy</li>
+    <li>FERC rejected free exit from interconnection study (2026)</li>
+    <li>Large Standby Service Rider (LSR) revision filed Mar 6, 2026</li>
+    <li>Nevada PUC oversight; both NV Energy and Sierra Pacific subsidiaries</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Non-refundable application fee at filing</li>
+    <li>Study deposit (scaled to MW) before study proceeds</li>
+    <li>Collateral at IA execution</li>
+    <li>Monthly demand charges + clean energy premium from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Once study deposit is paid, withdrawal triggers exit fees — applicants must be highly confident in project viability before entering the NV Energy interconnection queue; study fees are non-refundable.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1118,16 +1408,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details — Oregon POWER Act (June 2025)</h4><ul>
-    <li><strong>First state to create dedicated DC electricity rate class</strong></li>
-    <li>Applies to facilities consuming <strong>>20 MW</strong></li>
-    <li><strong>10-year minimum contract</strong> with baseline demand payment</li>
-    <li>Separate cost allocation — no residential cross-subsidy</li>
-    <li>Transmission cost pass-through for grid upgrades</li>
-    <li>Biennial PUC reporting begins Sep 1, 2026</li>
-    <li>PGE UM2377 tariff: <strong>25% price increase</strong> for DC customers proposed</li>
-    <li>Oregon PUC decision expected by April 2026</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Oregon POWER Act (Jun 2025): <strong>10-year minimum contract</strong></li>
+    <li>Baseline demand payment regardless of actual consumption</li>
+    <li>Separate cost allocation — no cross-subsidy to residential customers</li>
+    <li>Threshold: >20 MW consumption</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Oregon POWER Act locks in baseline demand payment for 10 years from contract signature — ramp-up delays translate directly to sunk cost; pending 25% rate increase (UM2377) adds pricing risk to pro forma underwriting.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Grid upgrade costs fully passed to DC customer</li>
+    <li>Separate cost allocation mechanism prevents cross-subsidy</li>
+    <li>Collateral per individual contract terms</li>
+    <li>Transmission cost pass-through at IA execution</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li><strong>First US state</strong> with dedicated DC electricity rate class</li>
+    <li>Oregon PUC docket UM2377: 25% rate increase for DC customers — decision expected April 2026</li>
+    <li>Biennial PUC reporting begins Sep 1, 2026</li>
+    <li>Oregon POWER Act (HB 3546) signed June 2025</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Grid upgrade costs upfront at IA execution</li>
+    <li>10-year contract minimum executed before service begins</li>
+    <li>Monthly baseline demand payment from energization</li>
+    <li>Rate increase pending UM2377 decision (expected Apr 2026)</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 10-year baseline demand commitment from contract signature (not COD) means applicants begin accruing obligations before they are generating revenue; UM2377 rate increase could raise ongoing costs by 25% post-decision.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1146,13 +1454,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per bilateral contract; formal tariff under development</li>
     <li>Docket 26-035-05: large-load service contract approval pending</li>
-    <li>Legislature considering splitting PacifiCorp into red/blue state consortiums</li>
-    <li>Changes to DC contracts announced but not rate structure</li>
+    <li>No published minimum billing floor; terms negotiated case-by-case</li>
+    <li>Legislature considering splitting PacifiCorp into state consortiums (political risk)</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Legislative uncertainty around PacifiCorp breakup creates long-term contract risk; applicants should ensure contract terms survive potential corporate restructuring; no DC-specific tariff means terms are at utility's discretion.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per individual contract negotiation</li>
+    <li>OATT interconnection security requirements apply for transmission-level</li>
+    <li>Specific amounts TBD pending tariff development</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Docket 26-035-05: large-load service contract approval pending</li>
     <li>OATT-governed interconnection via PacifiCorp Transmission</li>
+    <li>Legislature considering splitting PacifiCorp into red/blue state consortiums</li>
+    <li>Utah SB 132: modifies duty to serve loads ≥100 MW in 5 years</li>
     <li>Active AI/DC recruitment by state of Utah</li>
   </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>OATT feasibility study: <strong>$25K</strong></li>
+    <li>System impact study: <strong>$150K–$300K</strong></li>
+    <li>Facilities study: refundable deposit</li>
+    <li>IA execution deposit at contract signing</li>
+    <li>Monthly charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Pending PacifiCorp breakup legislation is the primary risk — applicants with long-term contracts should seek contractual protections for corporate restructuring; Docket 26-035-05 approval timeline adds regulatory uncertainty to project schedule.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1171,13 +1501,32 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li><strong>Schedule 20</strong> (Speculative High-Density Load) for qualifying customers</li>
-    <li>>20 MW aggregate: must make <strong>special contract arrangements</strong></li>
-    <li>Meta DC in Kuna and Micron expansion driving growth</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Schedule 20 (Speculative High-Density Load): special contract arrangements for >20 MW</li>
+    <li>Terms individually negotiated; no published minimum billing floor</li>
     <li>7.48% rate increase effective Jan 1, 2026</li>
-    <li>Rate case driven by rapid growth, reliability projects, wildfire resilience</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No tariff protections — Schedule 20 terms are entirely negotiated; 7.48% rate increase already in effect should be factored into long-term pro forma; Treasure Valley grid constraints are emerging.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per special contract negotiation</li>
+    <li>OATT security requirements apply for transmission-level interconnection</li>
+    <li>IDAPA 31 PUC oversight</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>>20 MW aggregate requires special contract arrangements under Schedule 20</li>
+    <li>Meta DC in Kuna and Micron expansion driving rapid load growth</li>
+    <li>IDAPA 31 PUC oversight; rate case driven by rapid growth and reliability projects</li>
+    <li>7.48% rate increase effective Jan 1, 2026</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>OATT study fee sequence for transmission-level interconnection</li>
+    <li>Special contract negotiation timeline prior to energization</li>
+    <li>Monthly charges at Schedule 20 rates from energization</li>
+    <li>7.48% rate increase already in effect as of Jan 2026</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Rate increase risk is already realized (7.48% effective Jan 2026); further rate cases are likely as load growth accelerates; no tariff-mandated protections in special contract negotiation.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1196,11 +1545,32 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>9.30% rate increase for 2026</li>
-    <li>No published DC-specific tariff</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No published DC tariff; per bilateral contract</li>
+    <li>No published minimum billing floor</li>
+    <li>9.30% rate increase effective 2026</li>
+    <li>Growing DC demand in Puget Sound region</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 9.30% rate increase without DC-specific tariff means applicants face standard commercial rate escalation risk; no regulatory protections for minimum billing floors — terms entirely negotiated.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per contract negotiation</li>
+    <li>Washington UTC (Utilities and Transportation Commission) oversight</li>
+    <li>No standardized collateral schedule published</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>No DC-specific tariff; standard commercial/industrial rates apply</li>
+    <li>Washington UTC regulates; bilateral contracts for large loads</li>
+    <li>9.30% rate increase effective 2026</li>
     <li>Growing DC demand in Puget Sound region</li>
   </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Per bilateral contract negotiation; no standardized study fee schedule</li>
+    <li>Rate increase (9.30%) already effective in 2026</li>
+    <li>Monthly demand charges from energization at negotiated rates</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No published tariff means all terms are negotiated; 9.30% rate increase is already embedded in current pricing — applicants should model additional rate case risk over contract term.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1226,13 +1596,29 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
     <li>DTE responsible for costs it cannot recover from DC customer</li>
     <li>Approved Dec 18, 2025 by Michigan PSC</li>
     <li>1,383 MW data center contract approved (Saline Township)</li>
-  </ul></div>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 19-year minimum contract is the longest reported in any US utility territory — applicants must model 19 years of 80% minimum billing against actual load projections; no ability to reduce demand without triggering termination provisions.</div>
+  </div>
   <div class="detail-section"><h4>Collateral Requirements</h4><ul>
     <li>Default collateral = <strong>50% of exit fee</strong></li>
     <li>Reduces over contract term as risk decreases</li>
-    <li>Early termination payment required</li>
-    <li>MPSC directed DTE to file large load customer tariff within 90 days</li>
+    <li>Early termination payment required if exiting before 19 years</li>
+    <li>MPSC directed DTE to file large load customer tariff within 90 days of Dec 18, 2025 approval</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>MPSC directed DTE to file general large-load tariff within 90 days of Dec 18, 2025 approval</li>
+    <li>1,383 MW Saline Township contract was the approval precedent</li>
+    <li>Threshold: D11 tariff (>1 MW); 19-yr/80% terms apply to large DC loads</li>
+    <li>MISO interconnection study process governs queue entry</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Collateral (50% of exit fee) at contract execution</li>
+    <li>PJM/MISO study fees per MISO Definitive Planning Phase process</li>
+    <li>Monthly minimum demand (80%) from energization</li>
+    <li>Early termination payment if exiting before 19 years</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 50% of exit fee posted upfront is a substantial cash commitment; the 90-day tariff filing mandate means new applicants may face a more standardized (and potentially more restrictive) tariff than the precedent Saline Township terms.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1256,15 +1642,33 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
     <li><strong>15-year minimum contract</strong></li>
     <li><strong>80% minimum billing demand</strong></li>
     <li>5-year ramp-up period allowed</li>
-    <li>5-year automatic extensions; 4 years' notice for termination</li>
+    <li>5-year automatic extensions; <strong>4 years' notice required</strong> for termination</li>
     <li>Michigan's first DC-specific tariff (approved Nov 6, 2025)</li>
-  </ul></div>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 4-year termination notice requirement (not merely an exit fee) means applicants must make a binding long-term commitment with no ability to exit on short notice — even after the 15-year contract term expires.</div>
+  </div>
   <div class="detail-section"><h4>Collateral & Cost Recovery</h4><ul>
-    <li>Each large load customer requires <strong>ex parte filing</strong> to MPSC</li>
-    <li>Must prove <strong>no subsidy from residential/commercial/industrial customers</strong></li>
-    <li>Detail on generation resources used to serve DC</li>
-    <li>Commission endeavors to review within 90 days</li>
+    <li>Default collateral = <strong>50% of exit fee</strong>; declines over 15-yr term</li>
+    <li>LC (standby, irrevocable) or cash; parent guarantees excluded</li>
+    <li>Posted at contract execution; annual recalculation</li>
+    <li>Full release at contract end</li>
     <li>Consumers providing 1 GW to new hyperscale DC</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Each DC customer requires individual <strong>ex parte filing</strong> to MPSC</li>
+    <li>Must prove no cross-subsidy to residential/commercial/industrial customers</li>
+    <li>Detail on generation resources serving the DC required</li>
+    <li>MPSC review target: 90 days per filing</li>
+    <li>Michigan's first DC tariff (Nov 6, 2025)</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: MPSC ex parte review creates a 90-day regulatory approval bottleneck per new contract — applicants cannot begin service until MPSC approves; each new DC addition requires a separate filing.</div>
+  </div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Proposal fee: <strong>$100K</strong> upfront (reconciled to actual costs)</li>
+    <li>Collateral (50% of exit fee) at contract execution</li>
+    <li>MISO study fees per Definitive Planning Phase process</li>
+    <li>Monthly minimum demand (80%) from energization</li>
+    <li>4 years' notice required before any termination (no short-notice exit)</li>
   </ul></div>
 </div>
 </td></tr>
@@ -1285,13 +1689,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Kansas Corporation Commission approved settlement (2025)</li>
-    <li><strong>Large Load Power Service Rate Plan</strong> for new facilities >75 MW</li>
-    <li>Up to 5-year ramp-up, then 12-year minimum service</li>
-    <li><strong>80% minimum monthly bill</strong> based on contract demand</li>
-    <li>Provisions to prevent speculative queue entries</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li><strong>80% minimum monthly bill</strong> on contract demand</li>
+    <li><strong>17 years total</strong> (5-yr ramp + 12-yr minimum service)</li>
+    <li>Threshold: new facilities >75 MW</li>
+    <li>Early termination fees throughout 17-year term</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 17-year total commitment (including ramp) with 80% minimum billing means applicants must model a decade-and-a-half of demand certainty — significant exposure for speculative or phased projects.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per contract negotiation; no single published collateral requirement</li>
+    <li>2 years of minimum monthly bills common in SPP utilities</li>
+    <li>Per KCC/MO PSC approved terms</li>
+    <li>Released on schedule over 17-year contract</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Large Load Power Service Rate Plan; KCC approved settlement 2025</li>
+    <li>Anti-speculation provisions to prevent queue entries without genuine development intent</li>
+    <li>Kansas Corporation Commission oversight (KS territory); MO PSC (MO territory)</li>
+    <li>Study fees per SPP interconnection process</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Study fee at application (per SPP process)</li>
+    <li>Security (2 years minimum monthly bills) at contract execution</li>
+    <li>Infrastructure upgrade costs assigned to large load customer</li>
+    <li>Monthly minimum (80%) from energization through 17-year term</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 2-year minimum monthly bill security posted upfront is a substantial cash commitment before a single MW is energized; 17-year total term with 80% floor is one of the longer commitments among SPP utilities.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1310,12 +1735,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>CO PUC directed tariff filing by <strong>Jan 31, 2026</strong> (Xcel requested extension to Apr 2, 2026)</li>
-    <li>Guiding principles: upfront fees, <strong>15-yr contracts, minimum bills, security deposits, exit fees</strong></li>
-    <li>Xcel says <strong>$22B needed</strong> to meet potential DC demand by 2040</li>
-    <li>Tri-State co-op also developing large-load tariff ($2.7M/MW security deposit, 15-yr contract)</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>CO PUC guiding principles: <strong>15-year contracts</strong>, minimum bills, exit fees</li>
+    <li>Formal tariff expected after Apr 2, 2026 filing deadline</li>
+    <li>No finalized minimum billing floor pending tariff</li>
+    <li>Xcel says <strong>$22B needed</strong> to meet DC demand by 2040</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Applicants engaging Xcel pre-tariff face significant regulatory uncertainty — tariff terms not yet finalized; $22B infrastructure bill means substantial cost pass-through risk in final tariff structure.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Security deposits required; exact amount TBD pending tariff</li>
+    <li>Tri-State co-op (competing utility) proposing <strong>$2.7M/MW</strong> — may set market expectation</li>
+    <li>Expected: cash or LC per CO PUC principles</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>CO PUC directed tariff filing by Jan 31, 2026; Xcel extended to Apr 2, 2026</li>
+    <li>Tariff not yet finalized; regulatory uncertainty for pre-tariff applicants</li>
+    <li>Tri-State co-op also developing large-load tariff ($2.7M/MW, 15-yr contract)</li>
+    <li>CO PUC guiding principles: upfront fees, 15-yr contracts, minimum bills, security deposits, exit fees</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Application fee: TBD (pending tariff)</li>
+    <li>Study fee: TBD (pending tariff)</li>
+    <li>Security deposit at IA execution (amount pending tariff)</li>
+    <li>15-year minimum contract from energization</li>
+    <li>Monthly minimum bills from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Tri-State's $2.7M/MW security precedent suggests Xcel's final tariff could have very high collateral requirements; applicants should not lock in pro forma assumptions until formal tariff is filed Apr 2026.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1335,15 +1782,36 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>GA PSC approved rule Jan 23, 2025: customers <strong>>100 MW</strong> billed on special terms</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
     <li><strong>80% minimum monthly demand charge</strong> of contract capacity</li>
-    <li><strong>Exit fee if capacity reduced >20%</strong></li>
-    <li>All contracts >100 MW require <strong>GA PSC review and approval</strong></li>
-    <li>Large-load pipeline shrank by 6 GW (some projects abandoned)</li>
-    <li>Dec 10, 2025 stipulated agreement: significant costs allocated to large-load customers</li>
-    <li>Costs for upstream generation, transmission, distribution passed through</li>
+    <li>Exit fee triggered if capacity reduced >20%</li>
+    <li>GA PSC Rule approved Jan 23, 2025</li>
+    <li>Threshold: >100 MW for special terms</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: PSC approval requirement for all >100 MW contracts creates 3–6 month regulatory delay; Dec 2025 stipulation means applicants bear significant upstream generation and transmission costs on top of interconnection fees.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Long-term financial commitments proportional to load size</li>
+    <li>Security per PSC-reviewed contract; exact amount per stipulation</li>
+    <li>Dec 10, 2025 stipulation allocates significant costs to large-load customers</li>
+    <li>Per contract execution</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>All contracts >100 MW require <strong>GA PSC review and approval</strong></li>
+    <li>GA PSC approved rule Jan 23, 2025</li>
+    <li>Costs for upstream generation, transmission, distribution passed through to DC</li>
+    <li>Large-load pipeline shrank 6 GW (speculative abandonment)</li>
+    <li>Dec 10, 2025 stipulated agreement: significant costs allocated to large-load customers</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Pre-application feasibility study (customer-funded)</li>
+    <li>PSC approval process: <strong>3–6 months</strong></li>
+    <li>Interconnection cost deposit before construction</li>
+    <li>Monthly minimum demand (80%) from COD</li>
+    <li>Exit fee on >20% capacity reduction</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 6 GW of pipeline abandonments suggests prior applicants found economics unfavorable; Dec 2025 stipulation adds upstream generation and transmission costs that significantly increase total cost of service vs. headline interconnection fees.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1362,15 +1830,36 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Process: initial engagement → transmission study → Letter Agreement → <strong>Energy Supply Agreement (ESA)</strong></li>
-    <li>Customers pay <strong>full cost of grid connection + infrastructure upgrades</strong></li>
-    <li>Financial protections: minimum bills, termination penalties, LC/parent guarantees</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Full infrastructure cost recovery; minimum bills; termination penalties</li>
+    <li>Per Energy Supply Agreement (ESA)</li>
+    <li>>50 MW projects must demonstrate self-funded infrastructure</li>
+    <li>No published minimum billing floor — terms in ESA negotiation</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: ESA structure gives Duke full infrastructure cost recovery before construction begins — applicants face front-loaded capital commitment with no tariff-mandated protections; rate cases already in progress mean rates are not stable for 2026–2027 COD projects.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>LC, parent guarantees, or cash per ESA</li>
+    <li>Amount per ESA and infrastructure study</li>
+    <li>>50 MW projects must demonstrate self-funded infrastructure capacity</li>
+    <li>Posted at ESA execution milestones</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Process: initial engagement → transmission study → Letter Agreement → ESA</li>
     <li>NC Utilities Commission asked Duke to address >100 MW integration (Jul 2025)</li>
     <li>Clean transition tariff "fizzled" — not yet filed</li>
     <li>General rate cases: DEC (Jan 2026), DEP (Oct 2025)</li>
-    <li>>50 MW projects must demonstrate self-funded infrastructure</li>
+    <li>Customers pay full cost of grid connection + infrastructure upgrades</li>
   </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Transmission study fee (engineering study, customer-funded)</li>
+    <li>Letter Agreement execution deposit</li>
+    <li>ESA execution deposit + infrastructure upgrade cost</li>
+    <li>Monthly minimum bills from COD</li>
+    <li>Termination penalties per ESA if exiting early</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Multi-phase payment structure (study → LOA → ESA) means applicants are committing increasing capital at each milestone; active rate cases mean ongoing cost of service is not finalized for 2026–2027 projects.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1393,15 +1882,32 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
     <li><strong>70% take-or-pay minimum</strong> (reduced from 90% originally proposed)</li>
     <li>Customer must pay for infrastructure even if not fully utilized</li>
     <li><strong>Incremental Generation Charge (IGC)</strong>: 100% of new generation cost funded by DC</li>
-    <li>Early exit fee applies post in-service</li>
-  </ul></div>
-  <div class="detail-section"><h4>Contract & Collateral</h4><ul>
-    <li><strong>20-year minimum contract</strong> from in-service date</li>
+    <li>Early exit fee applies post in-service date</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 20-year contract with 70% minimum billing and 100% generation cost funding means applicants are underwriting new generation construction — if the data center underperforms, they still fund the generation asset for 20 years.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
     <li>Strict collateral tied to creditworthiness</li>
-    <li>Must fund engineering study for scope, cost, and timeline</li>
+    <li>Cash or LC required to reserve capacity on FPL system</li>
+    <li><strong>20-year minimum contract</strong> from in-service date</li>
     <li>Rates set for 2026-2029 via broad coalition agreement</li>
     <li>FL PSC approved rate agreement Nov 20, 2025</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>FL PSC approved Nov 20, 2025; rates set for 2026–2029 via broad coalition agreement</li>
+    <li>Customer must fund engineering study for scope, cost, and timeline</li>
+    <li>Incremental Generation Charge (IGC) = 100% of new generation cost funded by DC</li>
+    <li>20-year minimum contract required for large load service</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Engineering study fee at application (customer-funded)</li>
+    <li>Collateral deposit at IA execution (credit-tied)</li>
+    <li>IGC deposit at IA execution (100% of new generation cost)</li>
+    <li>Monthly minimum (70%) + IGC from in-service date</li>
+    <li>Early exit fee applies immediately post-COD</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Front-loaded obligation includes both collateral and 100% generation cost advance — total upfront capital requirement is among the highest in SERC; 20-year term locks in the generation cost obligation for the full contract period.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1420,12 +1926,34 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Projects >50 MW: must demonstrate self-funded infrastructure</li>
-    <li><50 MW: may use GSLD-3 tariff (50%+ bill savings vs. initial filings)</li>
-    <li>Duke exploring building its own DCs in Florida</li>
-    <li>Large load tariff frameworks aligning with legislative expectations</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Projects >50 MW: must self-fund all infrastructure costs</li>
+    <li><50 MW: eligible for GSLD-3 tariff (50%+ bill savings)</li>
+    <li>No published minimum billing floor for large loads</li>
+    <li>Florida legislature expected to act on large load framework in 2026 session</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: >50 MW DCs face fully self-funded infrastructure requirement with no published tariff — entirely at Duke's discretion; legislative action in 2026 may codify requirements retroactively on pending projects.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Advance payment of estimated infrastructure costs required</li>
+    <li>Per individual contract negotiation for >50 MW</li>
+    <li>GSLD-3 eligible projects (<50 MW) have streamlined path</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>>50 MW: must demonstrate self-funded infrastructure (no tariff protections)</li>
+    <li><50 MW: GSLD-3 tariff applies (50%+ bill savings vs. initial filings)</li>
+    <li>Duke exploring building its own DCs in Florida (vertical integration risk)</li>
+    <li>Large load tariff framework aligning with FL legislative expectations</li>
+    <li>Florida legislature expected to act in 2026 session</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Engineering study fee at application (customer-funded)</li>
+    <li>Infrastructure cost advance at contract execution</li>
+    <li>Monthly charges from energization</li>
+    <li>GSLD-3 eligible projects: streamlined payment path</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Duke's vertical integration into DC ownership creates conflict-of-interest risk for competing applicants — Duke could prioritize its own DC development over third-party interconnection requests; no published tariff means no regulatory protection.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1445,15 +1973,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Contracts >5 MW: <strong>TVA review required</strong></li>
-    <li>Contracts >100 MW: <strong>TVA Board approval required</strong></li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Large power contracts: TVA ensures DCs don't create rate pressure on existing customers</li>
+    <li>Minimum demand provisions per individual large power contract</li>
+    <li>Exact floor not published; terms negotiated case-by-case</li>
     <li>DC demand: <strong>18% of industrial load in 2025</strong>; projected to double by 2030</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: TVA Board approval requirement for loads >100 MW is a hard regulatory gate with no published timeline — applicants must plan for 6–12 month approval process; TVA's policy of no rate pressure means applicants bear all incremental generation costs.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per large power contract negotiation</li>
+    <li>No published standardized collateral amount</li>
+    <li>Terms set individually per contract with TVA and local distributor</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Loads >5 MW: <strong>TVA review required</strong></li>
+    <li>Loads >100 MW: <strong>TVA Board of Directors approval required</strong></li>
     <li>11 GW of DC/AI/crypto requests pending</li>
     <li>TVA Board approved 150 MW for Musk DC via Memphis MLGW (Nov 2025)</li>
-    <li>Pursuing 6.2 GW of new generation (nuclear + gas)</li>
-    <li>Priority: DCs do not create rate pressure on existing customers</li>
+    <li>Pursuing 6.2 GW new generation (nuclear + gas)</li>
+    <li>Priority: DCs must not create rate pressure on existing customers</li>
   </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Board approval process adds 3–6 months to timeline for >100 MW loads</li>
+    <li>Study fees per large power contract process</li>
+    <li>Contract execution deposit (amount per contract)</li>
+    <li>Monthly demand charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: TVA Board has no published timeline for approval of >100 MW loads — applicants cannot guarantee schedule certainty; TVA's incremental generation cost policy means applicants underwrite new generation capacity needed to serve their load.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1473,14 +2021,35 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
     <li>IURC approved modified industrial tariff (Feb 2025)</li>
-    <li>New/expanding loads >70 MW (single) or >150 MW (aggregate)</li>
-    <li><strong>12-year minimum contract</strong>; 5-year load ramp</li>
-    <li><strong>80% minimum demand billing</strong></li>
+    <li><strong>80% minimum demand billing</strong> from energization</li>
+    <li><strong>12-year minimum contract</strong>; 5-year load ramp (17 years total)</li>
     <li>Exit fee if capacity reduced >20%</li>
-    <li><strong>$1.5M/MW collateral</strong> if credit requirements not met</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: $1.5M/MW collateral for non-investment-grade applicants is one of the highest in PJM territory — a 500 MW DC could require $750M in posted security; 17-year total term with 80% floor is a long commitment.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li><strong>$1.5M/MW</strong> if credit/liquidity requirements not met (non-investment-grade)</li>
+    <li>Year 1: 24× maximum expected monthly non-fuel bill</li>
+    <li>Annual recalculation; must post additional if 10%+ higher</li>
+    <li>LC, cash, or parent guaranty accepted</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>IURC-approved modified industrial tariff (Feb 2025)</li>
+    <li>Applies to >70 MW single or >150 MW aggregate new/expanding loads</li>
+    <li>PJM interconnection study process governs queue entry</li>
+    <li>Investment-grade customers (A-/A3 with adequate liquidity) may qualify for collateral exemption</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>PJM application and study fees (application → feasibility → SIS → IA)</li>
+    <li>$1.5M/MW security deposit (if credit not met) at IA execution</li>
+    <li>Annual recalculation of collateral requirement</li>
+    <li>Monthly minimum (80%) from energization</li>
+    <li>Exit fee if capacity reduced >20%</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Annual recalculation of collateral requirement means security exposure can increase post-contract execution; investment-grade rating threshold is critical for avoiding the $1.5M/MW collateral requirement.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1499,12 +2068,32 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
-    <li>Berkshire Hathaway Energy subsidiary</li>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No published DC tariff; per bilateral contract</li>
+    <li>Berkshire Hathaway Energy subsidiary; terms negotiated case-by-case</li>
+    <li>No published minimum billing floor</li>
     <li>Major DC market in Council Bluffs (Meta, Google, Microsoft)</li>
-    <li>No publicly available DC-specific tariff</li>
-    <li>Significant wind generation portfolio supports clean energy DCs</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Council Bluffs is among the most established DC markets in the US — high competition means favorable negotiating position for applicants; no tariff means terms are negotiable but unpredictable across different customers.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per bilateral contract negotiation</li>
+    <li>MISO Definitive Planning Phase security requirements for transmission-level</li>
+    <li>No published standardized collateral amount</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>No publicly available DC-specific tariff</li>
+    <li>MISO interconnection queue governs transmission-level additions</li>
+    <li>Significant wind generation portfolio supports clean energy commitments</li>
+    <li>Individual contracts for large load customers</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>MISO study fee sequence (application → feasibility → DPP → IA)</li>
+    <li>Contract negotiation timeline (no standardized deposit schedule)</li>
+    <li>Monthly charges from energization per bilateral contract</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Wind-heavy portfolio enables clean energy commitments without premium tariff — favorable for hyperscalers with sustainability mandates; no tariff means terms vary customer-to-customer with no regulatory backstop.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1523,12 +2112,348 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr class="detail-row"><td colspan="11">
 <div class="detail-grid">
-  <div class="detail-section"><h4>Key Details</h4><ul>
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per SB 6 framework: <strong>$50K/MW</strong> security; <strong>20/80</strong> withdrawal split</li>
+    <li>Full refund after 5 years sustained operations</li>
     <li>~1.47 GW new load growth identified (oil & gas, DCs, crypto)</li>
-    <li>Significant West Texas transmission constraints</li>
-    <li>Capacity limitations preventing full interconnection</li>
-    <li>Coyanosa-Leon Creek 138 kV project underway</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Far West Texas faces the most severe ERCOT transmission constraints; Coyanosa corridor upgrade is necessary but years away — applicants should expect 3–5 year timeline and plan for significant transmission upgrade costs.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>LC, cash, or corporate guaranty per SB 6 (same rating requirements)</li>
+    <li><strong>$50K/MW</strong> due before technical feasibility study</li>
+    <li>80% forfeited on withdrawal; 20% refunded at energization</li>
   </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>SB 6 / PUC 25.194 fully applies; Intermediate Agreement required</li>
+    <li>Significant West Texas transmission constraints; Coyanosa-Leon Creek 138 kV project underway</li>
+    <li>Far West Texas territory is a separate ERCOT load zone</li>
+    <li>Site control, backup gen disclosure, remote disconnect required</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Study fee: <strong>$100K–$300K</strong> at application</li>
+    <li>$50K/MW security before technical feasibility study</li>
+    <li>ERCOT Batch Study target: Aug 2026</li>
+    <li>Quarterly Stability Assessment before energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: TNMP serves the most transmission-constrained ERCOT territory; applicants must budget for substantial transmission upgrade costs on top of SB 6 security, potentially making West Texas economics unfavorable vs. other ERCOT zones.</div>
+  </div>
+</div>
+</td></tr>
+
+<!-- ===== MISO ADDITIONAL ===== -->
+<tr data-iso="MISO" data-tier="T1" data-state="MO" class="data-row">
+  <td class="utility-name">Ameren Missouri</td>
+  <td>MO</td>
+  <td>St. Louis, Kansas City, Springfield<div class="city-list">Missouri (Ameren UE territory)</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>75 MW</td>
+  <td>80% min monthly demand on contracted MW</td>
+  <td>2 years of minimum monthly bills</td>
+  <td>12–17 yrs total (ramp + min service)</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Missouri PSC approved Nov 24, 2025; effective Dec 4, 2025</li>
+    <li>Applies to customers forecasting peak demand ≥<strong>75 MW</strong></li>
+    <li><strong>80% minimum monthly demand charge</strong> of maximum requested demand</li>
+    <li>Contract: <strong>12–17 years</strong> (12-yr minimum + optional 5-yr ramp period)</li>
+    <li>Automatic extension; early termination fees apply</li>
+    <li>No rate discounts or economic development incentives</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No economic development incentives or rate discounts under any circumstances — applicants cannot negotiate lower rates even for very large commitments; 80% floor with 12–17 year term is one of the stricter MISO utility structures.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li><strong>2 years of minimum monthly bills</strong> upfront as financial security</li>
+    <li>100% of direct interconnection costs paid upfront by customer</li>
+    <li>Posted at contract execution</li>
+    <li>Released over contract term as obligations met</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 2 years of minimum monthly bills (posted upfront) = substantial cash commitment before a single MW is energized; combined with 100% interconnection costs upfront, Ameren Missouri requires the highest front-loaded capital of any MISO utility.</div>
+  </div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>"Powering Missouri Growth Plan" — Docket EO-2025-0xxx</li>
+    <li>Customers pay 100% of system upgrade costs triggered by their load</li>
+    <li>Annual reports on large load usage and capacity required</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Security (2× monthly minimum) at contract execution</li>
+    <li>100% interconnection costs before construction</li>
+    <li>Monthly minimum demand charges from energization</li>
+    <li>Exit fee if contract not renewed per auto-extension terms</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 100% of interconnection costs must be paid before construction — applicants are fully at risk for upgrade costs even if the project is later cancelled; no refund mechanism for withdrawn projects after construction begins.</div>
+  </div>
+</div>
+</td></tr>
+
+<tr data-iso="MISO" data-tier="T2" data-state="WI" class="data-row">
+  <td class="utility-name">WE Energies (WEC Energy)</td>
+  <td>WI</td>
+  <td>Milwaukee, Waukesha, Green Bay<div class="city-list">Eastern Wisconsin</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per dedicated resource rate</td>
+  <td>Dedicated resource subscription; baseline demand payment</td>
+  <td>Per PSCW-approved terms</td>
+  <td>Per contract; rate pending PSCW</td>
+  <td><span class="status status-pending">Developing</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Dedicated Resource Rate: DCs must subscribe to dedicated generation as condition of service</li>
+    <li>Baseline demand payment regardless of actual consumption</li>
+    <li>Prevents cost-shifting to other Wisconsin customers</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Applicants must underwrite both the power purchase and the dedicated generation subscription — effectively two separate cost streams; pending tariff modifications create pricing uncertainty for projects currently in negotiation.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per PSCW-approved terms (pending 2026 proceeding)</li>
+    <li>$2B+ gas generation expansion planned to serve DC demand</li>
+    <li>Specific collateral amount pending final PSCW order</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Dedicated Resource Rate requires DCs to be matched to specific generation resources</li>
+    <li>Customer advocates seeking modifications to proposed rate structure (2026)</li>
+    <li>WPS (Wisconsin Public Service) subsidiary follows same framework</li>
+    <li>PSCW oversight; tariff terms pending final order</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Subscription fee for dedicated generation at contract execution</li>
+    <li>Monthly demand charges from energization</li>
+    <li>Tariff terms pending final PSCW order</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Customer advocates may reduce the generation subscription requirement in the 2026 proceeding — applicants signing contracts before the PSCW order could lock in more expensive terms than future applicants; wait-and-see may be advantageous.</div>
+  </div>
+</div>
+</td></tr>
+
+<tr data-iso="MISO" data-tier="T2" data-state="AL" class="data-row">
+  <td class="utility-name">Alabama Power (Southern Co.)</td>
+  <td>AL</td>
+  <td>Birmingham, Huntsville, Montgomery<div class="city-list">Alabama (Southern Company)</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per large power contract</td>
+  <td>Per bilateral contract; Southern Co. interconnection policy</td>
+  <td>Per contract negotiation</td>
+  <td>Per large power contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Southern Company interconnection policy; large power contracts individually negotiated</li>
+    <li>No published minimum demand floor</li>
+    <li>Terms at Southern Company's / Alabama Power's discretion</li>
+    <li>DC/AI/crypto Southeast load pipeline >50 GW potential by 2035</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: No tariff protections for minimum billing floors; Southern Company's bilateral negotiation process means applicants face highly variable terms across AL, GA, FL, and MS subsidiaries — no cross-subsidiary consistency.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per individual large power contract negotiation</li>
+    <li>DER screening fee: <strong>$1,000</strong> per application (distribution-level)</li>
+    <li>Transmission-level: per Southern Companies Generator Interconnection Business Practices</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Southern Company framework governs; pre-application engagement recommended for loads >10 MW</li>
+    <li>Alabama 2025 capacity RFP driven by large load growth</li>
+    <li>DC load pipeline: Southeast exceeds 50 GW potential by 2035</li>
+    <li>Transmission-level: Southern Companies Generator Interconnection Business Practices apply</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Pre-application engagement fee (recommended for >10 MW)</li>
+    <li>DER screening fee: $1,000 at application (distribution)</li>
+    <li>Transmission study fee per Southern Companies process</li>
+    <li>Contract execution deposit</li>
+    <li>Monthly charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 50 GW Southeast pipeline creates queue congestion risk; pre-application engagement is strongly recommended to establish priority before formal queue entry; no tariff means contract terms vary widely by project.</div>
+  </div>
+</div>
+</td></tr>
+
+<tr data-iso="MISO" data-tier="T2" data-state="AL" class="data-row">
+  <td class="utility-name">Entergy Louisiana / Mississippi</td>
+  <td>LA/MS</td>
+  <td>New Orleans, Baton Rouge, Jackson<div class="city-list">Louisiana / Mississippi</div></td>
+  <td>MISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per LPSC/MPSC rules</td>
+  <td>Per bilateral contract; full incremental cost recovery</td>
+  <td>Per contract; security per LPSC docket</td>
+  <td>Per large power contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Full incremental cost recovery required; no cross-subsidy to existing customers</li>
+    <li>Terms vary by state commission: LPSC (LA) vs. MPSC (MS)</li>
+    <li>No published standard minimum billing floor; per bilateral contract</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Mississippi's pre-certification statute is a unique regulatory advantage — applicants can lock in generation commitment before completing interconnection; Louisiana's LPSC approval adds 6–12 months to project timeline.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per LPSC docket (Louisiana) / Mississippi pre-certification statute</li>
+    <li>Exact amounts TBD per individual contract</li>
+    <li>Full incremental cost recovery from DC customer (no ratepayer subsidy)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Louisiana: LPSC approved 2.2 GW gas + 1,500 MW solar for DC demand</li>
+    <li>Mississippi: unique pre-certification of generation statute for major data-processing loads</li>
+    <li>Hut 8 selected Entergy Southeast Louisiana for $10B AI DC (2025)</li>
+    <li>Entergy Louisiana broke ground on 2 new gas plants for DC load</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Per large power contract negotiation</li>
+    <li>MS pre-certification: upfront legislative engagement timeline</li>
+    <li>LA: LPSC approval process adds 6–12 months to project timeline</li>
+    <li>Study fees per applicable state commission process</li>
+    <li>Monthly charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Mississippi's pre-certification gives applicants generation certainty earlier than any other US state — strong competitive advantage for DC projects needing guaranteed power; Louisiana's LPSC timeline is the primary scheduling risk.</div>
+  </div>
+</div>
+</td></tr>
+
+<!-- ===== CAISO ADDITIONAL ===== -->
+<tr data-iso="CAISO" data-tier="T1" data-state="CA" class="data-row">
+  <td class="utility-name">SCE (Southern California Edison)</td>
+  <td>CA</td>
+  <td>Los Angeles, Irvine, Ontario<div class="city-list">Southern California / Inland Empire</div></td>
+  <td>CAISO</td>
+  <td><span class="tier tier-1">T1</span></td>
+  <td>Per CAISO/Rule 30</td>
+  <td>Per CAISO/CPUC tariff; bilateral contracts</td>
+  <td>Per CAISO participant funding model</td>
+  <td>Per contract</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>No DC-specific minimum billing floor</li>
+    <li>CAISO Rule 30 (interim): transmission-level customers fund interconnection upfront, reimbursed as load materializes</li>
+    <li>Standard GCID/TOU commercial rates apply; no standalone DC tariff</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: 100% participant funding means applicants bear full network upgrade cost upfront with reimbursement only as load materializes — cash flow risk is front-loaded; LA Basin constraints mean large upgrade costs are unavoidable.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>100% of assigned network upgrade costs posted at IA execution</li>
+    <li>CAISO participant funding model (FERC ANOPR framework)</li>
+    <li>Accepted: LC or cash</li>
+    <li>Reimbursed over time as load materializes</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>CAISO Rule 30 interim; CPUC oversight</li>
+    <li>No standalone DC tariff — standard GCID/TOU rates apply</li>
+    <li>Significant LA Basin capacity constraints</li>
+    <li>CAISO South Bay upgrades: $2B+ approved May 2025</li>
+    <li>High electricity costs ($0.20–0.30+/kWh base)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>CAISO cluster study deposit: <strong>$150K–$300K</strong></li>
+    <li>100% network upgrade deposit at IA execution</li>
+    <li>Monthly TOU charges from energization</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: LA Basin constraints mean unavoidable large upgrade costs; combined with California's high base electricity rates, total cost of ownership for SCE-territory DCs is among the highest in the US — ROI benchmarks against other CAISO options critical.</div>
+  </div>
+</div>
+</td></tr>
+
+<tr data-iso="CAISO" data-tier="T2" data-state="CA" class="data-row">
+  <td class="utility-name">SMUD (Sacramento Municipal)</td>
+  <td>CA</td>
+  <td>Sacramento, Rancho Cordova, Elk Grove<div class="city-list">Sacramento Valley</div></td>
+  <td>CAISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per contract</td>
+  <td>Per municipal utility contract</td>
+  <td>Per contract negotiation</td>
+  <td>Per contract</td>
+  <td><span class="status status-active">Active</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per negotiated contract; municipal utility sets own terms</li>
+    <li>No published minimum billing floor</li>
+    <li>Active DC recruitment in Sacramento region</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Most favorable California utility for data centers — municipal status means no CPUC approval delays, competitive hydro rates, and individually negotiated terms without a tariff-mandated take-or-pay floor.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per individual contract negotiation</li>
+    <li>Municipal utility — not CPUC regulated; sets own collateral terms</li>
+    <li>No published standardized collateral requirement</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Municipal utility — not CPUC regulated</li>
+    <li>Individual contracts for large load customers (>5 MW)</li>
+    <li>Among lowest commercial electricity rates in California</li>
+    <li>Primarily hydropower base with growing renewable portfolio</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Per individual contract; no standardized study fee schedule</li>
+    <li>Contract terms negotiated directly with SMUD</li>
+    <li>Monthly charges from energization at negotiated rates</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: SMUD's lack of CPUC oversight means faster contract execution and more flexible terms; hydro-based rates are among the most stable in CA — lower rate escalation risk than IOU alternatives.</div>
+  </div>
+</div>
+</td></tr>
+
+<tr data-iso="CAISO" data-tier="T2" data-state="CA" class="data-row">
+  <td class="utility-name">Silicon Valley Power (SVP)</td>
+  <td>CA</td>
+  <td>Santa Clara, San Jose<div class="city-list">Silicon Valley (City of Santa Clara)</div></td>
+  <td>CAISO</td>
+  <td><span class="tier tier-2">T2</span></td>
+  <td>Per contract</td>
+  <td>Per municipal utility contract</td>
+  <td>Per contract</td>
+  <td>Per contract</td>
+  <td><span class="status status-constrained">Constrained</span></td>
+  <td><button class="expand-btn" onclick="toggleDetail(this)">+ Detail</button></td>
+</tr>
+<tr class="detail-row"><td colspan="11">
+<div class="detail-grid">
+  <div class="detail-section"><h4>Take-or-Pay Requirements</h4><ul>
+    <li>Per negotiated contract with City of Santa Clara; no published minimum floor</li>
+    <li>~60% of total SVP load is data centers; DC load expected to <strong>double by 2035</strong></li>
+    <li>Capacity constraints: 48 MW DC campus vacant pending upgrades</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: Most DC-dense utility in US (by % of load); capacity-constrained — applicants face likely 3–5 year wait for new large-load capacity; existing DC customers have strong incumbent advantage for expansions.</div>
+  </div>
+  <div class="detail-section"><h4>Collateral Requirements</h4><ul>
+    <li>Per individual contract with City of Santa Clara</li>
+    <li>Municipal utility — not CPUC regulated; sets own collateral terms</li>
+    <li>No published standardized collateral requirement</li>
+  </ul></div>
+  <div class="detail-section"><h4>Policy Requirements</h4><ul>
+    <li>Municipal utility — individual contracts with City of Santa Clara</li>
+    <li>Not CPUC regulated; City Council sets policy</li>
+    <li>Needs geothermal and battery storage additions for new DC service</li>
+    <li>Among most DC-dense utility territories in the US (by % of load)</li>
+  </ul></div>
+  <div class="detail-section"><h4>Payment Schedule</h4><ul>
+    <li>Per individual contract negotiation; no standardized study fee schedule</li>
+    <li>Contract terms negotiated directly with City of Santa Clara</li>
+    <li>Monthly charges from energization at negotiated rates</li>
+  </ul>
+  <div class="impact-note">⚠ Applicant Impact: New DC applications face a constrained queue with no clear timeline for new capacity; incumbent DC operators (hyperscalers already on-system) have significant advantage over new entrants for capacity allocation.</div>
+  </div>
 </div>
 </td></tr>
 
@@ -1672,6 +2597,31 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
   </ul>
 </div>
 
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Ameren Missouri</span><span class="pc-iso">MISO | T1</span></div>
+  <div class="pc-meta">St. Louis, MO • Missouri PSC approved Nov 24, 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% of maximum requested electric demand</li>
+    <li><strong>Contract:</strong> 12–17 years total (12-yr min + optional 5-yr ramp)</li>
+    <li><strong>Threshold:</strong> ≥75 MW forecasted peak demand</li>
+    <li><strong>Auto-Extension:</strong> Yes; early termination fees if not renewed</li>
+    <li><strong>No Incentives:</strong> No rate discounts or economic development credits</li>
+    <li><strong>Infrastructure:</strong> 100% of interconnection upgrade costs paid by DC customer</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Evergy Missouri</span><span class="pc-iso">SPP | T2</span></div>
+  <div class="pc-meta">Kansas City, MO • MO PSC approved Nov 2025</div>
+  <ul>
+    <li><strong>Min Demand:</strong> 80% minimum monthly bill on contract demand</li>
+    <li><strong>Contract:</strong> 17 years total (5-yr ramp + 12-yr minimum)</li>
+    <li><strong>Threshold:</strong> New facilities >75 MW</li>
+    <li><strong>Collateral:</strong> 2 years of minimum monthly bills required</li>
+    <li><strong>Cost Coverage:</strong> Incremental costs directly assigned to large load customer</li>
+  </ul>
+</div>
+
 </div>
 </div>
 
@@ -1744,10 +2694,31 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 </tr>
 <tr>
   <td class="utility-name">Consumers Energy</td><td>MI</td><td>MISO</td>
-  <td>Per ex parte filing — must prove no subsidy</td>
-  <td>Per MPSC-reviewed special contract</td>
+  <td><strong>50% of exit fee</strong> (default); declines over contract term</td>
+  <td>Standby irrevocable LC or cash (parent guarantees excluded)</td>
+  <td>At contract execution; annual recalculation</td>
+  <td>Reduces over 15-yr contract; full release at contract end</td>
+</tr>
+<tr>
+  <td class="utility-name">Ameren Missouri</td><td>MO</td><td>MISO</td>
+  <td><strong>2 years of minimum monthly bills</strong> upfront</td>
+  <td>Cash, letter of credit (per contract)</td>
   <td>At contract execution</td>
-  <td>MPSC review within 90 days; ongoing no-subsidy proof</td>
+  <td>Released over contract term as performance obligations met</td>
+</tr>
+<tr>
+  <td class="utility-name">Evergy (KS/MO)</td><td>KS/MO</td><td>SPP</td>
+  <td><strong>2 years of minimum monthly bills</strong></td>
+  <td>Per KCC/MO PSC approved terms</td>
+  <td>At contract execution</td>
+  <td>17-year contract; released on schedule</td>
+</tr>
+<tr>
+  <td class="utility-name">Indiana Michigan Power</td><td>IN</td><td>PJM</td>
+  <td><strong>$1.5M/MW</strong> if credit/liquidity not met; <strong>24× monthly non-fuel bill</strong> in Year 1</td>
+  <td>Per IURC-approved tariff; recalculated annually</td>
+  <td>At contract execution; updated if 10%+ change annually</td>
+  <td>Exit fee triggered if capacity reduced >20%</td>
 </tr>
 <tr>
   <td class="utility-name">FPL (NextEra)</td><td>FL</td><td>SERC</td>
@@ -1902,6 +2873,55 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
   </ul>
 </div>
 
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Ameren Missouri</span><span class="pc-iso">MISO</span></div>
+  <div class="pc-meta">Missouri • PSC effective Dec 4, 2025</div>
+  <ul>
+    <li><strong>Security:</strong> 2× monthly minimum bills posted at contract execution</li>
+    <li><strong>Interconnection:</strong> 100% of direct costs paid before construction begins</li>
+    <li><strong>Monthly:</strong> 80% minimum demand charge from energization</li>
+    <li><strong>Contract:</strong> 12–17 yr term; auto-extension applies</li>
+    <li><strong>Termination:</strong> Early exit fees per contract; no waivers</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Evergy Large Load (KS/MO)</span><span class="pc-iso">SPP</span></div>
+  <div class="pc-meta">Kansas City • KCC approved Nov 6, 2025 / MO PSC Nov 15, 2025</div>
+  <ul>
+    <li><strong>Collateral:</strong> 2 years of minimum monthly bills at contract execution</li>
+    <li><strong>Ramp Period:</strong> Up to 5 years; minimum MW thresholds each year</li>
+    <li><strong>Monthly:</strong> 80% min demand charge after ramp complete</li>
+    <li><strong>Infrastructure:</strong> All system upgrades directly assigned to large load customer</li>
+    <li><strong>Exit:</strong> Termination fees apply throughout 17-year total term</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Consumers Energy (Michigan)</span><span class="pc-iso">MISO</span></div>
+  <div class="pc-meta">Michigan • MPSC approved Nov 6, 2025</div>
+  <ul>
+    <li><strong>Proposal Fee:</strong> $100,000 upfront (reconciled to actual costs)</li>
+    <li><strong>Collateral:</strong> 50% of exit fee value; posted at contract execution</li>
+    <li><strong>Monthly:</strong> 80% minimum billing demand from energization</li>
+    <li><strong>Ramp:</strong> Up to 5 years; service begins per agreed milestones</li>
+    <li><strong>Exit Fee:</strong> Remaining months × monthly minimum if terminated early</li>
+    <li><strong>MPSC Review:</strong> Ex parte filing required before service begins (90-day window)</li>
+  </ul>
+</div>
+
+<div class="policy-card">
+  <div class="pc-header"><span class="pc-title">Indiana Michigan Power</span><span class="pc-iso">PJM</span></div>
+  <div class="pc-meta">Indiana • IURC approved Feb 2025</div>
+  <ul>
+    <li><strong>Collateral (Year 1):</strong> 24× maximum expected monthly non-fuel bill</li>
+    <li><strong>Annual Recalc:</strong> Updated each year; must post additional if 10%+ higher</li>
+    <li><strong>Monthly:</strong> 80% minimum demand billing from energization</li>
+    <li><strong>Contract:</strong> 12-year minimum after 5-year ramp (17 yrs total)</li>
+    <li><strong>Exit:</strong> Fee triggered if capacity reduced >20%</li>
+  </ul>
+</div>
+
 </div>
 </div>
 
@@ -2001,6 +3021,36 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
   <div class="change-body"><strong>Georgia PSC</strong> — Approved rule allowing special billing terms for customers >100 MW. 80% minimum demand, exit fees, PSC contract review mandate. <span class="change-tag tag-new">New</span></div>
 </div>
 
+<div class="change-item">
+  <div class="change-date">Nov 24, 2025</div>
+  <div class="change-body"><strong>Ameren Missouri</strong> — Missouri PSC approved "Powering Missouri Growth Plan." 75 MW threshold, 80% min demand, 12–17 yr contracts, 2-yr minimum bill collateral, 100% interconnection cost recovery. Effective Dec 4, 2025. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Nov 6, 2025</div>
+  <div class="change-body"><strong>Evergy (Kansas)</strong> — Kansas Corporation Commission unanimously approved Large Load Power Service Rate Plan. 75 MW threshold, 80% min demand, 17-yr contracts (5-yr ramp + 12-yr service), 2-yr collateral requirement. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Oct 2025</div>
+  <div class="change-body"><strong>FERC ANOPR (RM26-4)</strong> — DOE directed FERC to open large load interconnection rulemaking. Scope: loads >20 MW on interstate transmission. 100% participant funding model proposed. Final action deadline: Apr 30, 2026. <span class="change-tag tag-ferc">FERC</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Oct 2025</div>
+  <div class="change-body"><strong>Duke Energy Carolinas / Progress</strong> — Updated interconnection requirements for DEC and DEP customers effective Nov 1, 2025. New milestone and financial security provisions added. <span class="change-tag tag-tariff">Tariff</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">Jun 2025</div>
+  <div class="change-body"><strong>Oregon POWER Act (HB 3546)</strong> — Signed into law; first state mandatory DC rate class for >20 MW users. 10-yr contracts, baseline demand payment, full transmission cost pass-through, biennial reporting. PGE UM2377 tariff pending Apr 2026. <span class="change-tag tag-new">New</span></div>
+</div>
+
+<div class="change-item">
+  <div class="change-date">May 2025</div>
+  <div class="change-body"><strong>Utah SB 132</strong> — Modifies Rocky Mountain Power's duty to serve loads ≥100 MW in 5 years. Utility gets 90 days to evaluate; if cannot serve, data center may seek independent generation source or connected grid supply. <span class="change-tag tag-state">State</span></div>
+</div>
+
 </div>
 </div>
 
@@ -2038,6 +3088,22 @@ td .detail-list li strong { color: var(--text-primary); font-weight: 600; }
 <div class="source-item"><a href="https://www.euci.com/utilities-adopt-large-load-tariffs-to-cope-with-the-costs-and-power-demands-of-data-centers/" target="_blank">Utilities Adopt Large Load Tariffs to Cope with Data Centers</a><div class="src-date">EUCI — 2025</div></div>
 <div class="source-item"><a href="https://www.brattle.com/wp-content/uploads/2025/09/Large-Loads-Interconnection-Tariff-Designs-and-State-Actions.pdf" target="_blank">Large Loads: Interconnection, Tariff Designs and State Actions</a><div class="src-date">Brattle Group — Sep 2025</div></div>
 <div class="source-item"><a href="https://ercot.com/services/rq/large-load-integration" target="_blank">ERCOT Large Load Integration</a><div class="src-date">ERCOT — 2026</div></div>
+<div class="source-item"><a href="https://www.amereninvestors.com/investors/financial-releases/financial-releases-details/2025/State-regulators-approve-Ameren-Missouris-plan-to-reliably-serve-new-large-businesses-boosting-states-economy-while-safeguarding-consumers/default.aspx" target="_blank">State Regulators Approve Ameren Missouri's Large Load Plan</a><div class="src-date">Ameren / MO PSC — Nov 24, 2025</div></div>
+<div class="source-item"><a href="https://www.utilitydive.com/news/kansas-michigan-data-center-large-load-evergy-consumers/805115/" target="_blank">Kansas, Michigan Regulators Approve Large Load Rules for Evergy, Consumers Energy</a><div class="src-date">Utility Dive — Nov 2025</div></div>
+<div class="source-item"><a href="https://www.kcc.ks.gov/news-11-6-25" target="_blank">KCC Approves Large Load Rate Plan with Consumer Protections</a><div class="src-date">Kansas Corporation Commission — Nov 6, 2025</div></div>
+<div class="source-item"><a href="https://www.gtlaw.com/en/insights/2026/3/texas-senate-bill-6-update-what-data-centers-large-load-customers-should-know-about-proposed-interconnection-standards" target="_blank">Texas SB 6 Update: Proposed Rule 25.194 for Large Load Interconnection Standards</a><div class="src-date">Greenberg Traurig — Mar 2026</div></div>
+<div class="source-item"><a href="https://www.aepohio.com/company/about/rates/data-center-tariff/" target="_blank">AEP Ohio Data Center Tariff Details</a><div class="src-date">AEP Ohio — Jul 2025</div></div>
+<div class="source-item"><a href="https://www.varnumlaw.com/insights/mpsc-approves-consumers-energy-tariff-for-large-data-centers/" target="_blank">MPSC Approves Consumers Energy Tariff for Large Data Centers</a><div class="src-date">Varnum LLP — Nov 2025</div></div>
+<div class="source-item"><a href="https://perkinscoie.com/insights/update/sb-6-implementation-shaping-data-center-future-texas" target="_blank">SB 6 Implementation Shaping Data Center Future in Texas</a><div class="src-date">Perkins Coie — 2026</div></div>
+<div class="source-item"><a href="https://www.ferc.gov/rm26-4" target="_blank">FERC RM26-4: Interconnection of Large Loads to Interstate Transmission</a><div class="src-date">FERC — Oct 2025</div></div>
+<div class="source-item"><a href="https://www.opb.org/article/2025/06/05/oregon-data-centers-cryptocurrency-business-environment-power-electricity/" target="_blank">Oregon Legislature Passes POWER Act Targeting Industrial Energy Users</a><div class="src-date">OPB — Jun 2025</div></div>
+<div class="source-item"><a href="https://www.utilitydive.com/news/indiana-iurc-large-load-interconnection-data-center-aep-amazon-google/740452/" target="_blank">Indiana Regulators Approve 'Large Load' Interconnection Rules</a><div class="src-date">Utility Dive — Feb 2025</div></div>
+<div class="source-item"><a href="https://www.latitudemedia.com/news/utah-is-taking-a-different-approach-to-new-data-center-load/" target="_blank">Utah Is Taking a Different Approach to New Data Center Load</a><div class="src-date">Latitude Media — 2025</div></div>
+<div class="source-item"><a href="https://www.datacenterdynamics.com/en/news/kansas-public-utilities-commission-approves-new-data-center-tarrif/" target="_blank">Kansas PUC Approves New Data Center Tariff</a><div class="src-date">DCD — Nov 2025</div></div>
+<div class="source-item"><a href="https://newsroom.fpl.com/Q-A-with-FPL-President-on-expected-data-center-growth-and-the-companys-new-customer-protections" target="_blank">FPL President Q&amp;A: Data Center Growth and Customer Protections</a><div class="src-date">FPL Newsroom — Feb 2026</div></div>
+<div class="source-item"><a href="https://investor.pgecorp.com/news-events/press-releases/press-release-details/2025/PGE-Accelerating-Connection-of-New-Data-Centers-throughout-Northern-and-Central-California/default.aspx" target="_blank">PG&amp;E Accelerating Connection of New Data Centers in Northern/Central CA</a><div class="src-date">PG&amp;E — 2025</div></div>
+<div class="source-item"><a href="https://www.prnewswire.com/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302577731.html" target="_blank">Portland General Electric and GridCARE Accelerate Data Center Power</a><div class="src-date">PR Newswire — 2025</div></div>
+<div class="source-item"><a href="https://www.datacenterdynamics.com/en/news/silicon-valley-power-says-data-center-load-to-double-by-2035-will-need-geothermal-power-and-batteries/" target="_blank">Silicon Valley Power: DC Load to Double by 2035</a><div class="src-date">DCD — 2025</div></div>
 
 </div>
 </div>
