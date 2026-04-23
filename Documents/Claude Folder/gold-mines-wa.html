@@ -170,7 +170,7 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
   <div class="kpi-card kpi-green"><div class="kpi-label">Active Producers</div><div class="kpi-value" id="kpi-active">—</div><div class="kpi-sub">Currently producing</div></div>
   <div class="kpi-card"><div class="kpi-label">Development Stage</div><div class="kpi-value" id="kpi-dev" style="color:#a855f7">—</div><div class="kpi-sub">Pre-production projects</div></div>
   <div class="kpi-card kpi-warn"><div class="kpi-label">Care &amp; Maintenance</div><div class="kpi-value" id="kpi-cm">—</div><div class="kpi-sub">Mothballed operations</div></div>
-  <div class="kpi-card kpi-warn"><div class="kpi-label">Watch List</div><div class="kpi-value" id="kpi-watch">—</div><div class="kpi-sub">Distress signals firing</div></div>
+  <div class="kpi-card kpi-warn"><div class="kpi-label">Watch List</div><div class="kpi-value" id="kpi-watch">—</div><div class="kpi-sub">Distress signals active</div></div>
   <div class="kpi-card kpi-danger"><div class="kpi-label">Distressed / Admin</div><div class="kpi-value" id="kpi-distressed">—</div><div class="kpi-sub">In distress or insolvency</div></div>
   <div class="kpi-card"><div class="kpi-label">States Covered</div><div class="kpi-value" id="kpi-states">—</div><div class="kpi-sub" id="kpi-states-list"></div></div>
 </div>
@@ -1613,7 +1613,7 @@ function buildDetailPanel(m, type) {
       <div id="${m.id}-sources" class="detail-pane"><div class="sources-list">${sourcesHtml}</div></div>
     </div>`;
   } else {
-    const signalsHtml = m.signals.map(s=>`<tr><td>${s.signal}</td><td style="font-size:.75rem;color:#8b949e">${s.weight}</td><td class="${s.class}" style="font-size:.8rem">${s.status}</td><td style="font-size:.8rem;color:#8b949e">${s.detail}</td></tr>`).join('');
+    const signalsHtml = m.signals.map(s=>{const label=s.class==='signal-fire'?'CRITICAL':s.class==='signal-warn'?'CAUTION':s.status;return`<tr><td>${s.signal}</td><td style="font-size:.75rem;color:#8b949e">${s.weight}</td><td class="${s.class}" style="font-size:.8rem">${label}</td><td style="font-size:.8rem;color:#8b949e">${s.detail}</td></tr>`}).join('');
     const sourcesHtml = m.sources.map(s=>`<div class="source-item"><span class="source-type">${s.type}</span><div class="source-text"><a href="${s.url}" target="_blank">${s.title}</a><div class="source-date">${s.date}</div></div></div>`).join('');
     return `<div class="detail-panel">
       <div class="detail-tabs">
