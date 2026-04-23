@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Distressed Gold Mines — Western Australia</title>
+<title>Distressed Gold Mines — Australia</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
@@ -46,6 +46,12 @@ a:hover{text-decoration:underline}
 .search-box:focus{border-color:#D4AF37}
 select.filter-select{background:#1c2128;border:1px solid #2d3148;border-radius:6px;padding:7px 12px;color:#e6edf3;font-size:.8rem;cursor:pointer;outline:none}
 select.filter-select:focus{border-color:#D4AF37}
+.state-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:.7rem;font-weight:700;background:#1c2128;border:1px solid #2d3148;color:#8b949e;margin-left:4px}
+.state-badge-wa{border-color:#D4AF37;color:#D4AF37}
+.state-badge-qld{border-color:#ef4444;color:#ef4444}
+.state-badge-nsw{border-color:#3b82f6;color:#3b82f6}
+.state-badge-vic{border-color:#a855f7;color:#a855f7}
+.state-badge-nt{border-color:#22c55e;color:#22c55e}
 .result-count{margin-left:auto;font-size:.8rem;color:#8b949e}
 
 /* TABLE */
@@ -150,11 +156,11 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-title">⛏ Distressed Gold Mines — Western Australia</div>
+  <div class="header-title">⛏ Distressed Gold Mines — Australia</div>
   <div class="header-meta">
     <span class="badge">Last Updated: 22 Apr 2026</span>
-    <span class="badge badge-gold">22 Sources</span>
-    <span class="badge badge-wa">WA</span>
+    <span class="badge badge-gold">30 Sources</span>
+    <span class="badge badge-wa">AU</span>
   </div>
 </div>
 
@@ -162,37 +168,37 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 <div class="kpi-grid">
   <div class="kpi-card kpi-danger">
     <div class="kpi-label">Distressed Mines</div>
-    <div class="kpi-value">6</div>
-    <div class="kpi-sub">Confirmed distressed</div>
+    <div class="kpi-value">10</div>
+    <div class="kpi-sub">Confirmed distressed (AU)</div>
   </div>
   <div class="kpi-card">
     <div class="kpi-label">Total Gold Resource</div>
-    <div class="kpi-value">~11.4M</div>
+    <div class="kpi-value">~13.5M</div>
     <div class="kpi-sub">oz (across tracked mines)</div>
   </div>
   <div class="kpi-card kpi-danger">
     <div class="kpi-label">In Administration/DOCA</div>
-    <div class="kpi-value">2</div>
+    <div class="kpi-value">3</div>
     <div class="kpi-sub">Active insolvency</div>
   </div>
   <div class="kpi-card kpi-warn">
     <div class="kpi-label">Care &amp; Maintenance</div>
-    <div class="kpi-value">4</div>
+    <div class="kpi-value">6</div>
     <div class="kpi-sub">Mines mothballed</div>
   </div>
   <div class="kpi-card">
-    <div class="kpi-label">Mines For Sale</div>
+    <div class="kpi-label">Blocked / Unviable</div>
     <div class="kpi-value">1</div>
-    <div class="kpi-sub">Actively marketed</div>
+    <div class="kpi-sub">Heritage/regulatory block</div>
   </div>
   <div class="kpi-card">
-    <div class="kpi-label">Avg Resource Grade</div>
-    <div class="kpi-value">2.1</div>
-    <div class="kpi-sub">g/t Au (avg tracked)</div>
+    <div class="kpi-label">States Covered</div>
+    <div class="kpi-value">5</div>
+    <div class="kpi-sub">WA · QLD · NSW · VIC · NT</div>
   </div>
   <div class="kpi-card kpi-danger">
     <div class="kpi-label">Watch List Critical</div>
-    <div class="kpi-value">2</div>
+    <div class="kpi-value">3</div>
     <div class="kpi-sub">80–100% distress prob.</div>
   </div>
 </div>
@@ -213,6 +219,16 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
       <button class="filter-btn" data-filter="Care &amp; Maintenance" onclick="setFilter('status','Care &amp; Maintenance',this)">Care &amp; Maintenance</button>
       <button class="filter-btn" data-filter="For Sale" onclick="setFilter('status','For Sale',this)">For Sale</button>
     </div>
+    <select class="filter-select" id="state-filter-distressed" onchange="applyDistressedFilters()">
+      <option value="all">All States</option>
+      <option value="WA">WA</option>
+      <option value="QLD">QLD</option>
+      <option value="NSW">NSW</option>
+      <option value="VIC">VIC</option>
+      <option value="SA">SA</option>
+      <option value="NT">NT</option>
+      <option value="TAS">TAS</option>
+    </select>
     <select class="filter-select" id="region-filter" onchange="applyDistressedFilters()">
       <option value="all">All Regions</option>
       <option value="Pilbara">Pilbara</option>
@@ -220,6 +236,9 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
       <option value="Mid West">Mid West</option>
       <option value="Wheatbelt">Wheatbelt</option>
       <option value="Northern Goldfields">Northern Goldfields</option>
+      <option value="North Queensland">North Queensland</option>
+      <option value="Central West NSW">Central West NSW</option>
+      <option value="Pine Creek">Pine Creek (NT)</option>
     </select>
     <input class="search-box" id="distressed-search" type="text" placeholder="Search mines..." oninput="applyDistressedFilters()">
     <span class="result-count" id="distressed-count">6 mines</span>
@@ -256,8 +275,18 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
       <button class="filter-btn" data-filter="Moderate" onclick="setFilter('prob','Moderate',this)">Moderate</button>
       <button class="filter-btn" data-filter="Low" onclick="setFilter('prob','Low',this)">Low</button>
     </div>
+    <select class="filter-select" id="state-filter-watch" onchange="applyWatchFilters()">
+      <option value="all">All States</option>
+      <option value="WA">WA</option>
+      <option value="QLD">QLD</option>
+      <option value="NSW">NSW</option>
+      <option value="VIC">VIC</option>
+      <option value="SA">SA</option>
+      <option value="NT">NT</option>
+      <option value="TAS">TAS</option>
+    </select>
     <input class="search-box" id="watchlist-search" type="text" placeholder="Search companies..." oninput="applyWatchFilters()">
-    <span class="result-count" id="watchlist-count">8 companies</span>
+    <span class="result-count" id="watchlist-count">17 companies</span>
   </div>
   <div class="table-wrap">
     <table id="watchlist-table">
@@ -284,7 +313,7 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 <!-- SOURCES SECTION -->
 <div class="sources-section">
   <div class="section-title">All Sources</div>
-  <div style="font-size:.8rem;color:#8b949e;margin-bottom:12px">62 sources referenced across all entries</div>
+  <div style="font-size:.8rem;color:#8b949e;margin-bottom:12px">80 sources referenced across all entries (expanded to all-Australia Apr 2026)</div>
   <div class="sources-grid" id="all-sources-grid"></div>
 </div>
 
@@ -297,6 +326,7 @@ const distressedMines = [
   {
     id: 'd1',
     name: 'Warrawoona Gold Project',
+    state: 'WA',
     company: 'AIM Mining / Ample Resources (ex-Calidus ASX:CAI)',
     region: 'Pilbara',
     status: 'Care & Maintenance',
@@ -340,6 +370,7 @@ const distressedMines = [
   {
     id: 'd2',
     name: 'Wiluna Mining Centre',
+    state: 'WA',
     company: 'Wiluna Mining Corporation (ASX:WMC — delisted 2024)',
     region: 'Northern Goldfields',
     status: 'DOCA',
@@ -381,6 +412,7 @@ const distressedMines = [
   {
     id: 'd3',
     name: 'Edna May Gold Mine',
+    state: 'WA',
     company: 'Ramelius Resources (ASX:RMS)',
     region: 'Wheatbelt',
     status: 'Care & Maintenance',
@@ -434,6 +466,7 @@ const distressedMines = [
   {
     id: 'd4',
     name: 'Warrawoona / Dalgaranga (Spartan)',
+    state: 'WA',
     company: 'Ramelius Resources (ASX:RMS, ex-Spartan Resources ASX:SPR)',
     region: 'Mid West',
     status: 'Care & Maintenance',
@@ -486,6 +519,7 @@ const distressedMines = [
   {
     id: 'd5',
     name: 'Mt Morgans / Laverton (ex-Dacian)',
+    state: 'WA',
     company: 'Genesis Minerals (ASX:GMD, ex-Dacian Gold ASX:DCN)',
     region: 'Goldfields',
     status: 'Care & Maintenance',
@@ -539,6 +573,7 @@ const distressedMines = [
   {
     id: 'd6',
     name: 'Bullabulling Gold Project',
+    state: 'WA',
     company: 'Minerals 260 (ASX:MI6, ex-Norton Gold Fields/Zijin)',
     region: 'Goldfields',
     status: 'Care & Maintenance',
@@ -590,6 +625,7 @@ const distressedMines = [
   {
     id: 'd7',
     name: 'Bellevue Gold Mine',
+    state: 'WA',
     company: 'Bellevue Gold Limited (ASX:BGL)',
     region: 'Goldfields',
     status: 'Suspended / Strategic Review',
@@ -637,6 +673,150 @@ const distressedMines = [
       {type:'News', title:'Bellevue Gold raises funds, weighs options after weak quarter — Mining.com', url:'https://www.mining.com/bellevue-gold-raises-funds-weighs-options-after-weak-quarter/', date:'Apr 2025'},
       {type:'ASX Filing', title:'Bellevue Gold FY26 Guidance & Annual Resource Statement', url:'https://announcements.asx.com.au/asxpdf/20250801/pdf/06mdzqxnpry6q4.pdf', date:'Aug 2025'},
     ]
+  },
+  {
+    id: 'd8',
+    name: 'McPhillamys Gold Project',
+    state: 'NSW',
+    company: 'Regis Resources (ASX:RRL)',
+    region: 'Central West NSW',
+    status: 'Blocked / Unviable',
+    statusClass: 's-admin',
+    resourceOz: '1,890,000',
+    resourceOzNum: 1890000,
+    grade: 'Not disclosed (open pit)',
+    gradeNum: 0.9,
+    area: 'Blayney, NSW (~250km W of Sydney)',
+    processing: 'No plant yet (development stage)',
+    price: 'Not for sale — under judicial review',
+    sourcesCount: 4,
+    lastUpdated: 'Apr 2026',
+    overview: `McPhillamys Gold Project, located near Blayney in Central West NSW (~250km west of Sydney), is one of Australia's largest undeveloped gold deposits, held by Regis Resources (ASX:RRL). The project received state and federal EPBC approvals in 2023 for an open pit mine targeting ~2 million oz of production over a 10-year life. However, on 16 August 2024, Federal Environment Minister Tanya Plibersek issued a Section 10 declaration under the Aboriginal and Torres Strait Islander Heritage Protection Act 1984, protecting the Belubula River headwaters as a significant Indigenous cultural area — the same site earmarked for the project's tailings storage facility. Regis stated this rendered the project unviable in its current form and took a non-cash impairment of A$192 million, withdrawing 1.89 Moz of previously declared ore reserves. In November 2024, Regis commenced judicial review proceedings in the Federal Court; hearings took place December 10–12, 2025. As of April 2026, judgement is pending. Any alternative tailings solution would restart approvals, potentially delaying the project 5–10 years.`,
+    jorc: `Mineral Resource (pre-impairment): significant resource supporting ~2 million oz production over a 10-year life. Ore Reserve: 1.89 Moz (WITHDRAWN following Section 10 heritage declaration, Aug 2024). DFS outcomes also withdrawn. Full JORC 2012 compliant resource data was removed from Regis's ASX reporting as of Aug 2024 result disclosure. The project area covers the Belubula River district near Blayney, NSW.`,
+    production: `No production ever commenced. Development stage only. DFS was completed 2023 indicating ~200,000 oz/year peak production. All production guidance withdrawn August 2024. Project now in regulatory limbo pending Federal Court judicial review outcome.`,
+    processing_detail: `No processing plant on site. DFS contemplated a conventional open pit CIL circuit. The proposed tailings storage facility (TSF) at the Belubula River headwaters was the subject of the Section 10 heritage declaration. Alternative TSF sites would require full restart of environmental approvals process (est. 5–10 years delay).`,
+    tenements: `Multiple mining leases and exploration licences in the Blayney area, Central West NSW. Regis Resources maintains tenure while judicial review is contested.`,
+    distressTimeline: [
+      '2013: Regis Resources acquires McPhillamys tenements',
+      '2023: NSW state approvals and Federal EPBC approval obtained for open pit mine',
+      '16 Aug 2024: Federal Environment Minister issues Section 10 heritage protection over Belubula River headwaters (tailings dam site)',
+      'Aug 2024: Regis declares project "not viable in its current form"; takes A$192M non-cash impairment; withdraws 1.89 Moz ore reserve',
+      'Nov 2024: Regis commences Federal Court judicial review proceedings challenging heritage declaration',
+      'Dec 2025: Three-day Federal Court hearing (10–12 December); Regis argues multiple process errors in heritage investigation',
+      'Apr 2026: Judgement pending; project in regulatory suspension'
+    ],
+    contacts: `Regis Resources Limited (ASX:RRL)<br>Level 2, 18 Richardson Street, West Perth WA 6005<br>Website: <a href="https://www.regisresources.com.au/our-assets/mcphillamys/" target="_blank">regisresources.com.au/mcphillamys</a>`,
+    secFilings: `asx`,
+    secData: {
+      exchange: 'ASX',
+      ticker: 'RRL',
+      latestAnnual: {date:'Aug 2025', period:'FY2025 (year ended 30 Jun 2025)', url:'https://www.regisresources.com.au/'},
+      goingConcern: 'None identified — Regis has A$930M cash, zero debt',
+      cash: 'A$930M (Dec 2025)',
+      debt: 'Zero debt',
+      prodGuidance: '350,000–380,000 oz FY2026 (Duketon operations; McPhillamys excluded)',
+      aisc: 'A$2,610–2,990/oz (FY2026)',
+      impairments: 'A$192M non-cash impairment against McPhillamys carrying value (Aug 2024)',
+      hedging: 'Minimal hedging',
+      riskFactors: 'McPhillamys judicial review outcome uncertain; heritage protection precedent for other NSW/QLD projects; project delay 5–10 years if alternative TSF required'
+    },
+    sources: [
+      {type:'News', title:'Regis Resources says project not viable after govt order — Mining.com', url:'https://www.mining.com/regis-resources-says-project-not-viable-after-australias-govt-action/', date:'Aug 2024'},
+      {type:'News', title:'Regis Resources takes $130M writedown as govt call makes project unviable — Mining.com', url:'https://www.mining.com/regis-resources-takes-130m-writedown-as-govt-call-makes-project-unviable/', date:'Aug 2024'},
+      {type:'Company', title:'McPhillamys Project Page — Regis Resources', url:'https://www.regisresources.com.au/our-assets/mcphillamys/', date:'2026'},
+      {type:'News', title:'Regis challenges federal heritage declaration at Federal Court — Blayney Chronicle', url:'https://www.blayneychronicle.com.au/story/9131300/regis-challenges-decision-blocking-1-billion-mine-near-blayney/', date:'Nov 2024'},
+    ]
+  },
+  {
+    id: 'd9',
+    name: 'Mungana Gold-Copper Processing Plant',
+    state: 'QLD',
+    company: 'Aurora Metals (Liquidators Appointed) / Mt Garnet Mining Finance (mortgagee in possession)',
+    region: 'North Queensland',
+    status: 'Care & Maintenance',
+    statusClass: 's-cm',
+    resourceOz: 'Not applicable (plant asset)',
+    resourceOzNum: 0,
+    grade: 'N/A',
+    gradeNum: 0,
+    area: 'Chillagoe, Far North Queensland',
+    processing: '600,000 tpa plant (C&M)',
+    price: 'Available via mortgagee; partial access negotiated by Tartana',
+    sourcesCount: 3,
+    lastUpdated: 'Apr 2025',
+    overview: `The Mungana processing plant, located at Chillagoe in far north Queensland, was operated by Aurora Metals Limited, which went into liquidation in 2023 after defaulting on loan facilities owed to Mt Garnet Mining Finance Pty Ltd (MGMF). The plant — along with the Mungana and King Vol underground gold-copper mines and related tenements — has since been under care and maintenance, with MGMF as mortgagee in possession. Tartana Minerals (ASX:TAT) entered negotiations with MGMF from early 2025, agreeing to fund 50% of care and maintenance costs (capped at A$100,000/month). On 14 April 2025, Tartana signed a binding Heads of Agreement with MGMF to create a venture: Tartana will mine copper ore from its Tartana open pit 25km away and process through the 600,000 tpa Mungana plant for copper concentrate production. The historic Mungana and King Vol underground gold mines within the complex remain under the mortgagee's control and are being evaluated separately. The complex is in the same geological corridor as the historic Kidston, Red Dome, and Mungana IRG gold operations.`,
+    jorc: `The historic Mungana and King Vol underground mines produced gold and copper. No current JORC compliant resource has been published for the underground mines since Aurora's liquidation. The complex sits in the Chillagoe region, Queensland, associated with intrusion-related gold (IRG) style mineralisation. Adjacent Kidston and Red Dome were multi-million-oz producers.`,
+    production: `Historical gold production from Mungana and King Vol: significant, dates to pre-2020. Aurora Metals' operating period ended 2022–2023 before liquidation. Plant and underground mines on care and maintenance since 2023. No current gold production; Tartana's JV focuses on copper processing from its separate deposit.`,
+    processing_detail: `600,000 tpa processing plant at Chillagoe, far north Queensland (~160km west of Cairns). Plant designed for polymetallic (gold, copper, lead, zinc) ore. Tartana's HOA to use the plant for copper-in-concentrate production from Tartana open pit (25km away). Plant refurbishment and commissioning for copper operations in progress under the HOA framework from April 2025.`,
+    tenements: `Aurora Metals tenements under MGMF (mortgagee in possession): includes Mungana and King Vol mine licences and exploration licences in the Chillagoe district, Far North Queensland. Tartana (ASX:TAT) operates separately at the Tartana open pit copper mine.`,
+    distressTimeline: [
+      '2020–2022: Aurora Metals operates Mungana/King Vol gold-copper operations, Chillagoe QLD',
+      '2023: Aurora Metals enters liquidation after defaulting on loan facilities owed to Mt Garnet Mining Finance (MGMF)',
+      'Post-2023: 600,000 tpa Mungana processing plant placed on care & maintenance; MGMF takes possession',
+      'Feb 2025: Tartana Minerals (ASX:TAT) agrees to fund 50% of C&M costs (capped A$100,000/month) pending HOA',
+      '14 Apr 2025: Tartana signs binding HOA with MGMF to use Mungana plant for copper concentrate from Tartana open pit',
+      'Apr 2026: Gold mines remain under MGMF possession; copper processing JV progressing'
+    ],
+    contacts: `Mt Garnet Mining Finance Pty Ltd — mortgagee in possession of Aurora Metals assets<br>Tartana Minerals Limited (ASX:TAT) — joint venture for plant use<br>Website: <a href="https://smallcaps.com.au/tartana-minerals-mungana-plant-deal-copper-production-growth/" target="_blank">smallcaps.com.au (Tartana/Mungana HOA)</a>`,
+    secFilings: `private`,
+    sources: [
+      {type:'News', title:'Tartana Minerals advances Mungana plant deal — Smallcaps.com.au', url:'https://smallcaps.com.au/tartana-minerals-mungana-plant-deal-copper-production-growth/', date:'Feb 2025'},
+      {type:'Insolvency', title:'Aurora Metals Limited — Liquidators Appointed — MiningNews.net', url:'https://www.miningnews.net/partners/partner-content/4332464/aurora-metals-limited-liquidators-appointed', date:'2023'},
+      {type:'News', title:'Tartana makes move on Mungana mill — MiningNews.net', url:'https://www.miningnews.net/m-a/news-analysis/4409663/tartana-makes-mungana', date:'2025'},
+    ]
+  },
+  {
+    id: 'd10',
+    name: 'Agate Creek / Georgetown Gold Project',
+    state: 'QLD',
+    company: 'Savannah Goldfields Limited (ASX:SVG)',
+    region: 'North Queensland',
+    status: 'Care & Maintenance',
+    statusClass: 's-cm',
+    resourceOz: '460,000',
+    resourceOzNum: 460000,
+    grade: '2.5',
+    gradeNum: 2.5,
+    area: 'Georgetown / Etheridge Shire, NQ',
+    processing: 'Georgetown Gold Processing Plant (GGPP, recommissioning)',
+    price: 'Not for sale',
+    sourcesCount: 3,
+    lastUpdated: 'Apr 2026',
+    overview: `Savannah Goldfields (ASX:SVG) operates the Georgetown Gold Project in North Queensland, comprising the Georgetown Gold Processing Plant (GGPP) and two ore sources: the Agate Creek open pit (~150km south of Georgetown) and the Big Reef deposit. Open pit mining at Agate Creek was suspended in early 2024, leaving ROM stockpiles on site. The Georgetown plant itself was idle from January 2024. In November 2025, gold production recommenced at the Georgetown plant after recommissioning — approximately 1.5 kg of gold doré was poured from Big Reef ore. Full-scale open pit mining at Agate Creek was targeted for Q2 2026, with the 460,000 oz ore reserve (36,800 oz, 460 kt @ 2.5 g/t) representing near-term feed. Analysts estimate EBITDA of ~A$50M/year at margins exceeding 50% once full production is reached. The company had a going concern qualification in its FY2024 annual report due to limited cash, but raised funds via placements and convertible notes. As at April 2026, the company has resumed operations and mining restart is imminent.`,
+    jorc: `Ore Reserve (Agate Creek): 460,000 tonnes @ 2.5 g/t Au = 36,800 oz (JORC 2012). Inferred Mineral Resource (Big Reef): 107,000 tonnes @ 3.0 g/t Au = ~10,000 oz. Georgetown district hosts significant historical gold production. Total Georgetown project resources are being expanded through ongoing exploration.`,
+    production: `Historical: Agate Creek open pit mined 2022–early 2024. Georgetown plant processed Agate Creek ore until January 2024. Suspended January 2024. Big Reef recommencement: December 2025. GGPP gold production resumed November 2025 (first gold ~1.5 kg doré). Agate Creek open pit mining restart: Q2 2026 (targeted). Forecast: ~A$50M EBITDA/year at full production.`,
+    processing_detail: `Georgetown Gold Processing Plant (GGPP): gravity recovery, leaching circuits, fully operational from November 2025. Located at Georgetown, Etheridge Shire, North Queensland (~800km NW of Cairns). Feed sources: Agate Creek open pit (~150km south) and Big Reef near Georgetown. Crushing, milling, gravity, and CIL/leaching circuits all recommissioned Q4 2025.`,
+    tenements: `Georgetown project tenements in the Etheridge Shire, North Queensland. Agate Creek mine licence and exploration licences held by Savannah Goldfields. Big Reef deposit within Georgetown operations area.`,
+    distressTimeline: [
+      '2022: Agate Creek open pit mining commences; Georgetown plant operational',
+      'Jan 2024: Agate Creek open pit mining suspended; Georgetown plant idles; ROM stockpiles remain',
+      '2024: Company raises funds via placement and convertible notes; going concern flagged in FY2024 annual report',
+      'Sep 2025: Georgetown plant recommissioning approved; plant refurbishment completes',
+      'Nov 2025: First gold poured at Georgetown (Big Reef ore); ~1.5 kg doré',
+      'Dec 2025: Big Reef open pit re-established',
+      'Q2 2026: Agate Creek open pit restart targeted; ore haulage to Georgetown plant',
+      'Apr 2026: Company share price +25% on production update (2 April 2026)'
+    ],
+    contacts: `Savannah Goldfields Limited (ASX:SVG)<br>Website: <a href="https://savannahgoldfields.com/georgetown-gold-project/" target="_blank">savannahgoldfields.com</a>`,
+    secFilings: `asx`,
+    secData: {
+      exchange: 'ASX',
+      ticker: 'SVG',
+      latestAnnual: {date:'Dec 2024', period:'FY2024 (year ended 30 Jun 2024)', url:'https://announcements.asx.com.au/asxpdf/20241223/pdf/06czc4w3gx90nr.pdf'},
+      goingConcern: 'Going concern flagged in FY2024 annual report; company raised funds to continue operations',
+      cash: 'Limited (funded via placements/convertible notes)',
+      debt: 'Convertible notes',
+      prodGuidance: 'Restart underway; A$50M EBITDA/yr targeted at full production',
+      aisc: 'Not yet guided (restart phase)',
+      impairments: 'Not disclosed',
+      hedging: 'Not applicable',
+      riskFactors: 'Small company; limited cash buffer; dependent on successful restart; ore haulage costs from Agate Creek'
+    },
+    sources: [
+      {type:'News', title:'Savannah Goldfields resumes gold production at Georgetown — Mining Weekly', url:'https://www.miningweekly.com/article/savannah-resumes-gold-production-at-georgetown-plant-2025-11-07', date:'Nov 2025'},
+      {type:'News', title:'Savannah Goldfields advancing Georgetown operations — Kalkine', url:'https://kalkine.com.au/news/mining/savannah-goldfields-asxsvg-advances-georgetown-operations-as-gold-production-resumes-and-mining-plans-progress', date:'2026'},
+      {type:'News', title:'Savannah Goldfields restarts gold production — Mining Technology', url:'https://www.mining-technology.com/news/savannah-goldfields-restarts-gold-production/', date:'Nov 2025'},
+    ]
   }
 ];
 
@@ -644,6 +824,7 @@ const watchlistMines = [
   {
     id: 'w1',
     name: 'Northern Star KCGM Operations',
+    state: 'WA',
     company: 'Northern Star Resources (ASX:NST)',
     region: 'Goldfields',
     probLabel: 'Moderate',
@@ -680,6 +861,7 @@ const watchlistMines = [
   {
     id: 'w2',
     name: 'Davyhurst Operations',
+    state: 'WA',
     company: 'Ora Banda Mining (ASX:OBM)',
     region: 'Goldfields',
     probLabel: 'High',
@@ -716,6 +898,7 @@ const watchlistMines = [
   {
     id: 'w3',
     name: 'Wiluna Mining Centre (Restart)',
+    state: 'WA',
     company: 'Wiluna Mining Corp (ex-ASX:WMC — DOCA/delisted)',
     region: 'Northern Goldfields',
     probLabel: 'Critical',
@@ -752,6 +935,7 @@ const watchlistMines = [
   {
     id: 'w4',
     name: 'Westgold Multi-Mine WA',
+    state: 'WA',
     company: 'Westgold Resources (ASX:WGX / TSX:WGX)',
     region: 'Mid West / Goldfields',
     probLabel: 'Moderate',
@@ -788,6 +972,7 @@ const watchlistMines = [
   {
     id: 'w5',
     name: 'Ramelius Multi-Mine WA',
+    state: 'WA',
     company: 'Ramelius Resources (ASX:RMS)',
     region: 'Goldfields / Wheatbelt',
     probLabel: 'Moderate',
@@ -824,6 +1009,7 @@ const watchlistMines = [
   {
     id: 'w6',
     name: 'Leonora Operations',
+    state: 'WA',
     company: 'Genesis Minerals (ASX:GMD)',
     region: 'Goldfields',
     probLabel: 'Low',
@@ -860,6 +1046,7 @@ const watchlistMines = [
   {
     id: 'w7',
     name: 'Calidus / Warrawoona (ex-listed)',
+    state: 'WA',
     company: 'AIM Mining (ex-Calidus ASX:CAI — private)',
     region: 'Pilbara',
     probLabel: 'Critical',
@@ -896,6 +1083,7 @@ const watchlistMines = [
   {
     id: 'w8',
     name: 'Fortnum / Bryah Operations',
+    state: 'WA',
     company: 'Westgold Resources (ASX:WGX)',
     region: 'Mid West',
     probLabel: 'Moderate',
@@ -932,6 +1120,7 @@ const watchlistMines = [
   {
     id: 'w9',
     name: 'Bellevue Gold Mine',
+    state: 'WA',
     company: 'Bellevue Gold (ASX:BGL)',
     region: 'Goldfields',
     probLabel: 'Critical',
@@ -968,6 +1157,7 @@ const watchlistMines = [
   {
     id: 'w10',
     name: 'Sandstone / Menzies / Goldfields Hub',
+    state: 'WA',
     company: 'Brightstar Resources (ASX:BTR)',
     region: 'Goldfields',
     probLabel: 'High',
@@ -1004,6 +1194,7 @@ const watchlistMines = [
   {
     id: 'w11',
     name: 'Duketon Gold Operations (Rosemont, Garden Well)',
+    state: 'WA',
     company: 'Regis Resources (ASX:RRL)',
     region: 'Goldfields',
     probLabel: 'Low',
@@ -1039,6 +1230,7 @@ const watchlistMines = [
   {
     id: 'w12',
     name: 'Mount Monger, Deflector, King of the Hills, Darlot',
+    state: 'WA',
     company: 'Vault Minerals (ASX:VAU, fmr Silver Lake Resources)',
     region: 'Goldfields / Mid West',
     probLabel: 'Moderate',
@@ -1074,6 +1266,7 @@ const watchlistMines = [
   {
     id: 'w13',
     name: 'Plutonic Gold Belt (Plutonic, Plutonic East, Trident)',
+    state: 'WA',
     company: 'Catalyst Metals (ASX:CYL)',
     region: 'Murchison',
     probLabel: 'Moderate',
@@ -1109,6 +1302,7 @@ const watchlistMines = [
   {
     id: 'w14',
     name: 'Boorara, Phillips Find, Black Swan (refurbishment)',
+    state: 'WA',
     company: 'Horizon Minerals (ASX:HRZ)',
     region: 'Goldfields',
     probLabel: 'Low',
@@ -1140,6 +1334,117 @@ const watchlistMines = [
       {type:'News', title:'Horizon Minerals A$175M raise for Black Swan Gold Hub — Stocks Down Under', url:'https://stocksdownunder.com/horizon-minerals-175m-capital-raise/', date:'Mar 2026'},
       {type:'News', title:'Horizon Minerals strengthens cash position — TipRanks', url:'https://www.tipranks.com/news/company-announcements/horizon-minerals-strengthens-cash-position-as-phillips-find-wraps-up-and-funds-black-swan-gold-hub', date:'Mar 2026'},
     ]
+  },
+  {
+    id: 'w15',
+    name: 'Blackjack & Far Fanning Gold Projects',
+    state: 'QLD',
+    company: 'Native Mineral Resources (ASX:NMR)',
+    region: 'North Queensland',
+    probLabel: 'High',
+    probPct: 62,
+    probClass: 'prob-high',
+    aisc: 'Not guided (early production)',
+    prodTrend: 'up',
+    cash: 'Small cap — limited disclosure',
+    reserveLife: 'Not established',
+    sharePriceDelta: 'Not available',
+    overview: `Native Mineral Resources (ASX:NMR) acquired the Far Fanning and Blackjack past-producing gold projects in North Queensland's Ravenswood-Charters Towers region in November 2024 for A$18.9 million (paid over 33 months plus a 2% production royalty). The flagship Blackjack 340,000 tpa processing plant was on care and maintenance at acquisition. NMR raised A$3.46 million at a premium in November 2024 to fund refurbishment. Gold production commenced July 2025 and NMR completed its largest gold pour to date in January 2026 (six doré bars totalling 1,474.9 oz). Average milling grade in early production was 0.526 g/t Au — notably low for economic sustainability. Near-surface high-grade drilling results (10m at 7.14 g/t Au) indicate higher grade ore is accessible. The company is on the watch list due to its very small scale, limited cash buffer, low initial milling grades, and the high cost of a 33-month acquisition payment structure while simultaneously ramping production.`,
+    signals: [
+      {signal:'Declining production (oz YoY)', weight:'HIGH', status:'OK', detail:'Production ramping: July 2025 first gold, Jan 2026 largest pour 1,474.9 oz; improving trajectory', class:'signal-ok'},
+      {signal:'Rising AISC vs gold price', weight:'HIGH', status:'FIRING', detail:'Average feed grade 0.526 g/t Au — very low; AISC not disclosed but likely high at this grade', class:'signal-fire'},
+      {signal:'Cash burn / negative OCF', weight:'HIGH', status:'WARN', detail:'Small cap; limited cash buffer; acquisition payments of A$18.9M over 33 months while building production', class:'signal-warn'},
+      {signal:'Going concern opinion', weight:'HIGH', status:'WARN', detail:'Not explicitly disclosed; high financial leverage for a micro-cap', class:'signal-warn'},
+      {signal:'Debt covenant breach', weight:'HIGH', status:'N/A', detail:'Acquisition payments to vendors — not bank debt', class:'signal-na'},
+      {signal:'D/E ratio >1.0', weight:'MEDIUM', status:'WARN', detail:'Acquisition deferred payment structure creates financial pressure', class:'signal-warn'},
+      {signal:'Hedging losses', weight:'MEDIUM', status:'N/A', detail:'Not disclosed', class:'signal-na'},
+      {signal:'Repeated capital raises', weight:'MEDIUM', status:'WARN', detail:'A$3.46M raise Nov 2024; likely further raises needed given production scale', class:'signal-warn'},
+      {signal:'Grade decline', weight:'MEDIUM', status:'FIRING', detail:'Average feed grade 0.526 g/t — lower than historic mine grades; requires high-grade ore blend to improve economics', class:'signal-fire'},
+      {signal:'Reserve/resource impairment', weight:'MEDIUM', status:'N/A', detail:'No formal JORC resource published for Blackjack yet', class:'signal-na'},
+      {signal:'Reserve life <3 years', weight:'MEDIUM', status:'FIRING', detail:'No formal reserve estimate; ore body delineation ongoing', class:'signal-fire'},
+      {signal:'Management turnover', weight:'LOW-MED', status:'OK', detail:'No significant changes', class:'signal-ok'},
+      {signal:'Delayed milestones', weight:'LOW-MED', status:'OK', detail:'First gold July 2025 — within targeted schedule', class:'signal-ok'},
+      {signal:'Share price -50% from 12M high', weight:'LOW', status:'N/A', detail:'Micro-cap; insufficient data', class:'signal-na'},
+    ],
+    sources: [
+      {type:'News', title:'NMR acquires Queensland near-production gold projects — Mining Technology', url:'https://www.mining-technology.com/news/australias-nmr-queensland-gold-projects/', date:'Nov 2024'},
+      {type:'News', title:'Native Mineral Resources advances Blackjack to full-scale production — Smallcaps', url:'https://smallcaps.com.au/article/native-mineral-resources-advances-transition-full-scale-gold-production-blackjack', date:'2025'},
+      {type:'News', title:'NMR advances Blackjack restart for first gold — Mining Weekly', url:'https://www.miningweekly.com/article/nmr-advances-blackjack-restart-for-first-gold-pour-in-third-quarter-2025-03-24', date:'Mar 2025'},
+    ]
+  },
+  {
+    id: 'w16',
+    name: 'Regis Resources (McPhillamys Exposure)',
+    state: 'NSW',
+    company: 'Regis Resources (ASX:RRL)',
+    region: 'Central West NSW',
+    probLabel: 'Moderate',
+    probPct: 35,
+    probClass: 'prob-moderate',
+    aisc: 'A$2,610–2,990 (FY2026)',
+    prodTrend: 'flat',
+    cash: 'A$930M (Dec 2025)',
+    reserveLife: '~12 yrs (Duketon)',
+    sharePriceDelta: 'Positive (WA ops)',
+    overview: `Regis Resources (ASX:RRL) is financially robust for its WA Duketon operations (A$930M cash, zero debt, record HY26 results). However, the McPhillamys gold project in NSW — blocked by a Federal heritage protection order in August 2024 — represents a significant stranded asset. A$192M was impaired and 1.89 Moz of ore reserves withdrawn. Regis is pursuing Federal Court judicial review (heard December 2025; judgement pending April 2026). Any failed judicial review leaves a long-duration stranded asset requiring a restart of approvals potentially lasting 5–10 years. On the watch list specifically for the NSW McPhillamys judicial review outcome — a favourable ruling could unlock ~2 Moz of gold production at a project near Blayney, NSW.`,
+    signals: [
+      {signal:'Declining production (oz YoY)', weight:'HIGH', status:'WARN', detail:'Production slightly declining 373koz FY25 → 350–380koz FY26; WA Duketon operations stable', class:'signal-warn'},
+      {signal:'Rising AISC vs gold price', weight:'HIGH', status:'WARN', detail:'AISC rising A$2,531/oz FY25 → A$2,610–2,990/oz FY26', class:'signal-warn'},
+      {signal:'Cash burn / negative OCF', weight:'HIGH', status:'OK', detail:'Strongly positive OCF; A$930M cash Dec 2025; zero debt', class:'signal-ok'},
+      {signal:'Going concern opinion', weight:'HIGH', status:'OK', detail:'None — strong balance sheet', class:'signal-ok'},
+      {signal:'Debt covenant breach', weight:'HIGH', status:'OK', detail:'Zero debt', class:'signal-ok'},
+      {signal:'D/E ratio >1.0', weight:'MEDIUM', status:'OK', detail:'Zero debt; strong equity position', class:'signal-ok'},
+      {signal:'Hedging losses', weight:'MEDIUM', status:'OK', detail:'Minimal hedging', class:'signal-ok'},
+      {signal:'Repeated capital raises', weight:'MEDIUM', status:'OK', detail:'No dilutive raises', class:'signal-ok'},
+      {signal:'Grade decline', weight:'MEDIUM', status:'OK', detail:'No significant grade decline at Duketon', class:'signal-ok'},
+      {signal:'Reserve/resource impairment', weight:'MEDIUM', status:'FIRING', detail:'A$192M impairment against McPhillamys; 1.89 Moz ore reserves withdrawn Aug 2024', class:'signal-fire'},
+      {signal:'Reserve life <3 years', weight:'MEDIUM', status:'OK', detail:'Duketon: ~12 year reserve life', class:'signal-ok'},
+      {signal:'Management turnover', weight:'LOW-MED', status:'OK', detail:'No significant changes', class:'signal-ok'},
+      {signal:'Delayed milestones', weight:'LOW-MED', status:'FIRING', detail:'McPhillamys blocked indefinitely; judicial review outcome pending', class:'signal-warn'},
+      {signal:'Share price -50% from 12M high', weight:'LOW', status:'OK', detail:'Share price positive reflecting strong Duketon performance', class:'signal-ok'},
+    ],
+    sources: [
+      {type:'News', title:'Regis Resources says McPhillamys not viable after govt order — Mining.com', url:'https://www.mining.com/regis-resources-says-project-not-viable-after-australias-govt-action/', date:'Aug 2024'},
+      {type:'News', title:'Regis sues Australian minister over blocked gold mine — Mining.com', url:'https://www.mining.com/regis-resources-sues-australian-minister-over-blocked-gold-mine/', date:'2024'},
+      {type:'News', title:'Federal govt failed to properly analyse Dreaming story — NIT (Dec 2025 hearing)', url:'https://nit.com.au/15-12-2025/21820/federal-government-failed-to-properly-analyse-dreaming-story-at-heart-of-dispute-miners-claim', date:'Dec 2025'},
+    ]
+  },
+  {
+    id: 'w17',
+    name: 'Union Reefs Processing Facility (Suspended)',
+    state: 'NT',
+    company: 'Agnico Eagle Mines (TSX/NYSE:AEM)',
+    region: 'Pine Creek (NT)',
+    probLabel: 'Moderate',
+    probPct: 30,
+    probClass: 'prob-moderate',
+    aisc: 'N/A (operations suspended)',
+    prodTrend: 'flat',
+    cash: 'Agnico Eagle is well-capitalised (major)',
+    reserveLife: 'Resource: ~1.5 Moz (M&I + Inferred)',
+    sharePriceDelta: 'N/A (Agnico Eagle major miner)',
+    overview: `Agnico Eagle's Union Reefs processing facility in the Pine Creek gold district, Northern Territory, has been suspended since 2020. The Cosmo underground mine was also closed in 2020. The facility is not in financial distress (Agnico Eagle is a major global gold miner, well-capitalised), but the idled plant and resource base represent a significant stranded asset in the NT. Agnico Eagle is advancing the proposed Union Reefs North development project and conducting scenario analysis for a decade-long sustainable ore supply from multiple sources to the Union Reefs facility, with potential upgrade to treat refractory ores. As of December 2025, NT assets host M&I resources of 0.8 Moz (16.5 Mt @ 1.45 g/t) and inferred of 0.7 Moz (13.3 Mt @ 1.75 g/t). Agnico Eagle will spend A$8M on NT exploration in 2026 (48,600m). The Pine Creek district holds significant long-term gold potential. The asset is on the watch list as a suspended NT gold hub that could be divested, JV'd, or restarted — relevant for any acquirer interested in NT gold.`,
+    signals: [
+      {signal:'Declining production (oz YoY)', weight:'HIGH', status:'FIRING', detail:'Operations fully suspended since 2020; no gold production from Union Reefs', class:'signal-fire'},
+      {signal:'Rising AISC vs gold price', weight:'HIGH', status:'N/A', detail:'Not applicable — operations suspended', class:'signal-na'},
+      {signal:'Cash burn / negative OCF', weight:'HIGH', status:'OK', detail:'Agnico Eagle (parent) is a major well-capitalised miner; NT is a small component', class:'signal-ok'},
+      {signal:'Going concern opinion', weight:'HIGH', status:'OK', detail:'None identified — Agnico Eagle is globally well-capitalised', class:'signal-ok'},
+      {signal:'Debt covenant breach', weight:'HIGH', status:'OK', detail:'None identified', class:'signal-ok'},
+      {signal:'D/E ratio >1.0', weight:'MEDIUM', status:'OK', detail:'Agnico Eagle: manageable debt levels for a major miner', class:'signal-ok'},
+      {signal:'Hedging losses', weight:'MEDIUM', status:'N/A', detail:'Not applicable at site level', class:'signal-na'},
+      {signal:'Repeated capital raises', weight:'MEDIUM', status:'OK', detail:'No relevant capital raises', class:'signal-ok'},
+      {signal:'Grade decline', weight:'MEDIUM', status:'N/A', detail:'No mining; exploration drilling ongoing', class:'signal-na'},
+      {signal:'Reserve/resource impairment', weight:'MEDIUM', status:'N/A', detail:'M&I 0.8 Moz + Inferred 0.7 Moz confirmed Dec 2025; no impairment', class:'signal-ok'},
+      {signal:'Reserve life <3 years', weight:'MEDIUM', status:'FIRING', detail:'No active production or reserve; resource only — development decision not made', class:'signal-fire'},
+      {signal:'Management turnover', weight:'LOW-MED', status:'OK', detail:'No significant changes', class:'signal-ok'},
+      {signal:'Delayed milestones', weight:'LOW-MED', status:'FIRING', detail:'Operations suspended since 2020; restart/development study ongoing but no timeline confirmed', class:'signal-warn'},
+      {signal:'Share price -50% from 12M high', weight:'LOW', status:'N/A', detail:'Not separately tracked (subsidiary of Agnico Eagle)', class:'signal-na'},
+    ],
+    sources: [
+      {type:'Company', title:'Agnico Eagle NT Exploration Update — March 2025', url:'https://minedocs.com/28/Agnico-Eagle-Northern-Territory-Web-03202025.pdf', date:'Mar 2025'},
+      {type:'News', title:'Union Reefs Operations (Closed) — Wood Mackenzie', url:'https://www.woodmac.com/reports/metals-union-reefs-operations-closed-gold-mine-16216226/', date:'2025'},
+      {type:'Company', title:'Agnico Eagle 2025 Exploration Results & 2026 Plans (NT resources)', url:'https://www.agnicoeagle.com/English/news-and-media/news-releases/news-details/2026/AGNICO-EAGLE-PROVIDES-AN-UPDATE-ON-2025-EXPLORATION-RESULTS-AND-2026-EXPLORATION-PLANS---YEAR-OVER-YEAR-MINERAL-RESERVES-INCREASE-2-TO-55-4-MOZ-INDICATED-MINERAL-RESOURCES-INCREASE-10-TO-47-1-MOZ-AND-INFERRED-MINERAL-RESOURCES-INCREASE-15-TO-41-8-MOZ/default.aspx', date:'Feb 2026'},
+    ]
   }
 ];
 
@@ -1167,6 +1472,25 @@ const allSources = [
   {title:'Westgold H1 FY2026 Results — Junior Mining Network', url:'https://www.juniorminingnetwork.com/junior-miner-news/press-releases/3363-tsx/wgx/198161-half-year-financial-results-summary-h1-fy26.html', date:'Feb 2026', type:'News'},
   {title:'Edna May Gold Mine — Wikipedia', url:'https://en.wikipedia.org/wiki/Edna_May_Gold_Mine', date:'2024', type:'Reference'},
   {title:'Spartan Resources shares on final day of trading — Motley Fool', url:'https://www.fool.com.au/2025/07/22/spartan-resources-shares-rising-strongly-on-final-day-of-trading/', date:'Jul 2025', type:'News'},
+  // Non-WA entries (added Apr 2026 expansion)
+  {title:'Regis Resources says McPhillamys not viable after govt order — Mining.com', url:'https://www.mining.com/regis-resources-says-project-not-viable-after-australias-govt-action/', date:'Aug 2024', type:'News'},
+  {title:'Regis Resources $130M writedown as govt call makes project unviable — Mining.com', url:'https://www.mining.com/regis-resources-takes-130m-writedown-as-govt-call-makes-project-unviable/', date:'Aug 2024', type:'News'},
+  {title:'McPhillamys project page — Regis Resources', url:'https://www.regisresources.com.au/our-assets/mcphillamys/', date:'2026', type:'Company'},
+  {title:'Regis challenges decision blocking $1B mine — Blayney Chronicle', url:'https://www.blayneychronicle.com.au/story/9131300/regis-challenges-decision-blocking-1-billion-mine-near-blayney/', date:'Nov 2024', type:'News'},
+  {title:'Tartana Minerals advances Mungana plant deal — Smallcaps.com.au', url:'https://smallcaps.com.au/tartana-minerals-mungana-plant-deal-copper-production-growth/', date:'Feb 2025', type:'News'},
+  {title:'Aurora Metals Limited — Liquidators Appointed — MiningNews.net', url:'https://www.miningnews.net/partners/partner-content/4332464/aurora-metals-limited-liquidators-appointed', date:'2023', type:'Insolvency'},
+  {title:'Tartana makes move on Mungana mill — MiningNews.net', url:'https://www.miningnews.net/m-a/news-analysis/4409663/tartana-makes-mungana', date:'2025', type:'News'},
+  {title:'Savannah Goldfields resumes gold production at Georgetown — Mining Weekly', url:'https://www.miningweekly.com/article/savannah-resumes-gold-production-at-georgetown-plant-2025-11-07', date:'Nov 2025', type:'News'},
+  {title:'Savannah Goldfields restarts gold production — Mining Technology', url:'https://www.mining-technology.com/news/savannah-goldfields-restarts-gold-production/', date:'Nov 2025', type:'News'},
+  {title:'NMR acquires Queensland near-production gold projects — Mining Technology', url:'https://www.mining-technology.com/news/australias-nmr-queensland-gold-projects/', date:'Nov 2024', type:'News'},
+  {title:'NMR advances Blackjack restart for first gold — Mining Weekly', url:'https://www.miningweekly.com/article/nmr-advances-blackjack-restart-for-first-gold-pour-in-third-quarter-2025-03-24', date:'Mar 2025', type:'News'},
+  {title:'Agnico Eagle NT exploration update — March 2025', url:'https://minedocs.com/28/Agnico-Eagle-Northern-Territory-Web-03202025.pdf', date:'Mar 2025', type:'Company'},
+  {title:'Agnico Eagle 2025 exploration results & 2026 plans', url:'https://www.agnicoeagle.com/English/news-and-media/news-releases/news-details/2026/AGNICO-EAGLE-PROVIDES-AN-UPDATE-ON-2025-EXPLORATION-RESULTS-AND-2026-EXPLORATION-PLANS---YEAR-OVER-YEAR-MINERAL-RESERVES-INCREASE-2-TO-55-4-MOZ-INDICATED-MINERAL-RESOURCES-INCREASE-10-TO-47-1-MOZ-AND-INFERRED-MINERAL-RESOURCES-INCREASE-15-TO-41-8-MOZ/default.aspx', date:'Feb 2026', type:'Company'},
+  {title:'Regis sues Australian minister over blocked gold mine — Mining.com', url:'https://www.mining.com/regis-resources-sues-australian-minister-over-blocked-gold-mine/', date:'2024', type:'News'},
+  {title:'Federal govt failed to analyse Dreaming story — NIT (Dec 2025 hearing)', url:'https://nit.com.au/15-12-2025/21820/federal-government-failed-to-properly-analyse-dreaming-story-at-heart-of-dispute-miners-claim', date:'Dec 2025', type:'News'},
+  {title:'Savannah Goldfields advances Georgetown operations — Kalkine', url:'https://kalkine.com.au/news/mining/savannah-goldfields-asxsvg-advances-georgetown-operations-as-gold-production-resumes-and-mining-plans-progress', date:'2026', type:'News'},
+  {title:'Native Mineral Resources advances Blackjack to full production — Smallcaps', url:'https://smallcaps.com.au/article/native-mineral-resources-advances-transition-full-scale-gold-production-blackjack', date:'2025', type:'News'},
+  {title:'Union Reefs Operations (Closed) — Wood Mackenzie', url:'https://www.woodmac.com/reports/metals-union-reefs-operations-closed-gold-mine-16216226/', date:'2025', type:'Mine DB'},
 ];
 
 // =====================================================================
@@ -1187,10 +1511,12 @@ function renderDistressed() {
     mainRow.dataset.id = m.id;
     mainRow.dataset.status = m.status;
     mainRow.dataset.region = m.region;
+    mainRow.dataset.state = m.state || 'WA';
     mainRow.dataset.name = m.name.toLowerCase();
     mainRow.dataset.company = m.company.toLowerCase();
+    const stateClass = 'state-badge state-badge-' + (m.state||'wa').toLowerCase();
     mainRow.innerHTML = `
-      <td><strong>${m.name}</strong></td>
+      <td><strong>${m.name}</strong><span class="${stateClass}">${m.state||'WA'}</span></td>
       <td style="color:#8b949e;font-size:.8rem">${m.company}</td>
       <td>${m.region}</td>
       <td><span class="status-badge ${m.statusClass}">${m.status}</span></td>
@@ -1219,11 +1545,13 @@ function renderWatchlist() {
     mainRow.dataset.id = m.id;
     mainRow.dataset.prob = m.probLabel;
     mainRow.dataset.region = m.region;
+    mainRow.dataset.state = m.state || 'WA';
     mainRow.dataset.name = m.name.toLowerCase();
     mainRow.dataset.company = m.company.toLowerCase();
     const trendIcon = m.prodTrend==='up' ? '<span class="trend-up">↑ Rising</span>' : m.prodTrend==='down' ? '<span class="trend-down">↓ Falling</span>' : '<span class="trend-flat">→ Flat</span>';
+    const wStateClass = 'state-badge state-badge-' + (m.state||'wa').toLowerCase();
     mainRow.innerHTML = `
-      <td><strong>${m.name}</strong></td>
+      <td><strong>${m.name}</strong><span class="${wStateClass}">${m.state||'WA'}</span></td>
       <td style="color:#8b949e;font-size:.8rem">${m.company}</td>
       <td>${m.region}</td>
       <td><strong class="${m.probClass}">${m.probLabel} (${m.probPct}%)</strong></td>
@@ -1367,12 +1695,14 @@ function applyDistressedFilters() {
   const search = document.getElementById('distressed-search').value.toLowerCase();
   const region = document.getElementById('region-filter').value;
   const status = activeFilters.status;
+  const stateFilter = document.getElementById('state-filter-distressed').value;
   let count = 0;
   document.querySelectorAll('#distressed-tbody tr.main-row').forEach(row => {
     const matchStatus = status === 'all' || row.dataset.status === status;
     const matchRegion = region === 'all' || row.dataset.region.includes(region);
+    const matchState = stateFilter === 'all' || row.dataset.state === stateFilter;
     const matchSearch = !search || row.dataset.name.includes(search) || row.dataset.company.includes(search);
-    const show = matchStatus && matchRegion && matchSearch;
+    const show = matchStatus && matchRegion && matchState && matchSearch;
     row.classList.toggle('hidden', !show);
     const detailRow = row.nextElementSibling;
     if (detailRow) detailRow.classList.toggle('hidden', !show);
@@ -1384,11 +1714,13 @@ function applyDistressedFilters() {
 function applyWatchFilters() {
   const search = document.getElementById('watchlist-search').value.toLowerCase();
   const prob = activeFilters.prob;
+  const stateFilter = document.getElementById('state-filter-watch').value;
   let count = 0;
   document.querySelectorAll('#watchlist-tbody tr.main-row').forEach(row => {
     const matchProb = prob === 'all' || row.dataset.prob === prob;
+    const matchState = stateFilter === 'all' || row.dataset.state === stateFilter;
     const matchSearch = !search || row.dataset.name.includes(search) || row.dataset.company.includes(search);
-    const show = matchProb && matchSearch;
+    const show = matchProb && matchState && matchSearch;
     row.classList.toggle('hidden', !show);
     const detailRow = row.nextElementSibling;
     if (detailRow) detailRow.classList.toggle('hidden', !show);
