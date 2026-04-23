@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Distressed Gold Mines — Australia</title>
+<title>Australian Gold Mines Tracker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
@@ -156,70 +156,38 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-title">⛏ Distressed Gold Mines — Australia</div>
+  <div class="header-title">⛏ Australian Gold Mines Tracker</div>
   <div class="header-meta">
-    <span class="badge">Last Updated: 22 Apr 2026</span>
-    <span class="badge badge-gold">30 Sources</span>
-    <span class="badge badge-wa">AU</span>
+    <span class="badge">Last Updated: 23 Apr 2026</span>
+    <span class="badge badge-gold" id="kpi-source-count">— Sources</span>
+    <span class="badge badge-wa">AU · All States</span>
   </div>
 </div>
 
 <!-- KPI CARDS -->
-<div class="kpi-grid">
-  <div class="kpi-card kpi-danger">
-    <div class="kpi-label">Distressed Mines</div>
-    <div class="kpi-value">10</div>
-    <div class="kpi-sub">Confirmed distressed (AU)</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Total Gold Resource</div>
-    <div class="kpi-value">~13.5M</div>
-    <div class="kpi-sub">oz (across tracked mines)</div>
-  </div>
-  <div class="kpi-card kpi-danger">
-    <div class="kpi-label">In Administration/DOCA</div>
-    <div class="kpi-value">3</div>
-    <div class="kpi-sub">Active insolvency</div>
-  </div>
-  <div class="kpi-card kpi-warn">
-    <div class="kpi-label">Care &amp; Maintenance</div>
-    <div class="kpi-value">6</div>
-    <div class="kpi-sub">Mines mothballed</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Blocked / Unviable</div>
-    <div class="kpi-value">1</div>
-    <div class="kpi-sub">Heritage/regulatory block</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">States Covered</div>
-    <div class="kpi-value">5</div>
-    <div class="kpi-sub">WA · QLD · NSW · VIC · NT</div>
-  </div>
-  <div class="kpi-card kpi-danger">
-    <div class="kpi-label">Watch List Critical</div>
-    <div class="kpi-value">3</div>
-    <div class="kpi-sub">80–100% distress prob.</div>
-  </div>
+<div class="kpi-grid" id="kpi-grid">
+  <div class="kpi-card kpi-green"><div class="kpi-label">Total Mines Tracked</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub">All categories · AU</div></div>
+  <div class="kpi-card kpi-green"><div class="kpi-label">Active Producers</div><div class="kpi-value" id="kpi-active">—</div><div class="kpi-sub">Currently producing</div></div>
+  <div class="kpi-card"><div class="kpi-label">Development Stage</div><div class="kpi-value" id="kpi-dev" style="color:#a855f7">—</div><div class="kpi-sub">Pre-production projects</div></div>
+  <div class="kpi-card kpi-warn"><div class="kpi-label">Care &amp; Maintenance</div><div class="kpi-value" id="kpi-cm">—</div><div class="kpi-sub">Mothballed operations</div></div>
+  <div class="kpi-card kpi-warn"><div class="kpi-label">Watch List</div><div class="kpi-value" id="kpi-watch">—</div><div class="kpi-sub">Distress signals firing</div></div>
+  <div class="kpi-card kpi-danger"><div class="kpi-label">Distressed / Admin</div><div class="kpi-value" id="kpi-distressed">—</div><div class="kpi-sub">In distress or insolvency</div></div>
+  <div class="kpi-card"><div class="kpi-label">States Covered</div><div class="kpi-value" id="kpi-states">—</div><div class="kpi-sub" id="kpi-states-list"></div></div>
 </div>
 
-<!-- TABS -->
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('distressed')">Distressed Mines</button>
-  <button class="tab-btn" onclick="switchTab('watchlist')">Watch List</button>
-</div>
-
-<!-- DISTRESSED MINES TAB -->
-<div class="tab-pane active" id="tab-distressed">
+<!-- UNIFIED FILTER + TABLE -->
+<div style="padding:0 24px 0">
   <div class="filter-bar">
-    <div class="filter-group" id="status-filters">
-      <button class="filter-btn active" data-filter="all" onclick="setFilter('status','all',this)">All</button>
-      <button class="filter-btn" data-filter="Administration" onclick="setFilter('status','Administration',this)">Administration</button>
-      <button class="filter-btn" data-filter="DOCA" onclick="setFilter('status','DOCA',this)">DOCA</button>
-      <button class="filter-btn" data-filter="Care &amp; Maintenance" onclick="setFilter('status','Care &amp; Maintenance',this)">Care &amp; Maintenance</button>
-      <button class="filter-btn" data-filter="For Sale" onclick="setFilter('status','For Sale',this)">For Sale</button>
+    <div class="filter-group" id="cat-filters">
+      <button class="filter-btn active" data-cat="all" onclick="setCategory('all',this)">All</button>
+      <button class="filter-btn" data-cat="Active" onclick="setCategory('Active',this)">Active</button>
+      <button class="filter-btn" data-cat="Watch List" onclick="setCategory('Watch List',this)">Watch List</button>
+      <button class="filter-btn" data-cat="C&amp;M" onclick="setCategory('C&amp;M',this)">C&amp;M</button>
+      <button class="filter-btn" data-cat="Distressed" onclick="setCategory('Distressed',this)">Distressed</button>
+      <button class="filter-btn" data-cat="Administration" onclick="setCategory('Administration',this)">Administration</button>
+      <button class="filter-btn" data-cat="Development" onclick="setCategory('Development',this)">Development</button>
     </div>
-    <select class="filter-select" id="state-filter-distressed" onchange="applyDistressedFilters()">
+    <select class="filter-select" id="state-filter" onchange="applyFilters()">
       <option value="all">All States</option>
       <option value="WA">WA</option>
       <option value="QLD">QLD</option>
@@ -229,83 +197,26 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
       <option value="NT">NT</option>
       <option value="TAS">TAS</option>
     </select>
-    <select class="filter-select" id="region-filter" onchange="applyDistressedFilters()">
-      <option value="all">All Regions</option>
-      <option value="Pilbara">Pilbara</option>
-      <option value="Goldfields">Goldfields-Esperance</option>
-      <option value="Mid West">Mid West</option>
-      <option value="Wheatbelt">Wheatbelt</option>
-      <option value="Northern Goldfields">Northern Goldfields</option>
-      <option value="North Queensland">North Queensland</option>
-      <option value="Central West NSW">Central West NSW</option>
-      <option value="Pine Creek">Pine Creek (NT)</option>
-    </select>
-    <input class="search-box" id="distressed-search" type="text" placeholder="Search mines..." oninput="applyDistressedFilters()">
-    <span class="result-count" id="distressed-count">6 mines</span>
+    <input class="search-box" id="mine-search" type="text" placeholder="Search mines, companies..." oninput="applyFilters()">
+    <span class="result-count" id="mine-count"></span>
   </div>
   <div class="table-wrap">
-    <table id="distressed-table">
+    <table id="mines-table">
       <thead>
         <tr>
-          <th onclick="sortTable('distressed',0)">Mine Name <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',1)">Company <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',2)">Region <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',3)">Status <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',4)">Resource (oz) <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',5)">Grade (g/t) <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',6)">Processing <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('distressed',7)">Sources <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(0)">Mine / Project <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(1)">Company <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(2)">State <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(3)">Category <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(4)">Production oz/yr <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(5)">AISC A$/oz <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(6)">Resource (Moz) <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(7)">Grade g/t <span class="sort-icon">⇅</span></th>
+          <th onclick="sortMines(8)">Processing <span class="sort-icon">⇅</span></th>
           <th>Detail</th>
         </tr>
       </thead>
-      <tbody id="distressed-tbody">
-        <!-- Rows injected by JS -->
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- WATCH LIST TAB -->
-<div class="tab-pane" id="tab-watchlist">
-  <div class="filter-bar">
-    <div class="filter-group" id="prob-filters">
-      <button class="filter-btn active" data-filter="all" onclick="setFilter('prob','all',this)">All</button>
-      <button class="filter-btn" data-filter="Critical" onclick="setFilter('prob','Critical',this)">Critical</button>
-      <button class="filter-btn" data-filter="High" onclick="setFilter('prob','High',this)">High</button>
-      <button class="filter-btn" data-filter="Moderate" onclick="setFilter('prob','Moderate',this)">Moderate</button>
-      <button class="filter-btn" data-filter="Low" onclick="setFilter('prob','Low',this)">Low</button>
-    </div>
-    <select class="filter-select" id="state-filter-watch" onchange="applyWatchFilters()">
-      <option value="all">All States</option>
-      <option value="WA">WA</option>
-      <option value="QLD">QLD</option>
-      <option value="NSW">NSW</option>
-      <option value="VIC">VIC</option>
-      <option value="SA">SA</option>
-      <option value="NT">NT</option>
-      <option value="TAS">TAS</option>
-    </select>
-    <input class="search-box" id="watchlist-search" type="text" placeholder="Search companies..." oninput="applyWatchFilters()">
-    <span class="result-count" id="watchlist-count">17 companies</span>
-  </div>
-  <div class="table-wrap">
-    <table id="watchlist-table">
-      <thead>
-        <tr>
-          <th onclick="sortTable('watch',0)">Mine / Operation <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',1)">Company (ASX) <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',2)">Region <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',3)">Distress Prob. <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',4)">AISC (A$/oz) <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',5)">Prod. Trend <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',6)">Cash Position <span class="sort-icon">⇅</span></th>
-          <th onclick="sortTable('watch',7)">Reserve Life <span class="sort-icon">⇅</span></th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody id="watchlist-tbody">
-        <!-- Rows injected by JS -->
-      </tbody>
+      <tbody id="mines-tbody"></tbody>
     </table>
   </div>
 </div>
@@ -1448,6 +1359,59 @@ const watchlistMines = [
   }
 ];
 
+// =====================================================================
+// ACTIVE & DEVELOPMENT MINES (added Apr 2026 — all-Australia expansion)
+// =====================================================================
+const activeMines = [
+  // --- WA ACTIVE ---
+  { id:'a1', name:'KCGM (Kalgoorlie Consolidated Gold Mines)', company:'Northern Star Resources (ASX:NST)', asx:'NST', state:'WA', region:'Kalgoorlie', category:'Active', resourceOz:38900000, resourceOzNum:38900000, grade:2.1, gradeNum:2.1, prodOzYr:575000, aisc:2700, processing:'Open pit & underground CIL', overview:`KCGM is Australia's largest gold mine by output, the iconic "Super Pit" in Kalgoorlie-Boulder, operated by Northern Star Resources (ASX:NST). FY2026 guidance cut twice — first from 1.7 Moz group total to 1.6–1.7 Moz, then again after a December 2025 primary crusher failure to >1.5 Moz total group. AISC guidance raised to A$2,600–2,800/oz. Northern Star is executing a A$1.5B mill expansion targeting 27 Mtpa throughput by 2027–28. Total KCGM resource: 38.9 Moz (Hercules and surrounding deposits). One of the longest-lived gold operations globally.`, sources:[{type:'News', title:'Northern Star Q3 2026 Earnings Call — Investing.com', url:'https://au.investing.com/news/stock-market-news/earnings-call-transcript-northern-stars-q3-2026-solid-cash-flow-and-growth-93CH-4375860', date:'Apr 2026'}] },
+  { id:'a2', name:'Jundee Gold Mine', company:'Northern Star Resources (ASX:NST)', asx:'NST', state:'WA', region:'Murchison', category:'Active', resourceOz:6400000, resourceOzNum:6400000, grade:4.5, gradeNum:4.5, prodOzYr:175000, aisc:2600, processing:'Underground CIL', overview:`Jundee is a high-grade underground gold operation ~660km NNE of Perth in WA's Murchison region, operated by Northern Star. Resource 6.4 Moz including the recent Griffin discovery (2025). Key part of NST's group guidance of A$2,600–2,800/oz AISC FY2026. Multi-level underground mine with long remaining mine life.`, sources:[{type:'News', title:'Northern Star lifts gold inventory to 70.7 Moz — Mining Weekly', url:'https://www.miningweekly.com/article/northern-star-lifts-gold-inventory-to-707moz-highlights-exploration-success-2025-05-15', date:'May 2025'}] },
+  { id:'a3', name:'Yandal Operations (Thunderbox + Bronzewing)', company:'Northern Star Resources (ASX:NST)', asx:'NST', state:'WA', region:'Yandal (Leinster)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:105000, aisc:3347, processing:'Underground & open pit CIL', overview:`Yandal Operations include the Thunderbox underground mine and Bronzewing open pit north of Leinster, WA. Q3 FY2026 production: 105,000 oz. AISC of A$3,347/oz is the highest in Northern Star's portfolio — elevated due to underground development costs. Part of NST's group operations.`, sources:[{type:'News', title:'Northern Star Q3 FY2026 Earnings Call — Investing.com', url:'https://au.investing.com/news/stock-market-news/earnings-call-transcript-northern-stars-q3-2026-solid-cash-flow-and-growth-93CH-4375860', date:'Apr 2026'}] },
+  { id:'a4', name:'St Ives Gold Mine', company:'Gold Fields (JSE/NYSE:GFI)', asx:'', state:'WA', region:'St Ives (Lake Campion)', category:'Active', resourceOz:2400000, resourceOzNum:2400000, grade:3.0, gradeNum:3.0, prodOzYr:350000, aisc:0, processing:'Underground & open pit CIL', overview:`St Ives is one of Australia's major gold operations, ~80km south of Kalgoorlie. Operated by Gold Fields. Multiple underground (Hamlet, Invincible, etc.) and open pit sources feed a central CIL plant. M&I resource ~2.4 Moz at ~3.0 g/t. Long-life operation with ongoing underground development extending the mine plan.`, sources:[{type:'Company', title:'Gold Fields Mineral Resources and Reserves 2023', url:'https://www.goldfields.com/pdf/investors/integrated-annual-reports/2023/gold-fields-mrmr-2023-supplement.pdf', date:'Dec 2023'}] },
+  { id:'a5', name:'Agnew Gold Mine', company:'Gold Fields (JSE/NYSE:GFI)', asx:'', state:'WA', region:'Leinster', category:'Active', resourceOz:1500000, resourceOzNum:1500000, grade:5.0, gradeNum:5.0, prodOzYr:250000, aisc:0, processing:'High-grade underground CIL', overview:`Agnew is a high-grade underground gold mine near Leinster, WA, operated by Gold Fields. Resource ~1.5 Moz at ~5.0 g/t Au across multiple underground lenses. Kim, Waroonga, and New Holland underground systems. 100% renewable energy powered via a microgrid.`, sources:[{type:'Company', title:'Gold Fields Mineral Resources and Reserves 2023', url:'https://www.goldfields.com/pdf/investors/integrated-annual-reports/2023/gold-fields-mrmr-2023-supplement.pdf', date:'Dec 2023'}] },
+  { id:'a6', name:'Granny Smith Gold Mine', company:'Gold Fields (JSE/NYSE:GFI)', asx:'', state:'WA', region:'Laverton', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:296000, aisc:0, processing:'Underground CIL', overview:`Granny Smith is an underground gold mine near Laverton, WA, operated by Gold Fields. Q4 2025 production 74,000 oz (annualised ~296,000 oz/yr). Wall underground deposit drives the mine, supplemented by satellite sources.`, sources:[{type:'News', title:'Gold Fields Q4 2025 Results — Market Screener', url:'https://www.marketscreener.com/news/19-february-2026-a-gold-fields-q4-2025-results-ce7e5ddcd88cf225', date:'Feb 2026'}] },
+  { id:'a7', name:'Gruyere Gold Mine', company:'Gold Road Resources (ASX:GOR) 50% / Gold Fields 50%', asx:'GOR', state:'WA', region:'Yamarna (Laverton)', category:'Active', resourceOz:6200000, resourceOzNum:6200000, grade:1.3, gradeNum:1.3, prodOzYr:320000, aisc:2500, processing:'Open pit CIL (10 Mtpa)', overview:`Gruyere is a large open pit gold mine in the remote Yamarna region, 200km east of Laverton WA. 50/50 JV between Gold Road Resources (ASX:GOR) and Gold Fields. Resource 6.2 Moz at ~1.3 g/t. FY2026 guidance ~320,000 oz at AISC A$2,400–2,600/oz. 10+ year mine life. Largest producing mine in the Yamarna Belt.`, sources:[{type:'News', title:'Gold Road lifts production outlook for Gruyere — Mining Weekly', url:'https://www.miningweekly.com/article/gold-road-lifts-production-outlook-for-gruyere-2025-01-28', date:'Jan 2025'}] },
+  { id:'a8', name:'Boddington Gold Mine', company:'Newmont Corporation (NYSE:NEM)', asx:'', state:'WA', region:'Boddington', category:'Active', resourceOz:10200000, resourceOzNum:10200000, grade:0.8, gradeNum:0.8, prodOzYr:287000, aisc:1680, processing:'Open pit CIL + Cu flotation (35 Mtpa)', overview:`Boddington is one of Australia's largest open pit gold-copper mines, ~120km SE of Perth, operated by Newmont (100%). FY2026 guidance ~275,000–300,000 oz gold plus significant copper. Reserve 10.2 Moz. Operates at very large scale (~35 Mtpa) compensating for a low grade of ~0.8 g/t. Among the world's lowest AISC operations for gold.`, sources:[{type:'News', title:'Newmont Q4 2025 Results and 2026 Guidance — Business Wire', url:'https://www.businesswire.com/news/home/20260219222644/en/Newmont-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Provides-2026-Guidance-and-Announces-Enhanced-Capital-Allocation-Framework', date:'Feb 2026'}] },
+  { id:'a9', name:'Telfer Gold-Copper Mine', company:'Newmont Corporation (NYSE:NEM)', asx:'', state:'WA', region:'Pilbara (Great Sandy Desert)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:190000, aisc:0, processing:'Open pit & underground CIL', overview:`Telfer is a remote gold-copper mine in WA's Great Sandy Desert ~400km SE of Port Hedland, operated by Newmont. The mine has been transitioning from open pit to underground ore sources as the Main Dome and West Dome open pits deplete. Production declining profile; future dependent on underground extensions and gold price economics.`, sources:[{type:'News', title:'Newmont Q4 2025 Results and 2026 Guidance — Business Wire', url:'https://www.businesswire.com/news/home/20260219222644/en/Newmont-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Provides-2026-Guidance-and-Announces-Enhanced-Capital-Allocation-Framework', date:'Feb 2026'}] },
+  { id:'a10', name:'Tropicana Gold Mine', company:'AngloGold Ashanti (AGG) 70% / Regis Resources (ASX:RRL) 30%', asx:'', state:'WA', region:'Fraser Range (NE Goldfields)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:313000, aisc:1297, processing:'Open pit & Havana underground CIL', overview:`Tropicana is a large gold mine ~330km NE of Kalgoorlie in the remote Fraser Range, operated by AngloGold Ashanti (70%) with Regis Resources (30%). 2024 production 313,000 oz at low AISC A$1,297/oz — one of Australia's most profitable gold mines. Transitioning from Grand Côte open pit to Havana underground, with underground production ramping from 2027.`, sources:[{type:'Company', title:'AngloGold Ashanti — Tropicana Mine', url:'https://www.anglogoldashanti.com/portfolio/australia/tropicana/', date:'2024'}] },
+  { id:'a11', name:'Karlawinda Gold Mine', company:'Capricorn Metals (ASX:CMM)', asx:'CMM', state:'WA', region:'Pilbara (Newman)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:120000, aisc:0, processing:'Open pit CIL', overview:`Karlawinda gold mine is operated by Capricorn Metals near Newman in WA's Pilbara region. FY2026 guidance 115,000–125,000 oz. Low-cost open pit operation. Capricorn is also advancing the nearby Mt Gibson Gold project (development stage, 2.74 Moz reserves). Strong production track record since commencement.`, sources:[{type:'News', title:'Capricorn Metals Q3 FY26 Gold Production Update — Motley Fool', url:'https://www.fool.com.au/2026/04/07/capricorn-metals-delivers-solid-q3-fy26-gold-production-and-growth-update/', date:'Apr 2026'}] },
+  { id:'a12', name:'Mungari Gold Operations', company:'Evolution Mining (ASX:EVN)', asx:'EVN', state:'WA', region:'Kalgoorlie', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:150000, aisc:0, processing:'Open pit & underground CIL', overview:`Mungari Gold Operations are located near Kalgoorlie, WA, acquired by Evolution Mining from OceanaGold in 2022. Includes the Mungari mill (4.2 Mtpa), Castle Hill underground, and several open pits. A major contributor to EVN's group production. Ongoing underground development growing the resource base.`, sources:[{type:'News', title:'Evolution Mining Q3 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-evolution-mining-q3-2026-sees-strong-cash-flow-stock-surges-93CH-4614175', date:'Apr 2026'}] },
+  { id:'a13', name:'Norseman Gold Project', company:'Pantoro (ASX:PNR)', asx:'PNR', state:'WA', region:'Eastern Goldfields', category:'Active', resourceOz:4750000, resourceOzNum:4750000, grade:3.3, gradeNum:3.3, prodOzYr:89000, aisc:0, processing:'Underground CIL', overview:`Pantoro operates the historic Norseman gold project in WA's Eastern Goldfields, ~720km ESE of Perth. FY2026 guidance revised to 86,000–92,000 oz. Resource 4.7–4.8 Moz at ~3.3 g/t. Strong H1 FY2026 results. One of Western Australia's oldest mining towns with extensive historical production and significant remaining resource.`, sources:[{type:'News', title:'Pantoro stronger half-year result — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1088582/pantoro-posts-stronger-half-year-result-as-norseman-production-drives-earnings-1088582.html', date:'Apr 2026'}] },
+  // --- NSW ACTIVE ---
+  { id:'a14', name:'Cadia Valley Operations', company:'Newmont Corporation (NYSE:NEM)', asx:'', state:'NSW', region:'Orange (Central West NSW)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:270000, aisc:0, processing:'Block cave underground CIL (large-scale)', overview:`Cadia Valley Operations are located ~25km south of Orange, NSW (~250km west of Sydney), operated by Newmont (formerly Newcrest). FY2026 guidance ~270,000 oz gold plus major copper byproduct. One of Australia's largest underground gold-copper mines — panel caving and block caving operations. Cave 2 expansion is underway, targeting increased throughput.`, sources:[{type:'News', title:'Newmont Q4 2025 Results and 2026 Guidance — Business Wire', url:'https://www.businesswire.com/news/home/20260219222644/en/Newmont-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Provides-2026-Guidance-and-Announces-Enhanced-Capital-Allocation-Framework', date:'Feb 2026'}] },
+  { id:'a15', name:'Cowal Gold Operations', company:'Evolution Mining (ASX:EVN)', asx:'EVN', state:'NSW', region:'Forbes (Central West NSW)', category:'Active', resourceOz:3000000, resourceOzNum:3000000, grade:1.2, gradeNum:1.2, prodOzYr:200000, aisc:0, processing:'Open pit & underground CIL', overview:`Cowal is Evolution Mining's flagship NSW operation, near Forbes (~400km west of Sydney). Open pit and underground mining (E42 underground) feeds a large CIL plant. Resource ~3 Moz. A major cash flow driver for EVN — strong quarterly operating cash generation. Underground development extending mine life well into the 2030s.`, sources:[{type:'News', title:'Evolution Mining Q3 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-evolution-mining-q3-2026-sees-strong-cash-flow-stock-surges-93CH-4614175', date:'Apr 2026'}] },
+  { id:'a16', name:'Tomingley Gold Operations', company:'Alkane Resources (ASX:ALK)', asx:'ALK', state:'NSW', region:'Tomingley (Dubbo region)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:80000, aisc:2750, processing:'Underground CIL', overview:`Tomingley Gold Operations are operated by Alkane Resources near Tomingley, NSW, ~55km SSW of Dubbo. FY2026 guidance ~80,000 oz at AISC A$2,600–2,900/oz (group guidance, 100% basis). Underground mining of Wyoming and San Antonio deposits. Alkane is also advancing the nearby Boda-Kaiser gold-copper porphyry discovery, which has significant long-term potential.`, sources:[{type:'Company', title:'Alkane Resources FY2026 Guidance', url:'https://alkres.com/alkane-announces-financial-year-2026-guidance/', date:'Sep 2025'}] },
+  // --- VIC ACTIVE ---
+  { id:'a17', name:'Fosterville Gold Mine', company:'Agnico Eagle Mines (TSX/NYSE:AEM)', asx:'', state:'VIC', region:'Bendigo', category:'Active', resourceOz:1700000, resourceOzNum:1700000, grade:5.0, gradeNum:5.0, prodOzYr:200000, aisc:0, processing:'High-grade underground CIL', overview:`Fosterville is one of the world's highest-grade operating gold mines, ~20km east of Bendigo, Victoria. Operated by Agnico Eagle (acquired from Kirkland Lake Gold 2022). Proven/probable reserves 1.7 Moz at 4.99 g/t (10.4 Mt). Production target 3,300 tpd by 2028. The Swan Zone remains the highest-grade ore (~80+ g/t in drill intersections). A world-class, long-life, very-low-cost operation generating exceptional cash margins.`, sources:[{type:'News', title:'Agnico Eagle 2025 Exploration Results & 2026 Exploration Plans — PR Newswire', url:'https://www.prnewswire.com/news-releases/agnico-eagle-provides-an-update-on-2025-exploration-results-and-2026-exploration-plans--year-over-year-mineral-reserves-increase-2-to-55-4-moz-indicated-mineral-resources-increase-10-to-47-1-MOZ-and-inferred-mineral-resources-increase-15-to-41-8-moz-302686928.html', date:'Feb 2026'}] },
+  // --- QLD ACTIVE ---
+  { id:'a18', name:'Mt Carlton Gold-Silver Mine', company:'Evolution Mining (ASX:EVN)', asx:'EVN', state:'QLD', region:'Townsville (North QLD)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:70000, aisc:0, processing:'Open pit CIL + silver', overview:`Mt Carlton is a high-grade gold-silver mine ~150km SSW of Townsville, QLD, operated by Evolution Mining. Declining open pit mine life — primary Satans Reward and East Percy pits nearing depletion. Also produces significant silver. Evolution is evaluating underground extensions to extend the mine.`, sources:[{type:'News', title:'Evolution Mining Q3 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-evolution-mining-q3-2026-sees-strong-cash-flow-stock-surges-93CH-4614175', date:'Apr 2026'}] },
+  { id:'a19', name:'Ernest Henry Gold-Copper Mine', company:'Evolution Mining (ASX:EVN)', asx:'EVN', state:'QLD', region:'Cloncurry (NW Queensland)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:120000, aisc:0, processing:'Underground sublevel cave CIL (copper-gold)', overview:`Ernest Henry is a gold-copper underground mine near Cloncurry, QLD, owned 100% by Evolution Mining (acquired from Glencore 2022 for A$1B). A major cash flow driver for EVN — generating A$320M+ net cash flow in FY2026. Gold produced as byproduct of copper mining, yielding a very low effective gold AISC. Sublevel cave mining method. Extended mine life via Ernest Henry Deeps project.`, sources:[{type:'News', title:'Evolution Mining Q3 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-evolution-mining-q3-2026-sees-strong-cash-flow-stock-surges-93CH-4614175', date:'Apr 2026'}] },
+  { id:'a20', name:'Cracow Gold Mine', company:'Aeris Resources (ASX:AIS)', asx:'AIS', state:'QLD', region:'Cracow (Central QLD)', category:'Active', resourceOz:2550000, resourceOzNum:2550000, grade:4.2, gradeNum:4.2, prodOzYr:39000, aisc:0, processing:'Underground CIL', overview:`Cracow is a high-grade underground gold mine near the township of Cracow, QLD (~540km NW of Brisbane), operated by Aeris Resources. FY2026 guidance 36,000–42,000 oz. Resource 2.55 Moz at 4.21 g/t. Strong Q2 FY2026 cash flows. Aeris also holds the Tritton copper mine in NSW.`, sources:[{type:'News', title:'Aeris Resources Q2 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-aeris-resources-q2-2026-sees-strong-cash-flow-93CH-4471750', date:'Apr 2026'}] },
+  // --- DEVELOPMENT ---
+  { id:'a21', name:'Hemi Gold Project', company:'Northern Star Resources (ASX:NST)', asx:'NST', state:'WA', region:'Pilbara (Mallina Station)', category:'Development', resourceOz:11200000, resourceOzNum:11200000, grade:1.8, gradeNum:1.8, prodOzYr:0, aisc:0, processing:'Large-scale open pit (DFS complete, under development)', overview:`Hemi is one of the world's largest undeveloped gold discoveries, located on Mallina Station in WA's Pilbara region ~60km south of Port Hedland. Northern Star acquired De Grey Mining (ASX:DEG) in May 2025 for ~A$5B. Resource: 11.2 Moz at ~1.8 g/t. DFS completed; targeting first gold in late 2028–2029. Average production 553,000 oz/yr for the first 5 years, up to 700,000+ oz/yr at full ramp. Estimated capex ~US$1.6B. NAIF committed infrastructure financing. Will be one of Australia's top-3 gold mines by production.`, sources:[{type:'News', title:'NAIF investment in De Grey Hemi Gold Project', url:'https://www.naif.gov.au/media-centre/de-grey-mining-announcement/', date:'2025'}] },
+  { id:'a22', name:'Mt Gibson Gold Project', company:'Capricorn Metals (ASX:CMM)', asx:'CMM', state:'WA', region:'Mid West (Mt Gibson Station)', category:'Development', resourceOz:2740000, resourceOzNum:2740000, grade:1.5, gradeNum:1.5, prodOzYr:0, aisc:0, processing:'Open pit CIL (target 150,000 oz/yr)', overview:`Mt Gibson Gold is a development-stage open pit project operated by Capricorn Metals, located at Mt Gibson Station in WA's Mid West (~350km NE of Perth). Ore reserves 2.74 Moz. Target production ~150,000 oz/yr once in operation. Permitting and feasibility studies advancing in 2025–2026. Capricorn's second project after the successfully operating Karlawinda mine.`, sources:[{type:'Company', title:'Capricorn Metals — Mt Gibson Gold Project', url:'https://capmetals.com.au/project/mt-gibson-gold/', date:'2026'}] }
+];
+
+// =====================================================================
+// UNIFIED ARRAY — all distressed + watch list + active/development
+// =====================================================================
+const allMines = [...distressedMines, ...watchlistMines, ...activeMines];
+
+// =====================================================================
+// CATEGORY INFERENCE — for legacy entries that predate the category field
+// =====================================================================
+function getCategory(m) {
+  if (m.category) return m.category;
+  if (m.probLabel) return 'Watch List';
+  if (m.status) {
+    if (m.status.includes('DOCA') || m.status.includes('Administration') || m.status.includes('Liquidation')) return 'Administration';
+    if (m.status.includes('Care') || m.status.includes('Maintenance')) return 'C&M';
+    if (m.status.includes('Ceased') || m.status.includes('Closed')) return 'Ceased';
+    return 'Distressed';
+  }
+  return 'Active';
+}
+
 // All sources for bottom section
 const allSources = [
   {title:'Calidus Resources Case Update — Insolvency Insider AU', url:'https://www.insolvencyinsider-au.com/p/calidus-resources-case-update', date:'2024', type:'Insolvency'},
@@ -1496,82 +1460,132 @@ const allSources = [
 // =====================================================================
 // STATE
 // =====================================================================
-let activeFilters = { status: 'all', prob: 'all' };
-let sortState = { distressed: {col:-1, asc:true}, watch: {col:-1, asc:true} };
+let activeCatFilter = 'all';
+let sortState = { col: -1, asc: true };
+
+// =====================================================================
+// HELPERS
+// =====================================================================
+function catBadge(cat, probPct) {
+  const styles = {
+    'Active':         'background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)',
+    'Development':    'background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3)',
+    'Watch List':     'background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)',
+    'C&M':            'background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)',
+    'Distressed':     'background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.3)',
+    'Administration': 'background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.4)',
+    'Ceased':         'background:rgba(139,148,158,.12);color:#8b949e;border:1px solid rgba(139,148,158,.3)',
+  };
+  const s = styles[cat] || styles['Active'];
+  const label = probPct ? `${cat} (${probPct}%)` : cat;
+  return `<span class="status-badge" style="${s}">${label}</span>`;
+}
+
+function getResourceMoz(m) {
+  if (m.resourceOzNum != null) return m.resourceOzNum / 1e6;
+  if (typeof m.resourceOz === 'string') {
+    const n = parseFloat(m.resourceOz.replace(/[^0-9.]/g,''));
+    return isNaN(n) ? 0 : n / 1e6;
+  }
+  return 0;
+}
+
+function getGrade(m) {
+  if (m.gradeNum != null) return m.gradeNum;
+  if (typeof m.grade === 'string') {
+    const n = parseFloat(m.grade.replace(/[^0-9.]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+  return 0;
+}
+
+function getProduction(m) {
+  if (m.prodOzYr) return m.prodOzYr.toLocaleString() + ' oz';
+  if (m.historicalOutput) return m.historicalOutput.split('\n')[0].slice(0,40);
+  return '—';
+}
+
+function getAISC(m) {
+  if (typeof m.aisc === 'number') return m.aisc > 0 ? 'A$' + m.aisc.toLocaleString() : '—';
+  if (typeof m.aisc === 'string' && m.aisc) return m.aisc;
+  return '—';
+}
 
 // =====================================================================
 // RENDER
 // =====================================================================
-function renderDistressed() {
-  const tbody = document.getElementById('distressed-tbody');
+function renderMines() {
+  const tbody = document.getElementById('mines-tbody');
   tbody.innerHTML = '';
-  distressedMines.forEach(m => {
+  allMines.forEach(m => {
+    const cat = getCategory(m);
+    const resMoz = getResourceMoz(m);
+    const grade = getGrade(m);
+    const aiscNum = typeof m.aisc === 'number' ? m.aisc : (parseFloat(String(m.aisc||'').replace(/[^0-9.]/g,''))||0);
     const mainRow = document.createElement('tr');
     mainRow.className = 'main-row';
     mainRow.dataset.id = m.id;
-    mainRow.dataset.status = m.status;
-    mainRow.dataset.region = m.region;
-    mainRow.dataset.state = m.state || 'WA';
+    mainRow.dataset.cat = cat;
+    mainRow.dataset.state = (m.state || 'WA').toUpperCase();
     mainRow.dataset.name = m.name.toLowerCase();
     mainRow.dataset.company = m.company.toLowerCase();
-    const stateClass = 'state-badge state-badge-' + (m.state||'wa').toLowerCase();
+    mainRow.dataset.prodNum = m.prodOzYr || 0;
+    mainRow.dataset.aiscNum = aiscNum;
+    mainRow.dataset.resourceNum = resMoz;
+    mainRow.dataset.gradeNum = grade;
+    const stateTag = `<span class="state-badge state-badge-${(m.state||'wa').toLowerCase()}">${m.state||'WA'}</span>`;
+    const asxTag = m.asx ? ` <span style="color:#D4AF37;font-size:.72rem">(${m.asx})</span>` : '';
     mainRow.innerHTML = `
-      <td><strong>${m.name}</strong><span class="${stateClass}">${m.state||'WA'}</span></td>
-      <td style="color:#8b949e;font-size:.8rem">${m.company}</td>
-      <td>${m.region}</td>
-      <td><span class="status-badge ${m.statusClass}">${m.status}</span></td>
-      <td>${m.resourceOz}</td>
-      <td>${m.grade} g/t</td>
-      <td style="font-size:.8rem">${m.processing}</td>
-      <td>${m.sourcesCount}</td>
+      <td><strong>${m.name}</strong>${stateTag}</td>
+      <td style="color:#8b949e;font-size:.8rem">${m.company}${asxTag}</td>
+      <td>${m.state || 'WA'}</td>
+      <td>${catBadge(cat, m.probPct)}</td>
+      <td data-num="${m.prodOzYr||0}">${getProduction(m)}</td>
+      <td data-num="${aiscNum}">${getAISC(m)}</td>
+      <td data-num="${resMoz}">${resMoz > 0 ? resMoz.toFixed(2) : '—'}</td>
+      <td data-num="${grade}">${grade > 0 ? grade.toFixed(2) : '—'}</td>
+      <td style="font-size:.78rem">${m.processing || '—'}</td>
       <td><button class="expand-btn" id="btn-${m.id}" onclick="toggleDetail('${m.id}')">Expand ▼</button></td>
     `;
     tbody.appendChild(mainRow);
+    const type = (cat === 'Active' || cat === 'Development') ? 'active' : (m.probLabel ? 'watchlist' : 'distressed');
     const detailRow = document.createElement('tr');
     detailRow.className = 'detail-row';
     detailRow.id = 'detail-' + m.id;
-    detailRow.innerHTML = `<td colspan="9">${buildDetailPanel(m, 'distressed')}</td>`;
+    detailRow.innerHTML = `<td colspan="10">${buildDetailPanel(m, type)}</td>`;
     tbody.appendChild(detailRow);
   });
-  applyDistressedFilters();
-}
-
-function renderWatchlist() {
-  const tbody = document.getElementById('watchlist-tbody');
-  tbody.innerHTML = '';
-  watchlistMines.forEach(m => {
-    const mainRow = document.createElement('tr');
-    mainRow.className = 'main-row';
-    mainRow.dataset.id = m.id;
-    mainRow.dataset.prob = m.probLabel;
-    mainRow.dataset.region = m.region;
-    mainRow.dataset.state = m.state || 'WA';
-    mainRow.dataset.name = m.name.toLowerCase();
-    mainRow.dataset.company = m.company.toLowerCase();
-    const trendIcon = m.prodTrend==='up' ? '<span class="trend-up">↑ Rising</span>' : m.prodTrend==='down' ? '<span class="trend-down">↓ Falling</span>' : '<span class="trend-flat">→ Flat</span>';
-    const wStateClass = 'state-badge state-badge-' + (m.state||'wa').toLowerCase();
-    mainRow.innerHTML = `
-      <td><strong>${m.name}</strong><span class="${wStateClass}">${m.state||'WA'}</span></td>
-      <td style="color:#8b949e;font-size:.8rem">${m.company}</td>
-      <td>${m.region}</td>
-      <td><strong class="${m.probClass}">${m.probLabel} (${m.probPct}%)</strong></td>
-      <td>${m.aisc}</td>
-      <td>${trendIcon}</td>
-      <td style="font-size:.8rem">${m.cash}</td>
-      <td>${m.reserveLife}</td>
-      <td><button class="expand-btn" id="btn-${m.id}" onclick="toggleDetail('${m.id}')">Expand ▼</button></td>
-    `;
-    tbody.appendChild(mainRow);
-    const detailRow = document.createElement('tr');
-    detailRow.className = 'detail-row';
-    detailRow.id = 'detail-' + m.id;
-    detailRow.innerHTML = `<td colspan="9">${buildDetailPanel(m, 'watchlist')}</td>`;
-    tbody.appendChild(detailRow);
-  });
-  applyWatchFilters();
+  applyFilters();
 }
 
 function buildDetailPanel(m, type) {
+  if (type === 'active') {
+    const sourcesHtml = (m.sources||[]).map(s=>`<div class="source-item"><span class="source-type">${s.type}</span><div class="source-text"><a href="${s.url}" target="_blank">${s.title}</a><div class="source-date">${s.date}</div></div></div>`).join('');
+    const resMoz = getResourceMoz(m);
+    const grade = getGrade(m);
+    return `<div class="detail-panel">
+      <div class="detail-tabs">
+        <button class="detail-tab-btn active" onclick="switchDetailTab('${m.id}','aoverview',this)">Overview</button>
+        <button class="detail-tab-btn" onclick="switchDetailTab('${m.id}','adata',this)">Mine Data</button>
+        <button class="detail-tab-btn" onclick="switchDetailTab('${m.id}','asources',this)">Sources</button>
+      </div>
+      <div id="${m.id}-aoverview" class="detail-pane active"><div class="note-box">${m.overview||'No overview available.'}</div></div>
+      <div id="${m.id}-adata" class="detail-pane">
+        <div class="detail-grid">
+          <div class="detail-field"><label>State</label><span>${m.state||'WA'}</span></div>
+          <div class="detail-field"><label>Region</label><span>${m.region||'—'}</span></div>
+          <div class="detail-field"><label>ASX Code</label><span>${m.asx||'—'}</span></div>
+          <div class="detail-field"><label>Category</label><span>${m.category||'Active'}</span></div>
+          <div class="detail-field"><label>Resource (Moz)</label><span>${resMoz>0?resMoz.toFixed(2)+'Moz':'—'}</span></div>
+          <div class="detail-field"><label>Grade (g/t Au)</label><span>${grade>0?grade.toFixed(2)+' g/t':'—'}</span></div>
+          <div class="detail-field"><label>Production (oz/yr)</label><span>${m.prodOzYr?m.prodOzYr.toLocaleString()+' oz/yr':'—'}</span></div>
+          <div class="detail-field"><label>AISC (A$/oz)</label><span>${getAISC(m)}</span></div>
+          <div class="detail-field"><label>Processing</label><span>${m.processing||'—'}</span></div>
+        </div>
+      </div>
+      <div id="${m.id}-asources" class="detail-pane"><div class="sources-list">${sourcesHtml||'<div class="sec-na">No sources recorded.</div>'}</div></div>
+    </div>`;
+  }
   if (type === 'distressed') {
     const timelineHtml = m.distressTimeline ? m.distressTimeline.map(e=>`<li style="margin-bottom:5px;color:#d1d5db">${e}</li>`).join('') : '';
     const sourcesHtml = m.sources.map(s=>`<div class="source-item"><span class="source-type">${s.type}</span><div class="source-text"><a href="${s.url}" target="_blank">${s.title}</a><div class="source-date">${s.date}</div></div></div>`).join('');
@@ -1653,13 +1667,6 @@ function buildSecSection(m) {
 // =====================================================================
 // INTERACTIONS
 // =====================================================================
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('tab-'+tab).classList.add('active');
-}
-
 function switchDetailTab(id, pane, btn) {
   const panel = btn.closest('.detail-panel');
   panel.querySelectorAll('.detail-tab-btn').forEach(b=>b.classList.remove('active'));
@@ -1682,73 +1689,56 @@ function toggleDetail(id) {
   }
 }
 
-function setFilter(type, value, btn) {
-  activeFilters[type] = value;
-  const groupId = type === 'status' ? 'status-filters' : 'prob-filters';
-  document.querySelectorAll('#'+groupId+' .filter-btn').forEach(b=>b.classList.remove('active'));
+function setCategory(cat, btn) {
+  activeCatFilter = cat;
+  document.querySelectorAll('#cat-filters .filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  if (type === 'status') applyDistressedFilters();
-  else applyWatchFilters();
+  applyFilters();
 }
 
-function applyDistressedFilters() {
-  const search = document.getElementById('distressed-search').value.toLowerCase();
-  const region = document.getElementById('region-filter').value;
-  const status = activeFilters.status;
-  const stateFilter = document.getElementById('state-filter-distressed').value;
+function applyFilters() {
+  const search = (document.getElementById('mine-search')||{value:''}).value.toLowerCase();
+  const stateFilter = (document.getElementById('state-filter')||{value:'all'}).value;
   let count = 0;
-  document.querySelectorAll('#distressed-tbody tr.main-row').forEach(row => {
-    const matchStatus = status === 'all' || row.dataset.status === status;
-    const matchRegion = region === 'all' || row.dataset.region.includes(region);
+  document.querySelectorAll('#mines-tbody tr.main-row').forEach(row => {
+    const cat = row.dataset.cat;
+    const matchCat = activeCatFilter === 'all' || cat === activeCatFilter ||
+      (activeCatFilter === 'C&M' && cat === 'C&M') ||
+      (activeCatFilter === 'Distressed' && (cat === 'Distressed' || cat === 'Administration' || cat === 'Ceased'));
     const matchState = stateFilter === 'all' || row.dataset.state === stateFilter;
     const matchSearch = !search || row.dataset.name.includes(search) || row.dataset.company.includes(search);
-    const show = matchStatus && matchRegion && matchState && matchSearch;
+    const show = matchCat && matchState && matchSearch;
     row.classList.toggle('hidden', !show);
     const detailRow = row.nextElementSibling;
-    if (detailRow) detailRow.classList.toggle('hidden', !show);
+    if (detailRow && detailRow.classList.contains('detail-row')) detailRow.classList.toggle('hidden', !show);
     if (show) count++;
   });
-  document.getElementById('distressed-count').textContent = count + ' mine' + (count!==1?'s':'');
+  const el = document.getElementById('mine-count');
+  if (el) el.textContent = count + ' mine' + (count!==1?'s':'');
 }
 
-function applyWatchFilters() {
-  const search = document.getElementById('watchlist-search').value.toLowerCase();
-  const prob = activeFilters.prob;
-  const stateFilter = document.getElementById('state-filter-watch').value;
-  let count = 0;
-  document.querySelectorAll('#watchlist-tbody tr.main-row').forEach(row => {
-    const matchProb = prob === 'all' || row.dataset.prob === prob;
-    const matchState = stateFilter === 'all' || row.dataset.state === stateFilter;
-    const matchSearch = !search || row.dataset.name.includes(search) || row.dataset.company.includes(search);
-    const show = matchProb && matchState && matchSearch;
-    row.classList.toggle('hidden', !show);
-    const detailRow = row.nextElementSibling;
-    if (detailRow) detailRow.classList.toggle('hidden', !show);
-    if (show) count++;
-  });
-  document.getElementById('watchlist-count').textContent = count + ' compan' + (count!==1?'ies':'y');
-}
-
-function sortTable(tableType, col) {
-  const state = sortState[tableType];
-  if (state.col === col) state.asc = !state.asc;
-  else { state.col = col; state.asc = true; }
-  const tbodyId = tableType === 'distressed' ? 'distressed-tbody' : 'watchlist-tbody';
-  const tbody = document.getElementById(tbodyId);
+function sortMines(col) {
+  if (sortState.col === col) sortState.asc = !sortState.asc;
+  else { sortState.col = col; sortState.asc = true; }
+  const tbody = document.getElementById('mines-tbody');
   const rows = [];
-  let i = 0;
   const children = Array.from(tbody.children);
-  while (i < children.length) {
+  for (let i = 0; i < children.length; i += 2) {
     rows.push([children[i], children[i+1]]);
-    i += 2;
   }
+  const numCols = { 4: 'prodNum', 5: 'aiscNum', 6: 'resourceNum', 7: 'gradeNum' };
   rows.sort((a, b) => {
-    const cellA = a[0].cells[col]?.textContent.trim() || '';
-    const cellB = b[0].cells[col]?.textContent.trim() || '';
-    const numA = parseFloat(cellA.replace(/[^0-9.-]/g,''));
-    const numB = parseFloat(cellB.replace(/[^0-9.-]/g,''));
-    const result = isNaN(numA)||isNaN(numB) ? cellA.localeCompare(cellB) : numA - numB;
-    return state.asc ? result : -result;
+    let result;
+    if (numCols[col]) {
+      const nA = parseFloat(a[0].dataset[numCols[col]])||0;
+      const nB = parseFloat(b[0].dataset[numCols[col]])||0;
+      result = nA - nB;
+    } else {
+      const cellA = a[0].cells[col]?.textContent.trim() || '';
+      const cellB = b[0].cells[col]?.textContent.trim() || '';
+      result = cellA.localeCompare(cellB);
+    }
+    return sortState.asc ? result : -result;
   });
   tbody.innerHTML = '';
   rows.forEach(([main, detail]) => { tbody.appendChild(main); tbody.appendChild(detail); });
@@ -1765,12 +1755,37 @@ function renderSources() {
   `).join('');
 }
 
+function renderKPIs() {
+  const set = (id, v) => { const el=document.getElementById(id); if(el) el.textContent=v; };
+  let total=0, active=0, dev=0, cm=0, watch=0, distressed=0;
+  const states = new Set();
+  allMines.forEach(m => {
+    const cat = getCategory(m);
+    total++;
+    states.add(m.state||'WA');
+    if (cat === 'Active') active++;
+    else if (cat === 'Development') dev++;
+    else if (cat === 'C&M') cm++;
+    else if (cat === 'Watch List') watch++;
+    else if (cat === 'Distressed' || cat === 'Administration' || cat === 'Ceased') distressed++;
+  });
+  set('kpi-total', total);
+  set('kpi-active', active);
+  set('kpi-dev', dev);
+  set('kpi-cm', cm);
+  set('kpi-watch', watch);
+  set('kpi-distressed', distressed);
+  set('kpi-states', states.size);
+  const srcEl = document.getElementById('kpi-source-count');
+  if (srcEl) srcEl.textContent = allSources.length + ' Sources';
+}
+
 // =====================================================================
 // INIT
 // =====================================================================
-renderDistressed();
-renderWatchlist();
+renderMines();
 renderSources();
+renderKPIs();
 </script>
 </body>
 </html>
