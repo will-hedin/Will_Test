@@ -188,6 +188,10 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 .cost-fill{height:100%;border-radius:3px}
 .cost-val{font-size:.72rem;color:#8b949e;width:175px}
 
+.wa-meter-track{height:18px;border-radius:9px;background:linear-gradient(to right,#ef4444 0%,#f59e0b 28%,#D4AF37 50%,#a3e635 72%,#22c55e 100%);position:relative;margin:12px 0}
+.wa-meter-needle{position:absolute;top:-8px;width:3px;height:34px;background:#fff;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 8px rgba(0,0,0,.6);transition:left .6s ease}
+.wa-meter-labels{display:flex;justify-content:space-between;font-size:.68rem;color:#8b949e;margin-top:2px}
+.wa-meter-zone{position:absolute;top:0;height:100%;opacity:.15}
 @media(max-width:900px){.forecast-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
   .header{padding:12px 16px}
@@ -309,6 +313,40 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 
   <div style="background:#1c2128;border:1px solid rgba(212,175,55,.4);border-radius:8px;padding:10px 14px;font-size:.78rem;color:#8b949e;margin-bottom:18px">
     <strong style="color:#D4AF37">⚠ Price Note:</strong> AU$ spot estimated conservatively from tracker mine data (Pantoro Q3 FY2026 realised price A$6,916/oz; model uses A$6,200 as conservative baseline). US$ estimated at AUD/USD ~0.63. Verify current prices at kitco.com or World Gold Council. <strong>Not financial advice.</strong>
+  </div>
+
+  <!-- WESTERN AUSTRALIA SUPPLY IMPACT METER -->
+  <div class="forecast-card" style="border-color:rgba(212,175,55,.35)">
+    <div class="forecast-card-title" style="display:flex;align-items:center;gap:8px">
+      ⛏ Western Australia — Supply Impact on Gold Price
+    </div>
+    <div style="font-size:.75rem;color:#8b949e;margin-bottom:16px">
+      WA is the world's most concentrated single gold-producing region (~7–8% of global supply). Tracked WA mine status changes directly move the global supply needle. Metrics computed live from mine tracker data.
+    </div>
+
+    <!-- KPI sub-metrics row (dynamically filled) -->
+    <div id="wa-kpi-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px"></div>
+
+    <!-- Impact meter -->
+    <div>
+      <div style="font-size:.8rem;font-weight:600;color:#e6edf3;margin-bottom:4px">WA Supply Pressure — Near-Term (12M) Signal</div>
+      <div style="font-size:.72rem;color:#8b949e;margin-bottom:2px">← Bearish (WA supply growing) &nbsp;·&nbsp; Bullish (WA supply shrinking) →</div>
+      <div class="wa-meter-track">
+        <div class="wa-meter-needle" id="wa-needle" style="left:50%"></div>
+      </div>
+      <div class="wa-meter-labels">
+        <span>BEARISH<br>Supply ↑</span>
+        <span style="text-align:center">MILDLY<br>BEARISH</span>
+        <span style="text-align:center">NEUTRAL</span>
+        <span style="text-align:center">MILDLY<br>BULLISH</span>
+        <span style="text-align:right">BULLISH<br>Supply ↓</span>
+      </div>
+    </div>
+
+    <!-- Dynamic signal commentary -->
+    <div id="wa-signal-text" style="margin-top:14px;background:#161b22;border-radius:6px;padding:12px 14px;font-size:.78rem;color:#8b949e;line-height:1.6">
+      Loading WA supply signal…
+    </div>
   </div>
 
   <!-- SCENARIOS + MACRO SIGNALS -->
@@ -2333,6 +2371,104 @@ function renderKPIs() {
 }
 
 // =====================================================================
+// WESTERN AUSTRALIA SUPPLY IMPACT METER
+// =====================================================================
+function renderWAImpactMeter() {
+  const waMines  = allMines.filter(m => (m.state || 'WA') === 'WA');
+  const waActive = waMines.filter(m => getCategory(m) === 'Active');
+  const waCM     = waMines.filter(m => getCategory(m) === 'C&M');
+  const waAdmin  = waMines.filter(m => ['Administration','Distressed','Ceased'].includes(getCategory(m)));
+  const waWatch  = waMines.filter(m => getCategory(m) === 'Watch List');
+  const waDev    = waMines.filter(m => getCategory(m) === 'Development');
+
+  const waActiveProd   = waActive.reduce((s,m) => s + (m.prodOzYr||0), 0);
+  const waCMResource   = waCM.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+  const waAdminResource= waAdmin.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+  const waDevResource  = waDev.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+
+  const globalOzYr = 3770 * 32150.7; // ~121.2M oz/yr global mine supply
+  const waPctGlobal = (waActiveProd / globalOzYr * 100).toFixed(1);
+
+  // Score: -5 (very bearish = supply growing) to +5 (very bullish = supply shrinking)
+  let score = 0;
+  waAdmin.forEach(() => { score += 1.2; });   // admin/distressed = supply removed = bullish
+  waWatch.forEach(() => { score += 0.4; });   // watch list = at risk = mildly bullish
+  waCM.forEach(() => { score -= 0.6; });      // C&M = potential restart at high prices = mild headwind
+  waDev.forEach(m => {
+    score -= (m.resourceOzNum||0) > 5e6 ? 0.8 : 0.3; // large dev = bigger future supply headwind
+  });
+  score = Math.max(-5, Math.min(5, score));
+
+  const needlePct = ((score + 5) / 10 * 100).toFixed(1);
+  const needle = document.getElementById('wa-needle');
+  if (needle) needle.style.left = needlePct + '%';
+
+  let signalLabel, signalColor;
+  if      (score >= 2.0)  { signalLabel = 'BULLISH';        signalColor = '#22c55e'; }
+  else if (score >= 0.5)  { signalLabel = 'MILDLY BULLISH'; signalColor = '#a3e635'; }
+  else if (score >= -0.5) { signalLabel = 'NEUTRAL';        signalColor = '#D4AF37'; }
+  else if (score >= -2.0) { signalLabel = 'MILDLY BEARISH'; signalColor = '#f59e0b'; }
+  else                    { signalLabel = 'BEARISH';         signalColor = '#ef4444'; }
+
+  const fmtOz   = n => !n ? '—' : n >= 1e6 ? (n/1e6).toFixed(1)+' Moz' : Math.round(n/1000)+'k oz';
+  const fmtProd = n => !n ? '—' : (n >= 1e6 ? (n/1e6).toFixed(2)+'M' : Math.round(n/1000)+'k')+' oz/yr';
+
+  const kpiRow = document.getElementById('wa-kpi-row');
+  if (kpiRow) {
+    kpiRow.innerHTML = `
+      <div class="demand-card">
+        <div class="demand-card-label">WA Share of Global Supply</div>
+        <div class="demand-card-val" style="color:#D4AF37">${waPctGlobal}%</div>
+        <div class="demand-card-sub">${fmtProd(waActiveProd)} tracked active</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">Active WA Mines</div>
+        <div class="demand-card-val">${waActive.length}</div>
+        <div class="demand-card-sub">Currently producing</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">Supply Removed</div>
+        <div class="demand-card-val" style="color:#22c55e">${waAdmin.length} mine${waAdmin.length!==1?'s':''}</div>
+        <div class="demand-card-sub">${fmtOz(waAdminResource)} offline</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">C&amp;M Restart Risk</div>
+        <div class="demand-card-val" style="color:#f59e0b">${waCM.length} mine${waCM.length!==1?'s':''}</div>
+        <div class="demand-card-sub">${fmtOz(waCMResource)} latent supply</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">WA Dev Pipeline</div>
+        <div class="demand-card-val" style="color:#3b82f6">${waDev.length} project${waDev.length!==1?'s':''}</div>
+        <div class="demand-card-sub">${fmtOz(waDevResource)} future resource</div>
+      </div>
+      <div class="demand-card" style="border-color:${signalColor}40">
+        <div class="demand-card-label">WA Signal</div>
+        <div class="demand-card-val" style="color:${signalColor};font-size:.8rem">${signalLabel}</div>
+        <div class="demand-card-sub">Score ${score>=0?'+':''}${score.toFixed(1)} / 5.0</div>
+      </div>`;
+  }
+
+  const signalEl = document.getElementById('wa-signal-text');
+  if (signalEl) {
+    let parts = [`<strong style="color:${signalColor}">WA Signal: ${signalLabel}</strong> (score ${score>=0?'+':''}${score.toFixed(1)}/5.0) — WA represents <strong style="color:#D4AF37">~${waPctGlobal}%</strong> of global gold mine supply. Current tracker data shows:`];
+    parts.push('<ul style="margin:8px 0 0 14px;line-height:1.8">');
+    if (waAdmin.length)
+      parts.push(`<li><strong style="color:#22c55e">Supply removed (bullish):</strong> ${waAdmin.map(m=>m.name).join(', ')} — ${waAdmin.length} WA operation${waAdmin.length>1?'s are':' is'} in administration or distress. This supply is out of the market. Combined resource: ${fmtOz(waAdminResource)}.</li>`);
+    if (waWatch.length)
+      parts.push(`<li><strong style="color:#a855f7">Watch list (mildly bullish):</strong> ${waWatch.map(m=>m.name).join(', ')} — elevated distress signals. If these transition to C&amp;M or Administration, further WA supply contraction.</li>`);
+    if (waCM.length)
+      parts.push(`<li><strong style="color:#f59e0b">C&amp;M restart risk (medium-term headwind):</strong> ${waCM.map(m=>m.name).join(', ')} — ${fmtOz(waCMResource)} mothballed. At AU$6,000+ prices restart economics are compelling; expect 12–24 month lag before any supply returns.</li>`);
+    if (waDev.length) {
+      const top = waDev.slice().sort((a,b)=>(b.resourceOzNum||0)-(a.resourceOzNum||0)).slice(0,2);
+      parts.push(`<li><strong style="color:#3b82f6">Development pipeline (2027–29 headwind):</strong> ${top.map(m=>m.name).join(', ')} — Hemi (NST, ~553k oz/yr from 2028–29) will be the most material new WA supply in a decade. No near-term price impact.</li>`);
+    }
+    parts.push('</ul>');
+    parts.push(`<div style="margin-top:10px;padding-top:8px;border-top:1px solid #2d3148"><strong style="color:#D4AF37">Bottom line:</strong> Near-term WA supply is contracting (admin closures &gt; new production). The primary WA price risk is the Hemi ramp (2028–29, ~0.45% of global supply) and potential C&amp;M restarts from late 2026 if AU$ prices stay above A$5,500. At current AU$6,000+ price levels, WA is a <strong style="color:${signalColor}">net supply tailwind</strong> for the gold price over the next 12 months.</div>`);
+    signalEl.innerHTML = parts.join('');
+  }
+}
+
+// =====================================================================
 // MAIN TAB SWITCHING
 // =====================================================================
 function switchMainTab(tab, btn) {
@@ -2432,6 +2568,7 @@ renderMines();
 renderSources();
 renderKPIs();
 renderAusSupplySignals();
+renderWAImpactMeter();
 </script>
 </body>
 </html>
