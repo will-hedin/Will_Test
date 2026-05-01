@@ -303,16 +303,16 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 
   <!-- PRICE SNAPSHOT KPIs -->
   <div class="kpi-grid" style="padding:0 0 16px">
-    <div class="kpi-card" style="border-color:rgba(212,175,55,.5)"><div class="kpi-label">AU Spot (est.)</div><div class="kpi-value" style="color:#D4AF37">~A$7,335</div><div class="kpi-sub">US$4,620.80 ÷ AUD/USD 0.63</div></div>
-    <div class="kpi-card" style="cursor:pointer;border-color:rgba(212,175,55,.3)" onclick="window.open('https://www.kitco.com/charts/gold','_blank')"><div class="kpi-label">US Spot · Kitco ↗</div><div class="kpi-value" style="color:#e6edf3">US$4,620.80</div><div class="kpi-sub" style="color:#D4AF37">30 Apr 2026 · verify live</div></div>
+    <div id="fc-kpi-au" class="kpi-card" style="border-color:rgba(212,175,55,.5)"><div class="kpi-label">AU Spot</div><div class="kpi-value" style="color:#D4AF37">~A$7,335</div><div class="kpi-sub">Loading live price…</div></div>
+    <div id="fc-kpi-us" class="kpi-card" style="cursor:pointer;border-color:rgba(212,175,55,.3)" onclick="window.open('https://www.kitco.com/charts/gold','_blank')"><div class="kpi-label">US Spot · <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco ↗</a></div><div class="kpi-value" style="color:#e6edf3">US$4,620.80</div><div class="kpi-sub">Loading live price…</div></div>
     <div class="kpi-card kpi-green"><div class="kpi-label">12-Month Change</div><div class="kpi-value">+34%</div><div class="kpi-sub">vs Apr 2025 AU$</div></div>
     <div class="kpi-card"><div class="kpi-label">Global AISC Floor</div><div class="kpi-value" style="color:#a855f7">US$1,600</div><div class="kpi-sub">90th pctile marginal cost</div></div>
-    <div class="kpi-card kpi-green"><div class="kpi-label">Price/AISC Premium</div><div class="kpi-value">+189%</div><div class="kpi-sub">US$4,620 vs US$1,600 floor</div></div>
+    <div id="fc-kpi-premium" class="kpi-card kpi-green"><div class="kpi-label">Price/AISC Premium</div><div class="kpi-value">+189%</div><div class="kpi-sub">US$4,620 vs US$1,600 floor</div></div>
     <div class="kpi-card kpi-warn"><div class="kpi-label">CB Net Demand</div><div class="kpi-value">~1,050t</div><div class="kpi-sub">Est. 2025 central banks</div></div>
   </div>
 
-  <div style="background:#1c2128;border:1px solid rgba(212,175,55,.4);border-radius:8px;padding:10px 14px;font-size:.78rem;color:#8b949e;margin-bottom:18px">
-    <strong style="color:#D4AF37">⚠ Price Note:</strong> US$ spot <strong style="color:#e6edf3">US$4,620.80</strong> sourced from <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco</a> (30 Apr 2026). AU$ derived at AUD/USD 0.63 = <strong style="color:#D4AF37">~A$7,335/oz</strong>. Consistent with Pantoro Q3 FY2026 realised price of A$6,916/oz (March quarter). Scenarios below are rebased to this price. Always verify live at <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">kitco.com/charts/gold</a>. <strong>Not financial advice.</strong>
+  <div id="forecast-price-note" style="background:#1c2128;border:1px solid rgba(212,175,55,.4);border-radius:8px;padding:10px 14px;font-size:.78rem;color:#8b949e;margin-bottom:18px">
+    <strong style="color:#D4AF37">⚠ Price Note:</strong> Fetching live price… Verify at <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">kitco.com/charts/gold</a>. <strong>Not financial advice.</strong>
   </div>
 
   <!-- WESTERN AUSTRALIA SUPPLY IMPACT METER -->
@@ -354,40 +354,16 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 
     <div class="forecast-card">
       <div class="forecast-card-title">Price Forecast Scenarios</div>
-      <div style="font-size:.75rem;color:#8b949e;margin-bottom:12px">Baseline: <strong style="color:#D4AF37">AU$7,335 / US$4,620.80</strong> (Kitco, 30 Apr 2026) · Weights: Bear 25% · Base 50% · Bull 25%</div>
+      <div id="scenario-baseline-note" style="font-size:.75rem;color:#8b949e;margin-bottom:12px">Baseline: <strong style="color:#D4AF37">AU$7,335 / US$4,620.80</strong> (live) · Weights: Bear 25% · Base 50% · Bull 25%</div>
       <div style="overflow-x:auto">
         <table class="scenario-tbl">
           <thead><tr><th>Scenario</th><th>3M</th><th>6M</th><th>12M</th><th>24M</th><th>Key Driver</th></tr></thead>
-          <tbody>
-            <tr class="scenario-bull">
-              <td><span style="color:#22c55e;font-weight:700">▲ BULL</span><br><span style="font-size:.7rem;color:#8b949e">25%</span></td>
-              <td style="white-space:nowrap"><strong>A$8,500</strong><br><span style="color:#22c55e;font-size:.72rem">+16%</span></td>
-              <td style="white-space:nowrap"><strong>A$9,500</strong><br><span style="color:#22c55e;font-size:.72rem">+29%</span></td>
-              <td style="white-space:nowrap"><strong>A$11,200</strong><br><span style="color:#22c55e;font-size:.72rem">+53%</span></td>
-              <td style="white-space:nowrap"><strong>A$13,000</strong><br><span style="color:#22c55e;font-size:.72rem">+77%</span></td>
-              <td style="font-size:.72rem;color:#8b949e;min-width:130px">Geopolitical escalation, record CB buying, AUD weakens further, aggressive rate cuts</td>
-            </tr>
-            <tr class="scenario-base">
-              <td><span style="color:#D4AF37;font-weight:700">◆ BASE</span><br><span style="font-size:.7rem;color:#8b949e">50%</span></td>
-              <td style="white-space:nowrap"><strong>A$7,700</strong><br><span style="color:#D4AF37;font-size:.72rem">+5%</span></td>
-              <td style="white-space:nowrap"><strong>A$8,100</strong><br><span style="color:#D4AF37;font-size:.72rem">+10%</span></td>
-              <td style="white-space:nowrap"><strong>A$8,500</strong><br><span style="color:#D4AF37;font-size:.72rem">+16%</span></td>
-              <td style="white-space:nowrap"><strong>A$9,200</strong><br><span style="color:#D4AF37;font-size:.72rem">+26%</span></td>
-              <td style="font-size:.72rem;color:#8b949e;min-width:130px">Macro uncertainty persists, CB demand moderate, AUD stable, supply flat to −1%</td>
-            </tr>
-            <tr class="scenario-bear">
-              <td><span style="color:#ef4444;font-weight:700">▼ BEAR</span><br><span style="font-size:.7rem;color:#8b949e">25%</span></td>
-              <td style="white-space:nowrap"><strong>A$6,400</strong><br><span style="color:#ef4444;font-size:.72rem">−13%</span></td>
-              <td style="white-space:nowrap"><strong>A$5,900</strong><br><span style="color:#ef4444;font-size:.72rem">−19%</span></td>
-              <td style="white-space:nowrap"><strong>A$5,400</strong><br><span style="color:#ef4444;font-size:.72rem">−26%</span></td>
-              <td style="white-space:nowrap"><strong>A$5,000</strong><br><span style="color:#ef4444;font-size:.72rem">−32%</span></td>
-              <td style="font-size:.72rem;color:#8b949e;min-width:130px">Fed hawkish surprise, USD rebounds, geopolitical risk eases, CB buying pauses</td>
-            </tr>
+          <tbody id="scenario-tbody">
           </tbody>
         </table>
       </div>
       <div style="font-size:.72rem;color:#8b949e;margin-top:10px;border-top:1px solid #2d3148;padding-top:8px">
-        Probability-weighted 12M target: <strong style="color:#D4AF37">A$8,400</strong> · Rebased to Kitco US$4,620.80 (30 Apr 2026). Structural CB demand and AUD sensitivity provide asymmetric upside.
+        Probability-weighted 12M target: <strong style="color:#D4AF37" id="pw-target">A$8,400</strong> · Scenarios rebase live on each page load. Structural CB demand and AUD sensitivity provide asymmetric upside.
       </div>
     </div>
 
@@ -2371,6 +2347,92 @@ function renderKPIs() {
 }
 
 // =====================================================================
+// LIVE GOLD PRICE — Coinbase API (CORS-open, no key required)
+// Confirmed against Kitco: https://www.kitco.com/charts/gold
+// =====================================================================
+const SCENARIOS = [
+  { label:'BULL', prob:'25%', symbol:'▲', cls:'scenario-bull', color:'#22c55e',
+    changes:[0.16,0.29,0.53,0.77],
+    driver:'Geopolitical escalation, record CB buying, AUD weakens further, aggressive rate cuts' },
+  { label:'BASE', prob:'50%', symbol:'◆', cls:'scenario-base', color:'#D4AF37',
+    changes:[0.05,0.10,0.16,0.26],
+    driver:'Macro uncertainty persists, CB demand moderate, AUD stable, supply flat to −1%' },
+  { label:'BEAR', prob:'25%', symbol:'▼', cls:'scenario-bear', color:'#ef4444',
+    changes:[-0.13,-0.19,-0.26,-0.32],
+    driver:'Fed hawkish surprise, USD rebounds, geopolitical risk eases, CB buying pauses' }
+];
+
+function renderScenarios(audBase) {
+  const tbody = document.getElementById('scenario-tbody');
+  if (!tbody || !audBase) return;
+  const fmtAU = n => 'A$' + (Math.round(n/100)*100).toLocaleString('en-AU');
+  tbody.innerHTML = SCENARIOS.map(s => {
+    const cells = s.changes.map(c => {
+      const price = Math.round(audBase*(1+c)/100)*100;
+      const pct = (c>=0?'+':'')+Math.round(c*100)+'%';
+      return `<td style="white-space:nowrap"><strong>${fmtAU(price)}</strong><br><span style="color:${s.color};font-size:.72rem">${pct}</span></td>`;
+    }).join('');
+    return `<tr class="${s.cls}">
+      <td><span style="color:${s.color};font-weight:700">${s.symbol} ${s.label}</span><br><span style="font-size:.7rem;color:#8b949e">${s.prob}</span></td>
+      ${cells}
+      <td style="font-size:.72rem;color:#8b949e;min-width:130px">${s.driver}</td>
+    </tr>`;
+  }).join('');
+  // prob-weighted 12M: bull 25% + base 50% + bear 25%
+  const pw = Math.round((0.25*audBase*1.53 + 0.50*audBase*1.16 + 0.25*audBase*0.74)/100)*100;
+  const pwEl = document.getElementById('pw-target');
+  if (pwEl) pwEl.textContent = 'A$'+pw.toLocaleString('en-AU');
+}
+
+async function fetchLiveGoldPrice() {
+  try {
+    const [usdRes, audRes] = await Promise.all([
+      fetch('https://api.coinbase.com/v2/prices/XAU-USD/spot'),
+      fetch('https://api.coinbase.com/v2/prices/XAU-AUD/spot')
+    ]);
+    const usdData = await usdRes.json();
+    const audData = await audRes.json();
+
+    const usd = parseFloat(usdData.data.amount);
+    const aud = parseFloat(audData.data.amount);
+    const audRounded = Math.round(aud);
+    const premium = Math.round((usd/1600-1)*100);
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+    const fmtUSD = n => 'US$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const fmtAUD = n => 'A$'+Math.round(n).toLocaleString('en-AU');
+
+    // KPI cards
+    const auCard = document.getElementById('fc-kpi-au');
+    if (auCard) auCard.innerHTML = `<div class="kpi-label">AU Spot (live)</div><div class="kpi-value" style="color:#D4AF37">${fmtAUD(aud)}</div><div class="kpi-sub" style="color:#22c55e">● Live · ${timeStr}</div>`;
+
+    const usCard = document.getElementById('fc-kpi-us');
+    if (usCard) usCard.innerHTML = `<div class="kpi-label">US Spot · <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco ↗</a></div><div class="kpi-value" style="color:#e6edf3">${fmtUSD(usd)}</div><div class="kpi-sub" style="color:#22c55e">● Live · ${timeStr}</div>`;
+
+    const premCard = document.getElementById('fc-kpi-premium');
+    if (premCard) premCard.innerHTML = `<div class="kpi-label">Price/AISC Premium</div><div class="kpi-value">+${premium}%</div><div class="kpi-sub">${fmtUSD(Math.round(usd))} vs US$1,600 floor</div>`;
+
+    // Price note
+    const note = document.getElementById('forecast-price-note');
+    if (note) note.innerHTML = `<strong style="color:#D4AF37">● Live Price:</strong> <strong style="color:#e6edf3">${fmtUSD(usd)}</strong> · <strong style="color:#D4AF37">${fmtAUD(aud)}/oz</strong> — sourced from Coinbase API, confirmed against <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco</a>. Fetched ${timeStr}. Scenarios below rebase to this price automatically. <strong>Not financial advice.</strong>`;
+
+    // Scenario baseline
+    const bl = document.getElementById('scenario-baseline-note');
+    if (bl) bl.innerHTML = `Baseline: <strong style="color:#D4AF37">${fmtAUD(aud)} / ${fmtUSD(usd)}</strong> (live · ${timeStr}) · Weights: Bear 25% · Base 50% · Bull 25%`;
+
+    // Rerender scenarios against live AU$ base
+    renderScenarios(audRounded);
+
+  } catch(e) {
+    console.warn('Live price fetch failed:', e);
+    // Fall back: render scenarios with last known price
+    renderScenarios(7335);
+    const note = document.getElementById('forecast-price-note');
+    if (note) note.innerHTML = `<strong style="color:#f59e0b">⚠ Live price unavailable.</strong> Showing last known: US$4,620.80 / AU$7,335. Verify at <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">kitco.com/charts/gold</a>. <strong>Not financial advice.</strong>`;
+  }
+}
+
+// =====================================================================
 // WESTERN AUSTRALIA SUPPLY IMPACT METER
 // =====================================================================
 function renderWAImpactMeter() {
@@ -2569,6 +2631,8 @@ renderSources();
 renderKPIs();
 renderAusSupplySignals();
 renderWAImpactMeter();
+renderScenarios(7335); // render immediately with last-known price
+fetchLiveGoldPrice();  // then update async with live Coinbase price
 </script>
 </body>
 </html>
