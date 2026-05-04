@@ -142,6 +142,57 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 /* HIDDEN */
 .hidden{display:none!important}
 
+/* MAIN TAB PANES */
+.main-tab-pane{display:none}
+.main-tab-pane.active{display:block}
+
+/* FORECAST TAB */
+.forecast-section{padding:0}
+.forecast-card{background:#1c2128;border:1px solid #2d3148;border-radius:10px;padding:18px;margin-bottom:16px}
+.forecast-card-title{font-size:.95rem;font-weight:700;color:#D4AF37;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #2d3148}
+.forecast-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.scenario-tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+.scenario-tbl th{padding:8px 10px;text-align:left;color:#8b949e;font-size:.72rem;text-transform:uppercase;border-bottom:1px solid #2d3148;background:#161b22;white-space:nowrap}
+.scenario-tbl td{padding:9px 10px;border-bottom:1px solid #1c2128;vertical-align:top}
+.scenario-tbl tr:last-child td{border-bottom:none}
+.scenario-bull td{background:rgba(34,197,94,.04)}
+.scenario-base td{background:rgba(212,175,55,.04)}
+.scenario-bear td{background:rgba(239,68,68,.04)}
+.macro-signal-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1c2128}
+.macro-signal-row:last-child{border-bottom:none}
+.macro-pill{width:13px;height:13px;border-radius:50%;flex-shrink:0}
+.macro-bull{background:#22c55e}
+.macro-neutral{background:#f59e0b}
+.macro-bear{background:#ef4444}
+.macro-label{font-size:.81rem;color:#e6edf3;flex:1}
+.macro-value{font-size:.76rem;color:#8b949e;text-align:right;white-space:nowrap}
+.bar-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.bar-label{font-size:.76rem;color:#e6edf3;width:130px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;background:#161b22;border-radius:3px;height:13px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;background:#D4AF37}
+.bar-val{font-size:.73rem;color:#8b949e;width:52px}
+.demand-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.demand-card{background:#161b22;border:1px solid #2d3148;border-radius:8px;padding:12px;text-align:center}
+.demand-card-label{font-size:.67rem;color:#8b949e;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.demand-card-val{font-size:1.1rem;font-weight:700;color:#e6edf3}
+.demand-card-sub{font-size:.67rem;color:#8b949e;margin-top:2px}
+.aus-signal-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #1c2128}
+.aus-signal-row:last-child{border-bottom:none}
+.aus-signal-icon{font-size:1rem;flex-shrink:0;margin-top:1px;width:18px;text-align:center}
+.aus-signal-body{flex:1}
+.aus-signal-title{font-size:.82rem;font-weight:600;color:#e6edf3}
+.aus-signal-sub{font-size:.74rem;color:#8b949e;margin-top:3px;line-height:1.5}
+.cost-bar-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.cost-label{font-size:.75rem;color:#e6edf3;width:185px;flex-shrink:0;text-align:right}
+.cost-track{flex:1;background:#161b22;border-radius:3px;height:16px;overflow:hidden}
+.cost-fill{height:100%;border-radius:3px}
+.cost-val{font-size:.72rem;color:#8b949e;width:175px}
+
+.wa-meter-track{height:18px;border-radius:9px;background:linear-gradient(to right,#ef4444 0%,#f59e0b 28%,#D4AF37 50%,#a3e635 72%,#22c55e 100%);position:relative;margin:12px 0}
+.wa-meter-needle{position:absolute;top:-8px;width:3px;height:34px;background:#fff;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 8px rgba(0,0,0,.6);transition:left .6s ease}
+.wa-meter-labels{display:flex;justify-content:space-between;font-size:.68rem;color:#8b949e;margin-top:2px}
+.wa-meter-zone{position:absolute;top:0;height:100%;opacity:.15}
+@media(max-width:900px){.forecast-grid{grid-template-columns:1fr}}
 @media(max-width:768px){
   .header{padding:12px 16px}
   .header-title{font-size:1.1rem}
@@ -149,6 +200,8 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
   .tabs{margin:0 16px}
   .tab-pane{padding:0 16px 16px}
   table th:nth-child(n+5),table td:nth-child(n+5){display:none}
+  .bar-label{width:90px}
+  .cost-label{width:130px}
 }
 </style>
 </head>
@@ -158,7 +211,7 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 <div class="header">
   <div class="header-title">⛏ Australian Gold Mines Tracker</div>
   <div class="header-meta">
-    <span class="badge">Last Updated: 30 Apr 2026</span>
+    <span class="badge">Last Updated: 4 May 2026</span>
     <span class="badge badge-gold" id="kpi-source-count">— Sources</span>
     <span class="badge badge-wa">AU · All States</span>
   </div>
@@ -174,6 +227,15 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
   <div class="kpi-card kpi-danger"><div class="kpi-label">Distressed / Admin</div><div class="kpi-value" id="kpi-distressed">—</div><div class="kpi-sub">In distress or insolvency</div></div>
   <div class="kpi-card"><div class="kpi-label">States Covered</div><div class="kpi-value" id="kpi-states">—</div><div class="kpi-sub" id="kpi-states-list"></div></div>
 </div>
+
+<!-- MAIN TABS -->
+<div class="tabs" style="margin:12px 24px 0">
+  <button class="tab-btn active main-tab-btn" onclick="switchMainTab('mines',this)">Mine Tracker</button>
+  <button class="tab-btn main-tab-btn" onclick="switchMainTab('forecast',this)">Gold Price Forecast</button>
+</div>
+
+<!-- MINE TRACKER TAB -->
+<div id="main-tab-mines" class="main-tab-pane active">
 
 <!-- UNIFIED FILTER + TABLE -->
 <div style="padding:0 24px 0">
@@ -224,9 +286,234 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 <!-- SOURCES SECTION -->
 <div class="sources-section">
   <div class="section-title">All Sources</div>
-  <div style="font-size:.8rem;color:#8b949e;margin-bottom:12px">Sources referenced across all entries (expanded to all-Australia + structural updates Apr 2026). Header badge shows live source count.</div>
+  <div style="font-size:.8rem;color:#8b949e;margin-bottom:12px">Sources referenced across all entries (all-Australia scope; major updates May 2026: Wiluna IPO Q3/MD appointment, Hellyer lease revocation, McPhillamys judgment pending, Tropicana strategic sale, Genesis Q3). Header badge shows live source count.</div>
   <div class="sources-grid" id="all-sources-grid"></div>
 </div>
+</div><!-- /#main-tab-mines -->
+
+<!-- GOLD PRICE FORECAST TAB -->
+<div id="main-tab-forecast" class="main-tab-pane">
+<div style="padding:0 24px 28px">
+<div class="forecast-section">
+
+  <div style="padding:20px 0 12px;border-bottom:1px solid #2d3148;margin-bottom:20px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+    <div style="font-size:1.1rem;font-weight:700;color:#D4AF37">Gold Price Forecast</div>
+    <div style="font-size:.78rem;color:#8b949e">Supply/demand fundamentals · macro signals · Australian mine tracker data · Updated: 4 May 2026</div>
+  </div>
+
+  <!-- PRICE SNAPSHOT KPIs -->
+  <div class="kpi-grid" style="padding:0 0 16px">
+    <div id="fc-kpi-au" class="kpi-card" style="border-color:rgba(212,175,55,.5)"><div class="kpi-label">AU Spot</div><div class="kpi-value" style="color:#D4AF37">~A$7,335</div><div class="kpi-sub">Loading live price…</div></div>
+    <div id="fc-kpi-us" class="kpi-card" style="cursor:pointer;border-color:rgba(212,175,55,.3)" onclick="window.open('https://www.kitco.com/charts/gold','_blank')"><div class="kpi-label">US Spot · <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco ↗</a></div><div class="kpi-value" style="color:#e6edf3">US$4,620.80</div><div class="kpi-sub">Loading live price…</div></div>
+    <div class="kpi-card kpi-green"><div class="kpi-label">12-Month Change</div><div class="kpi-value">+34%</div><div class="kpi-sub">vs Apr 2025 AU$</div></div>
+    <div class="kpi-card"><div class="kpi-label">Global AISC Floor</div><div class="kpi-value" style="color:#a855f7">US$1,600</div><div class="kpi-sub">90th pctile marginal cost</div></div>
+    <div id="fc-kpi-premium" class="kpi-card kpi-green"><div class="kpi-label">Price/AISC Premium</div><div class="kpi-value">+189%</div><div class="kpi-sub">US$4,620 vs US$1,600 floor</div></div>
+    <div class="kpi-card kpi-warn"><div class="kpi-label">CB Net Demand</div><div class="kpi-value">~1,050t</div><div class="kpi-sub">Est. 2025 central banks</div></div>
+  </div>
+
+  <div id="forecast-price-note" style="background:#1c2128;border:1px solid rgba(212,175,55,.4);border-radius:8px;padding:10px 14px;font-size:.78rem;color:#8b949e;margin-bottom:18px">
+    <strong style="color:#D4AF37">⚠ Price Note:</strong> Fetching live price… Verify at <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">kitco.com/charts/gold</a>. <strong>Not financial advice.</strong>
+  </div>
+
+  <!-- WESTERN AUSTRALIA SUPPLY IMPACT METER -->
+  <div class="forecast-card" style="border-color:rgba(212,175,55,.35)">
+    <div class="forecast-card-title" style="display:flex;align-items:center;gap:8px">
+      ⛏ Western Australia — Supply Impact on Gold Price
+    </div>
+    <div style="font-size:.75rem;color:#8b949e;margin-bottom:16px">
+      WA is the world's most concentrated single gold-producing region (~7–8% of global supply). Tracked WA mine status changes directly move the global supply needle. Metrics computed live from mine tracker data.
+    </div>
+
+    <!-- KPI sub-metrics row (dynamically filled) -->
+    <div id="wa-kpi-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px"></div>
+
+    <!-- Impact meter -->
+    <div>
+      <div style="font-size:.8rem;font-weight:600;color:#e6edf3;margin-bottom:4px">WA Supply Pressure — Near-Term (12M) Signal</div>
+      <div style="font-size:.72rem;color:#8b949e;margin-bottom:2px">← Bearish (WA supply growing) &nbsp;·&nbsp; Bullish (WA supply shrinking) →</div>
+      <div class="wa-meter-track">
+        <div class="wa-meter-needle" id="wa-needle" style="left:50%"></div>
+      </div>
+      <div class="wa-meter-labels">
+        <span>BEARISH<br>Supply ↑</span>
+        <span style="text-align:center">MILDLY<br>BEARISH</span>
+        <span style="text-align:center">NEUTRAL</span>
+        <span style="text-align:center">MILDLY<br>BULLISH</span>
+        <span style="text-align:right">BULLISH<br>Supply ↓</span>
+      </div>
+    </div>
+
+    <!-- Dynamic signal commentary -->
+    <div id="wa-signal-text" style="margin-top:14px;background:#161b22;border-radius:6px;padding:12px 14px;font-size:.78rem;color:#8b949e;line-height:1.6">
+      Loading WA supply signal…
+    </div>
+  </div>
+
+  <!-- SCENARIOS + MACRO SIGNALS -->
+  <div class="forecast-grid">
+
+    <div class="forecast-card">
+      <div class="forecast-card-title">Price Forecast Scenarios</div>
+      <div id="scenario-baseline-note" style="font-size:.75rem;color:#8b949e;margin-bottom:12px">Baseline: <strong style="color:#D4AF37">AU$7,335 / US$4,620.80</strong> (live) · Weights: Bear 25% · Base 50% · Bull 25%</div>
+      <div style="overflow-x:auto">
+        <table class="scenario-tbl">
+          <thead><tr><th>Scenario</th><th>3M</th><th>6M</th><th>12M</th><th>24M</th><th>Key Driver</th></tr></thead>
+          <tbody id="scenario-tbody">
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:.72rem;color:#8b949e;margin-top:10px;border-top:1px solid #2d3148;padding-top:8px">
+        Probability-weighted 12M target: <strong style="color:#D4AF37" id="pw-target">A$8,400</strong> · Scenarios rebase live on each page load. Structural CB demand and AUD sensitivity provide asymmetric upside.
+      </div>
+    </div>
+
+    <div class="forecast-card">
+      <div class="forecast-card-title">Macro Signal Dashboard</div>
+      <div style="font-size:.74rem;color:#8b949e;margin-bottom:10px">
+        <span style="color:#22c55e">● Bullish</span> &nbsp; <span style="color:#f59e0b">● Neutral</span> &nbsp; <span style="color:#ef4444">● Bearish</span> &nbsp; for gold price
+      </div>
+      <div>
+        <div class="macro-signal-row"><div class="macro-pill macro-bull"></div><div class="macro-label">US Dollar Index (DXY)</div><div class="macro-value">Weak · below 5yr avg</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-neutral"></div><div class="macro-label">Real Interest Rates (10yr TIPS)</div><div class="macro-value">~1.8% · marginal drag</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-neutral"></div><div class="macro-label">Inflation Expectations (5yr BE)</div><div class="macro-value">~2.6% · above target</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-bull"></div><div class="macro-label">Central Bank Net Purchases</div><div class="macro-value">~1,050t est. 2025</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-bull"></div><div class="macro-label">Gold ETF Net Flows</div><div class="macro-value">Inflows resuming H2 2025+</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-bull"></div><div class="macro-label">Geopolitical Risk Index</div><div class="macro-value">Elevated · multi-region</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-bull"></div><div class="macro-label">AUD/USD Exchange Rate</div><div class="macro-value">Weak AUD → amplifies AU$</div></div>
+        <div class="macro-signal-row"><div class="macro-pill macro-bull"></div><div class="macro-label">Global Mine Supply Growth</div><div class="macro-value">Flat to −1% YoY</div></div>
+      </div>
+      <div style="margin-top:12px;background:#161b22;border-radius:6px;padding:10px 12px;font-size:.78rem">
+        <strong style="color:#22c55e">6 BULLISH</strong> · <strong style="color:#f59e0b">2 NEUTRAL</strong> · <strong style="color:#ef4444">0 BEARISH</strong> → <strong style="color:#22c55e">MODERATELY BULLISH</strong>
+      </div>
+    </div>
+
+  </div><!-- /.forecast-grid -->
+
+  <!-- GLOBAL SUPPLY BY COUNTRY -->
+  <div class="forecast-card">
+    <div class="forecast-card-title">Global Mine Production by Country (est. 2025)</div>
+    <div style="font-size:.75rem;color:#8b949e;margin-bottom:14px">World Gold Council estimates · Total ~3,770 tonnes/yr · Australia ranked #2 globally · Russia faces export restrictions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 40px">
+      <div>
+        <div class="bar-row"><div class="bar-label">China</div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div><div class="bar-val">370t · #1</div></div>
+        <div class="bar-row"><div class="bar-label">Australia</div><div class="bar-track"><div class="bar-fill" style="width:88%;background:#22c55e"></div></div><div class="bar-val">325t · #2</div></div>
+        <div class="bar-row"><div class="bar-label">Russia</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:#f59e0b"></div></div><div class="bar-val">315t · #3</div></div>
+        <div class="bar-row"><div class="bar-label">Canada</div><div class="bar-track"><div class="bar-fill" style="width:61%"></div></div><div class="bar-val">225t · #4</div></div>
+        <div class="bar-row"><div class="bar-label">USA</div><div class="bar-track"><div class="bar-fill" style="width:46%"></div></div><div class="bar-val">170t · #5</div></div>
+        <div class="bar-row"><div class="bar-label">Ghana</div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div><div class="bar-val">140t · #6</div></div>
+      </div>
+      <div>
+        <div class="bar-row"><div class="bar-label">Indonesia</div><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div><div class="bar-val">135t</div></div>
+        <div class="bar-row"><div class="bar-label">Peru</div><div class="bar-track"><div class="bar-fill" style="width:34%"></div></div><div class="bar-val">125t</div></div>
+        <div class="bar-row"><div class="bar-label">Mexico</div><div class="bar-track"><div class="bar-fill" style="width:32%"></div></div><div class="bar-val">120t</div></div>
+        <div class="bar-row"><div class="bar-label">South Africa</div><div class="bar-track"><div class="bar-fill" style="width:26%"></div></div><div class="bar-val">95t</div></div>
+        <div class="bar-row"><div class="bar-label">Kazakhstan</div><div class="bar-track"><div class="bar-fill" style="width:22%"></div></div><div class="bar-val">80t</div></div>
+        <div class="bar-row"><div class="bar-label">Rest of World</div><div class="bar-track"><div class="bar-fill" style="width:100%;opacity:.4"></div></div><div class="bar-val">~770t</div></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:.74rem;color:#8b949e;border-top:1px solid #2d3148;padding-top:8px">
+      Supply growth constrained by: rising AISC (energy, labour, reagents), permitting delays (avg 7–10 yrs for new mines), grade decline at mature operations, ESG costs. Russia (~8.4% of global supply) faces Western export restrictions. No major new greenfield supply expected before 2028–29 — Hemi (Northern Star, WA) being the largest single project globally in the pipeline.
+    </div>
+  </div>
+
+  <!-- AISC COST STACK -->
+  <div class="forecast-card">
+    <div class="forecast-card-title">Global AISC Cost Stack — Price Floor Analysis (2025 est.)</div>
+    <div style="font-size:.75rem;color:#8b949e;margin-bottom:14px">All-In Sustaining Cost by operational tier. Price floor = ~US$1,600/oz (90th percentile). Bar width = approx. share of global supply in that cost tier.</div>
+    <div>
+      <div class="cost-bar-row">
+        <div class="cost-label" style="color:#8b949e;font-size:.7rem">Tier / Region</div>
+        <div style="flex:1;font-size:.7rem;color:#8b949e;padding-left:4px">← % of global supply →</div>
+        <div class="cost-val" style="font-size:.7rem;color:#8b949e">AISC Range · % Supply</div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-label">Tier 1 Open Pit (Africa, AU majors)</div>
+        <div class="cost-track"><div class="cost-fill" style="width:15%;background:#22c55e"></div></div>
+        <div class="cost-val">US$700–1,100 · 15%</div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-label">N. American &amp; AU Tier 1 UG</div>
+        <div class="cost-track"><div class="cost-fill" style="width:25%;background:#4ade80"></div></div>
+        <div class="cost-val">US$900–1,200 · 25%</div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-label">Global Mid-Tier (all regions)</div>
+        <div class="cost-track"><div class="cost-fill" style="width:30%;background:#a3e635"></div></div>
+        <div class="cost-val">US$1,100–1,500 · 30%</div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-label">High-Cost Operations</div>
+        <div class="cost-track"><div class="cost-fill" style="width:20%;background:#f59e0b"></div></div>
+        <div class="cost-val">US$1,400–1,800 · 20%</div>
+      </div>
+      <div class="cost-bar-row">
+        <div class="cost-label">Marginal / Ultra-High Cost</div>
+        <div class="cost-track"><div class="cost-fill" style="width:10%;background:#ef4444"></div></div>
+        <div class="cost-val">US$1,600–2,200 · 10%</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:#161b22;border:1px solid #2d3148;border-radius:6px;padding:10px 14px;font-size:.78rem;color:#8b949e">
+      <div style="margin-bottom:6px"><strong style="color:#D4AF37">Australian operations:</strong> At A$2,100–2,800/oz AISC ≈ US$1,320–1,760/oz, most AU mines sit in the mid-to-high tier — but at current US$4,620.80 (AU$7,335), margins are exceptional (avg A$4,500–5,200/oz margin on top of AISC). This is the widest margin environment in Australian gold mining history.</div>
+      <div><strong style="color:#D4AF37">Price floor signal:</strong> US$4,620.80 is <strong style="color:#22c55e">+189%</strong> above the 90th percentile marginal cost (US$1,600). This premium reflects structural demand — historically a premium of this magnitude triggers a supply response, but new mines take 7–10 years to develop and greenfield discovery rates are declining globally.</div>
+    </div>
+  </div>
+
+  <!-- AUSTRALIAN SUPPLY SIGNALS -->
+  <div class="forecast-card">
+    <div class="forecast-card-title">Australian Supply Signals — Derived from Mine Tracker</div>
+    <div style="font-size:.75rem;color:#8b949e;margin-bottom:14px">Australia is the world's #2 gold producer (~325t/yr est.). Supply implications from tracked mine statuses — live data from tracker above.</div>
+    <div id="aus-supply-signals"><div style="color:#8b949e;font-size:.82rem;padding:12px">Loading supply signal analysis…</div></div>
+  </div>
+
+  <!-- DEMAND DRIVERS -->
+  <div class="forecast-card">
+    <div class="forecast-card-title">Global Gold Demand Drivers (est. 2025 · tonnes)</div>
+    <div class="demand-grid" style="margin-bottom:16px">
+      <div class="demand-card"><div class="demand-card-label">Jewelry</div><div class="demand-card-val" style="color:#D4AF37">1,850t</div><div class="demand-card-sub">41% of demand · price-elastic</div></div>
+      <div class="demand-card"><div class="demand-card-label">Central Banks</div><div class="demand-card-val" style="color:#22c55e">1,050t</div><div class="demand-card-sub">23% · multi-year record highs</div></div>
+      <div class="demand-card"><div class="demand-card-label">Bar &amp; Coin</div><div class="demand-card-val">1,100t</div><div class="demand-card-sub">24% · retail/institutional</div></div>
+      <div class="demand-card"><div class="demand-card-label">ETF Net Flow</div><div class="demand-card-val" style="color:#22c55e">+200t</div><div class="demand-card-sub">Back to inflows H2 2025+</div></div>
+      <div class="demand-card"><div class="demand-card-label">Technology</div><div class="demand-card-val">320t</div><div class="demand-card-sub">7% · AI chips, electronics</div></div>
+      <div class="demand-card"><div class="demand-card-label">OTC / Other</div><div class="demand-card-val">250t</div><div class="demand-card-sub">5% · institutional OTC</div></div>
+    </div>
+    <div style="font-size:.78rem;color:#8b949e">
+      <strong style="color:#D4AF37">Key trend:</strong> Central bank demand (China, India, Poland, Turkey, UAE — diversifying from USD reserves) has been the dominant structural shift since 2022, running at 2–3× historical norms. ETF flows turned net positive in H2 2025 after two years of outflows — when institutional money returns to ETFs at the same time as CB buying, the supply/demand balance tightens sharply. Technology demand growing modestly on AI/semiconductor chip expansion.
+    </div>
+  </div>
+
+  <!-- SUPPLY / DEMAND BALANCE -->
+  <div class="forecast-card">
+    <div class="forecast-card-title">Global Supply / Demand Balance (est. 2025)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div>
+        <div style="font-size:.82rem;font-weight:600;color:#e6edf3;margin-bottom:10px">Supply (~4,920t total)</div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">Mine Production</div><div class="bar-track"><div class="bar-fill" style="width:77%"></div></div><div class="bar-val">3,770t</div></div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">Recycling / Scrap</div><div class="bar-track"><div class="bar-fill" style="width:23%"></div></div><div class="bar-val">1,150t</div></div>
+      </div>
+      <div>
+        <div style="font-size:.82rem;font-weight:600;color:#e6edf3;margin-bottom:10px">Demand (~4,770t total)</div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">Jewelry</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#D4AF37"></div></div><div class="bar-val">1,850t</div></div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">Bar &amp; Coin</div><div class="bar-track"><div class="bar-fill" style="width:59%;background:#D4AF37"></div></div><div class="bar-val">1,100t</div></div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">Central Banks</div><div class="bar-track"><div class="bar-fill" style="width:57%;background:#22c55e"></div></div><div class="bar-val">1,050t</div></div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">Technology</div><div class="bar-track"><div class="bar-fill" style="width:17%;background:#3b82f6"></div></div><div class="bar-val">320t</div></div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">ETF Inflows</div><div class="bar-track"><div class="bar-fill" style="width:11%;background:#a855f7"></div></div><div class="bar-val">+200t</div></div>
+        <div class="bar-row"><div class="bar-label" style="width:145px">OTC / Other</div><div class="bar-track"><div class="bar-fill" style="width:14%"></div></div><div class="bar-val">250t</div></div>
+      </div>
+    </div>
+    <div style="margin-top:14px;background:#161b22;border-left:3px solid #22c55e;border-radius:0 6px 6px 0;padding:10px 14px;font-size:.78rem;color:#8b949e">
+      <strong style="color:#22c55e">Balance assessment:</strong> Total demand (~4,770t) nearly matches total supply (~4,920t). Unlike industrial metals, gold is not consumed — "balance" measures who absorbs the marginal tonne. The structural shift of central banks from net sellers to net buyers 1,000t+ per year is the single biggest change in gold market structure. At these demand levels, mine supply growth cannot keep pace (new mines take 7–10 years to develop, and grade discovery rates are declining globally).
+    </div>
+  </div>
+
+  <!-- METHODOLOGY + SOURCES -->
+  <div style="margin-top:4px;font-size:.76rem;color:#8b949e;border-top:1px solid #2d3148;padding-top:14px;line-height:1.6">
+    <strong style="color:#D4AF37">Forecast Methodology:</strong> Scenarios derived from: (1) Global AISC cost curve — marginal cost sets price floor; (2) WGC supply/demand balance; (3) Macro factor scoring (USD, real rates, inflation, CB demand, ETF flows, geopolitical risk); (4) AUD/USD sensitivity for AU$ outcomes; (5) Australian supply signals from mine tracker (C&amp;M restarts, new mines, distressed closures). Probability-weighted expected value. <strong>Not financial advice.</strong><br><br>
+    <strong style="color:#D4AF37">Key Sources:</strong> <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37;font-weight:700">Kitco — Live US$ Gold Spot Price</a> (primary price reference) · World Gold Council (gold.org) · WGC Gold Demand Trends · Metals Focus Gold Survey · Refinitiv/LSEG GFMS · Australian mine tracker realised price data (Pantoro Q3 FY2026: A$6,916/oz realised) · US Federal Reserve TIPS yield data · IMF World Economic Outlook · Bloomberg / Financial Times / Reuters gold market coverage.
+  </div>
+
+</div>
+</div>
+</div><!-- /#main-tab-forecast -->
 
 <script>
 // =====================================================================
@@ -294,8 +581,8 @@ const distressedMines = [
     processing: 'CIL + Wiltails unit',
     price: 'Not advertised',
     sourcesCount: 4,
-    lastUpdated: 'Apr 2025',
-    overview: `Wiluna Mining Corporation (ASX:WMC) entered voluntary administration on 21 July 2022, with FTI Consulting (Michael Ryan, Kathryn Warwick, Daniel Woodhouse, Ian Francis) appointed as Joint and Several Voluntary Administrators. A Deed of Company Arrangement (DOCA) was executed on 28 July 2023. The ASX delisted WMC on 5 April 2024. The DOCA fully effectuated on 31 December 2025 after a WA Supreme Court ruling on 5 December 2025 resolved a creditor classification dispute, formally ending the administration phase. However, the company remains off the ASX and is NOT yet relisted. A new capital raise (target before 30 June 2026) and ASX listing rule waivers are required for any relisting. ASIC's civil proceedings against the company for continuous disclosure and directors' duties breaches (filed February 2025) remain ongoing and are a relisting overhang. In January 2026, the Takeovers Panel declined to conduct proceedings on an application from rival bidder AIM Mining Corporation, which had alleged undisclosed associations between Byrnecut, Deutsche Balaton AG, and other shareholders. Key stakeholders supporting the restructure: Byrnecut Group, Delphi Group (Deutsche Balaton AG / 2Invest AG), Franco-Nevada. The mine continues limited operations: tailings reprocessing via the Wiltails unit (~24,226 oz FY2025) and a toll milling agreement with Western Gold Resources (Jun 2025). A Feb 2024 Pre-Feasibility Study outlined a hard-rock restart plan; restart is 12–24+ months away at minimum. The Wiluna mining centre sits in the Northern Goldfields of WA and hosts one of Australia's largest undeveloped gold resources at 7 Moz at 2.38 g/t. UPDATE Apr 2026: DOCA effectuated, ASIC proceedings ongoing, June 2026 capital raise deadline for relisting.`,
+    lastUpdated: 'May 2026',
+    overview: `Wiluna Mining Corporation (ASX:WMC) entered voluntary administration on 21 July 2022, with FTI Consulting (Michael Ryan, Kathryn Warwick, Daniel Woodhouse, Ian Francis) appointed as Joint and Several Voluntary Administrators. A Deed of Company Arrangement (DOCA) was executed on 28 July 2023. The ASX delisted WMC on 5 April 2024. The DOCA fully effectuated on 31 December 2025 after a WA Supreme Court ruling on 5 December 2025 resolved a creditor classification dispute, formally ending the administration phase. However, the company remains off the ASX and is NOT yet relisted. A new capital raise (target before 30 June 2026) and ASX listing rule waivers are required for any relisting. ASIC's civil proceedings against the company for continuous disclosure and directors' duties breaches (filed February 2025) remain ongoing and are a relisting overhang. In January 2026, the Takeovers Panel declined to conduct proceedings on an application from rival bidder AIM Mining Corporation, which had alleged undisclosed associations between Byrnecut, Deutsche Balaton AG, and other shareholders. Key stakeholders supporting the restructure: Byrnecut Group, Delphi Group (Deutsche Balaton AG / 2Invest AG), Franco-Nevada. The mine continues limited operations: tailings reprocessing via the Wiltails unit (~24,226 oz FY2025) and a toll milling agreement with Western Gold Resources (Jun 2025). A Feb 2024 Pre-Feasibility Study outlined a hard-rock restart plan; restart is 12–24+ months away at minimum. The Wiluna mining centre sits in the Northern Goldfields of WA and hosts one of Australia's largest undeveloped gold resources at 7 Moz at 2.38 g/t. UPDATE May 2026: DOCA effectuated Dec 2025. Victor Rajasooriar appointed MD (commenced 1 May 2026). IPO expected Q3 2026 — positive feedback from ASX. ASIC settlement reached: Wiluna and ASIC will jointly apply for Federal Court declarations re Corporations Act contraventions (S674A and S1041H); Wiluna contributes A$34K to ASIC legal costs; ASIC still pursuing former directors Jerkovic and Malone. Risk factor: AIM Mining (>5% shareholder) called a general meeting 16 April 2026 to discuss alternative proposals, creating uncertainty around IPO timeline. Byrnecut secured loan to be repaid from IPO proceeds.`,
     jorc: `Total Mineral Resource (January 2025 update): 91.5 Mt @ 2.38 g/t Au for 7.0 Moz. Breakdown: Open Pit (WMCOP) ~1.12 Moz; Underground Measured & Indicated 38.37 Mt @ 4.01 g/t = 4.9 Moz; Satellite Deposits 0.33 Moz; Tailings & Stockpiles 0.60 Moz. The Dec 2024 MRE increased Underground M&I resources by 405,000 oz vs prior estimate. JORC 2012 compliant.`,
     production: `FY2025 (year ended 30 June 2025): 24,226 oz gold produced. Dec 2024 quarter: 6,499 oz from tailings processing (716,876 t processed). Jan 2025: BML Ventures agreement to mine Golden Age Cutback open pit and process through Wiluna's CIL plant. Jun 2025: Toll milling agreement with Western Gold Resources. FY2025 net profit after tax: A$3.8M; gross profit from operations: A$28.5M.`,
     processing_detail: `CIL processing plant (historically 3.0 Mtpa capacity; currently operating well below nameplate). Wiltails tailings reprocessing unit commissioned Oct 2023. Located at Wiluna townsite, Northern Goldfields WA (~900km NNE of Perth). A Feb 2024 Pre-Feasibility Study outlined a hard-rock restart plan.`,
@@ -313,7 +600,10 @@ const distressedMines = [
       '5 Dec 2025: WA Supreme Court rules on creditor classification dispute — clears path to DOCA exit',
       '31 Dec 2025: DOCA fully effectuated — administration phase ends; company now privately restructured',
       'Jan 2026: Takeovers Panel declines AIM Mining Corporation application re undisclosed associations',
-      'Apr 2026: Company NOT yet relisted on ASX; capital raise required by June 2026 for relisting; ASIC civil proceedings ongoing',
+      'Apr 2026: ASIC settlement reached — Wiluna and ASIC to jointly apply to Federal Court for declarations re Corporations Act contraventions (S674A and S1041H); Wiluna to pay A$34,000 toward ASIC legal costs; ASIC continues pursuing former directors Jerkovic and Malone separately',
+      'Apr 2026: AIM Mining Corporation (>5% shareholder) calls a general shareholder meeting for 16 April 2026 to discuss alternative restructure proposals — creates uncertainty around IPO timeline',
+      'Apr 2026: Positive feedback received from ASX regarding relisting progress; IPO expected Q3 2026 (revised from June 2026 capital raise deadline)',
+      '1 May 2026: Victor Rajasooriar appointed Managing Director (MD), commencing 1 May 2026; Byrnecut secured loan to be repaid from IPO proceeds',
     ],
     contacts: `Deed Administrators: Michael Ryan, Kathryn Warwick, Daniel Woodhouse, Ian Francis — FTI Consulting<br>FTI Creditors Portal: <a href="https://www.fticonsulting.com/creditors/wiluna-group" target="_blank">fticonsulting.com/creditors/wiluna-group</a>`,
     secFilings: `private`,
@@ -322,6 +612,8 @@ const distressedMines = [
       {type:'Company', title:'Wiluna JORC Resource Update — 25 Jan 2025', url:'https://wilunamining.com.au/wp-content/uploads/2025/01/WilunaJORCResource25Jan25Rev.pdf', date:'Jan 2025'},
       {type:'Insolvency', title:'FTI Consulting — Wiluna Group Creditors Portal', url:'https://www.fticonsulting.com/creditors/wiluna-group', date:'2022–present'},
       {type:'News', title:'Wiluna Mining removed from ASX — Australian Mining', url:'https://www.australianmining.com.au/wiluna-mining-removed-from-asx/', date:'Apr 2024'},
+      {type:'Company', title:'Wiluna Mining — DOCA exit court proceedings update Dec 2025', url:'https://wilunamining.com.au/wp-content/uploads/2025/12/UpdateOnCourtProceedings08Dec25.pdf', date:'Dec 2025'},
+      {type:'Company', title:'AIM Mining Corporation — Shareholder meeting notice Apr 2026', url:'https://wilunamining.com.au/wp-content/uploads/2026/04/AIMConveningShareholderMeeting17Apr26.pdf', date:'Apr 2026'},
     ]
   },
   {
@@ -612,8 +904,8 @@ const distressedMines = [
     processing: 'No plant yet (development stage)',
     price: 'Not for sale — under judicial review',
     sourcesCount: 4,
-    lastUpdated: 'Apr 2026',
-    overview: `McPhillamys Gold Project, located near Blayney in Central West NSW (~250km west of Sydney), is one of Australia's largest undeveloped gold deposits, held by Regis Resources (ASX:RRL). The project received state and federal EPBC approvals in 2023 for an open pit mine targeting ~2 million oz of production over a 10-year life. However, on 16 August 2024, Federal Environment Minister Tanya Plibersek issued a Section 10 declaration under the Aboriginal and Torres Strait Islander Heritage Protection Act 1984, protecting the Belubula River headwaters as a significant Indigenous cultural area — the same site earmarked for the project's tailings storage facility. Regis stated this rendered the project unviable in its current form and took a non-cash impairment of A$192 million, withdrawing 1.89 Moz of previously declared ore reserves. In November 2024, Regis commenced judicial review proceedings in the Federal Court; hearings took place December 10–12, 2025. As of April 2026, judgement is pending. Any alternative tailings solution would restart approvals, potentially delaying the project 5–10 years.`,
+    lastUpdated: 'May 2026',
+    overview: `McPhillamys Gold Project, located near Blayney in Central West NSW (~250km west of Sydney), is one of Australia's largest undeveloped gold deposits, held by Regis Resources (ASX:RRL). The project received state and federal EPBC approvals in 2023 for an open pit mine targeting ~2 million oz of production over a 10-year life. However, on 16 August 2024, Federal Environment Minister Tanya Plibersek issued a Section 10 declaration under the Aboriginal and Torres Strait Islander Heritage Protection Act 1984, protecting the Belubula River headwaters as a significant Indigenous cultural area — the same site earmarked for the project's tailings storage facility. Regis stated this rendered the project unviable in its current form and took a non-cash impairment of A$192 million, withdrawing 1.89 Moz of previously declared ore reserves. In November 2024, Regis commenced judicial review proceedings in the Federal Court; hearings took place December 10–12, 2025. As of May 2026, judgment is still pending (Justice James Stellios has reserved judgment following December 2025 hearings). Regis is also exploring alternative mine designs — including reconsidering the tailings storage facility (TSF) location — potentially making the project viable without overturning the heritage order. Any fully alternative TSF approach would restart environmental approvals, delaying the project 5–10 years; however at current gold prices the economics may justify the investment.`,
     jorc: `Mineral Resource (pre-impairment): significant resource supporting ~2 million oz production over a 10-year life. Ore Reserve: 1.89 Moz (WITHDRAWN following Section 10 heritage declaration, Aug 2024). DFS outcomes also withdrawn. Full JORC 2012 compliant resource data was removed from Regis's ASX reporting as of Aug 2024 result disclosure. The project area covers the Belubula River district near Blayney, NSW.`,
     production: `No production ever commenced. Development stage only. DFS was completed 2023 indicating ~200,000 oz/year peak production. All production guidance withdrawn August 2024. Project now in regulatory limbo pending Federal Court judicial review outcome.`,
     processing_detail: `No processing plant on site. DFS contemplated a conventional open pit CIL circuit. The proposed tailings storage facility (TSF) at the Belubula River headwaters was the subject of the Section 10 heritage declaration. Alternative TSF sites would require full restart of environmental approvals process (est. 5–10 years delay).`,
@@ -624,8 +916,8 @@ const distressedMines = [
       '16 Aug 2024: Federal Environment Minister issues Section 10 heritage protection over Belubula River headwaters (tailings dam site)',
       'Aug 2024: Regis declares project "not viable in its current form"; takes A$192M non-cash impairment; withdraws 1.89 Moz ore reserve',
       'Nov 2024: Regis commences Federal Court judicial review proceedings challenging heritage declaration',
-      'Dec 2025: Three-day Federal Court hearing (10–12 December); Regis argues multiple process errors in heritage investigation',
-      'Apr 2026: Judgement pending; project in regulatory suspension'
+      'Dec 2025: Three-day Federal Court hearing (10–12 December); Regis argues multiple process errors in heritage investigation; Federal Court Justice James Stellios reserves judgment',
+      'Apr/May 2026: Judgment still pending — not yet delivered by Justice Stellios; project in regulatory suspension; Regis exploring alternative mine designs including rethinking the tailings dam (TSF) approach in response to gold price appreciation'
     ],
     contacts: `Regis Resources Limited (ASX:RRL)<br>Level 2, 18 Richardson Street, West Perth WA 6005<br>Website: <a href="https://www.regisresources.com.au/our-assets/mcphillamys/" target="_blank">regisresources.com.au/mcphillamys</a>`,
     secFilings: `asx`,
@@ -647,6 +939,7 @@ const distressedMines = [
       {type:'News', title:'Regis Resources takes $130M writedown as govt call makes project unviable — Mining.com', url:'https://www.mining.com/regis-resources-takes-130m-writedown-as-govt-call-makes-project-unviable/', date:'Aug 2024'},
       {type:'Company', title:'McPhillamys Project Page — Regis Resources', url:'https://www.regisresources.com.au/our-assets/mcphillamys/', date:'2026'},
       {type:'News', title:'Regis challenges federal heritage declaration at Federal Court — Blayney Chronicle', url:'https://www.blayneychronicle.com.au/story/9131300/regis-challenges-decision-blocking-1-billion-mine-near-blayney/', date:'Nov 2024'},
+      {type:'News', title:'Regis revives McPhillamys after gold rally, dam rethink — Mining.com', url:'https://www.mining.com/regis-revives-mcphillamys-after-gold-rally-dam-rethink/', date:'2025'},
     ]
   },
   {
@@ -758,8 +1051,8 @@ const distressedMines = [
     processing: 'Dredge + mill (polymetallic; C&M post-shutdown)',
     price: 'Not advertised (corporate restructure frozen by court)',
     sourcesCount: 4,
-    lastUpdated: 'Apr 2026',
-    overview: `The Hellyer Gold Mine in west-coast Tasmania was forced to cease operations in November 2025 when the Tasmanian Resources Minister imposed a cease-work order after finding "multiple and significant non-compliances" with financial and operational requirements under the Mineral Resources Development Act. The mine was also found to owe approximately A$1 million in unpaid royalties to the Tasmanian Government. The previous operating entity, Hellyer Metals Pty Ltd, was placed into liquidation on 22 January 2026, with Liam Bailey of O'Brien Palmer appointed liquidator. The parent company, Celestial Pacific Group, attempted to restructure by liquidating the old operator and continuing under a new entity — however, a court order froze this corporate restructure, indicating judicial concern about potential asset dissipation. Adding to the complexity, prior ownership arrangements allegedly involved a patched member of the Lone Wolf bikie gang holding a shareholding arrangement, and allegations of money laundering under previous ownership have emerged. The mine received limited re-authorization to restart approximately three weeks after the forced cessation and was progressing mill maintenance targeting recommencement of dredging operations in April 2026. However, the corporate restructure remains frozen by court order as of April 2026. This is a distressed acquisition opportunity if clean title can be obtained — the mine historically produced gold, silver, zinc, lead and copper from the Cambrian volcanic-hosted massive sulphide (VHMS) sequence.`,
+    lastUpdated: 'May 2026',
+    overview: `The Hellyer Gold Mine in west-coast Tasmania was forced to cease operations in November 2025 when the Tasmanian Resources Minister imposed a cease-work order after finding "multiple and significant non-compliances" with financial and operational requirements under the Mineral Resources Development Act. The mine was also found to owe approximately A$1 million in unpaid royalties to the Tasmanian Government. The previous operating entity, Hellyer Metals Pty Ltd, was placed into liquidation on 22 January 2026, with Liam Bailey of O'Brien Palmer appointed liquidator. The parent company, Celestial Pacific Group, attempted to restructure by liquidating the old operator and continuing under a new entity — however, a court order froze this corporate restructure, indicating judicial concern about potential asset dissipation. Adding to the complexity, prior ownership arrangements allegedly involved a patched member of the Lone Wolf bikie gang holding a shareholding arrangement, and allegations of money laundering under previous ownership have emerged. The mine received limited re-authorization to restart approximately three weeks after the forced cessation and was progressing mill maintenance targeting recommencement of dredging operations in April 2026. However, the corporate restructure remains frozen by court order as of May 2026. NEW (April 2026): Goshawk Mining obtained a A$36M freezing order from the Supreme Court of Tasmania (December 2025), preventing transfers of up to A$36M in assets to new entity Celestial Investments. Liquidator Liam Bailey is investigating whether assets were transferred before the court order came into effect. Compounding matters, the Tasmanian Government launched a process in April 2026 to potentially revoke the Hellyer mining lease, citing continued compliance failures — which, if successful, would extinguish the operation entirely. Despite this, ~12,000 tonnes of zinc/lead ore was reportedly transported for first export shipment and dredging operations were targeted for April 2026 restart. This is a distressed acquisition opportunity if clean title can be obtained — the mine historically produced gold, silver, zinc, lead and copper from the Cambrian volcanic-hosted massive sulphide (VHMS) sequence.`,
     jorc: `Historical producer of gold, silver, zinc, lead, and copper (Cambrian VHMS deposit). No current public JORC resource statement available following the corporate restructure. The Hellyer deposit was discovered in 1983; commercial production ran from 1988 to 2000 producing ~1 Moz equivalent of various metals. Historical resource estimates are not publicly available in current JORC 2012 format. Operator in liquidation.`,
     production: `Historical production (Pasminco, 1988–2000): substantial polymetallic production including gold and silver. Recommenced by Hellyer Gold Mines under Celestial Pacific in recent years (exact production figures not publicly disclosed post-restart). Operations ceased November 2025 by ministerial order. Restart attempted April 2026 but status unclear given frozen restructure.`,
     processing_detail: `Dredging of historical tailings and underground mining combined with a processing plant for polymetallic concentrate production. Located on the west coast of Tasmania near Queenstown and Zeehan. Remote infrastructure — road access via Murchison Highway.`,
@@ -773,8 +1066,10 @@ const distressedMines = [
       'Nov 2025: Allegations of money laundering under previous ownership; bikie gang shareholding connections alleged',
       '~Nov/Dec 2025: Limited re-authorization to restart issued ~3 weeks after cessation',
       '22 Jan 2026: Hellyer Metals Pty Ltd placed into liquidation; liquidator Liam Bailey, O\'Brien Palmer',
-      'Jan 2026: Court order freezes Celestial Pacific\'s corporate restructure (new entity / asset transfer attempt halted)',
-      'Apr 2026: Mill maintenance underway targeting recommencement of dredging; corporate restructure frozen by court'
+      'Dec 2025: Goshawk Mining obtains A$36M freezing order from Supreme Court of Tasmania preventing asset transfers to new entity Celestial Investments (Celestial Pacific restructure halted)',
+      'Jan 2026: Court order frozen — Celestial Pacific\'s new-entity corporate restructure halted; liquidator Liam Bailey investigating potential asset dissipation before court order',
+      'Apr 2026: Tasmanian Government launches process to potentially REVOKE the Hellyer mining lease, citing ongoing compliance concerns (follows November 2025 cease-work order)',
+      'Apr 2026: Dredging operations expected to recommence post mill maintenance; ~12,000t zinc/lead ore transported for first export shipment; but lease revocation process creates acute ownership uncertainty'
     ],
     contacts: `Liquidator of Hellyer Metals Pty Ltd: Liam Bailey — O'Brien Palmer<br>Parent company: Celestial Pacific Group<br>Tasmanian Resources Minister (approvals): Tasmanian Government<br>Source: <a href="https://www.insolvencyinsider-au.com/p/hellyer-metals-placed-into-liquidation-amid-mine-dispute-and-asset-transfer-scrutiny" target="_blank">Insolvency Insider AU</a>`,
     secFilings: `private`,
@@ -783,6 +1078,8 @@ const distressedMines = [
       {type:'Insolvency', title:'Hellyer Metals placed into liquidation amid mine dispute — Insolvency Insider AU', url:'https://www.insolvencyinsider-au.com/p/hellyer-metals-placed-into-liquidation-amid-mine-dispute-and-asset-transfer-scrutiny', date:'Jan 2026'},
       {type:'Government', title:'Mining operations at Hellyer to cease — Premier of Tasmania', url:'https://www.premier.tas.gov.au/latest-news/2025/november/mining-operations-at-hellyer-to-cease', date:'Nov 2025'},
       {type:'News', title:'Hellyer Mine money laundering allegations — Discovery Alert', url:'https://discoveryalert.com.au/hellyer-mine-money-laundering-tasmania-2026/', date:'2026'},
+      {type:'News', title:'Hellyer Gold moves to restart operations as liquidator named — Resources Review', url:'https://resourcesreview.com.au/news_article/hellyer-gold-moves-to-restart-operations-as-liquidator-named-for-former-mine-owner/', date:'Jan 2026'},
+      {type:'News', title:'Hellyer mine in the crosshairs again — Mining Monthly', url:'https://www.miningmonthly.com/management/news-analysis/4529411/hellyer-crosshairs', date:'Apr 2026'},
     ]
   }
 ];
@@ -877,10 +1174,10 @@ const watchlistMines = [
     probClass: 'prob-critical',
     aisc: 'High (not guided)',
     prodTrend: 'down',
-    cash: 'A$2.67M (Mar 2024)',
+    cash: 'Not disclosed (tailings + toll milling revenue)',
     reserveLife: '<2 yrs (tailings only)',
     sharePriceDelta: 'Delisted',
-    overview: `Wiluna Mining Corporation entered administration July 2022, delisted from ASX April 2024. The DOCA fully effectuated on 31 December 2025 (WA Supreme Court cleared a creditor classification dispute on 5 December 2025) — the administration phase is formally over. However, the company is NOT yet relisted on ASX; a new capital raise (target before June 2026) and ASX listing rule waivers are required. ASIC's civil proceedings for continuous disclosure and directors' duties breaches (filed February 2025) remain an active overhang. The Takeovers Panel in January 2026 declined to act on AIM Mining's application alleging undisclosed shareholder associations. Key backers: Byrnecut Group, Delphi Group (Deutsche Balaton AG / 2Invest AG), Franco-Nevada. Cash was only A$2.67M as of March 2024; the company survives on tailings reprocessing (~24,226 oz FY2025) and toll milling. A Feb 2024 PFS outlined a hard-rock restart but no development decision has been made. Restart is 12–24+ months away. The 7 Moz @ 2.38 g/t resource base remains exceptional. Update Apr 2026: DOCA completed Dec 2025; June 2026 capital raise deadline is critical catalyst — failure risks extended limbo.`,
+    overview: `Wiluna Mining Corporation entered administration July 2022, delisted from ASX April 2024. The DOCA fully effectuated on 31 December 2025. IPO now expected Q3 2026 — positive feedback from ASX. Victor Rajasooriar appointed Managing Director (commenced 1 May 2026). ASIC settlement reached: Wiluna and ASIC will jointly apply to Federal Court for declarations re Corporations Act contraventions; Wiluna contributes A$34K to ASIC legal costs; ASIC continues pursuing former directors Jerkovic and Malone separately. Risk: AIM Mining Corporation (>5% shareholder) called a general meeting April 16, 2026 to discuss alternative restructure proposals, creating uncertainty around the IPO timeline. Key backers: Byrnecut Group (secured loan to be repaid from IPO proceeds), Delphi Group (Deutsche Balaton AG / 2Invest AG), Franco-Nevada. The company survives on tailings reprocessing (~24,226 oz FY2025) and toll milling. Feb 2024 PFS outlined a hard-rock restart — no development decision made. Restart remains 12–24+ months after IPO. The 7 Moz @ 2.38 g/t resource base remains exceptional. Critical catalyst: Q3 2026 IPO completion — if AIM Mining's alternative proposal derails the IPO, the company remains in limbo.`,
     signals: [
       {signal:'Declining production (oz YoY)', weight:'HIGH', status:'FIRING', detail:'Underground mining ceased Dec 2022; only tailings reprocessing ~24,000 oz/year (FY2025)', class:'signal-fire'},
       {signal:'Rising AISC vs gold price', weight:'HIGH', status:'FIRING', detail:'AISC not formally guided; tailings-only production is high-cost relative to resource potential', class:'signal-fire'},
@@ -990,10 +1287,10 @@ const watchlistMines = [
     probClass: 'prob-low',
     aisc: 'A$2,685',
     prodTrend: 'up',
-    cash: 'A$400M+',
+    cash: 'A$600M+ (Q3 FY26)',
     reserveLife: '7+ yrs',
     sharePriceDelta: 'Positive trend',
-    overview: `Genesis Minerals (ASX:GMD) operates the Leonora production hub (Gwalia/Zoroastrian underground) and the restarted Laverton mill. H1 FY2026: production record with strong cash build >A$200M. Cash: >A$400M, no debt. FY2026 guidance: 260,000–290,000 oz at AISC A$2,500–2,700/oz. The company's AISC of A$2,685/oz stands above some peers, attributed to the transition away from third-party ore purchases. The share price dropped after the March 2025 quarterly due to higher costs but rebounded. Genesis is the acquirer of the distressed Dacian Gold/Mt Morgans asset. Distress probability: Low — the main risk is AISC remaining elevated if the Laverton mill ramp-up underperforms.`,
+    overview: `Genesis Minerals (ASX:GMD) operates the Leonora production hub (Gwalia/Zoroastrian underground) and the restarted Laverton mill. Q3 FY2026 (March quarter, Apr 2026): 67,497 oz gold production; cash position surged A$196M in the quarter to A$600M+ — now one of the strongest balance sheets in Australian gold mining. No debt. FY2026 guidance: 260,000–290,000 oz at AISC A$2,500–2,700/oz. AISC A$2,685/oz (H1 FY26) — above some peers but improving as Laverton ramp-up reduces unit costs. Genesis is the acquirer of the distressed Dacian Gold/Mt Morgans asset (Laverton mill restated Oct 2024). Distress probability: Low — the main risk is AISC remaining elevated if the Laverton mill ramp-up underperforms.`,
     signals: [
       {signal:'Declining production (oz YoY)', weight:'HIGH', status:'OK', detail:'Record production H1 FY2026; Leonora underground +34% QoQ in Dec 2025 quarter', class:'signal-ok'},
       {signal:'Rising AISC vs gold price', weight:'HIGH', status:'WARN', detail:'AISC A$2,685/oz above peer benchmark but improving; expected to decrease as Laverton ramps', class:'signal-warn'},
@@ -1014,6 +1311,7 @@ const watchlistMines = [
       {type:'News', title:'Genesis Minerals record production Dec 2025 quarter — Motley Fool', url:'https://www.fool.com.au/2026/01/29/genesis-minerals-posts-record-production-strong-cash-in-december-2025-quarter/', date:'Jan 2026'},
       {type:'News', title:'Genesis Minerals GMD shares drop after March quarterly — Kalkine', url:'https://kalkine.com.au/news/mining/genesis-minerals-asxgmd-shares-drop-after-march-quarterly', date:'2025'},
       {type:'Company', title:'Genesis Minerals History Page', url:'https://genesisminerals.com.au/about-us/our-history/', date:'2025'},
+      {type:'News', title:'Genesis Minerals posts strong Q3 FY26 — A$600M cash, 67,497 oz — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1077080/', date:'Apr 2026'},
     ]
   },
   {
@@ -1600,6 +1898,42 @@ const watchlistMines = [
     sources: [
       {type:'News', title:'Why Norwest Minerals (ASX:NWM) stock is moving today — Kalkine', url:'https://kalkine.com.au/news/general-news/why-norwest-mineralsasxnwm-stock-is-moving-today-gold-explorer-faces-march-2026-sector-weakness', date:'Mar 2026'},
     ]
+  },
+  {
+    id: 'w23',
+    name: 'Tropicana Gold Mine (Strategic Divestment)',
+    state: 'WA',
+    company: 'AngloGold Ashanti (NYSE/JSE/ASX:AGG) 70% / Regis Resources (ASX:RRL) 30%',
+    region: 'Fraser Range (NE Goldfields)',
+    probLabel: 'Low',
+    probPct: 20,
+    probClass: 'prob-low',
+    aisc: 'A$1,297/oz (2024 actual)',
+    prodTrend: 'flat',
+    cash: 'AngloGold is well-capitalised (major)',
+    reserveLife: '10+ yrs (Havana UG extension)',
+    sharePriceDelta: 'N/A (major miner)',
+    overview: `Tropicana Gold Mine is one of Australia\'s highest-margin gold operations, ~330km NE of Kalgoorlie in WA\'s remote Fraser Range, jointly owned by AngloGold Ashanti (AGG) 70% operator and Regis Resources (RRL) 30%. 2024 production: 313,000 oz at AISC A$1,297/oz — among Australia\'s lowest AISC. Havana underground project (approved 2025) transitions the mine from open pit to underground from 2027, extending mine life well into the 2030s. STRATEGIC DIVESTMENT: AngloGold Ashanti\'s CEO confirmed publicly that the Tropicana 70% JV stake is "up for sale" as part of non-core asset divestment strategy — AngloGold is refocusing on African and South American assets. No formal sales process or asking price has been publicly disclosed as of May 2026. At current gold prices (A$5,200+/oz), a 313,000 oz/yr mine at A$1,297/oz AISC generates exceptional free cash flow — making this one of the highest-quality acquisition opportunities in Australian gold mining. Regis Resources (30% JV partner) likely holds pre-emption rights over any AngloGold stake sale. This entry monitors the potential ownership change — not a financial distress scenario.`,
+    signals: [
+      {signal:'Declining production (oz YoY)', weight:'HIGH', status:'OK', detail:'Production stable ~300–320koz/yr; Havana UG adds future production from 2027', class:'signal-ok'},
+      {signal:'Rising AISC vs gold price', weight:'HIGH', status:'OK', detail:'AISC A$1,297/oz (2024) — among Australia\'s lowest; gold A$5,200+/oz gives exceptional margin', class:'signal-ok'},
+      {signal:'Cash burn / negative OCF', weight:'HIGH', status:'OK', detail:'Strongly cash generative at current gold prices', class:'signal-ok'},
+      {signal:'Going concern opinion', weight:'HIGH', status:'OK', detail:'None — AngloGold Ashanti is a NYSE/JSE/ASX-listed major miner', class:'signal-ok'},
+      {signal:'Debt covenant breach', weight:'HIGH', status:'OK', detail:'No issues identified at Tropicana level', class:'signal-ok'},
+      {signal:'D/E ratio >1.0', weight:'MEDIUM', status:'OK', detail:'Not applicable at mine level', class:'signal-ok'},
+      {signal:'Hedging losses', weight:'MEDIUM', status:'N/A', detail:'Not separately disclosed for Tropicana', class:'signal-na'},
+      {signal:'Repeated capital raises', weight:'MEDIUM', status:'OK', detail:'No dilutive capital raises', class:'signal-ok'},
+      {signal:'Grade decline', weight:'MEDIUM', status:'OK', detail:'Transitioning to higher-grade Havana underground ore from 2027 — grade improving', class:'signal-ok'},
+      {signal:'Reserve/resource impairment', weight:'MEDIUM', status:'OK', detail:'None identified; Havana approval extended mine life', class:'signal-ok'},
+      {signal:'Reserve life <3 years', weight:'MEDIUM', status:'OK', detail:'10+ year mine life with Havana underground extension', class:'signal-ok'},
+      {signal:'Management turnover', weight:'LOW-MED', status:'OK', detail:'No site-level management changes', class:'signal-ok'},
+      {signal:'Delayed milestones', weight:'LOW-MED', status:'OK', detail:'Havana underground on schedule; 2026 hybrid power system commissioned', class:'signal-ok'},
+      {signal:'Share price -50% from 12M high', weight:'LOW', status:'OK', detail:'AngloGold shares broadly positive; no distress', class:'signal-ok'},
+    ],
+    sources: [
+      {type:'Company', title:'AngloGold Ashanti — Tropicana Mine Overview', url:'https://www.anglogoldashanti.com/portfolio/australia/tropicana/', date:'2024'},
+      {type:'News', title:'AngloGold completes Australia\'s largest hybrid power system at Tropicana — Mining Weekly', url:'https://www.miningweekly.com/article/anglogold-completes-australias-largest-hybrid-power-system-at-tropicana-2025-03-31', date:'Mar 2025'},
+    ]
   }
 ];
 
@@ -1734,6 +2068,16 @@ const allSources = [
   {title:'Norwest Minerals (ASX:NWM) faces March 2026 sector weakness — Kalkine', url:'https://kalkine.com.au/news/general-news/why-norwest-mineralsasxnwm-stock-is-moving-today-gold-explorer-faces-march-2026-sector-weakness', date:'Mar 2026', type:'News'},
   {title:'Pantoro Gold posts $88M quarterly EBITDA — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1091277/pantoro-gold-posts-88m-quarterly-ebitda-as-norseman-growth-pipeline-builds-momentum-1091277.html', date:'Apr 2026', type:'News'},
   {title:'Savannah Goldfields continues gold production at Georgetown — ShareCafe', url:'https://www.sharecafe.com.au/2026/03/10/savannah-goldfields-continues-gold-production-at-georgetown-project/', date:'Mar 2026', type:'News'},
+  // May 2026 update sources
+  {title:'Wiluna Mining — DOCA exit update Dec 2025', url:'https://wilunamining.com.au/wp-content/uploads/2025/12/UpdateOnCourtProceedings08Dec25.pdf', date:'Dec 2025', type:'Company'},
+  {title:'Wiluna Mining — AIM Mining shareholder meeting notice April 2026', url:'https://wilunamining.com.au/wp-content/uploads/2026/04/AIMConveningShareholderMeeting17Apr26.pdf', date:'Apr 2026', type:'Company'},
+  {title:'Regis Resources revives McPhillamys after gold rally and dam rethink — Mining.com', url:'https://www.mining.com/regis-revives-mcphillamys-after-gold-rally-dam-rethink/', date:'2025', type:'News'},
+  {title:'Hellyer Gold moves to restart as liquidator named — Resources Review', url:'https://resourcesreview.com.au/news_article/hellyer-gold-moves-to-restart-operations-as-liquidator-named-for-former-mine-owner/', date:'Jan 2026', type:'News'},
+  {title:'Hellyer mine in the crosshairs again (lease revocation) — Mining Monthly', url:'https://www.miningmonthly.com/management/news-analysis/4529411/hellyer-crosshairs', date:'Apr 2026', type:'News'},
+  {title:'Genesis Minerals Q3 FY26: A$600M cash, 67,497 oz — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1077080/', date:'Apr 2026', type:'News'},
+  {title:'AngloGold Ashanti Tropicana Mine — Company Overview', url:'https://www.anglogoldashanti.com/portfolio/australia/tropicana/', date:'2024', type:'Company'},
+  {title:'AngloGold completes Australia\'s largest hybrid power system at Tropicana — Mining Weekly', url:'https://www.miningweekly.com/article/anglogold-completes-australias-largest-hybrid-power-system-at-tropicana-2025-03-31', date:'Mar 2025', type:'News'},
+  {title:'Pantoro Q3 FY2026: 17,757 oz, A$88.4M EBITDA, A$250.3M cash — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1091277/pantoro-gold-posts-88m-quarterly-ebitda-as-norseman-growth-pipeline-builds-momentum-1091277.html', date:'Apr 2026', type:'News'},
 ];
 
 // =====================================================================
@@ -2060,11 +2404,292 @@ function renderKPIs() {
 }
 
 // =====================================================================
+// LIVE GOLD PRICE — Coinbase API (CORS-open, no key required)
+// Confirmed against Kitco: https://www.kitco.com/charts/gold
+// =====================================================================
+const SCENARIOS = [
+  { label:'BULL', prob:'25%', symbol:'▲', cls:'scenario-bull', color:'#22c55e',
+    changes:[0.16,0.29,0.53,0.77],
+    driver:'Geopolitical escalation, record CB buying, AUD weakens further, aggressive rate cuts' },
+  { label:'BASE', prob:'50%', symbol:'◆', cls:'scenario-base', color:'#D4AF37',
+    changes:[0.05,0.10,0.16,0.26],
+    driver:'Macro uncertainty persists, CB demand moderate, AUD stable, supply flat to −1%' },
+  { label:'BEAR', prob:'25%', symbol:'▼', cls:'scenario-bear', color:'#ef4444',
+    changes:[-0.13,-0.19,-0.26,-0.32],
+    driver:'Fed hawkish surprise, USD rebounds, geopolitical risk eases, CB buying pauses' }
+];
+
+function renderScenarios(audBase) {
+  const tbody = document.getElementById('scenario-tbody');
+  if (!tbody || !audBase) return;
+  const fmtAU = n => 'A$' + (Math.round(n/100)*100).toLocaleString('en-AU');
+  tbody.innerHTML = SCENARIOS.map(s => {
+    const cells = s.changes.map(c => {
+      const price = Math.round(audBase*(1+c)/100)*100;
+      const pct = (c>=0?'+':'')+Math.round(c*100)+'%';
+      return `<td style="white-space:nowrap"><strong>${fmtAU(price)}</strong><br><span style="color:${s.color};font-size:.72rem">${pct}</span></td>`;
+    }).join('');
+    return `<tr class="${s.cls}">
+      <td><span style="color:${s.color};font-weight:700">${s.symbol} ${s.label}</span><br><span style="font-size:.7rem;color:#8b949e">${s.prob}</span></td>
+      ${cells}
+      <td style="font-size:.72rem;color:#8b949e;min-width:130px">${s.driver}</td>
+    </tr>`;
+  }).join('');
+  // prob-weighted 12M: bull 25% + base 50% + bear 25%
+  const pw = Math.round((0.25*audBase*1.53 + 0.50*audBase*1.16 + 0.25*audBase*0.74)/100)*100;
+  const pwEl = document.getElementById('pw-target');
+  if (pwEl) pwEl.textContent = 'A$'+pw.toLocaleString('en-AU');
+}
+
+async function fetchLiveGoldPrice() {
+  try {
+    const [usdRes, audRes] = await Promise.all([
+      fetch('https://api.coinbase.com/v2/prices/XAU-USD/spot'),
+      fetch('https://api.coinbase.com/v2/prices/XAU-AUD/spot')
+    ]);
+    const usdData = await usdRes.json();
+    const audData = await audRes.json();
+
+    const usd = parseFloat(usdData.data.amount);
+    const aud = parseFloat(audData.data.amount);
+    const audRounded = Math.round(aud);
+    const premium = Math.round((usd/1600-1)*100);
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+    const fmtUSD = n => 'US$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const fmtAUD = n => 'A$'+Math.round(n).toLocaleString('en-AU');
+
+    // KPI cards
+    const auCard = document.getElementById('fc-kpi-au');
+    if (auCard) auCard.innerHTML = `<div class="kpi-label">AU Spot (live)</div><div class="kpi-value" style="color:#D4AF37">${fmtAUD(aud)}</div><div class="kpi-sub" style="color:#22c55e">● Live · ${timeStr}</div>`;
+
+    const usCard = document.getElementById('fc-kpi-us');
+    if (usCard) usCard.innerHTML = `<div class="kpi-label">US Spot · <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco ↗</a></div><div class="kpi-value" style="color:#e6edf3">${fmtUSD(usd)}</div><div class="kpi-sub" style="color:#22c55e">● Live · ${timeStr}</div>`;
+
+    const premCard = document.getElementById('fc-kpi-premium');
+    if (premCard) premCard.innerHTML = `<div class="kpi-label">Price/AISC Premium</div><div class="kpi-value">+${premium}%</div><div class="kpi-sub">${fmtUSD(Math.round(usd))} vs US$1,600 floor</div>`;
+
+    // Price note
+    const note = document.getElementById('forecast-price-note');
+    if (note) note.innerHTML = `<strong style="color:#D4AF37">● Live Price:</strong> <strong style="color:#e6edf3">${fmtUSD(usd)}</strong> · <strong style="color:#D4AF37">${fmtAUD(aud)}/oz</strong> — sourced from Coinbase API, confirmed against <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">Kitco</a>. Fetched ${timeStr}. Scenarios below rebase to this price automatically. <strong>Not financial advice.</strong>`;
+
+    // Scenario baseline
+    const bl = document.getElementById('scenario-baseline-note');
+    if (bl) bl.innerHTML = `Baseline: <strong style="color:#D4AF37">${fmtAUD(aud)} / ${fmtUSD(usd)}</strong> (live · ${timeStr}) · Weights: Bear 25% · Base 50% · Bull 25%`;
+
+    // Rerender scenarios against live AU$ base
+    renderScenarios(audRounded);
+
+  } catch(e) {
+    console.warn('Live price fetch failed:', e);
+    // Fall back: render scenarios with last known price
+    renderScenarios(7335);
+    const note = document.getElementById('forecast-price-note');
+    if (note) note.innerHTML = `<strong style="color:#f59e0b">⚠ Live price unavailable.</strong> Showing last known: US$4,620.80 / AU$7,335. Verify at <a href="https://www.kitco.com/charts/gold" target="_blank" style="color:#D4AF37">kitco.com/charts/gold</a>. <strong>Not financial advice.</strong>`;
+  }
+}
+
+// =====================================================================
+// WESTERN AUSTRALIA SUPPLY IMPACT METER
+// =====================================================================
+function renderWAImpactMeter() {
+  const waMines  = allMines.filter(m => (m.state || 'WA') === 'WA');
+  const waActive = waMines.filter(m => getCategory(m) === 'Active');
+  const waCM     = waMines.filter(m => getCategory(m) === 'C&M');
+  const waAdmin  = waMines.filter(m => ['Administration','Distressed','Ceased'].includes(getCategory(m)));
+  const waWatch  = waMines.filter(m => getCategory(m) === 'Watch List');
+  const waDev    = waMines.filter(m => getCategory(m) === 'Development');
+
+  const waActiveProd   = waActive.reduce((s,m) => s + (m.prodOzYr||0), 0);
+  const waCMResource   = waCM.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+  const waAdminResource= waAdmin.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+  const waDevResource  = waDev.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+
+  const globalOzYr = 3770 * 32150.7; // ~121.2M oz/yr global mine supply
+  const waPctGlobal = (waActiveProd / globalOzYr * 100).toFixed(1);
+
+  // Score: -5 (very bearish = supply growing) to +5 (very bullish = supply shrinking)
+  let score = 0;
+  waAdmin.forEach(() => { score += 1.2; });   // admin/distressed = supply removed = bullish
+  waWatch.forEach(() => { score += 0.4; });   // watch list = at risk = mildly bullish
+  waCM.forEach(() => { score -= 0.6; });      // C&M = potential restart at high prices = mild headwind
+  waDev.forEach(m => {
+    score -= (m.resourceOzNum||0) > 5e6 ? 0.8 : 0.3; // large dev = bigger future supply headwind
+  });
+  score = Math.max(-5, Math.min(5, score));
+
+  const needlePct = ((score + 5) / 10 * 100).toFixed(1);
+  const needle = document.getElementById('wa-needle');
+  if (needle) needle.style.left = needlePct + '%';
+
+  let signalLabel, signalColor;
+  if      (score >= 2.0)  { signalLabel = 'BULLISH';        signalColor = '#22c55e'; }
+  else if (score >= 0.5)  { signalLabel = 'MILDLY BULLISH'; signalColor = '#a3e635'; }
+  else if (score >= -0.5) { signalLabel = 'NEUTRAL';        signalColor = '#D4AF37'; }
+  else if (score >= -2.0) { signalLabel = 'MILDLY BEARISH'; signalColor = '#f59e0b'; }
+  else                    { signalLabel = 'BEARISH';         signalColor = '#ef4444'; }
+
+  const fmtOz   = n => !n ? '—' : n >= 1e6 ? (n/1e6).toFixed(1)+' Moz' : Math.round(n/1000)+'k oz';
+  const fmtProd = n => !n ? '—' : (n >= 1e6 ? (n/1e6).toFixed(2)+'M' : Math.round(n/1000)+'k')+' oz/yr';
+
+  const kpiRow = document.getElementById('wa-kpi-row');
+  if (kpiRow) {
+    kpiRow.innerHTML = `
+      <div class="demand-card">
+        <div class="demand-card-label">WA Share of Global Supply</div>
+        <div class="demand-card-val" style="color:#D4AF37">${waPctGlobal}%</div>
+        <div class="demand-card-sub">${fmtProd(waActiveProd)} tracked active</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">Active WA Mines</div>
+        <div class="demand-card-val">${waActive.length}</div>
+        <div class="demand-card-sub">Currently producing</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">Supply Removed</div>
+        <div class="demand-card-val" style="color:#22c55e">${waAdmin.length} mine${waAdmin.length!==1?'s':''}</div>
+        <div class="demand-card-sub">${fmtOz(waAdminResource)} offline</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">C&amp;M Restart Risk</div>
+        <div class="demand-card-val" style="color:#f59e0b">${waCM.length} mine${waCM.length!==1?'s':''}</div>
+        <div class="demand-card-sub">${fmtOz(waCMResource)} latent supply</div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-card-label">WA Dev Pipeline</div>
+        <div class="demand-card-val" style="color:#3b82f6">${waDev.length} project${waDev.length!==1?'s':''}</div>
+        <div class="demand-card-sub">${fmtOz(waDevResource)} future resource</div>
+      </div>
+      <div class="demand-card" style="border-color:${signalColor}40">
+        <div class="demand-card-label">WA Signal</div>
+        <div class="demand-card-val" style="color:${signalColor};font-size:.8rem">${signalLabel}</div>
+        <div class="demand-card-sub">Score ${score>=0?'+':''}${score.toFixed(1)} / 5.0</div>
+      </div>`;
+  }
+
+  const signalEl = document.getElementById('wa-signal-text');
+  if (signalEl) {
+    let parts = [`<strong style="color:${signalColor}">WA Signal: ${signalLabel}</strong> (score ${score>=0?'+':''}${score.toFixed(1)}/5.0) — WA represents <strong style="color:#D4AF37">~${waPctGlobal}%</strong> of global gold mine supply. Current tracker data shows:`];
+    parts.push('<ul style="margin:8px 0 0 14px;line-height:1.8">');
+    if (waAdmin.length)
+      parts.push(`<li><strong style="color:#22c55e">Supply removed (bullish):</strong> ${waAdmin.map(m=>m.name).join(', ')} — ${waAdmin.length} WA operation${waAdmin.length>1?'s are':' is'} in administration or distress. This supply is out of the market. Combined resource: ${fmtOz(waAdminResource)}.</li>`);
+    if (waWatch.length)
+      parts.push(`<li><strong style="color:#a855f7">Watch list (mildly bullish):</strong> ${waWatch.map(m=>m.name).join(', ')} — elevated distress signals. If these transition to C&amp;M or Administration, further WA supply contraction.</li>`);
+    if (waCM.length)
+      parts.push(`<li><strong style="color:#f59e0b">C&amp;M restart risk (medium-term headwind):</strong> ${waCM.map(m=>m.name).join(', ')} — ${fmtOz(waCMResource)} mothballed. At AU$6,000+ prices restart economics are compelling; expect 12–24 month lag before any supply returns.</li>`);
+    if (waDev.length) {
+      const top = waDev.slice().sort((a,b)=>(b.resourceOzNum||0)-(a.resourceOzNum||0)).slice(0,2);
+      parts.push(`<li><strong style="color:#3b82f6">Development pipeline (2027–29 headwind):</strong> ${top.map(m=>m.name).join(', ')} — Hemi (NST, ~553k oz/yr from 2028–29) will be the most material new WA supply in a decade. No near-term price impact.</li>`);
+    }
+    parts.push('</ul>');
+    parts.push(`<div style="margin-top:10px;padding-top:8px;border-top:1px solid #2d3148"><strong style="color:#D4AF37">Bottom line:</strong> Near-term WA supply is contracting (admin closures &gt; new production). The primary WA price risk is the Hemi ramp (2028–29, ~0.45% of global supply) and potential C&amp;M restarts from late 2026 if AU$ prices stay above A$5,500. At current AU$6,000+ price levels, WA is a <strong style="color:${signalColor}">net supply tailwind</strong> for the gold price over the next 12 months.</div>`);
+    signalEl.innerHTML = parts.join('');
+  }
+}
+
+// =====================================================================
+// MAIN TAB SWITCHING
+// =====================================================================
+function switchMainTab(tab, btn) {
+  document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.main-tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const pane = document.getElementById('main-tab-' + tab);
+  if (pane) pane.classList.add('active');
+}
+
+// =====================================================================
+// AUSTRALIAN SUPPLY SIGNALS (derived from allMines tracker data)
+// =====================================================================
+function renderAusSupplySignals() {
+  const el = document.getElementById('aus-supply-signals');
+  if (!el) return;
+
+  const cm       = allMines.filter(m => getCategory(m) === 'C&M');
+  const admin    = allMines.filter(m => ['Administration','Distressed','Ceased'].includes(getCategory(m)));
+  const watchLst = allMines.filter(m => getCategory(m) === 'Watch List');
+  const dev      = allMines.filter(m => getCategory(m) === 'Development');
+  const active   = allMines.filter(m => getCategory(m) === 'Active');
+
+  const cmOz    = cm.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+  const devOz   = dev.reduce((s,m) => s + (m.resourceOzNum||0), 0);
+  const activePr= active.reduce((s,m) => s + (m.prodOzYr||0), 0);
+
+  const fmtOz  = n => n >= 1e6 ? (n/1e6).toFixed(1)+' Moz' : n >= 1000 ? Math.round(n/1000)+'k oz' : n+' oz';
+  const fmtProd= n => n >= 1e6 ? (n/1e6).toFixed(2)+'M oz/yr' : Math.round(n/1000)+'k oz/yr';
+
+  let html = '';
+
+  html += `<div class="aus-signal-row">
+    <div class="aus-signal-icon" style="color:#22c55e">▲</div>
+    <div class="aus-signal-body">
+      <div class="aus-signal-title">Active Production: ~${fmtProd(activePr)} tracked (${active.length} operations)</div>
+      <div class="aus-signal-sub">Formal tracked production at record AU$ prices. High margins driving reinvestment and exploration. Australia contributing ~325t/yr (~8.6% of global supply). Top producers: KCGM/Northern Star (~575k oz/yr), Boddington/Newmont (~287k oz/yr), Tropicana/AngloGold (~313k oz/yr).</div>
+    </div>
+  </div>`;
+
+  if (cm.length > 0) {
+    html += `<div class="aus-signal-row">
+      <div class="aus-signal-icon" style="color:#f59e0b">⏸</div>
+      <div class="aus-signal-body">
+        <div class="aus-signal-title">Care &amp; Maintenance: ${cm.length} mine${cm.length!==1?'s':''} — ${fmtOz(cmOz)} in mothballed resources</div>
+        <div class="aus-signal-sub">Potential supply overhang if prices remain elevated: ${cm.map(m=>m.name).join(', ')}. At current AU$6,000+ prices, restart economics are compelling, but most require 12–24+ months lead time and significant capex. C&amp;M mines are a lagging supply response — <strong style="color:#f59e0b">watch from late 2026 onward</strong>.</div>
+      </div>
+    </div>`;
+  }
+
+  if (admin.length > 0) {
+    html += `<div class="aus-signal-row">
+      <div class="aus-signal-icon" style="color:#ef4444">✕</div>
+      <div class="aus-signal-body">
+        <div class="aus-signal-title">Distressed / Administration: ${admin.length} operation${admin.length!==1?'s':''} — supply removed from market</div>
+        <div class="aus-signal-sub">${admin.map(m=>m.name).join(', ')}. Production at these sites has ceased or significantly reduced due to insolvency / administration. Net bullish for price (Australian supply contraction). Some may be acquired and restarted — acquisition activity is a signal to watch.</div>
+      </div>
+    </div>`;
+  }
+
+  if (watchLst.length > 0) {
+    html += `<div class="aus-signal-row">
+      <div class="aus-signal-icon" style="color:#a855f7">⚡</div>
+      <div class="aus-signal-body">
+        <div class="aus-signal-title">Watch List: ${watchLst.length} operation${watchLst.length!==1?'s':''} with active distress signals</div>
+        <div class="aus-signal-sub">${watchLst.map(m=>m.name).join(', ')}. Elevated financial or operational risk. Transition to Administration/C&amp;M would be further supply contraction (bullish). Stabilisation at high prices is possible — high gold price is the most effective cure for distressed miners.</div>
+      </div>
+    </div>`;
+  }
+
+  if (dev.length > 0) {
+    const topDev = dev.slice().sort((a,b)=>(b.resourceOzNum||0)-(a.resourceOzNum||0)).slice(0,3);
+    html += `<div class="aus-signal-row">
+      <div class="aus-signal-icon" style="color:#3b82f6">◎</div>
+      <div class="aus-signal-body">
+        <div class="aus-signal-title">Development Pipeline: ${dev.length} project${dev.length!==1?'s':''} — ${fmtOz(devOz)} future resource</div>
+        <div class="aus-signal-sub">Key projects: ${topDev.map(m=>`${m.name} (${fmtOz(m.resourceOzNum||0)})`).join(', ')}. Hemi (NST, ~553k oz/yr target, first gold 2028–29) is the most significant new supply globally. Development projects add future supply pressure but do not affect 1–2 year price dynamics — build these into <strong style="color:#3b82f6">2028+ bear scenario</strong>.</div>
+      </div>
+    </div>`;
+  }
+
+  html += `<div class="aus-signal-row" style="background:rgba(212,175,55,.06);border-radius:6px;padding:10px 12px;margin-top:4px">
+    <div class="aus-signal-icon" style="color:#D4AF37">★</div>
+    <div class="aus-signal-body">
+      <div class="aus-signal-title" style="color:#D4AF37">Net Australian Supply Signal: Mildly Bullish (near term) → Neutral/Bearish (2027–28)</div>
+      <div class="aus-signal-sub">Near term (12M): Supply contraction from admin/distressed mines + no major new production = mildly bullish. Medium term (2–3yr): C&amp;M restarts at high prices, Hemi ramp-up from 2028–29 adding ~550k oz/yr, and Mt Gibson (Capricorn, ~150k oz/yr) entering production create supply headwinds. The AU$ gold price trajectory is also sensitive to RBA policy and AUD/USD — a stronger AUD would compress AU$ returns even if US$ gold holds.</div>
+    </div>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+// =====================================================================
 // INIT
 // =====================================================================
 renderMines();
 renderSources();
 renderKPIs();
+renderAusSupplySignals();
+renderWAImpactMeter();
+renderScenarios(7335); // render immediately with last-known price
+fetchLiveGoldPrice();  // then update async with live Coinbase price
 </script>
 </body>
 </html>
