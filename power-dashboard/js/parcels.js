@@ -23,6 +23,7 @@ let _parcelsLoaded = false;
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 async function initParcelsView() {
+  setupParcelsRegionSelector();
   if (_parcelsLoaded) return;
   _parcelsLoaded = true;
 
@@ -345,5 +346,368 @@ function renderParcelsTable(parcels) {
         setTimeout(() => { btn.textContent = 'Copy APN'; btn.classList.remove('copied'); }, 1500);
       });
     });
+  });
+}
+
+// ── Iowa county data ──────────────────────────────────────────────────────────
+
+const IOWA_COUNTIES = [
+  { name: 'Adair',         fips: 19001, url: 'http://adair.iowaassessors.com' },
+  { name: 'Adams',         fips: 19003, url: 'http://adams.iowaassessors.com' },
+  { name: 'Allamakee',     fips: 19005, url: 'http://beacon.schneidercorp.com/?site=AllamakeeCountyIA' },
+  { name: 'Appanoose',     fips: 19007, url: 'http://appanoose.iowaassessors.com' },
+  { name: 'Audubon',       fips: 19009, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=96&LayerID=957&PageTypeID=2&PageID=602' },
+  { name: 'Benton',        fips: 19011, url: 'http://beacon.schneidercorp.com/?site=BentonCountyIA' },
+  { name: 'Black Hawk',    fips: 19013, url: 'https://beacon.schneidercorp.com/Application.aspx?App=BlackHawkCountyIA&PageType=Search' },
+  { name: 'Boone',         fips: 19015, url: 'http://beacon.schneidercorp.com/?site=BooneCountyIA' },
+  { name: 'Bremer',        fips: 19017, url: 'http://beacon.schneidercorp.com/?site=BremerCountyIA' },
+  { name: 'Buchanan',      fips: 19019, url: 'https://beacon.schneidercorp.com/' },
+  { name: 'Buena Vista',   fips: 19021, url: 'https://beacon.schneidercorp.com/Application.aspx?App=BuenaVistaCountyIA&PageType=Search' },
+  { name: 'Butler',        fips: 19023, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1300&LayerID=44496&PageTypeID=2&PageID=16788' },
+  { name: 'Calhoun',       fips: 19025, url: 'http://calhoun.iowaassessors.com' },
+  { name: 'Carroll',       fips: 19027, url: 'http://carroll.iowaassessors.com' },
+  { name: 'Cass',          fips: 19029, url: 'https://beacon.schneidercorp.com/?site=CassCountyIA' },
+  { name: 'Cedar',         fips: 19031, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1233&LayerID=39179&PageTypeID=2&PageID=14567' },
+  { name: 'Cerro Gordo',   fips: 19033, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=408&LayerID=6228&PageTypeID=2&PageID=3318' },
+  { name: 'Cherokee',      fips: 19035, url: 'http://cherokee.iowaassessors.com' },
+  { name: 'Chickasaw',     fips: 19037, url: 'https://beaconbeta.schneidercorp.com/Application.aspx?AppID=47&LayerID=261&PageTypeID=2&PageID=302' },
+  { name: 'Clarke',        fips: 19039, url: 'http://clarke.iowaassessors.com' },
+  { name: 'Clay',          fips: 19041, url: 'http://clay.iowaassessors.com' },
+  { name: 'Clayton',       fips: 19043, url: 'http://beacon.schneidercorp.com/?site=ClaytonCountyIA' },
+  { name: 'Clinton',       fips: 19045, url: 'http://clinton.iowaassessors.com/' },
+  { name: 'Crawford',      fips: 19047, url: 'http://crawford.iowaassessors.com' },
+  { name: 'Dallas',        fips: 19049, url: 'https://beacon.schneidercorp.com/?site=DallasCountyIA' },
+  { name: 'Davis',         fips: 19051, url: 'http://beacon.schneidercorp.com/?site=DavisCountyIA' },
+  { name: 'Decatur',       fips: 19053, url: 'http://decatur.iowaassessors.com/' },
+  { name: 'Delaware',      fips: 19055, url: 'http://delaware.iowaassessors.com' },
+  { name: 'Des Moines',    fips: 19057, url: 'http://desmoines.iowaassessors.com' },
+  { name: 'Dickinson',     fips: 19059, url: 'http://dickinson.iowaassessors.com' },
+  { name: 'Dubuque',       fips: 19061, url: 'https://www.dubuquecountyiowa.gov/159/Assessor---Dubuque-County' },
+  { name: 'Emmet',         fips: 19063, url: 'http://beacon.schneidercorp.com/default.aspx?site=EmmetCountyIA' },
+  { name: 'Fayette',       fips: 19065, url: 'http://beacon.schneidercorp.com/?site=FayetteCountyIA' },
+  { name: 'Floyd',         fips: 19067, url: 'http://floyd.iowaassessors.com' },
+  { name: 'Franklin',      fips: 19069, url: 'http://beacon.schneidercorp.com/?site=FranklinCountyIA' },
+  { name: 'Fremont',       fips: 19071, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=825&LayerID=14967&PageTypeID=2&PageID=6729' },
+  { name: 'Greene',        fips: 19073, url: 'https://beacon.schneidercorp.com/?site=GreeneCountyIA' },
+  { name: 'Grundy',        fips: 19075, url: 'http://beacon.schneidercorp.com/?site=GrundyCountyIA' },
+  { name: 'Guthrie',       fips: 19077, url: 'https://beacon.schneidercorp.com/?site=GuthrieCountyIA' },
+  { name: 'Hamilton',      fips: 19079, url: 'https://www.hamiltoncounty.iowa.gov/departments/assessor/index.php' },
+  { name: 'Hancock',       fips: 19081, url: 'http://hancock.iowaassessors.com' },
+  { name: 'Hardin',        fips: 19083, url: 'http://beacon.schneidercorp.com/?site=HardinCountyIA' },
+  { name: 'Harrison',      fips: 19085, url: 'http://beacon.schneidercorp.com/?site=HarrisonCountyIA' },
+  { name: 'Henry',         fips: 19087, url: 'http://beacon.schneidercorp.com/?site=HenryCountyIA' },
+  { name: 'Howard',        fips: 19089, url: 'http://howard.iowaassessors.com' },
+  { name: 'Humboldt',      fips: 19091, url: 'http://humboldt.iowaassessors.com' },
+  { name: 'Ida',           fips: 19093, url: 'http://ida.iowaassessors.com' },
+  { name: 'Iowa',          fips: 19095, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1126&LayerID=28385&PageTypeID=2&PageID=11829' },
+  { name: 'Jackson',       fips: 19097, url: 'https://beaconbeta.schneidercorp.com/?site=JacksonCountyIA' },
+  { name: 'Jasper',        fips: 19099, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=325&LayerID=3398&PageTypeID=2&PageID=2260' },
+  { name: 'Jefferson',     fips: 19101, url: 'http://jefferson.iowaassessors.com' },
+  { name: 'Johnson',       fips: 19103, url: 'http://beacon.schneidercorp.com/?site=JohnsonCountyIA' },
+  { name: 'Jones',         fips: 19105, url: 'http://beacon.schneidercorp.com/?site=JonesCountyIA' },
+  { name: 'Keokuk',        fips: 19107, url: 'http://beacon.schneidercorp.com/?site=KeokukCountyIA' },
+  { name: 'Kossuth',       fips: 19109, url: 'http://kossuth.iowaassessors.com' },
+  { name: 'Lee',           fips: 19111, url: 'http://beacon.schneidercorp.com/Application.aspx?AppID=177&LayerID=2207&PageTypeID=2&PageID=1132' },
+  { name: 'Linn',          fips: 19113, url: 'http://linn.iowaassessors.com' },
+  { name: 'Louisa',        fips: 19115, url: 'http://beacon.schneidercorp.com/?site=LouisaCountyIA' },
+  { name: 'Lucas',         fips: 19117, url: 'http://lucas.iowaassessors.com' },
+  { name: 'Lyon',          fips: 19119, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=594' },
+  { name: 'Madison',       fips: 19121, url: 'http://madison.iowaassessors.com' },
+  { name: 'Mahaska',       fips: 19123, url: 'http://beacon.schneidercorp.com/?site=MahaskaCountyIA' },
+  { name: 'Marion',        fips: 19125, url: 'https://beacon.schneidercorp.com/' },
+  { name: 'Marshall',      fips: 19127, url: 'https://beacon.schneidercorp.com/?site=MarshallCountyIA' },
+  { name: 'Mills',         fips: 19129, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=153&LayerID=2009&PageTypeID=2&PageID=1025' },
+  { name: 'Mitchell',      fips: 19131, url: 'http://mitchell.iowaassessors.com' },
+  { name: 'Monona',        fips: 19133, url: 'http://monona.iowaassessors.com' },
+  { name: 'Monroe',        fips: 19135, url: 'http://monroe.iowaassessors.com' },
+  { name: 'Montgomery',    fips: 19137, url: 'https://montgomery.iowaassessors.com/' },
+  { name: 'Muscatine',     fips: 19139, url: 'http://beacon.schneidercorp.com/?site=MuscatineCountyIA' },
+  { name: "O'Brien",       fips: 19141, url: 'https://obrien.iowaassessors.com/' },
+  { name: 'Osceola',       fips: 19143, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=611&LayerID=10180&PageTypeID=2&PageID=4439' },
+  { name: 'Page',          fips: 19145, url: 'http://beacon.schneidercorp.com/?site=PageCountyIA' },
+  { name: 'Palo Alto',     fips: 19147, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=218&LayerID=2977&PageTypeID=2&PageID=1615' },
+  { name: 'Plymouth',      fips: 19149, url: 'http://plymouth.iowaassessors.com' },
+  { name: 'Pocahontas',    fips: 19151, url: 'http://beacon.schneidercorp.com/?site=PocahontasCountyIA' },
+  { name: 'Polk',          fips: 19153, url: 'https://www.assess.co.polk.ia.us/' },
+  { name: 'Pottawattamie', fips: 19155, url: 'http://www.pottco.org' },
+  { name: 'Poweshiek',     fips: 19157, url: 'http://beacon.schneidercorp.com/?site=PoweshiekCountyIA' },
+  { name: 'Ringgold',      fips: 19159, url: 'https://beacon.schneidercorp.com/Application.aspx?AppId=508&LayerId=7874&PageTypeId=2&PageID=3842' },
+  { name: 'Sac',           fips: 19161, url: 'http://beacon.schneidercorp.com/?site=SacCountyIA' },
+  { name: 'Scott',         fips: 19163, url: 'http://www.scottcountyiowa.com/assessor/' },
+  { name: 'Shelby',        fips: 19165, url: 'http://beacon.schneidercorp.com/?site=ShelbyCountyIA' },
+  { name: 'Sioux',         fips: 19167, url: 'http://siouxcounty.org/departments/assessor/' },
+  { name: 'Story',         fips: 19169, url: 'http://beacon.schneidercorp.com/?site=StoryCountyIA' },
+  { name: 'Tama',          fips: 19171, url: 'http://tama.iowaassessors.com' },
+  { name: 'Taylor',        fips: 19173, url: 'http://taylor.iowaassessors.com' },
+  { name: 'Union',         fips: 19175, url: 'http://beacon.schneidercorp.com/?site=UnionCountyIA' },
+  { name: 'Van Buren',     fips: 19177, url: 'http://vanburen.iowaassessors.com' },
+  { name: 'Wapello',       fips: 19179, url: 'http://wapello.iowaassessors.com' },
+  { name: 'Warren',        fips: 19181, url: 'http://beacon.schneidercorp.com/?site=WarrenCountyIA' },
+  { name: 'Washington',    fips: 19183, url: 'http://washington.iowaassessors.com' },
+  { name: 'Wayne',         fips: 19185, url: 'http://wayne.iowaassessors.com' },
+  { name: 'Webster',       fips: 19187, url: 'https://beacon.schneidercorp.com/?site=WebsterCountyIA' },
+  { name: 'Winnebago',     fips: 19189, url: 'http://beacon.schneidercorp.com/?site=WinnebagoCountyIA' },
+  { name: 'Winneshiek',    fips: 19191, url: 'http://beacon.schneidercorp.com/?site=WinneshiekCountyIA' },
+  { name: 'Woodbury',      fips: 19193, url: 'http://beacon.schneidercorp.com/?site=WoodburyCountyIA' },
+  { name: 'Worth',         fips: 19195, url: 'http://worth.iowaassessors.com' },
+  { name: 'Wright',        fips: 19197, url: 'https://beacon.schneidercorp.com/?site=WrightCountyIA' },
+];
+
+// Major Iowa cities have separate city assessors (for properties inside city limits)
+const IOWA_CITY_ASSESSORS = [
+  { name: 'Cedar Rapids (City)',  fips: 19113, url: 'http://cedarrapids.iowaassessors.com' },
+  { name: 'Davenport (City)',     fips: 19163, url: 'http://cityofdavenportiowa.com/cms/one.aspx?portalId=6481456&pageId=7653290' },
+  { name: 'Dubuque (City)',       fips: 19061, url: 'https://www.dubuquecountyiowa.gov/155/Assessor---City-of-Dubuque' },
+  { name: 'Iowa City (City)',     fips: 19103, url: 'http://iowacity.iowaassessors.com/' },
+  { name: 'Mason City (City)',    fips: 19033, url: 'http://www.masoncityassessor.net' },
+];
+
+// ── Iowa region state ────────────────────────────────────────────────────────
+
+let _iowaCurrentFips  = null;
+let _parcelsRegionSetup = false;
+
+// ── Region selector setup (runs once on first parcels tab open) ───────────────
+
+function setupParcelsRegionSelector() {
+  if (_parcelsRegionSetup) return;
+  _parcelsRegionSetup = true;
+
+  const sel = document.getElementById('iowa-county-select');
+  if (sel) {
+    const cGroup = document.createElement('optgroup');
+    cGroup.label = 'Iowa Counties';
+    IOWA_COUNTIES.forEach((c, i) => {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = c.name + ' County';
+      cGroup.appendChild(opt);
+    });
+    sel.appendChild(cGroup);
+
+    const vGroup = document.createElement('optgroup');
+    vGroup.label = 'City Assessors';
+    IOWA_CITY_ASSESSORS.forEach((c, i) => {
+      const opt = document.createElement('option');
+      opt.value = 'city' + i;
+      opt.textContent = c.name;
+      vGroup.appendChild(opt);
+    });
+    sel.appendChild(vGroup);
+
+    sel.addEventListener('change', () => {
+      const val = sel.value;
+      if (!val) return;
+      const entry = val.startsWith('city')
+        ? IOWA_CITY_ASSESSORS[parseInt(val.slice(4), 10)]
+        : IOWA_COUNTIES[parseInt(val, 10)];
+      if (entry) loadIowaCounty(entry);
+    });
+  }
+
+  document.querySelectorAll('.parcels-region-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.parcels-region-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if (btn.dataset.region === 'clark') switchParcelsToClark();
+      else if (btn.dataset.region === 'iowa') switchParcelsToIowa();
+    });
+  });
+}
+
+function switchParcelsToClark() {
+  document.getElementById('iowa-county-row').style.display  = 'none';
+  document.getElementById('iowa-info-panel').style.display  = 'none';
+  const sub = document.getElementById('parcels-subtitle');
+  if (sub) sub.textContent = 'Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via Clark County Assessor.';
+  document.getElementById('parcels-count').textContent = '';
+  document.getElementById('parcels-status').textContent = '';
+  document.getElementById('parcels-table-panel').style.display = 'none';
+  d3.select('#parcels-map').selectAll('*').remove();
+  _iowaCurrentFips = null;
+  _parcelsLoaded   = false;
+  initParcelsView();
+}
+
+function switchParcelsToIowa() {
+  document.getElementById('iowa-county-row').style.display  = 'flex';
+  document.getElementById('parcels-table-panel').style.display = 'none';
+  const sub = document.getElementById('parcels-subtitle');
+  if (sub) sub.textContent = 'Select a county to view 345/500 kV transmission lines and open the county assessor for parcel research.';
+  document.getElementById('parcels-count').textContent = '';
+  document.getElementById('parcels-status').textContent = '';
+  d3.select('#parcels-map').selectAll('*').remove();
+
+  const panel = document.getElementById('iowa-info-panel');
+  panel.style.display = '';
+  document.getElementById('iowa-tx-summary').textContent = 'Select a county from the dropdown above to load transmission data.';
+  document.getElementById('iowa-assessor-cta').style.display = 'none';
+  document.getElementById('iowa-assessor-btn').style.display = 'none';
+  document.getElementById('iowa-platform-note').textContent = '';
+}
+
+// ── Iowa county load ──────────────────────────────────────────────────────────
+
+async function loadIowaCounty(county) {
+  _iowaCurrentFips = county.fips;
+  const thisFips   = county.fips;
+
+  const statusEl  = document.getElementById('parcels-status');
+  const countEl   = document.getElementById('parcels-count');
+  const setStatus = msg => { if (statusEl) statusEl.textContent = msg; };
+
+  const assessorBtn = document.getElementById('iowa-assessor-btn');
+  if (assessorBtn) { assessorBtn.href = county.url; assessorBtn.style.display = ''; }
+  const ctaLink = document.getElementById('iowa-assessor-cta');
+  if (ctaLink) { ctaLink.href = county.url; ctaLink.style.display = 'none'; }
+
+  document.getElementById('iowa-info-panel').style.display = '';
+  document.getElementById('iowa-tx-summary').textContent = '';
+
+  try {
+    setStatus('Loading county boundary…');
+
+    let topo = typeof _countiesTopojson !== 'undefined' ? _countiesTopojson : null;
+    if (!topo) topo = await d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json');
+
+    if (thisFips !== _iowaCurrentFips) return;
+
+    const countiesGeo   = topojson.feature(topo, topo.objects.counties);
+    const countyFeature = countiesGeo.features.find(f => +f.id === county.fips);
+    if (!countyFeature) {
+      setStatus(`County boundary not found (FIPS ${county.fips})`);
+      return;
+    }
+
+    const bounds = d3.geoBounds(countyFeature);
+    const pad    = 0.05;
+    const bbox   = {
+      xmin: bounds[0][0] - pad, ymin: bounds[0][1] - pad,
+      xmax: bounds[1][0] + pad, ymax: bounds[1][1] + pad,
+    };
+
+    setStatus(`Fetching 345/500 kV lines for ${county.name}…`);
+    const lines = await fetchHifldLines(bbox);
+
+    if (thisFips !== _iowaCurrentFips) return;
+
+    setStatus('');
+
+    const n = lines.length;
+    if (countEl) countEl.textContent = n
+      ? `${n} line segment${n !== 1 ? 's' : ''} (345/500 kV) — ${county.name} County, Iowa`
+      : `No 345/500 kV lines in ${county.name} County`;
+
+    const summary = document.getElementById('iowa-tx-summary');
+    if (summary) summary.textContent = n
+      ? `Found ${n} high-voltage segment${n !== 1 ? 's' : ''} crossing ${county.name} County. Use the assessor portal to identify large parcels within 1 mile of these corridors.`
+      : `No 345/500 kV transmission lines found in ${county.name} County. Use the assessor portal to search for parcels — lower-voltage infrastructure or nearby county lines may still apply.`;
+
+    if (ctaLink) ctaLink.style.display = '';
+
+    renderIowaMap(lines, countyFeature, county.name);
+
+    const note = document.getElementById('iowa-platform-note');
+    if (note) note.textContent = iowaPlatformNote(county.url);
+
+  } catch (e) {
+    setStatus(`Error: ${e.message}`);
+    console.error('Iowa county load:', e);
+  }
+}
+
+function iowaPlatformNote(url) {
+  if (url.includes('schneidercorp') || url.includes('beacon'))
+    return 'Portal: Beacon Schneidercorp GIS platform.';
+  if (url.includes('iowaassessors'))
+    return 'Portal: Iowa State Association of Assessors platform.';
+  return 'County-operated assessor portal.';
+}
+
+// ── Shared HIFLD fetch ────────────────────────────────────────────────────────
+
+async function fetchHifldLines(bbox) {
+  const { xmin, ymin, xmax, ymax } = bbox;
+  const params = new URLSearchParams({
+    where:             `VOLTAGE IN ('345','500','765')`,
+    geometry:          JSON.stringify({ xmin, ymin, xmax, ymax }),
+    geometryType:      'esriGeometryEnvelope',
+    inSR:              '4326',
+    spatialRel:        'esriSpatialRelIntersects',
+    outFields:         'OBJECTID,OWNER,VOLTAGE',
+    f:                 'geojson',
+    returnGeometry:    'true',
+    resultRecordCount: '2000',
+  });
+  const resp = await fetch(`${HIFLD_TX_URL}?${params}`);
+  if (!resp.ok) throw new Error(`HIFLD ${resp.status}`);
+  const json = await resp.json();
+  return (json.features || []).filter(f =>
+    f.geometry?.type === 'LineString' || f.geometry?.type === 'MultiLineString'
+  );
+}
+
+// ── Iowa county D3 map ────────────────────────────────────────────────────────
+
+function renderIowaMap(lines, countyFeature, countyName) {
+  const wrapper = document.getElementById('parcels-map-wrapper');
+  const svg     = d3.select('#parcels-map');
+  if (!wrapper || svg.empty()) return;
+
+  svg.selectAll('*').remove();
+  const W = wrapper.clientWidth  || 640;
+  const H = wrapper.clientHeight || 480;
+  svg.attr('viewBox', `0 0 ${W} ${H}`).attr('preserveAspectRatio', 'xMidYMid meet');
+
+  const countyFC   = { type: 'FeatureCollection', features: [countyFeature] };
+  const projection = d3.geoMercator().fitExtent([[20, 20], [W - 20, H - 20]], countyFC);
+  const path       = d3.geoPath().projection(projection);
+  const g          = svg.append('g');
+
+  g.append('path')
+    .datum(countyFeature)
+    .attr('d', path)
+    .attr('fill', '#1e3a5f')
+    .attr('stroke', 'rgba(255,255,255,0.3)')
+    .attr('stroke-width', 1);
+
+  const [cx, cy] = path.centroid(countyFeature);
+  if (isFinite(cx) && isFinite(cy)) {
+    g.append('text')
+      .attr('x', cx).attr('y', cy)
+      .attr('text-anchor', 'middle').attr('dominant-baseline', 'middle')
+      .attr('fill', 'rgba(255,255,255,0.35)')
+      .attr('font-size', 13).attr('font-weight', 500)
+      .attr('pointer-events', 'none')
+      .text(countyName + ' County');
+  }
+
+  const voltColors = { '345': '#f59e0b', '500': '#f97316', '765': '#f97316' };
+  if (lines.length) {
+    g.selectAll('path.tx-iowa')
+      .data(lines)
+      .enter().append('path')
+      .attr('class', 'tx-iowa')
+      .attr('d', path)
+      .attr('fill', 'none')
+      .attr('stroke', d => voltColors[d.properties?.VOLTAGE] || '#f59e0b')
+      .attr('stroke-width', 2.5)
+      .attr('stroke-linecap', 'round')
+      .attr('opacity', 0.95);
+  } else {
+    g.append('text')
+      .attr('x', W / 2).attr('y', H - 30)
+      .attr('text-anchor', 'middle')
+      .attr('fill', 'rgba(255,255,255,0.45)')
+      .attr('font-size', 12)
+      .text('No 345/500 kV lines in this county');
+  }
+
+  const leg = g.append('g').attr('transform', `translate(12,${H - 64})`);
+  [['#f59e0b', '345 kV'], ['#f97316', '500+ kV']].forEach(([color, label], i) => {
+    const y = i * 18;
+    leg.append('rect').attr('x', 0).attr('y', y + 3).attr('width', 18).attr('height', 4).attr('fill', color);
+    leg.append('text').attr('x', 24).attr('y', y + 9)
+      .attr('fill', 'rgba(255,255,255,0.85)').attr('font-size', 11).text(label);
   });
 }
