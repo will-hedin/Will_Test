@@ -462,107 +462,210 @@ const IOWA_CITY_ASSESSORS = [
   { name: 'Mason City (City)',    fips: 19033, url: 'http://www.masoncityassessor.net' },
 ];
 
-// ── Iowa region state ────────────────────────────────────────────────────────
+// ── Nebraska county data ──────────────────────────────────────────────────────
 
-let _iowaCurrentFips  = null;
-let _parcelsRegionSetup = false;
+const NEBRASKA_COUNTIES = [
+  { name: 'Adams',       fips: 31001, url: 'http://adams.nebraskaassessors.com' },
+  { name: 'Antelope',    fips: 31003, url: 'https://antelopecounty.nebraska.gov/county-assessor' },
+  { name: 'Arthur',      fips: 31005, url: 'https://arthur.gworks.com/' },
+  { name: 'Banner',      fips: 31007, url: 'https://bannercountyne.gov/government/officials/assessor' },
+  { name: 'Blaine',      fips: 31009, url: 'https://blaine.gworks.com/' },
+  { name: 'Boone',       fips: 31011, url: 'https://boone.gworks.com/' },
+  { name: 'Box Butte',   fips: 31013, url: 'http://boxbutte.assessor.gisworkshop.com/' },
+  { name: 'Boyd',        fips: 31015, url: 'https://boyd.gworks.com/' },
+  { name: 'Brown',       fips: 31017, url: 'http://brown.gisworkshop.com/' },
+  { name: 'Buffalo',     fips: 31019, url: 'https://buffalocounty.ne.gov/ASSESSOR' },
+  { name: 'Burt',        fips: 31021, url: 'http://www.burtcounty.ne.gov/webpages/assessor/assessor.html' },
+  { name: 'Butler',      fips: 31023, url: 'http://butler.gisworkshop.com/' },
+  { name: 'Cass',        fips: 31025, url: 'https://www.casscountyne.gov/county-assessor' },
+  { name: 'Cedar',       fips: 31027, url: 'http://cedar.gisworkshop.com/' },
+  { name: 'Chase',       fips: 31029, url: 'https://chase.nebraskaassessors.com/' },
+  { name: 'Cherry',      fips: 31031, url: 'https://beacon.schneidercorp.com/Application.aspx?App=CherryCountyNE&PageType=Search' },
+  { name: 'Cheyenne',    fips: 31033, url: 'http://cheyenne.gisworkshop.com/' },
+  { name: 'Clay',        fips: 31035, url: 'http://clay.assessor.gisworkshop.com/' },
+  { name: 'Colfax',      fips: 31037, url: 'http://www.colfaxne.com/webpages/assessor/assessor.html' },
+  { name: 'Cuming',      fips: 31039, url: 'https://cumingcountyne.gov/assessor/' },
+  { name: 'Custer',      fips: 31041, url: 'http://www.co.custer.ne.us/webpages/assessor/assessor.html' },
+  { name: 'Dakota',      fips: 31043, url: 'http://dakota.gisworkshop.com/' },
+  { name: 'Dawes',       fips: 31045, url: 'https://dawes.gworks.com/?&t=assessor/' },
+  { name: 'Dawson',      fips: 31047, url: 'http://dawson.gisworkshop.com/' },
+  { name: 'Deuel',       fips: 31049, url: 'https://deuel.gworks.com/' },
+  { name: 'Dixon',       fips: 31051, url: 'http://www.co.dixon.ne.us/webpages/assessor/assessor.html' },
+  { name: 'Dodge',       fips: 31053, url: 'http://dodge.nebraskaassessors.com' },
+  { name: 'Douglas',     fips: 31055, url: 'http://www.dcassessor.org/' },
+  { name: 'Dundy',       fips: 31057, url: 'https://dundycounty.nebraska.gov/webpages/assessor/assessor.html' },
+  { name: 'Fillmore',    fips: 31059, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1265&LayerID=42728&PageTypeID=2&PageID=15630' },
+  { name: 'Franklin',    fips: 31061, url: 'https://franklin.gworks.com/' },
+  { name: 'Frontier',    fips: 31063, url: 'http://frontier.nebraskaassessors.com' },
+  { name: 'Furnas',      fips: 31065, url: 'https://furnascounty.ne.gov/webpages/assessor/assessor.html' },
+  { name: 'Gage',        fips: 31067, url: 'http://gage.assessor.gisworkshop.com/' },
+  { name: 'Garden',      fips: 31069, url: 'http://garden.gisworkshop.com/' },
+  { name: 'Garfield',    fips: 31071, url: 'http://garfield.gisworkshop.com/' },
+  { name: 'Gosper',      fips: 31073, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1274&LayerID=43594&PageTypeID=2&PageID=15887' },
+  { name: 'Grant',       fips: 31075, url: 'http://grant.gisworkshop.com/' },
+  { name: 'Greeley',     fips: 31077, url: 'http://greeley.gisworkshop.com/' },
+  { name: 'Hall',        fips: 31079, url: 'https://www.hallcountyne.gov/departments/assessor/index.php' },
+  { name: 'Hamilton',    fips: 31081, url: 'http://hamilton.gisworkshop.com/' },
+  { name: 'Harlan',      fips: 31083, url: 'http://harlan.gisworkshop.com/' },
+  { name: 'Hayes',       fips: 31085, url: 'http://www.hayes.assessor.gisworkshop.com/' },
+  { name: 'Hitchcock',   fips: 31087, url: 'http://hitchcock.gisworkshop.com/' },
+  { name: 'Holt',        fips: 31089, url: 'http://holt.nebraskaassessors.com' },
+  { name: 'Hooker',      fips: 31091, url: 'https://hooker.gworks.com/' },
+  { name: 'Howard',      fips: 31093, url: 'http://howard.gisworkshop.com/' },
+  { name: 'Jefferson',   fips: 31095, url: 'https://jeffersoncounty.nebraska.gov/assessor' },
+  { name: 'Johnson',     fips: 31097, url: 'http://johnson.gisworkshop.com/' },
+  { name: 'Kearney',     fips: 31099, url: 'http://kearney.gisworkshop.com/' },
+  { name: 'Keith',       fips: 31101, url: 'http://keith.gisworkshop.com/' },
+  { name: 'Keya Paha',   fips: 31103, url: 'http://keyapaha.gisworkshop.com/' },
+  { name: 'Kimball',     fips: 31105, url: 'http://kimball.assessor.gisworkshop.com/' },
+  { name: 'Knox',        fips: 31107, url: 'http://knox.gisworkshop.com/' },
+  { name: 'Lancaster',   fips: 31109, url: 'http://orion.lancaster.ne.gov/Appraisal/PublicAccess/' },
+  { name: 'Lincoln',     fips: 31111, url: 'http://lincoln.gisworkshop.com/' },
+  { name: 'Logan',       fips: 31113, url: 'https://logan.gworks.com/' },
+  { name: 'Loup',        fips: 31115, url: 'https://loup.gworks.com/?&t=assessor/' },
+  { name: 'Madison',     fips: 31117, url: 'http://madison.gisworkshop.com/' },
+  { name: 'McPherson',   fips: 31119, url: 'https://mcpherson.gworks.com/' },
+  { name: 'Merrick',     fips: 31121, url: 'http://merrick.gisworkshop.com/' },
+  { name: 'Morrill',     fips: 31123, url: 'http://www.morrillcountyne.gov/assessor.html' },
+  { name: 'Nance',       fips: 31125, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1229&LayerID=39090&PageTypeID=1&PageID=14515' },
+  { name: 'Nemaha',      fips: 31127, url: 'http://nemaha.nebraskaassessors.com/' },
+  { name: 'Nuckolls',    fips: 31129, url: 'http://nuckolls.gisworkshop.com/' },
+  { name: 'Otoe',        fips: 31131, url: 'http://otoe.nebraskaassessors.com/' },
+  { name: 'Pawnee',      fips: 31133, url: 'http://pawnee.gisworkshop.com/' },
+  { name: 'Perkins',     fips: 31135, url: 'https://perkins.gworks.com/' },
+  { name: 'Phelps',      fips: 31137, url: 'http://phelps.gisworkshop.com/' },
+  { name: 'Pierce',      fips: 31139, url: 'http://pierce.assessor.gisworkshop.com/' },
+  { name: 'Platte',      fips: 31141, url: 'http://platte.gisworkshop.com/' },
+  { name: 'Polk',        fips: 31143, url: 'http://polk.gisworkshop.com/' },
+  { name: 'Red Willow',  fips: 31145, url: 'http://redwillow.gisworkshop.com/' },
+  { name: 'Richardson',  fips: 31147, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1312&LayerID=44856&PageTypeID=2&PageID=17241' },
+  { name: 'Rock',        fips: 31149, url: 'http://rock.assessor.gisworkshop.com/' },
+  { name: 'Saline',      fips: 31151, url: 'http://saline.assessor.gisworkshop.com/' },
+  { name: 'Sarpy',       fips: 31153, url: 'https://www.sarpy.gov/159/Assessor' },
+  { name: 'Saunders',    fips: 31155, url: 'http://saunders.nebraskaassessors.com/' },
+  { name: 'Scotts Bluff',fips: 31157, url: 'https://scottsbluffcountyne.gov/county-assessor/' },
+  { name: 'Seward',      fips: 31159, url: 'http://seward.nebraskaassessors.com' },
+  { name: 'Sheridan',    fips: 31161, url: 'http://sheridan.gisworkshop.com/' },
+  { name: 'Sherman',     fips: 31163, url: 'http://sherman.assessor.gisworkshop.com/' },
+  { name: 'Sioux',       fips: 31165, url: 'http://sioux.gisworkshop.com/' },
+  { name: 'Stanton',     fips: 31167, url: 'https://beacon.schneidercorp.com/Application.aspx?AppID=1258&LayerID=41213&PageTypeID=2&PageID=15250' },
+  { name: 'Thayer',      fips: 31169, url: 'http://thayer.nebraskaassessors.com' },
+  { name: 'Thomas',      fips: 31171, url: 'http://thomas.assessor.gisworkshop.com/' },
+  { name: 'Thurston',    fips: 31173, url: 'http://thurston.gisworkshop.com/' },
+  { name: 'Valley',      fips: 31175, url: 'https://valley.gworks.com/' },
+  { name: 'Washington',  fips: 31177, url: 'http://www.co.washington.ne.us/assessor.html' },
+  { name: 'Wayne',       fips: 31179, url: 'http://www.waynecountyne.org/index.aspx?nid=96' },
+  { name: 'Webster',     fips: 31181, url: 'http://webster.gisworkshop.com/' },
+  { name: 'Wheeler',     fips: 31183, url: 'http://www.wheelercounty.ne.gov/webpages/assessor/assessor.html' },
+  { name: 'York',        fips: 31185, url: 'http://york.nebraskaassessors.com/' },
+];
 
-// ── Region selector setup (runs once on first parcels tab open) ───────────────
+// ── State selector state ──────────────────────────────────────────────────────
+
+let _stateCurrentFips    = null;
+let _currentStateCounties = [];
+let _currentCityAssessors = [];
+let _stateSelectSetup     = false;
+
+// ── County select setup (wires change handler once) ───────────────────────────
 
 function setupParcelsRegionSelector() {
-  if (_parcelsRegionSetup) return;
-  _parcelsRegionSetup = true;
+  if (_stateSelectSetup) return;
+  _stateSelectSetup = true;
 
-  const sel = document.getElementById('iowa-county-select');
+  const sel = document.getElementById('state-county-select');
+  if (!sel) return;
+
+  sel.addEventListener('change', () => {
+    const val = sel.value;
+    if (!val) return;
+    const entry = val.startsWith('city')
+      ? _currentCityAssessors[parseInt(val.slice(4), 10)]
+      : _currentStateCounties[parseInt(val, 10)];
+    if (entry) loadStateCounty(entry);
+  });
+}
+
+// ── Switch views ──────────────────────────────────────────────────────────────
+
+function switchToClarkView() {
+  document.getElementById('state-county-row').style.display  = 'none';
+  document.getElementById('state-info-panel').style.display  = 'none';
+  const sub = document.getElementById('parcels-subtitle');
+  if (sub) sub.textContent = 'Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via Clark County Assessor.';
+  document.getElementById('parcels-count').textContent  = '';
+  document.getElementById('parcels-status').textContent = '';
+  document.getElementById('parcels-table-panel').style.display = 'none';
+  d3.select('#parcels-map').selectAll('*').remove();
+  _stateCurrentFips = null;
+  _parcelsLoaded    = false;
+  initParcelsView();
+}
+
+// Populate the county dropdown and switch to state parcel view.
+// counties: array of {name, fips, url}; cityAssessors: optional supplemental array
+function switchToStateView(stateLabel, counties, cityAssessors) {
+  _currentStateCounties = counties;
+  _currentCityAssessors = cityAssessors || [];
+
+  const sel = document.getElementById('state-county-select');
   if (sel) {
+    sel.innerHTML = '<option value="">— select a county —</option>';
     const cGroup = document.createElement('optgroup');
-    cGroup.label = 'Iowa Counties';
-    IOWA_COUNTIES.forEach((c, i) => {
+    cGroup.label = stateLabel + ' Counties';
+    counties.forEach((c, i) => {
       const opt = document.createElement('option');
       opt.value = String(i);
       opt.textContent = c.name + ' County';
       cGroup.appendChild(opt);
     });
     sel.appendChild(cGroup);
-
-    const vGroup = document.createElement('optgroup');
-    vGroup.label = 'City Assessors';
-    IOWA_CITY_ASSESSORS.forEach((c, i) => {
-      const opt = document.createElement('option');
-      opt.value = 'city' + i;
-      opt.textContent = c.name;
-      vGroup.appendChild(opt);
-    });
-    sel.appendChild(vGroup);
-
-    sel.addEventListener('change', () => {
-      const val = sel.value;
-      if (!val) return;
-      const entry = val.startsWith('city')
-        ? IOWA_CITY_ASSESSORS[parseInt(val.slice(4), 10)]
-        : IOWA_COUNTIES[parseInt(val, 10)];
-      if (entry) loadIowaCounty(entry);
-    });
+    if (_currentCityAssessors.length) {
+      const vGroup = document.createElement('optgroup');
+      vGroup.label = 'City Assessors';
+      _currentCityAssessors.forEach((c, i) => {
+        const opt = document.createElement('option');
+        opt.value = 'city' + i;
+        opt.textContent = c.name;
+        vGroup.appendChild(opt);
+      });
+      sel.appendChild(vGroup);
+    }
   }
 
-  document.querySelectorAll('.parcels-region-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.parcels-region-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (btn.dataset.region === 'clark') switchParcelsToClark();
-      else if (btn.dataset.region === 'iowa') switchParcelsToIowa();
-    });
-  });
-}
-
-function switchParcelsToClark() {
-  document.getElementById('iowa-county-row').style.display  = 'none';
-  document.getElementById('iowa-info-panel').style.display  = 'none';
-  const sub = document.getElementById('parcels-subtitle');
-  if (sub) sub.textContent = 'Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via Clark County Assessor.';
-  document.getElementById('parcels-count').textContent = '';
-  document.getElementById('parcels-status').textContent = '';
-  document.getElementById('parcels-table-panel').style.display = 'none';
-  d3.select('#parcels-map').selectAll('*').remove();
-  _iowaCurrentFips = null;
-  _parcelsLoaded   = false;
-  initParcelsView();
-}
-
-function switchParcelsToIowa() {
-  document.getElementById('iowa-county-row').style.display  = 'flex';
+  document.getElementById('state-county-row').style.display   = 'flex';
   document.getElementById('parcels-table-panel').style.display = 'none';
   const sub = document.getElementById('parcels-subtitle');
-  if (sub) sub.textContent = 'Select a county to view 345/500 kV transmission lines and open the county assessor for parcel research.';
-  document.getElementById('parcels-count').textContent = '';
+  if (sub) sub.textContent = `Select a county to view 345/500 kV transmission lines and open the ${stateLabel} county assessor for parcel research.`;
+  document.getElementById('parcels-count').textContent  = '';
   document.getElementById('parcels-status').textContent = '';
   d3.select('#parcels-map').selectAll('*').remove();
 
-  const panel = document.getElementById('iowa-info-panel');
-  panel.style.display = '';
-  document.getElementById('iowa-tx-summary').textContent = 'Select a county from the dropdown above to load transmission data.';
-  document.getElementById('iowa-assessor-cta').style.display = 'none';
-  document.getElementById('iowa-assessor-btn').style.display = 'none';
-  document.getElementById('iowa-platform-note').textContent = '';
+  const panel = document.getElementById('state-info-panel');
+  if (panel) panel.style.display = '';
+  document.getElementById('state-tx-summary').textContent   = 'Select a county from the dropdown above to load transmission data.';
+  document.getElementById('state-assessor-cta').style.display = 'none';
+  document.getElementById('state-assessor-btn').style.display = 'none';
+  document.getElementById('state-platform-note').textContent  = '';
 }
 
-// ── Iowa county load ──────────────────────────────────────────────────────────
+// ── County load ───────────────────────────────────────────────────────────────
 
-async function loadIowaCounty(county) {
-  _iowaCurrentFips = county.fips;
-  const thisFips   = county.fips;
+async function loadStateCounty(county) {
+  _stateCurrentFips = county.fips;
+  const thisFips    = county.fips;
 
   const statusEl  = document.getElementById('parcels-status');
   const countEl   = document.getElementById('parcels-count');
   const setStatus = msg => { if (statusEl) statusEl.textContent = msg; };
 
-  const assessorBtn = document.getElementById('iowa-assessor-btn');
+  const assessorBtn = document.getElementById('state-assessor-btn');
   if (assessorBtn) { assessorBtn.href = county.url; assessorBtn.style.display = ''; }
-  const ctaLink = document.getElementById('iowa-assessor-cta');
+  const ctaLink = document.getElementById('state-assessor-cta');
   if (ctaLink) { ctaLink.href = county.url; ctaLink.style.display = 'none'; }
 
-  document.getElementById('iowa-info-panel').style.display = '';
-  document.getElementById('iowa-tx-summary').textContent = '';
+  document.getElementById('state-info-panel').style.display = '';
+  document.getElementById('state-tx-summary').textContent   = '';
 
   try {
     setStatus('Loading county boundary…');
@@ -570,7 +673,7 @@ async function loadIowaCounty(county) {
     let topo = typeof _countiesTopojson !== 'undefined' ? _countiesTopojson : null;
     if (!topo) topo = await d3.json('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json');
 
-    if (thisFips !== _iowaCurrentFips) return;
+    if (thisFips !== _stateCurrentFips) return;
 
     const countiesGeo   = topojson.feature(topo, topo.objects.counties);
     const countyFeature = countiesGeo.features.find(f => +f.id === county.fips);
@@ -589,38 +692,42 @@ async function loadIowaCounty(county) {
     setStatus(`Fetching 345/500 kV lines for ${county.name}…`);
     const lines = await fetchHifldLines(bbox);
 
-    if (thisFips !== _iowaCurrentFips) return;
+    if (thisFips !== _stateCurrentFips) return;
 
     setStatus('');
 
     const n = lines.length;
     if (countEl) countEl.textContent = n
-      ? `${n} line segment${n !== 1 ? 's' : ''} (345/500 kV) — ${county.name} County, Iowa`
+      ? `${n} line segment${n !== 1 ? 's' : ''} (345/500 kV) — ${county.name} County`
       : `No 345/500 kV lines in ${county.name} County`;
 
-    const summary = document.getElementById('iowa-tx-summary');
+    const summary = document.getElementById('state-tx-summary');
     if (summary) summary.textContent = n
       ? `Found ${n} high-voltage segment${n !== 1 ? 's' : ''} crossing ${county.name} County. Use the assessor portal to identify large parcels within 1 mile of these corridors.`
       : `No 345/500 kV transmission lines found in ${county.name} County. Use the assessor portal to search for parcels — lower-voltage infrastructure or nearby county lines may still apply.`;
 
     if (ctaLink) ctaLink.style.display = '';
 
-    renderIowaMap(lines, countyFeature, county.name);
+    renderStateCountyMap(lines, countyFeature, county.name);
 
-    const note = document.getElementById('iowa-platform-note');
-    if (note) note.textContent = iowaPlatformNote(county.url);
+    const note = document.getElementById('state-platform-note');
+    if (note) note.textContent = platformNote(county.url);
 
   } catch (e) {
     setStatus(`Error: ${e.message}`);
-    console.error('Iowa county load:', e);
+    console.error('County load:', e);
   }
 }
 
-function iowaPlatformNote(url) {
+function platformNote(url) {
   if (url.includes('schneidercorp') || url.includes('beacon'))
     return 'Portal: Beacon Schneidercorp GIS platform.';
   if (url.includes('iowaassessors'))
     return 'Portal: Iowa State Association of Assessors platform.';
+  if (url.includes('nebraskaassessors'))
+    return 'Portal: Nebraska Assessors platform.';
+  if (url.includes('gisworkshop') || url.includes('gworks'))
+    return 'Portal: GIS Workshop platform.';
   return 'County-operated assessor portal.';
 }
 
@@ -647,9 +754,9 @@ async function fetchHifldLines(bbox) {
   );
 }
 
-// ── Iowa county D3 map ────────────────────────────────────────────────────────
+// ── County D3 map (shared for all state views) ────────────────────────────────
 
-function renderIowaMap(lines, countyFeature, countyName) {
+function renderStateCountyMap(lines, countyFeature, countyName) {
   const wrapper = document.getElementById('parcels-map-wrapper');
   const svg     = d3.select('#parcels-map');
   if (!wrapper || svg.empty()) return;
@@ -684,10 +791,10 @@ function renderIowaMap(lines, countyFeature, countyName) {
 
   const voltColors = { '345': '#f59e0b', '500': '#f97316', '765': '#f97316' };
   if (lines.length) {
-    g.selectAll('path.tx-iowa')
+    g.selectAll('path.tx-state')
       .data(lines)
       .enter().append('path')
-      .attr('class', 'tx-iowa')
+      .attr('class', 'tx-state')
       .attr('d', path)
       .attr('fill', 'none')
       .attr('stroke', d => voltColors[d.properties?.VOLTAGE] || '#f59e0b')

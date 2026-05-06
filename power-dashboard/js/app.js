@@ -64,24 +64,20 @@ function initParcelsDropdown() {
   menu.querySelectorAll('.nav-dropdown-item').forEach(item => {
     item.addEventListener('click', () => {
       menu.classList.remove('open');
-      // Mark active item
       menu.querySelectorAll('.nav-dropdown-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
 
       const region = item.dataset.region;
       _currentStateId = null;
       showView('parcels-view');
-
-      // Sync internal region tabs
-      document.querySelectorAll('.parcels-region-tab').forEach(b =>
-        b.classList.toggle('active', b.dataset.region === region)
-      );
-
       setupParcelsRegionSelector();
+
       if (region === 'clark') {
-        switchParcelsToClark();
+        switchToClarkView();
       } else if (region === 'iowa') {
-        switchParcelsToIowa();
+        switchToStateView('Iowa', IOWA_COUNTIES, IOWA_CITY_ASSESSORS);
+      } else if (region === 'nebraska') {
+        switchToStateView('Nebraska', NEBRASKA_COUNTIES, []);
       }
     });
   });

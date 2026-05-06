@@ -33,6 +33,7 @@
         <div class="nav-dropdown-menu" id="parcels-dropdown-menu">
           <button class="nav-dropdown-item" data-region="clark">Nevada — Clark County</button>
           <button class="nav-dropdown-item" data-region="iowa">Iowa — All Counties</button>
+          <button class="nav-dropdown-item" data-region="nebraska">Nebraska — All Counties</button>
         </div>
       </div>
     </nav>
@@ -320,19 +321,13 @@
 <div id="parcels-view" class="view hidden">
 
   <div class="parcels-header">
-    <div class="parcels-header-row">
-      <h2>Land Parcels Near 345/500 kV Lines</h2>
-      <div class="parcels-region-tabs">
-        <button class="parcels-region-tab active" data-region="clark">Clark County, NV</button>
-        <button class="parcels-region-tab" data-region="iowa">Iowa Counties</button>
-      </div>
-    </div>
-    <div id="iowa-county-row" class="iowa-county-row" style="display:none">
+    <h2>Land Parcels Near 345/500 kV Lines</h2>
+    <div id="state-county-row" class="iowa-county-row" style="display:none">
       <label class="iowa-county-label">County:</label>
-      <select id="iowa-county-select" class="iowa-county-select">
+      <select id="state-county-select" class="iowa-county-select">
         <option value="">— select a county —</option>
       </select>
-      <a id="iowa-assessor-btn" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor" style="display:none">Open Assessor →</a>
+      <a id="state-assessor-btn" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor" style="display:none">Open Assessor →</a>
     </div>
     <p id="parcels-subtitle" class="parcels-subtitle">Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via Clark County Assessor.</p>
   </div>
@@ -368,9 +363,9 @@
         <p class="parcels-note">Click <strong>View Owner →</strong> to open the Clark County Assessor parcel ownership history (current owner + prior owners). Data sourced from Clark County Assessor public records.</p>
       </div>
 
-      <!-- Iowa info panel -->
-      <div id="iowa-info-panel" class="panel iowa-info-panel" style="display:none">
-        <div id="iowa-tx-summary" class="iowa-tx-summary"></div>
+      <!-- State county info panel (Iowa / Nebraska / future states) -->
+      <div id="state-info-panel" class="panel iowa-info-panel" style="display:none">
+        <div id="state-tx-summary" class="iowa-tx-summary"></div>
         <div class="iowa-search-guide">
           <p class="iowa-guide-title">Parcel search guide:</p>
           <ul class="iowa-guide-list">
@@ -379,10 +374,10 @@
             <li>Industrial or commercially-zoned parcels near substations are high-priority targets</li>
           </ul>
         </div>
-        <a id="iowa-assessor-cta" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor-cta" style="display:none">
+        <a id="state-assessor-cta" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor-cta" style="display:none">
           Search Parcels in County Assessor →
         </a>
-        <p id="iowa-platform-note" class="iowa-platform-note"></p>
+        <p id="state-platform-note" class="iowa-platform-note"></p>
       </div>
 
     </div>
