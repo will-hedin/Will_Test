@@ -37,13 +37,10 @@ function showView(id) {
 
 function initNavTabs() {
   document.querySelectorAll('.nav-tab').forEach(btn => {
+    if (btn.classList.contains('nav-dropdown-trigger')) return;
     btn.addEventListener('click', () => {
       const tab = btn.dataset.tab;
-      if (tab === 'parcels-view') {
-        _currentStateId = null;
-        showView('parcels-view');
-        initParcelsView();
-      } else if (tab === 'dc-view') {
+      if (tab === 'dc-view') {
         _currentStateId = null;
         showView('dc-view');
         initDataCentersView();
@@ -52,6 +49,45 @@ function initNavTabs() {
       }
     });
   });
+}
+
+function initParcelsDropdown() {
+  const trigger = document.getElementById('parcels-nav-btn');
+  const menu    = document.getElementById('parcels-dropdown-menu');
+  if (!trigger || !menu) return;
+
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    menu.classList.toggle('open');
+  });
+
+  menu.querySelectorAll('.nav-dropdown-item').forEach(item => {
+    item.addEventListener('click', () => {
+      menu.classList.remove('open');
+      // Mark active item
+      menu.querySelectorAll('.nav-dropdown-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      const region = item.dataset.region;
+      _currentStateId = null;
+      showView('parcels-view');
+
+      // Sync internal region tabs
+      document.querySelectorAll('.parcels-region-tab').forEach(b =>
+        b.classList.toggle('active', b.dataset.region === region)
+      );
+
+      setupParcelsRegionSelector();
+      if (region === 'clark') {
+        switchParcelsToClark();
+      } else if (region === 'iowa') {
+        switchParcelsToIowa();
+      }
+    });
+  });
+
+  // Close on outside click
+  document.addEventListener('click', () => menu.classList.remove('open'));
 }
 
 // ── US map view ───────────────────────────────────────────────────────────────
@@ -511,6 +547,7 @@ function applyTransmissionFilter() {
 async function init() {
   initTheme();
   initNavTabs();
+  initParcelsDropdown();
   initTransmissionFilters();
   showView('map-view');
   await initMapView();

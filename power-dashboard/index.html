@@ -28,7 +28,13 @@
     <nav class="main-nav">
       <button class="nav-tab active" data-tab="map-view">US Grid Map</button>
       <button class="nav-tab" data-tab="dc-view">Data Centers</button>
-      <button class="nav-tab" data-tab="parcels-view">Land Parcels · Iowa / NV</button>
+      <div class="nav-dropdown" id="parcels-nav-dropdown">
+        <button class="nav-tab nav-dropdown-trigger" id="parcels-nav-btn" data-tab="parcels-view">Land Parcels ▾</button>
+        <div class="nav-dropdown-menu" id="parcels-dropdown-menu">
+          <button class="nav-dropdown-item" data-region="clark">Nevada — Clark County</button>
+          <button class="nav-dropdown-item" data-region="iowa">Iowa — All Counties</button>
+        </div>
+      </div>
     </nav>
   </div>
   <div class="header-right">

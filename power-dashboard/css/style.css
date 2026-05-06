@@ -151,6 +151,56 @@ header h1 {
   background: var(--border);
 }
 
+/* ── Nav dropdown (Land Parcels state picker) ───────────────────────────────── */
+
+.nav-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  z-index: 200;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+.nav-dropdown-menu.open {
+  display: block;
+}
+
+.nav-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.nav-dropdown-item:hover {
+  background: var(--bg-secondary);
+  color: var(--accent);
+}
+
+.nav-dropdown-item.active {
+  color: var(--accent);
+}
+
 button {
   cursor: pointer;
   font-family: inherit;
