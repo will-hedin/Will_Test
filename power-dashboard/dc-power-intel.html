@@ -770,6 +770,9 @@ const _ovLayers  = {};   // cached layer objects
 const _ovActive  = {};   // toggle state
 const ITU_WFS    = 'https://bbmaps.itu.int/geoserver/wfs';
 const NA_BBOX    = '-170,10,-40,75,EPSG:4326';
+const CORS_PROXY = 'https://corsproxy.io/?url=';
+const OVERPASS   = 'https://overpass-api.de/api/interpreter';
+const US_BBOX    = '24,-125,50,-66';
 
 function toggleMapLayer(name) {
   const map  = window._leafletMap;
@@ -853,9 +856,10 @@ function toggleMapLayer(name) {
 }
 
 function _ituWfsUrl(typeName) {
-  return `${ITU_WFS}?service=wfs&version=2.0.0&request=GetFeature` +
+  const raw = `${ITU_WFS}?service=wfs&version=2.0.0&request=GetFeature` +
     `&typeNames=${encodeURIComponent(typeName)}&outputFormat=application/json` +
     `&count=2000&SRSNAME=EPSG:4326&bbox=${NA_BBOX}`;
+  return CORS_PROXY + encodeURIComponent(raw);
 }
 
 async function _loadITUCables(map, stat, btn) {
@@ -945,8 +949,15 @@ function _loadEpochLayer(map, stat, btn) {
   if (stat) stat.textContent = `${usData.length} Epoch AI sites`;
 }
 
-// ── HIFLD Feature Service helpers (FEMA RAPT / DHS HIFLD) ─────────────────────
-const HIFLD = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services';
+// ── OSM Overpass helpers (substations + power plants) ─────────────────────────
+const _voltRegex = {
+  0:   null,
+  115: '115000|138000|161000|230000|345000|500000|765000',
+  230: '230000|345000|500000|765000',
+  345: '345000|500000|765000',
+  500: '500000|765000'
+};
+const _osmFuel = { ALL:null, NG:'gas', NU:'nuclear', COL:'coal', SUN:'solar', WND:'wind', WAT:'hydro' };
 let _subVoltMin = 115;
 let _plantFuel  = 'ALL';
 
@@ -984,36 +995,42 @@ async function _loadSubstations(voltMin, stat) {
   if (_ovLayers.substations) { map.removeLayer(_ovLayers.substations); _ovLayers.substations = null; }
   if (stat) stat.textContent = 'Loading substations…';
 
-  const where = voltMin > 0 ? `VOLTAGE%20>%3D%20${voltMin}` : '1%3D1';
-  const url = `${HIFLD}/Electric_Substations/FeatureServer/0/query?where=${where}` +
-    `&outFields=NAME,STATE,COUNTY,VOLTAGE,TYPE,STATUS,MAX_VOLT&f=geojson&outSR=4326&resultRecordCount=3000`;
+  const vReg = _voltRegex[voltMin] ?? _voltRegex[115];
+  const vFilter = vReg ? `["voltage"~"${vReg}"]` : '';
+  const query = `[out:json][timeout:45];(node[power=substation]${vFilter}(${US_BBOX});way[power=substation]${vFilter}(${US_BBOX}););out center 3000;`;
+
   try {
-    const res  = await fetch(url);
+    const res = await fetch(OVERPASS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'data=' + encodeURIComponent(query)
+    });
     const data = await res.json();
-    const features = data.features || [];
-    _ovLayers.substations = L.geoJSON(data, {
-      pointToLayer: (f, latlng) => {
-        const v = f.properties?.VOLTAGE || f.properties?.MAX_VOLT || 0;
-        return L.circleMarker(latlng, {
-          radius: Math.max(4, Math.min(10, 2 + v / 80)),
-          fillColor: _subColor(v), color: '#000',
-          weight: 0.5, fillOpacity: 0.8
-        });
-      },
-      onEachFeature(f, layer) {
-        const p = f.properties || {};
-        layer.bindPopup(`
-          <div class="popup-title" style="color:#f59e0b">${p.NAME || 'Substation'}</div>
-          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Electric Substation</span></div>
-          ${p.VOLTAGE ? `<div class="popup-row"><span class="popup-label">Voltage</span><span class="popup-val">${p.VOLTAGE} kV</span></div>` : ''}
-          ${p.STATE   ? `<div class="popup-row"><span class="popup-label">State</span><span class="popup-val">${p.STATE}</span></div>` : ''}
-          ${p.COUNTY  ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${p.COUNTY}</span></div>` : ''}
-          ${p.STATUS  ? `<div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.STATUS}</span></div>` : ''}
-          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: HIFLD / FEMA RAPT</div>
-        `);
-      }
-    }).addTo(map);
-    if (stat) stat.textContent = `${features.length} substations${voltMin > 0 ? ` ≥${voltMin} kV` : ''}`;
+    const elements = data.elements || [];
+    const layer = L.layerGroup();
+    elements.forEach(el => {
+      const lat = el.lat ?? el.center?.lat;
+      const lon = el.lon ?? el.center?.lon;
+      if (!lat || !lon) return;
+      const tags = el.tags || {};
+      const vStr = (tags.voltage || '').split(';')[0];
+      const vKv  = Math.round((parseInt(vStr) || 0) / 1000);
+      const m = L.circleMarker([lat, lon], {
+        radius: Math.max(4, Math.min(10, 2 + vKv / 80)),
+        fillColor: _subColor(vKv), color: '#000',
+        weight: 0.5, fillOpacity: 0.8
+      });
+      m.bindPopup(`
+        <div class="popup-title" style="color:#f59e0b">${tags.name || tags.ref || 'Substation'}</div>
+        <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Electric Substation</span></div>
+        ${vKv ? `<div class="popup-row"><span class="popup-label">Voltage</span><span class="popup-val">${vKv} kV</span></div>` : ''}
+        ${tags.operator ? `<div class="popup-row"><span class="popup-label">Operator</span><span class="popup-val">${tags.operator}</span></div>` : ''}
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: OpenStreetMap</div>
+      `);
+      layer.addLayer(m);
+    });
+    _ovLayers.substations = layer.addTo(map);
+    if (stat) stat.textContent = `${elements.length} substations${voltMin > 0 ? ` ≥${voltMin} kV` : ''}`;
   } catch(e) {
     if (stat) stat.textContent = 'Substation data unavailable';
   }
@@ -1026,40 +1043,44 @@ async function _loadPowerPlants(fuel, stat) {
   if (_ovLayers.powerplants) { map.removeLayer(_ovLayers.powerplants); _ovLayers.powerplants = null; }
   if (stat) stat.textContent = 'Loading power plants…';
 
-  const where = fuel === 'ALL' ? '1%3D1' : `PRIMVSOURCE%20%3D%20'${fuel}'`;
-  const url = `${HIFLD}/Power_Plants/FeatureServer/0/query?where=${where}` +
-    `&outFields=NAME,STATE,COUNTY,PRIMVSOURCE,SUMMER_CAP,INSTALL_YR,STATUS&f=geojson&outSR=4326&resultRecordCount=5000`;
+  const osmSrc = _osmFuel[fuel];
+  const fFilter = osmSrc ? `["plant:source"="${osmSrc}"]` : '';
+  const query = `[out:json][timeout:45];(node[power=plant]${fFilter}(${US_BBOX});way[power=plant]${fFilter}(${US_BBOX});relation[power=plant]${fFilter}(${US_BBOX}););out center 5000;`;
+
   try {
-    const res  = await fetch(url);
+    const res = await fetch(OVERPASS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'data=' + encodeURIComponent(query)
+    });
     const data = await res.json();
-    const features = data.features || [];
-    _ovLayers.powerplants = L.geoJSON(data, {
-      pointToLayer: (f, latlng) => {
-        const src = f.properties?.PRIMVSOURCE || '';
-        const cap = f.properties?.SUMMER_CAP || 0;
-        const col = _plantColor[src] || '#94a3b8';
-        return L.circleMarker(latlng, {
-          radius: Math.max(4, Math.min(14, 3 + Math.sqrt(cap / 50))),
-          fillColor: col, color: '#000',
-          weight: 0.5, fillOpacity: 0.82
-        });
-      },
-      onEachFeature(f, layer) {
-        const p = f.properties || {};
-        const col = _plantColor[p.PRIMVSOURCE] || '#94a3b8';
-        layer.bindPopup(`
-          <div class="popup-title" style="color:${col}">${p.NAME || 'Power Plant'}</div>
-          <div class="popup-row"><span class="popup-label">Fuel</span><span class="popup-val">${_fuelLabel[p.PRIMVSOURCE] || p.PRIMVSOURCE || '—'}</span></div>
-          ${p.SUMMER_CAP ? `<div class="popup-row"><span class="popup-label">Capacity</span><span class="popup-val">${Number(p.SUMMER_CAP).toLocaleString()} MW</span></div>` : ''}
-          ${p.STATE  ? `<div class="popup-row"><span class="popup-label">State</span><span class="popup-val">${p.STATE}</span></div>` : ''}
-          ${p.COUNTY ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${p.COUNTY}</span></div>` : ''}
-          ${p.STATUS ? `<div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.STATUS}</span></div>` : ''}
-          ${p.INSTALL_YR ? `<div class="popup-row"><span class="popup-label">Installed</span><span class="popup-val">${p.INSTALL_YR}</span></div>` : ''}
-          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: HIFLD / FEMA RAPT</div>
-        `);
-      }
-    }).addTo(map);
-    if (stat) stat.textContent = `${features.length} power plants${fuel !== 'ALL' ? ` (${_fuelLabel[fuel] || fuel})` : ''}`;
+    const elements = data.elements || [];
+    const layer = L.layerGroup();
+    elements.forEach(el => {
+      const lat = el.lat ?? el.center?.lat;
+      const lon = el.lon ?? el.center?.lon;
+      if (!lat || !lon) return;
+      const tags = el.tags || {};
+      const src = tags['plant:source'] || tags['generator:source'] || '';
+      const fuelKey = Object.keys(_osmFuel).find(k => _osmFuel[k] === src) || src.toUpperCase().slice(0,3) || 'OTH';
+      const col = _plantColor[fuelKey] || '#94a3b8';
+      const cap = parseFloat(tags['plant:output:electricity']) || 0;
+      const m = L.circleMarker([lat, lon], {
+        radius: Math.max(4, Math.min(14, 3 + Math.sqrt(cap / 50))),
+        fillColor: col, color: '#000',
+        weight: 0.5, fillOpacity: 0.82
+      });
+      m.bindPopup(`
+        <div class="popup-title" style="color:${col}">${tags.name || 'Power Plant'}</div>
+        <div class="popup-row"><span class="popup-label">Fuel</span><span class="popup-val">${_fuelLabel[fuelKey] || src || '—'}</span></div>
+        ${cap ? `<div class="popup-row"><span class="popup-label">Output</span><span class="popup-val">${cap.toLocaleString()} MW</span></div>` : ''}
+        ${tags.operator ? `<div class="popup-row"><span class="popup-label">Operator</span><span class="popup-val">${tags.operator}</span></div>` : ''}
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: OpenStreetMap</div>
+      `);
+      layer.addLayer(m);
+    });
+    _ovLayers.powerplants = layer.addTo(map);
+    if (stat) stat.textContent = `${elements.length} power plants${fuel !== 'ALL' ? ` (${_fuelLabel[fuel] || fuel})` : ''}`;
   } catch(e) {
     if (stat) stat.textContent = 'Power plant data unavailable';
   }
