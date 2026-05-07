@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>US Data Center Power & Policy Intelligence</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --border: #2d3148;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --secondary: #94a3b8;
+    --accent: #4f8ef7;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --green: #22c55e;
+    --purple: #a855f7;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* HEADER */
+  .header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 24px; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--text); }
+  .header .subtitle { color: var(--secondary); font-size: 13px; margin-top: 3px; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .badge { padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-blue { background: rgba(79,142,247,0.15); color: var(--accent); border: 1px solid rgba(79,142,247,0.3); }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .updated { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  /* ALERTS */
+  .alerts { background: rgba(239,68,68,0.08); border-bottom: 1px solid rgba(239,68,68,0.25); padding: 8px 24px; font-size: 12px; color: #fca5a5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* KPI CARDS */
+  .kpi-section { padding: 16px 24px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .kpi-value { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .kpi-sub { font-size: 11px; color: var(--secondary); margin-top: 2px; }
+
+  /* TABS */
+  .tabs-nav { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
+  .tab-btn { padding: 12px 18px; cursor: pointer; color: var(--secondary); border: none; background: none; font-size: 13px; font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.2s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-content { display: none; padding: 20px 24px; }
+  .tab-content.active { display: block; }
+
+  /* MAP */
+  #map { height: 560px; border-radius: 8px; border: 1px solid var(--border); }
+  .map-legend { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 160px; }
+  .map-legend h4 { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; cursor: pointer; }
+  .legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .legend-item input[type=checkbox] { cursor: pointer; accent-color: var(--accent); }
+
+  /* MARKET TABLE */
+  .market-controls { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+  .filter-btn { padding: 5px 14px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--secondary); cursor: pointer; font-size: 12px; transition: all 0.2s; }
+  .filter-btn.active, .filter-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .search-box { flex: 1; min-width: 200px; padding: 6px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--muted); }
+
+  .market-table-wrap { overflow-x: auto; }
+  table.market-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.market-table th { background: #13151f; color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; cursor: pointer; user-select: none; white-space: nowrap; }
+  table.market-table th:hover { color: var(--text); }
+  table.market-table th .sort-icon { margin-left: 4px; opacity: 0.4; }
+  table.market-table th.sort-asc .sort-icon::after { content: ' ▲'; opacity: 1; }
+  table.market-table th.sort-desc .sort-icon::after { content: ' ▼'; opacity: 1; }
+  table.market-table td { padding: 9px 10px; border-bottom: 1px solid rgba(45,49,72,0.6); vertical-align: middle; }
+  table.market-table tr.market-row:hover td { background: rgba(255,255,255,0.02); }
+  table.market-table tr.market-row { cursor: pointer; }
+  table.market-table tr.expand-row td { background: #13151f; padding: 0; }
+
+  .tier-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .tier-1 { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+  .tier-2 { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  .tier-emerging { background: rgba(168,85,247,0.15); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
+
+  .avail-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .avail-critical { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.25); }
+  .avail-tight { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+  .avail-moderate { background: rgba(79,142,247,0.15); color: #93c5fd; border: 1px solid rgba(79,142,247,0.25); }
+  .avail-available { background: rgba(34,197,94,0.15); color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+
+  .wait-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .constraint-tag { display: inline-block; background: rgba(45,49,72,0.8); color: var(--secondary); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 10px; margin: 1px; }
+  .trend-up { color: var(--red); }
+  .trend-down { color: var(--green); }
+  .trend-flat { color: var(--yellow); }
+  .expand-btn { background: var(--border); border: none; color: var(--secondary); border-radius: 4px; width: 22px; height: 22px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .expand-btn:hover { background: var(--accent); color: #fff; }
+
+  /* EXPAND PANEL */
+  .expand-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .expand-half { padding: 16px 18px; }
+  .expand-half:first-child { border-right: 1px solid var(--border); }
+  .expand-half h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary); margin-bottom: 10px; }
+  .operator-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(45,49,72,0.5); font-size: 12px; }
+  .operator-item:last-child { border-bottom: none; }
+  .op-status { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
+  .op-expanding { background: rgba(245,158,11,0.15); color: #fcd34d; }
+  .op-uc { background: rgba(168,85,247,0.15); color: #d8b4fe; }
+  .op-iq { background: rgba(79,142,247,0.15); color: #93c5fd; }
+  .op-op { background: rgba(34,197,94,0.15); color: #86efac; }
+
+  .policy-item { display: flex; flex-direction: column; padding: 6px 0; border-bottom: 1px solid rgba(45,49,72,0.5); font-size: 12px; }
+  .policy-item:last-child { border-bottom: none; }
+  .policy-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+  .policy-value { color: var(--text); margin-top: 1px; }
+  .policy-note { font-size: 11px; color: var(--secondary); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-style: italic; }
+
+  /* GRID OPERATOR CARDS */
+  .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .grid-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .grid-card-header { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .grid-card-header:hover { background: rgba(255,255,255,0.02); }
+  .grid-card-name { font-size: 15px; font-weight: 700; }
+  .grid-card-sub { font-size: 12px; color: var(--secondary); margin-top: 2px; }
+  .status-pill { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .status-critical { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+  .status-constrained { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  .status-moderate { background: rgba(79,142,247,0.15); color: #93c5fd; border: 1px solid rgba(79,142,247,0.3); }
+  .status-mixed { background: rgba(168,85,247,0.15); color: #d8b4fe; border: 1px solid rgba(168,85,247,0.3); }
+  .grid-card-body { display: none; padding: 14px 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--secondary); }
+  .grid-card-body.open { display: block; }
+  .grid-stat-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 10px; }
+  .grid-stat { }
+  .grid-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .grid-stat .value { font-size: 14px; font-weight: 700; color: var(--text); }
+
+  /* POLICY TABLE */
+  .policy-table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table.policy-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.policy-table th { background: #13151f; color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+  table.policy-table td { padding: 10px 12px; border-bottom: 1px solid rgba(45,49,72,0.6); vertical-align: top; }
+  table.policy-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .policy-status-active { color: var(--green); font-weight: 600; }
+  .policy-status-new { color: var(--yellow); font-weight: 600; }
+
+  .metrics-bar { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 20px; margin-top: 8px; margin-bottom: 16px; }
+  .metric-item { font-size: 13px; }
+  .metric-item strong { color: var(--accent); }
+
+  .cta-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; padding: 10px 20px; border-radius: 7px; font-weight: 600; font-size: 14px; text-decoration: none; transition: opacity 0.2s; }
+  .cta-btn:hover { opacity: 0.85; text-decoration: none; }
+
+  /* REGULATORY */
+  .reg-section { margin-bottom: 24px; }
+  .reg-section h3 { font-size: 14px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .reg-item { background: var(--card); border: 1px solid var(--border); border-radius: 7px; padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 14px; align-items: flex-start; }
+  .reg-date { font-size: 11px; font-weight: 700; color: var(--accent); white-space: nowrap; min-width: 80px; }
+  .reg-body .reg-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .reg-body .reg-desc { font-size: 12px; color: var(--secondary); margin-top: 3px; }
+
+  /* MARKET NAME CELL */
+  .market-name-cell .name { font-weight: 600; font-size: 13px; }
+  .market-name-cell .sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* TOOLTIP */
+  .leaflet-popup-content-wrapper { background: var(--card); color: var(--text); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+  .leaflet-popup-tip { background: var(--card); }
+  .popup-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .popup-sub { font-size: 12px; color: var(--secondary); }
+  .popup-row { display: flex; justify-content: space-between; gap: 16px; margin-top: 6px; font-size: 12px; }
+  .popup-label { color: var(--muted); }
+  .popup-val { font-weight: 600; }
+
+  @media (max-width: 700px) {
+    .expand-panel { grid-template-columns: 1fr; }
+    .expand-half:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .header h1 { font-size: 17px; }
+    .tabs-nav { gap: 0; }
+    .tab-btn { padding: 10px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>US Data Center Power &amp; Policy Intelligence</h1>
+      <div class="subtitle">Interconnection Queues &nbsp;•&nbsp; Utility Policy Requirements &nbsp;•&nbsp; Hyperscaler Footprint</div>
+    </div>
+    <div style="text-align:right">
+      <div class="badges">
+        <span class="badge badge-blue">Q2 2026 Data</span>
+        <span class="badge badge-green">Live Research</span>
+        <span class="badge badge-blue">39 Markets</span>
+        <span class="badge badge-blue">5 Hyperscalers</span>
+      </div>
+      <div class="updated">Updated: May 4–6, 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="alerts">
+  ⚡ CRITICAL: ERCOT 410 GW queue (87% DCs) — Batch Zero PGRR145 governance votes May 6-7 &nbsp;•&nbsp; PJM Cycle 1: 811 projects / 220 GW — Phase I studies begin Jul 28, 2026 &nbsp;•&nbsp; FERC RM26-4 large-load rulemaking action by end of June 2026 &nbsp;•&nbsp; Colorado PUC suspended Xcel large-load tariff 120 days (Apr 29)
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-section">
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">ERCOT Queue</div><div class="kpi-value">410 GW</div><div class="kpi-sub">87% data centers</div></div>
+    <div class="kpi-card"><div class="kpi-label">PJM Cycle 1</div><div class="kpi-value">220 GW</div><div class="kpi-sub">811 projects</div></div>
+    <div class="kpi-card"><div class="kpi-label">MISO Queue</div><div class="kpi-value">353 GW</div><div class="kpi-sub">35% load growth by 2035</div></div>
+    <div class="kpi-card"><div class="kpi-label">CAISO Queue</div><div class="kpi-value">130 GW</div><div class="kpi-sub">427 projects</div></div>
+    <div class="kpi-card"><div class="kpi-label">Active Tariffs</div><div class="kpi-value">65+</div><div class="kpi-sub">34 utilities tracked</div></div>
+    <div class="kpi-card"><div class="kpi-label">Avg Collateral</div><div class="kpi-value">$50K–$2.7M</div><div class="kpi-sub">per MW</div></div>
+    <div class="kpi-card"><div class="kpi-label">Contract Convergence</div><div class="kpi-value">15yr</div><div class="kpi-sub">80% min billing</div></div>
+    <div class="kpi-card"><div class="kpi-label">Duke Capital Plan</div><div class="kpi-value">$103B</div><div class="kpi-sub">through 2030</div></div>
+  </div>
+</div>
+
+<!-- TABS NAV -->
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('map',this)">🗺 Hyperscaler Map</button>
+  <button class="tab-btn" onclick="switchTab('markets',this)">📊 Market Intelligence</button>
+  <button class="tab-btn" onclick="switchTab('grid',this)">⚡ Grid Operators</button>
+  <button class="tab-btn" onclick="switchTab('policy',this)">📋 Policy Details</button>
+  <button class="tab-btn" onclick="switchTab('reg',this)">🏛 Regulatory Watch</button>
+</div>
+
+<!-- TAB 1: MAP -->
+<div id="tab-map" class="tab-content active">
+  <div id="map"></div>
+</div>
+
+<!-- TAB 2: MARKET INTELLIGENCE -->
+<div id="tab-markets" class="tab-content">
+  <div class="market-controls">
+    <button class="filter-btn active" onclick="filterMarkets('all',this)">All Markets (39)</button>
+    <button class="filter-btn" onclick="filterMarkets('Tier 1',this)">Tier 1 (8)</button>
+    <button class="filter-btn" onclick="filterMarkets('Tier 2',this)">Tier 2 (20)</button>
+    <button class="filter-btn" onclick="filterMarkets('Emerging',this)">Emerging (11)</button>
+    <input type="text" class="search-box" id="marketSearch" placeholder="Search markets, utilities, operators…" oninput="searchMarkets(this.value)">
+  </div>
+  <div class="market-table-wrap">
+    <table class="market-table" id="marketTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)" data-col="0">Market <span class="sort-icon"></span></th>
+          <th onclick="sortTable(1)" data-col="1">Tier <span class="sort-icon"></span></th>
+          <th onclick="sortTable(2)" data-col="2">ISO/RTO <span class="sort-icon"></span></th>
+          <th onclick="sortTable(3)" data-col="3">Queue Depth <span class="sort-icon"></span></th>
+          <th onclick="sortTable(4)" data-col="4">Wait <span class="sort-icon"></span></th>
+          <th onclick="sortTable(5)" data-col="5">Status <span class="sort-icon"></span></th>
+          <th onclick="sortTable(6)" data-col="6">Min Load <span class="sort-icon"></span></th>
+          <th onclick="sortTable(7)" data-col="7">Take-or-Pay <span class="sort-icon"></span></th>
+          <th onclick="sortTable(8)" data-col="8">Collateral/MW <span class="sort-icon"></span></th>
+          <th onclick="sortTable(9)" data-col="9">Term <span class="sort-icon"></span></th>
+          <th onclick="sortTable(10)" data-col="10">Trend <span class="sort-icon"></span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="marketTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- TAB 3: GRID OPERATORS -->
+<div id="tab-grid" class="tab-content">
+  <div class="grid-cards" id="gridCards"></div>
+</div>
+
+<!-- TAB 4: POLICY DETAILS -->
+<div id="tab-policy" class="tab-content">
+  <div class="policy-table-wrap">
+    <table class="policy-table">
+      <thead>
+        <tr>
+          <th>Utility</th>
+          <th>Status</th>
+          <th>Term</th>
+          <th>Collateral/MW</th>
+          <th>Min Demand</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Dominion Energy (VA)</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>14yr</td>
+          <td>$1.5M/MW (proposed)</td>
+          <td>85%/60% demand billing</td>
+          <td>GS-5 rate class effective Jan 1, 2027. New DC-specific tariff.</td>
+        </tr>
+        <tr>
+          <td><strong>Oncor (TX/ERCOT)</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>5yr for full refund</td>
+          <td>$50K/MW security</td>
+          <td>75 MW (SB6)</td>
+          <td>SB 6 compliance. LC/cash/guarantee acceptable. ERCOT Batch Zero applies.</td>
+        </tr>
+        <tr>
+          <td><strong>AEP Ohio</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>12yr (8+4 ramp)</td>
+          <td>Credit-rated exempt/formula</td>
+          <td>85% monthly min demand</td>
+          <td>PUCO approved Jul 9, 2025. $100K study fee for 100 MW. 8-yr commitment minimum.</td>
+        </tr>
+        <tr>
+          <td><strong>ComEd (IL)</strong></td>
+          <td><span class="policy-status-new">New Tariff</span></td>
+          <td>Per contract</td>
+          <td>$1M + $500K/100MW</td>
+          <td>50 MW</td>
+          <td>100% infrastructure cost recovery. Ameren IL signed 850 MW at $46M nonrefundable.</td>
+        </tr>
+        <tr>
+          <td><strong>Georgia Power</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>15yr</td>
+          <td>$500K/MW</td>
+          <td>75% min demand</td>
+          <td>DCs pay all T&amp;D + generation costs. 26 DCs contracted. PSC approved 9,885 MW Dec 2025.</td>
+        </tr>
+        <tr>
+          <td><strong>Duke Energy (Carolinas)</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>15yr</td>
+          <td>ESA-based ($500K/MW est.)</td>
+          <td>50 MW, tranche system</td>
+          <td>$103B capital plan. 4.5 GW ESAs contracted (Amazon/Microsoft/Google/Meta). 11.3 GW total pipeline.</td>
+        </tr>
+        <tr>
+          <td><strong>FPL (Florida)</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>20yr</td>
+          <td>$2.7M/MW (proposed)</td>
+          <td>100 MW</td>
+          <td>LLCS tariff: 10.16¢/kWh. 100% new gen cost burden. 2028 earliest service. 9 GW in advanced discussions.</td>
+        </tr>
+        <tr>
+          <td><strong>TVA</strong></td>
+          <td><span class="policy-status-active">Active</span></td>
+          <td>20yr</td>
+          <td>Negotiated</td>
+          <td>5 MW</td>
+          <td>100% demand charge floor. Competitive rates. DCs = 18% TVA industrial load. Cumberland gas online Sep 2026.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="metrics-bar">
+    <div class="metric-item"><strong>65+</strong> Active Large-Load Tariffs</div>
+    <div class="metric-item"><strong>34</strong> Utilities Tracked</div>
+    <div class="metric-item">Industry converging on <strong>15yr Contracts + 80% Min Billing</strong></div>
+    <div class="metric-item">Collateral Range: <strong>$50K–$2.7M/MW</strong></div>
+  </div>
+  <a href="https://will-hedin.github.io/power-policy-dashboard/" target="_blank" class="cta-btn">View Full Policy Dashboard →</a>
+</div>
+
+<!-- TAB 5: REGULATORY -->
+<div id="tab-reg" class="tab-content">
+  <div class="reg-section">
+    <h3>Federal / FERC Actions</h3>
+    <div class="reg-item">
+      <div class="reg-date">Apr 16, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">FERC RM26-4 — Large-Load Interconnection Rulemaking</div>
+        <div class="reg-desc">Action by end of June 2026 on large-load interconnection rulemaking (20+ MW standard). Establishes national framework for data center grid access.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Apr 27, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">PJM Cycle 1 Results</div>
+        <div class="reg-desc">811 projects / 220 GW. DCs = 40% of capacity auction costs ($6.5B of $16.4B). Phase I studies begin Jul 28, 2026.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Mar 4, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">White House Ratepayer Protection Pledge</div>
+        <div class="reg-desc">Amazon, Google, Meta, Microsoft, OpenAI, Oracle, xAI commit to funding own generation. Major shift in DC power procurement model.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Dec 18, 2025</div>
+      <div class="reg-body">
+        <div class="reg-title">FERC PJM Colocation Order</div>
+        <div class="reg-desc">3 new service tiers for DC co-location at power plants. Opens colocation path for data centers seeking on-site generation access.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reg-section">
+    <h3>State Regulatory Actions</h3>
+    <div class="reg-item">
+      <div class="reg-date">May 1, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">PA PUC Model Large Load Tariff Approved</div>
+        <div class="reg-desc">50+ MW guidance framework approved. Provides clarity for data center developers in Pennsylvania.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Apr 30, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">Georgia Power Plant Wansley Groundbreaking</div>
+        <div class="reg-desc">2 GW facility: 500 MW BESS + 1,500 MW gas. Direct response to data center load growth in metro Atlanta.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Apr 25, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">Duke Energy $103B Capital Plan</div>
+        <div class="reg-desc">Largest capital plan in utility history. Driven by 4.5 GW of contracted ESAs with Amazon, Microsoft, Google, Meta.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Apr 29, 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">Colorado PUC Suspends Xcel Large Load Tariff</div>
+        <div class="reg-desc">120-day review period. Xcel tariff filed Apr 2: 50 MW+ full infrastructure costs, 15-yr contracts, $120K deposit + $600K upfront.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Dec 18, 2025</div>
+      <div class="reg-body">
+        <div class="reg-title">Michigan MPSC Approves DTE $7B / 1.4 GW Data Center Contracts</div>
+        <div class="reg-desc">DTE plans 12 GW new generation 2026-2032. Consumers Energy MPSC-approved framework includes 15-yr minimum, 80% billing demand.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Nov 6, 2025</div>
+      <div class="reg-body">
+        <div class="reg-title">Kansas KCC Approves Evergy Large-Load Rate Plan</div>
+        <div class="reg-desc">75+ MW threshold. KCC approved Power Service Rate Plan (Nov 6, 2025). 80% min demand billing.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Jul 9, 2025</div>
+      <div class="reg-body">
+        <div class="reg-title">Ohio PUCO Approves AEP DC-Specific Tariff</div>
+        <div class="reg-desc">Effective Jul 23, 2025. 12-yr commitment (8+4 ramp). Queue pause lifted after 50+ DC applications.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reg-section">
+    <h3>State Legislation</h3>
+    <div class="reg-item">
+      <div class="reg-date">Apr 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">WV HB 2002 — Power Generation and Consumption Act</div>
+        <div class="reg-desc">Enables Stratos-type off-grid campuses. Penzance $4B/600 MW campus Falling Waters (548 acres) follows this framework.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Mar 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">Virginia General Assembly — 15 DC Bills Passed</div>
+        <div class="reg-desc">HB507, HB1393, SB253 among bills. New GS-5 DC rate class effective Jan 1, 2027. Tax exemption deadline Jul 1.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Feb 2026</div>
+      <div class="reg-body">
+        <div class="reg-title">Iowa HF 2447 — DC Water/Energy Reporting</div>
+        <div class="reg-desc">Quarterly water and energy reporting requirement for large data centers in Iowa.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">2025</div>
+      <div class="reg-body">
+        <div class="reg-title">Utah SB 132 — Self-Supply Authorization</div>
+        <div class="reg-desc">Allows 100+ MW loads to self-supply if Rocky Mountain Power cannot serve on a reasonable timeline. Enables Stratos 9 GW off-grid campus.</div>
+      </div>
+    </div>
+    <div class="reg-item">
+      <div class="reg-date">Aug 2025</div>
+      <div class="reg-body">
+        <div class="reg-title">Florida HB 7031 — DC Tax Exemption Expansion</div>
+        <div class="reg-desc">Sales tax exemption raised to 100+ MW data centers. Part of Florida's 2025 incentive package reshaping DC growth.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================================================
+// TAB SWITCHING
+// =====================================================================
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'map' && !window._mapInit) initMap();
+}
+
+// =====================================================================
+// MAP DATA
+// =====================================================================
+const providers = {
+  AWS: { color: '#FF9900', locations: [
+    { name: 'Ashburn, VA', id: 'us-east-1', coords: [38.9539,-77.4456], status: 'Operational', capacity: '~2,000+ MW' },
+    { name: 'Hilliard, OH', id: 'us-east-2', coords: [40.0321,-83.1007], status: 'Expanding', capacity: '~600 MW' },
+    { name: 'Hillsboro, OR', id: 'us-west-2', coords: [45.5231,-122.9763], status: 'Operational', capacity: '~500+ MW' },
+    { name: 'San Jose, CA', id: 'us-west-1', coords: [37.3382,-121.8863], status: 'Operational', capacity: '~200+ MW' },
+    { name: 'New Carlisle, IN', id: '', coords: [41.7014,-86.5108], status: 'Under Construction', capacity: '1,092 MW' },
+    { name: 'Dallas, TX', id: '', coords: [32.7767,-96.7970], status: 'Expanding', capacity: '~300+ MW' },
+    { name: 'Atlanta, GA', id: '', coords: [33.7490,-84.3880], status: 'Operational', capacity: '~200+ MW' },
+    { name: 'Phoenix, AZ', id: '', coords: [33.6119,-111.8906], status: 'Expanding', capacity: '~200+ MW' },
+    { name: 'Denver, CO', id: '', coords: [39.7392,-104.9903], status: 'Expanding', capacity: '~200 MW' },
+    { name: 'Seattle/King Co, WA', id: '', coords: [47.6062,-122.3321], status: 'Expanding', capacity: '~400 MW' }
+  ]},
+  Google: { color: '#4285F4', locations: [
+    { name: 'The Dalles, OR', id: '', coords: [45.5946,-121.1787], status: 'Operational', capacity: '~400+ MW' },
+    { name: 'Council Bluffs, IA', id: '', coords: [41.2619,-95.8608], status: 'Expanding', capacity: '500+ MW ($5.5B)' },
+    { name: 'Lenoir, NC', id: '', coords: [35.9132,-81.5429], status: 'Operational', capacity: '~200+ MW' },
+    { name: 'Moncks Corner, SC', id: '', coords: [33.1963,-80.0127], status: 'Operational', capacity: '~200+ MW' },
+    { name: 'Pryor, OK', id: '', coords: [36.2998,-95.3172], status: 'Expanding', capacity: '~200+ MW' },
+    { name: 'Clarksville, TN', id: '', coords: [36.5298,-87.3595], status: 'Expanding', capacity: '~200+ MW' },
+    { name: 'Cedar Rapids, IA', id: '', coords: [41.9779,-91.6656], status: 'Under Construction', capacity: '$576M' },
+    { name: 'Richmond, VA (Project Peanut)', id: '', coords: [37.5407,-77.4360], status: 'Under Construction', capacity: '300 acres' },
+    { name: 'Kansas City, MO (Project Mica)', id: '', coords: [39.0997,-94.5786], status: 'Under Construction', capacity: '$10B' },
+    { name: 'Henderson, NV', id: '', coords: [36.0395,-114.9817], status: 'In Queue', capacity: '50-100 MW' },
+    { name: 'Douglas Co, GA', id: '', coords: [33.7490,-84.7657], status: 'Expanding', capacity: '~300 MW' },
+    { name: 'Pine Island, MN', id: '', coords: [44.2019,-92.6577], status: 'In Queue', capacity: '1,900 MW' },
+    { name: 'Fort Wayne, IN', id: '', coords: [41.1306,-85.1288], status: 'Under Construction', capacity: '250+ MW' }
+  ]},
+  Meta: { color: '#0866FF', locations: [
+    { name: 'Forest City, NC', id: '', coords: [35.3343,-81.8651], status: 'Operational', capacity: '~170+ MW' },
+    { name: 'Prineville, OR', id: '', coords: [44.3005,-120.8344], status: 'Operational', capacity: '~200+ MW' },
+    { name: 'Altoona, IA', id: '', coords: [41.6467,-93.4702], status: 'Operational', capacity: '~600+ MW' },
+    { name: 'Fort Worth, TX', id: '', coords: [32.7767,-97.2983], status: 'Expanding', capacity: '~500+ MW' },
+    { name: 'New Albany, OH', id: '', coords: [40.0815,-82.7854], status: 'In Queue', capacity: '~300 MW' },
+    { name: 'Gallatin, TN', id: '', coords: [36.3884,-86.4497], status: 'Expanding', capacity: '300 MW' },
+    { name: 'Eagle Mountain, UT', id: '', coords: [40.3139,-112.0079], status: 'In Queue', capacity: '~200+ MW' },
+    { name: 'DeKalb, IL', id: '', coords: [41.9292,-88.7498], status: 'Operational', capacity: '~200+ MW' },
+    { name: 'Lebanon, IN', id: '', coords: [40.0487,-86.4694], status: 'Under Construction', capacity: '250+ MW' },
+    { name: 'Jeffersonville, IN', id: '', coords: [38.2776,-85.7372], status: 'Under Construction', capacity: '250+ MW' },
+    { name: 'Rosemount, MN', id: '', coords: [44.7427,-93.0822], status: 'Under Construction', capacity: '800 MW' },
+    { name: 'Kuna, ID', id: '', coords: [43.4941,-116.4199], status: 'Under Construction', capacity: '$800M' },
+    { name: 'Huntsville, AL', id: '', coords: [34.7304,-86.5861], status: 'Expanding', capacity: '~200 MW' },
+    { name: 'Montgomery, AL', id: '', coords: [32.3668,-86.3000], status: 'Under Construction', capacity: '$800M' },
+    { name: 'Council Bluffs, IA (2nd campus)', id: '', coords: [41.2719,-95.8808], status: 'Expanding', capacity: '~600 MW' }
+  ]},
+  Microsoft: { color: '#00BCF2', locations: [
+    { name: 'Boydton, VA', id: '', coords: [36.6654,-78.3906], status: 'Operational', capacity: '~500+ MW' },
+    { name: 'Dublin, OH', id: '', coords: [40.0992,-83.1141], status: 'In Queue', capacity: '$420M' },
+    { name: 'Quincy, WA', id: '', coords: [47.2343,-119.8523], status: 'Operational', capacity: '~400+ MW' },
+    { name: 'W. Des Moines, IA', id: '', coords: [41.5776,-93.7563], status: 'Expanding', capacity: '6 DCs $6B+' },
+    { name: 'Chicago area, IL', id: '', coords: [41.8781,-87.6298], status: 'Expanding', capacity: '~200+ MW' },
+    { name: 'San Antonio, TX', id: '', coords: [29.4241,-98.4936], status: 'Expanding', capacity: '8 DCs + Castroville' },
+    { name: 'Goodyear, AZ', id: '', coords: [33.4359,-112.3576], status: 'Expanding', capacity: '~300+ MW' },
+    { name: 'Cheyenne, WY', id: '', coords: [41.1400,-104.8202], status: 'Operational', capacity: '~100+ MW' },
+    { name: 'Granger, IN', id: '', coords: [41.7359,-86.1272], status: 'In Queue', capacity: '~500 MW' },
+    { name: 'LaPorte, IN', id: '', coords: [41.6103,-86.7220], status: 'In Queue', capacity: '~500 MW' },
+    { name: 'Atlanta, GA (3 campuses)', id: '', coords: [33.7590,-84.3980], status: 'Under Construction', capacity: '324 MW' },
+    { name: 'Charlotte, NC', id: '', coords: [35.2271,-80.8431], status: 'In Queue', capacity: '~600 MW' },
+    { name: 'Becker, MN', id: '', coords: [45.3922,-93.8747], status: 'In Queue', capacity: '~600 MW' },
+    { name: 'Redmond, WA', id: '', coords: [47.6740,-122.1215], status: 'Expanding', capacity: '~500 MW' },
+    { name: 'Gaines Twp, MI', id: '', coords: [42.8276,-85.5753], status: 'In Queue', capacity: '~200 MW' }
+  ]},
+  Oracle: { color: '#C74634', locations: [
+    { name: 'Ashburn, VA', id: 'us-ashburn-1', coords: [39.0437,-77.4875], status: 'Operational', capacity: 'OCI us-ashburn-1' },
+    { name: 'Phoenix, AZ', id: 'us-phoenix-1', coords: [33.6119,-111.9006], status: 'Operational', capacity: 'OCI us-phoenix-1' },
+    { name: 'San Jose, CA', id: 'us-sanjose-1', coords: [37.3382,-121.9063], status: 'Operational', capacity: 'OCI us-sanjose-1' },
+    { name: 'Chicago, IL', id: 'us-chicago-1', coords: [41.8881,-87.6298], status: 'Operational', capacity: 'OCI us-chicago-1' },
+    { name: 'Seattle, WA', id: 'us-seattle-1', coords: [47.6062,-122.3421], status: 'Operational', capacity: 'OCI us-seattle-1' },
+    { name: 'Saline, MI (Stargate/OpenAI)', id: '', coords: [42.1703,-83.7799], status: 'Under Construction', capacity: '1.4 GW' }
+  ]}
+};
+
+function initMap() {
+  window._mapInit = true;
+  const map = L.map('map', { center: [39.5, -98.5], zoom: 4 });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    className: 'map-tiles'
+  }).addTo(map);
+
+  // Add dark filter via CSS
+  const style = document.createElement('style');
+  style.textContent = '.map-tiles { filter: brightness(0.7) invert(1) contrast(1.1) hue-rotate(180deg) saturate(0.5) brightness(0.7); }';
+  document.head.appendChild(style);
+
+  const layers = {};
+
+  Object.entries(providers).forEach(([name, data]) => {
+    const group = L.layerGroup();
+    data.locations.forEach(loc => {
+      const svgIcon = L.divIcon({
+        className: '',
+        html: `<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="8" fill="${data.color}" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"/></svg>`,
+        iconSize: [18, 18],
+        iconAnchor: [9, 9]
+      });
+      const marker = L.marker(loc.coords, { icon: svgIcon });
+      const idStr = loc.id ? `<br><span style="color:${data.color};font-size:11px">${loc.id}</span>` : '';
+      marker.bindPopup(`
+        <div class="popup-title" style="color:${data.color}">${name}</div>
+        <div class="popup-sub">${loc.name}${idStr}</div>
+        <div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${loc.status}</span></div>
+        <div class="popup-row"><span class="popup-label">Capacity</span><span class="popup-val">${loc.capacity}</span></div>
+      `);
+      marker.addTo(group);
+    });
+    group.addTo(map);
+    layers[name] = group;
+  });
+
+  // Legend
+  const legend = L.control({ position: 'bottomright' });
+  legend.onAdd = function() {
+    const div = L.DomUtil.create('div', 'map-legend');
+    div.innerHTML = '<h4>Providers</h4>';
+    Object.entries(providers).forEach(([name, data]) => {
+      const item = document.createElement('label');
+      item.className = 'legend-item';
+      item.innerHTML = `
+        <input type="checkbox" checked data-provider="${name}">
+        <span class="legend-dot" style="background:${data.color}"></span>
+        <span>${name} (${data.locations.length})</span>
+      `;
+      item.querySelector('input').addEventListener('change', function() {
+        if (this.checked) layers[name].addTo(map);
+        else map.removeLayer(layers[name]);
+      });
+      div.appendChild(item);
+    });
+    L.DomEvent.disableClickPropagation(div);
+    return div;
+  };
+  legend.addTo(map);
+}
+
+// =====================================================================
+// MARKET DATA
+// =====================================================================
+const policyData = {
+  nova: { minLoad: '25 MW', takeOrPay: '85%/60% demand', collateral: '$1.5M/MW (proposed)', term: '14yr', note: 'GS-5 rate class effective Jan 1, 2027. Dominion +$1B transmission line Feb 2026.' },
+  dfw: { minLoad: '75 MW (SB6)', takeOrPay: '$50K/MW security', collateral: 'LC/cash/guarantee', term: '5yr for full refund', note: 'TX SB 6 compliance. ERCOT Batch Zero constraints apply.' },
+  phx: { minLoad: '50 MW', takeOrPay: '85% min demand', collateral: '$500K/MW (pending ACC)', term: '15yr (proposed)', note: 'APS ACC Large Load Workshop Apr 16. SRP 2026 All-Source RFP: 2,900 MW.' },
+  chi: { minLoad: '50 MW', takeOrPay: '100% infra cost recovery', collateral: '$1M + $500K/100MW', term: 'Per contract', note: 'MISO ERAS Cycle 3. Ameren IL 850 MW at $46M nonrefundable.' },
+  sva: { minLoad: '50 MW', takeOrPay: '85% min demand', collateral: '$100K/MW', term: '15yr', note: 'CAISO new IPP Jun 2025 prioritizes proximity. $2B+ S. Bay transmission approved.' },
+  atl: { minLoad: '75 MW', takeOrPay: '75% min demand', collateral: '$500K/MW', term: '15yr', note: 'DCs pay all T&D + generation costs. 26 DCs contracted. Plant Wansley groundbreaking Apr 30.' },
+  pdx: { minLoad: '25 MW', takeOrPay: 'Per WECC', collateral: 'Negotiated', term: '10yr', note: 'PGE + GridCARE DeFlex: 80 MW in 2026, 400+ MW by 2029.' },
+  nyc: { minLoad: 'Per ISO', takeOrPay: '$20K/MW (NYISO) / 25% upgrades (PJM)', collateral: 'Per contract', term: 'Per contract', note: 'PJM 8-yr avg wait. 2027/28 BRA hit $333.44/MW-day cap. FERC colocation rules Dec 2025.' },
+  col: { minLoad: '25 MW', takeOrPay: '85% monthly min', collateral: 'Credit-rated exempt / formula', term: '12yr (8+4 ramp)', note: 'AEP Ohio tariff PUCO Jul 9, 2025. $100K study fee (100 MW). 5 GW forecast by 2030.' },
+  slc: { minLoad: '25 MW', takeOrPay: 'Per WECC', collateral: 'Per WECC', term: '15yr+', note: 'Utah SB 132 self-supply if RMP cannot serve. Cannot guarantee grid power before 2031.' },
+  ind: { minLoad: '25 MW', takeOrPay: 'Per MISO', collateral: 'Per MISO', term: 'Per contract', note: 'AES Indiana seeking gas thermal developers. Amazon New Carlisle 1,092 MW UC.' },
+  rno: { minLoad: '25 MW', takeOrPay: '80% min demand', collateral: '$200K/MW', term: '15yr', note: 'NV Energy IRP: 5,900 MW new capacity for N. Nevada. Greenlink underway.' },
+  sat: { minLoad: '50 MW (SB6)', takeOrPay: '$50K/MW (SB6)', collateral: 'LC/cash', term: '5yr for refund', note: 'CPS $1.4B transmission investment. Microsoft 8 DCs + $482M Castroville.' },
+  aus: { minLoad: '50 MW (SB6)', takeOrPay: 'Per SB6', collateral: 'Per SB6', term: '5yr for refund', note: 'Austin Energy (municipal) + Oncor suburban corridor. Water scarcity limits cooling.' },
+  kci: { minLoad: '75 MW', takeOrPay: '80% min demand (KCC approved Nov 2025)', collateral: 'Negotiated', term: '15yr', note: 'Google Project Mica $10B UC. 10+ hyperscale DC proposals Q1 2026.' },
+  bna: { minLoad: '5 MW', takeOrPay: '100% demand charge floor', collateral: 'Negotiated', term: '20yr', note: 'Cumberland gas 1.45 GW online Sep 2026. TVA 6.2 GW build-out underway.' },
+  ric: { minLoad: '25 MW', takeOrPay: '85%/60% demand', collateral: '$1.5M/MW (proposed)', term: '14yr', note: 'VA special session Apr 23. DC rate class Jan 2027. VA GA 15 DC bills Mar 2026.' },
+  smf: { minLoad: 'Annual window only', takeOrPay: 'Per SMUD', collateral: 'Per SMUD', term: 'Per contract', note: 'SMUD 2026 window: Jun 1 – Jul 15. El Rio Substation complete late 2026.' },
+  qcy: { minLoad: 'Load caps — NO NEW LOAD', takeOrPay: 'N/A (caps)', collateral: 'N/A', term: 'Until QTEP 2027-29', note: 'Grant PUD hard caps Q3 2025. QTEP: Wanapum Dam-Quincy line mid-2027.' },
+  cbl: { minLoad: '25 MW', takeOrPay: 'Per MISO', collateral: 'Negotiated', term: '15yr', note: 'Google $5.5B invested. MidAmerican 800 MW Solar Reliability IUC approved.' },
+  dsm: { minLoad: '25 MW', takeOrPay: 'Per MISO', collateral: 'Negotiated', term: '15yr', note: 'Microsoft 5 DCs + 6th campus Project Ruthenium. Apple Waukee opened Oct 2024.' },
+  cdr: { minLoad: '25 MW', takeOrPay: 'Per MISO', collateral: 'Negotiated', term: 'Per contract', note: 'Google $576M + QTS $10B (200-300+ MW). Alliant 94 MW gas June 2027.' },
+  den: { minLoad: '50 MW', takeOrPay: '100% infra cost', collateral: '$600K upfront + $120K deposit (suspended Apr 29)', term: '15yr', note: 'CO PUC suspended 120 days at Apr 29 meeting. 5.8 GW pending.' },
+  clt: { minLoad: '50 MW', takeOrPay: 'Tranche system', collateral: '$500K/MW (ESA)', term: '15yr', note: 'Duke $103B capital plan. 4.5 GW ESAs contracted. Pipeline approaching 9 GW.' },
+  stl: { minLoad: '25 MW', takeOrPay: '100% direct interconnect cost', collateral: '2yr min-bill security deposit', term: 'Per contract', note: 'Ameren MO 2.2 GW confidential contracts Feb 2026. $38M nonrefundable.' },
+  msp: { minLoad: '75 MW', takeOrPay: 'Clean energy 24/7 matching', collateral: 'Negotiated', term: '15yr', note: 'Xcel + Google: 1,900 MW new clean energy for Pine Island MN (Feb 24, 2026).' },
+  hou: { minLoad: '75 MW (SB6)', takeOrPay: '$50K/MW (SB6)', collateral: 'LC/cash', term: '5yr for refund', note: 'CenterPoint queue 1 GW → 8 GW in under 12 months. On-site gas as bridge.' },
+  mia: { minLoad: '100 MW', takeOrPay: '100% gen cost funding', collateral: '$2.7M/MW (proposed)', term: '20yr', note: 'FPL LLCS tariff 10.16¢/kWh. 2028 earliest. Fort Meade $2.6B approved Apr 15.' },
+  sea: { minLoad: '25 MW', takeOrPay: '10% demand response by Jan 2027', collateral: 'Per WECC', term: 'Per contract', note: 'WA PSE developing first statewide ISP. WA Dec 2025 DC workgroup report.' },
+  boi: { minLoad: '25 MW', takeOrPay: 'Large loads fund own infrastructure', collateral: 'Per WECC', term: 'Per contract', note: 'Meta $800M AI DC Kuna. Diode Ventures $1B Gemstone Park (620 acres).' },
+  dtw: { minLoad: '25 MW', takeOrPay: '80% min demand (15yr min)', collateral: 'Negotiated', term: '15yr min', note: 'MPSC approved DTE $7B/1.4 GW Dec 18, 2025. DTE plans 12 GW new gen 2026-2032.' },
+  hsv: { minLoad: '5 MW', takeOrPay: '100% demand floor', collateral: 'Negotiated', term: '20yr', note: 'N. Alabama fastest-growing DC market nationally. TVA 6.2 GW build-out.' },
+  pit: { minLoad: '50 MW (PA guidance)', takeOrPay: 'Per PJM', collateral: '25% upgrade costs', term: 'Per contract', note: 'Homer City 4.5 GW gas at retired coal. PA PUC approved Model Large Load Tariff May 1.' },
+  cvg: { minLoad: 'Per PJM', takeOrPay: 'Per PJM', collateral: 'Per PJM', term: 'Per contract', note: 'AEP projects 24 GW new load by 2030 (mostly DCs). Columbus overflow path.' },
+  jax: { minLoad: 'Early-stage', takeOrPay: 'Negotiated', collateral: 'Negotiated', term: 'Negotiated', note: 'JEA municipal utility. FL incentive packages 2025. NextNRG Nassau Co. 200 MW microgrid.' },
+  tpa: { minLoad: '50 MW', takeOrPay: 'Per SERC', collateral: 'Per SERC', term: 'Per contract', note: 'Fort Meade $2.6B hyperscale (Polk Co.) approved Apr 15. FL SB 484 reclaimed water.' },
+  oma: { minLoad: '25 MW', takeOrPay: 'Per SPP', collateral: 'Negotiated', term: '15yr', note: 'Google + Meta anchor "Silicon Prairie." OPPD $2.98B 2026 plan. SPP GIAs expected.' },
+  wv: { minLoad: '50 MW (PA guidance)', takeOrPay: 'Per PJM', collateral: '25% upgrade costs', term: 'Per contract', note: 'Penzance $4B/600 MW Falling Waters (548 acres). First WV "High Impact Intelligence Center."' },
+  stratos: { minLoad: 'Off-grid — N/A', takeOrPay: 'N/A', collateral: 'N/A', term: 'N/A (off-grid)', note: 'Ruby Pipeline gas. MIDA approved 40,000-acre campus. Box Elder Co. vote May 4, 2026.' }
+};
+
+const markets = [
+  // TIER 1
+  { id:'nova', name:'Northern Virginia', sub:'Ashburn / Loudoun / Fairfax', tier:'Tier 1', iso:'Dominion / PJM', qDepth:'70 GW total queue', qSub:'~3x system peak', waitColor:'ef4444', waitText:'3-7+ yrs', availClass:'avail-critical', constraints:['Transmission saturation','Import dependency','Carbon-free mandate','Rate class Jan 2027'], dev:'VA budget deadlock (tax break deadline Jul 1). Dominion +$1B 115-mi TX line Feb 2026. GS-5 rate class Jan 1, 2027.', trend:'↑', operators:[{n:'AWS',mw:'~500MW',s:'Expanding'},{n:'Microsoft',mw:'~300MW',s:'Expanding'},{n:'Google',mw:'~200MW',s:'Expanding'},{n:'Meta',mw:'~150MW',s:'Expanding'},{n:'Digital Realty',mw:'~200MW',s:'Expanding'},{n:'Equinix',mw:'~80MW',s:'Expanding'},{n:'CyrusOne',mw:'~180MW',s:'Expanding'},{n:'Vantage',mw:'192MW',s:'Under Construction'}] },
+  { id:'dfw', name:'Dallas-Fort Worth', sub:'Midlothian / Red Oak / Irving', tier:'Tier 1', iso:'Oncor / ERCOT', qDepth:'410 GW (TX total)', qSub:'DFW is primary cluster', waitColor:'ef4444', waitText:'3-5+ yrs', availClass:'avail-critical', constraints:['Process overload','TX SB 6 compliance','Sequential study backlog','Transmission lag'], dev:'Batch Zero PGRR145 votes May 6-7. Only ~2,168 MW approved in 12 months vs 410 GW queue. Oncor 765-kV line Jun 2026.', trend:'↑', operators:[{n:'Stream',mw:'372MW',s:'Under Construction'},{n:'Aligned',mw:'~200MW',s:'Under Construction'},{n:'CyrusOne',mw:'470MW',s:'Under Construction'},{n:'Digital Realty',mw:'~150MW',s:'Expanding'},{n:'Microsoft',mw:'~250MW',s:'Expanding'},{n:'Equinix',mw:'~300MW',s:'In Queue'}] },
+  { id:'phx', name:'Phoenix Metro', sub:'Chandler / Mesa / Goodyear', tier:'Tier 1', iso:'APS / SRP', qDepth:'10+ GW pending (APS)', qSub:'4.7 GW contracted 2/3 DC', waitColor:'ef4444', waitText:'4-8 yrs', availClass:'avail-critical', constraints:['Generation shortage','Transmission bottleneck','Extreme heat peaks','APS turning away customers'], dev:'APS plans 2 GW gas subscription plant for DCs. SRP 2026 All-Source RFP: 2,900 MW new gen. ACC Workshop Apr 16.', trend:'↑', operators:[{n:'Microsoft',mw:'~300MW',s:'Expanding'},{n:'STACK',mw:'~150MW',s:'Expanding'},{n:'CyrusOne',mw:'~250MW',s:'Expanding'},{n:'Google',mw:'250MW',s:'In Queue'},{n:'QTS',mw:'750MW',s:'In Queue'}] },
+  { id:'chi', name:'Chicago / Chicagoland', sub:'Elk Grove Village / Carol Stream', tier:'Tier 1', iso:'ComEd / MISO', qDepth:'353 GW (MISO total)', qSub:'IL top MISO load area', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['MISO queue backlog','Urban land scarcity','IL clean energy rules','High RE cost pressure'], dev:'MISO ERAS Cycle 3: 15 projects / 8.8 GW. Ameren IL signed 850 MW DC agreements ($46M nonrefundable). Plainfield moratorium Apr 2026.', trend:'↔', operators:[{n:'CyrusOne',mw:'~200MW',s:'Expanding'},{n:'STACK',mw:'~150MW',s:'Expanding'},{n:'Microsoft',mw:'~200MW',s:'Expanding'},{n:'Meta (DeKalb)',mw:'~300MW',s:'Expanding'},{n:'QTS',mw:'~150MW',s:'Expanding'},{n:'Ameren IL customers',mw:'850MW',s:'In Queue'}] },
+  { id:'sva', name:'Silicon Valley', sub:'San Jose / Santa Clara / Sunnyvale', tier:'Tier 1', iso:'PG&E / SVP / CAISO', qDepth:'130 GW (CAISO)', qSub:'4.5 GW DC in 2025-26 study', waitColor:'f59e0b', waitText:'3-6 yrs', availClass:'avail-tight', constraints:['Premium land cost','CAISO queue reform','CA carbon-free mandates','Water restrictions'], dev:'CAISO new IPP Jun 2025 prioritizes proximity. South Bay $2B+ transmission approved for 2.5 GW 2026-2039.', trend:'↔', operators:[{n:'CAISO IPP queue',mw:'4.5 GW DC',s:'In Queue'}] },
+  { id:'atl', name:'Atlanta Metro', sub:'Douglasville / Lithia Springs / Norcross', tier:'Tier 1', iso:'Georgia Power / SERC', qDepth:'9,885 MW approved (PSC)', qSub:'17.9 GW gas in gen queue', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['5 new gas plants planned','Clean energy tension','Rate protection thru 2031','Generator queue inflation'], dev:'Plant Wansley groundbreaking Apr 30 (500 MW BESS + 1,500 MW gas). DOE + Southern Co. $26.5B federal loan (Feb 2026).', trend:'↔', operators:[{n:'Microsoft',mw:'324MW',s:'Under Construction'},{n:'T5 ATL-IV',mw:'200MW',s:'Under Construction'},{n:'Meta (Walton Co.)',mw:'~400MW',s:'Expanding'},{n:'Google (Douglas Co.)',mw:'~300MW',s:'Expanding'},{n:'QTS',mw:'250MW',s:'In Queue'}] },
+  { id:'pdx', name:'Portland / Hillsboro', sub:'Hillsboro / Beaverton / Boardman', tier:'Tier 1', iso:'PGE / WECC', qDepth:'400+ MW pipeline', qSub:'DeFlex methodology deployed', waitColor:'22c55e', waitText:'1-3 yrs', availClass:'avail-moderate', constraints:['Hydro variability','OR land use rules','Transmission expansion needed'], dev:'PGE + GridCARE DeFlex Oct 2025: 80 MW in 2026, 400+ MW by 2029. First US deployment.', trend:'↓', operators:[{n:'Google',mw:'~150MW',s:'Expanding'},{n:'Meta',mw:'~400MW',s:'Expanding'},{n:'Flexential',mw:'~60MW',s:'Expanding'},{n:'AWS Oregon',mw:'~500MW',s:'Operational'},{n:'PGE/GridCARE pipeline',mw:'400MW',s:'In Queue'}] },
+  { id:'nyc', name:'New York / New Jersey', sub:'NYC Metro / NNJ corridor', tier:'Tier 1', iso:'ConEd / PSE&G / PJM', qDepth:'~1,700 MW PSE&G queued', qSub:'Solar/storage/offshore wind', waitColor:'ef4444', waitText:'5-8+ yrs', availClass:'avail-critical', constraints:['PJM 8-yr avg wait','Highest power costs nationally','NYC Local Law 97 emissions','FERC colocation opportunity'], dev:'PJM Cycle 1: 811 projects/220 GW. 2027/28 BRA hit $333.44/MW-day cap. FERC colocation rules Dec 2025.', trend:'↑', operators:[{n:'PJM load queue',mw:'~1,700MW',s:'In Queue'},{n:'FERC colocation (PSE&G)',mw:'8 projects',s:'In Queue'}] },
+
+  // TIER 2
+  { id:'col', name:'Columbus, OH', sub:'New Albany / Dublin / Gahanna', tier:'Tier 2', iso:'AEP Ohio / PJM', qDepth:'30+ GW requests', qSub:'vs ~5 GW 2030 forecast', waitColor:'ef4444', waitText:'4-7 yrs', availClass:'avail-critical', constraints:['Queue pause lifted Jul 2025','8-yr contract minimum','$100K study fee (100 MW)','85% min demand charge'], dev:'AEP Ohio tariff approved PUCO Jul 9, 2025. 50+ DCs = 30+ GW. Load: 100→600 MW→5 GW (2030). $1.1B OH TX approved.', trend:'↑', operators:[{n:'Amazon',mw:'~600MW',s:'Expanding'},{n:'Cologix',mw:'~80MW',s:'Expanding'},{n:'Microsoft',mw:'$420M',s:'In Queue'},{n:'Google',mw:'~300MW',s:'In Queue'},{n:'Meta',mw:'~300MW',s:'In Queue'},{n:'AEP queue total',mw:'36 studies/13 GW',s:'In Queue'}] },
+  { id:'slc', name:'Salt Lake City, UT', sub:'West Jordan / Bluffdale / Draper', tier:'Tier 2', iso:'Rocky Mountain Power / WECC', qDepth:'Severely constrained', qSub:'Cannot fully serve until 2031+', waitColor:'ef4444', waitText:'5-7+ yrs', availClass:'avail-critical', constraints:['2031+ for new capacity','Self-supply via SB 132','Developers pivoting to on-site gas','15+ DC sites since 2021'], dev:'Utah SB 132 self-supply if RMP cannot serve. Stratos 9 GW off-grid campus MIDA approved. RMP cannot guarantee grid power before 2031.', trend:'↑', operators:[{n:'DataBank',mw:'~120MW',s:'In Queue'},{n:'Novva',mw:'20MW',s:'Operational'},{n:'Microsoft/Google/Meta',mw:'2031+',s:'In Queue'}] },
+  { id:'ind', name:'Indianapolis, IN', sub:'Decatur Twp / Franklin Twp / Lawrence', tier:'Tier 2', iso:'AES Indiana / Duke Energy IN / MISO', qDepth:'~300 MW active pipeline', qSub:'MISO queue further delayed', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['MISO queue delays','Gas expansion pressure','Zoning conflicts','Ratepayer cost concerns'], dev:'Amazon (New Carlisle) 1,092 MW UC. Google (Fort Wayne) + Meta (Lebanon) 250+ MW each UC. AES seeking gas thermal developers.', trend:'↔', operators:[{n:'Amazon (New Carlisle)',mw:'1,092MW',s:'Under Construction'},{n:'Google (Fort Wayne)',mw:'250+MW',s:'Under Construction'},{n:'Meta (Lebanon)',mw:'250+MW',s:'Under Construction'},{n:'Meta (Jeffersonville)',mw:'250+MW',s:'Under Construction'},{n:'Microsoft (Granger)',mw:'~500MW',s:'In Queue'}] },
+  { id:'rno', name:'Reno / Sparks, NV', sub:'Tahoe-Reno Industrial Center', tier:'Tier 2', iso:'NV Energy / WECC', qDepth:'49 GW (NV total)', qSub:'5,900 MW needed N. Nevada', waitColor:'ef4444', waitText:'4-6 yrs', availClass:'avail-critical', constraints:['Capacity quadrupling required','PUCN Rule 9 cost-sharing','Major transmission buildout','Greenlink underway'], dev:'NV Energy IRP: 5,900 MW new capacity for N. NV. Novva Tahoe Reno 60 MW/300K sqft. Greenlink Nevada TX underway.', trend:'↑', operators:[{n:'Novva (TRIC)',mw:'205 acres',s:'Under Construction'},{n:'Switch (TRIC Phase 2)',mw:'300+ acres',s:'In Queue'},{n:'Google',mw:'50-100MW',s:'In Queue'}] },
+  { id:'sat', name:'San Antonio, TX', sub:'West Side / Castroville corridor', tier:'Tier 2', iso:'CPS Energy / ERCOT', qDepth:'2 GW in queue', qSub:'vs 6,000 MW summer peak', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['$1.4B TX spend needed (5 yrs)','15 new ERCOT TX lines approved','AI-driven surge','Spruce 2 conversion'], dev:'CPS $1.4B transmission investment. Microsoft 8 DCs + $482M Castroville. Stream 200 MW broke ground Jul 2025.', trend:'↔', operators:[{n:'Stream',mw:'200MW',s:'Under Construction'},{n:'Microsoft',mw:'~300MW',s:'Expanding'},{n:'CyrusOne',mw:'~200MW',s:'Expanding'},{n:'ERCOT Batch Zero',mw:'2 GW',s:'In Queue'}] },
+  { id:'aus', name:'Austin, TX', sub:'North Austin / Cedar Park / Round Rock', tier:'Tier 2', iso:'Austin Energy / Oncor / ERCOT', qDepth:'Part of 410 GW TX total', qSub:'Austin Energy capacity constrained', waitColor:'ef4444', waitText:'4-6 yrs', availClass:'avail-tight', constraints:['Austin Energy load cap pressure','ERCOT Batch Zero backlog','Suburban Oncor territory growing','Water scarcity'], dev:'Austin Energy (municipal) serving city core; Oncor covers suburban hyperscale corridor. Water scarcity limits cooling.', trend:'↔', operators:[{n:'Iron Mountain AUS',mw:'—',s:'In Queue'},{n:'ERCOT Batch Zero',mw:'—',s:'In Queue'}] },
+  { id:'kci', name:'Kansas City, MO/KS', sub:'Lenexa / Overland Park / North KC', tier:'Tier 2', iso:'Evergy / MISO / SPP', qDepth:'15 GW total pipeline', qSub:'~5 GW advanced stage', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['Must double generation output','KS/MO parallel rate cases','Permitting delays','Defunct plant sites targeted'], dev:'KCC approved Evergy Power Service Rate Plan (75+ MW) Nov 6, 2025. 10+ hyperscale DC proposals Q1 2026. Google Project Mica $10B UC.', trend:'↔', operators:[{n:'Google (Project Mica)',mw:'$10B',s:'Under Construction'},{n:'Meta',mw:'~300MW',s:'In Queue'},{n:'Diode Ventures',mw:'~500MW',s:'In Queue'},{n:'20+ large-load customers',mw:'~6 GW',s:'In Queue'}] },
+  { id:'bna', name:'Nashville, TN', sub:'Gallatin / Murfreesboro / Smyrna', tier:'Tier 2', iso:'TVA / Nashville Electric', qDepth:'27 DCs in Nashville area', qSub:'DCs = 18% TVA industrial load', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['TVA coal reversal for DCs','Gas plant lag 2026-27','Rate equity concerns','Peak records broken 2025'], dev:'Cumberland gas (1.45 GW) online Sep 2026. Kingston coal kept running (Feb 2026 vote). TVA 6.2 GW build-out underway.', trend:'↔', operators:[{n:'Meta (Gallatin)',mw:'300MW',s:'Expanding'},{n:'Google (Clarksville)',mw:'~200MW',s:'Expanding'},{n:'xAI (Colossus Memphis)',mw:'250+MW',s:'Expanding'}] },
+  { id:'ric', name:'Richmond, VA', sub:'Henrico / Chester / Chesterfield', tier:'Tier 2', iso:'Dominion Energy / PJM', qDepth:'Part of 47.2 GW VA total', qSub:'NoVA spillover market', waitColor:'ef4444', waitText:'4-7 yrs', availClass:'avail-critical', constraints:['NoVA overflow pressure','Transmission saturation','New DC rate class Jan 2027','State import dependency'], dev:'VA special session Apr 23 recessed with no deal on $1.6B/yr tax exemption. DC rate class Jan 2027. VA GA 15 DC bills Mar 2026.', trend:'↑', operators:[{n:'Google (Project Peanut)',mw:'300 acres',s:'Under Construction'},{n:'Chirisa Tech Parks',mw:'1,000MW',s:'In Queue'}] },
+  { id:'smf', name:'Sacramento, CA', sub:'Elk Grove / Rancho Cordova / Natomas', tier:'Tier 2', iso:'SMUD / CAISO', qDepth:'CAISO: 126 GW total', qSub:'SMUD independent framework', waitColor:'f59e0b', waitText:'2-4 yrs', availClass:'avail-moderate', constraints:['SMUD annual window only','CA clean energy mandates','Ratepayer cost scrutiny'], dev:'SMUD 2026 application window: Jun 1 – Jul 15 (sole annual opportunity). El Rio Substation complete late 2026.', trend:'↔', operators:[{n:'SMUD 2026 window',mw:'—',s:'In Queue'}] },
+  { id:'qcy', name:'Quincy, WA', sub:'Central Washington / Grant County', tier:'Tier 2', iso:'Grant County PUD / BPA / WECC', qDepth:'~3,000 MW queued', qSub:'3x PUD peak; 1,578 MW Quincy', waitColor:'ef4444', waitText:'4-6 yrs (until QTEP)', availClass:'avail-critical', constraints:['Hard demand caps Q3 2025','Transmission bottleneck','QTEP in-service 2027-2029','DCs = 45% of PUD annual load'], dev:'Grant PUD hard demand caps. QTEP: new Wanapum Dam-Quincy line mid-2027. WA Governor Ferguson ordered DC impact assessment.', trend:'↑', operators:[{n:'9 existing DCs',mw:'—',s:'Operational'},{n:'New entrants',mw:'~3,000MW',s:'In Queue'}] },
+  { id:'cbl', name:'Council Bluffs, IA', sub:'Omaha Metro / Iowa side', tier:'Tier 2', iso:'MidAmerican Energy / MISO', qDepth:'800 MW solar approved', qSub:'518 MW gas plant pending IUC', waitColor:'22c55e', waitText:'2-4 yrs', availClass:'avail-moderate', constraints:['IUC approval for gas','Wind/solar reliability mix','Solar plan phased 2027-2028'], dev:'Google $5.5B invested; new $576M Cedar Rapids campus. 407 MW wind deal. MidAmerican 800 MW Solar Reliability IUC approved.', trend:'↓', operators:[{n:'Google',mw:'500+MW',s:'Expanding'},{n:'Meta (Council Bluffs)',mw:'~600MW',s:'Expanding'},{n:'Microsoft (W. Des Moines)',mw:'~300MW',s:'Expanding'}] },
+  { id:'dsm', name:'Des Moines / W. Des Moines, IA', sub:'Polk / Dallas County / Waukee', tier:'Tier 2', iso:'MidAmerican Energy / MISO', qDepth:'MISO load growth pressure', qSub:'800 MW solar + 465 MW gas planned', waitColor:'f59e0b', waitText:'2-3 yrs', availClass:'avail-tight', constraints:['MISO-wide congestion','Iowa wind curtailment','43% reduced MISO surplus 2025-26','HF 2447 DC reporting bill'], dev:'Microsoft 5 DCs + 6th campus (Project Ruthenium) starting 2026; $6B+ total. Apple Waukee opened Oct 2024. Orient Energy Center 465 MW gas spring 2028.', trend:'↑', operators:[{n:'Microsoft',mw:'100+MW',s:'Expanding'},{n:'Apple (Waukee)',mw:'~150MW',s:'Expanding'}] },
+  { id:'cdr', name:'Cedar Rapids, IA', sub:'Linn County / Big Cedar Industrial Park', tier:'Tier 2', iso:'Alliant Energy / MISO', qDepth:'200-300+ MW approved', qSub:'94 MW gas plant June 2027', waitColor:'22c55e', waitText:'1-2 yrs', availClass:'avail-moderate', constraints:['Prairie Creek pipeline timing','Linn Co. DC zoning Mar 2026','MISO wind curtailment'], dev:'Google $576M campus (first bldg 2026). QTS $10B campus (200-300+ MW) — largest economic dev in Iowa history. Alliant 94 MW gas June 2027.', trend:'↓', operators:[{n:'Google',mw:'$576M',s:'Under Construction'},{n:'QTS',mw:'200-300MW',s:'Under Construction'}] },
+  { id:'den', name:'Denver / Boulder, CO', sub:'Data Center Row (Denver / Aurora)', tier:'Tier 2', iso:'Xcel Energy / SPP / WECC', qDepth:'5.8 GW pending', qSub:'8.5 GW expected by 2040', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['$22B infrastructure needed','CO PUC 15-yr contracts required','Tariff suspended 120 days Apr 29','50 MW+ DCs pay full costs'], dev:'Xcel Large Load Tariff filed Apr 2. CO PUC suspended 120 days at Apr 29 meeting. 5.8 GW pending.', trend:'↑', operators:[{n:'QTS',mw:'177MW',s:'Under Construction'},{n:'Amazon',mw:'~200MW',s:'Expanding'},{n:'CoreSite',mw:'~120MW',s:'Expanding'},{n:'Xcel pipeline',mw:'5.8GW',s:'In Queue'}] },
+  { id:'clt', name:'Charlotte / Carolinas', sub:'Charlotte / Kannapolis / Research Triangle', tier:'Tier 2', iso:'Duke Energy / SERC', qDepth:'Tranche-based system', qSub:'2025 Carolinas Resource Plan filed', waitColor:'f59e0b', waitText:'3-6 yrs', availClass:'avail-tight', constraints:['Urban transmission limits','Tranche queue system','NCUC IRP hearings 2026','Dual rate cases 2025-2026'], dev:'Duke $103B capital plan Apr 25: 4.5 GW ESAs contracted. Pipeline approaching 9 GW. Digital Realty $160M 155-acre 4th Charlotte facility.', trend:'↔', operators:[{n:'Amazon (Richmond Co.)',mw:'$10B',s:'Under Construction'},{n:'Digital Realty',mw:'400MW',s:'In Queue'},{n:'Microsoft',mw:'~600MW',s:'In Queue'},{n:'Duke queue total',mw:'11.3 GW',s:'In Queue'}] },
+  { id:'stl', name:'St. Louis, MO', sub:'St. Charles County / Metro East IL', tier:'Tier 2', iso:'Ameren Missouri / MISO', qDepth:'3 GW construction agreements', qSub:'2.2 GW new signed Feb 2026', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-moderate', constraints:['100% direct interconnect cost upfront','2-yr min-bill security deposit','Confidential contracts','MISO fast-track DOE snag'], dev:'Ameren MO signed confidential 2.2 GW contracts Feb 2026. MO PSC approved large-load rate Nov 2025 ($38M nonrefundable).', trend:'↓', operators:[{n:'CRG/Clayco (Festus)',mw:'$6B/361 acres',s:'In Queue'},{n:'Ameren confidential',mw:'2.2GW',s:'In Queue'}] },
+  { id:'msp', name:'Minneapolis / Twin Cities', sub:'Eagan / Eden Prairie / Shakopee', tier:'Tier 2', iso:'Xcel Energy / MISO', qDepth:'2+ GW contracted', qSub:'6 GW expected in queue by 2027', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-moderate', constraints:['MN PUC large-load tariff rules','MN Energy Connection line','Clean energy 24/7 matching','Distributed capacity pilot'], dev:'Xcel + Google deal: 1,900 MW new clean energy for Pine Island MN DC (Feb 24, 2026). Meta (Rosemount) 800 MW UC.', trend:'↓', operators:[{n:'Meta (Rosemount)',mw:'800MW',s:'Under Construction'},{n:'Google (Pine Island)',mw:'1,900MW',s:'In Queue'},{n:'Microsoft (Becker)',mw:'~600MW',s:'In Queue'}] },
+  { id:'hou', name:'Houston, TX', sub:'Katy / Sugar Land / The Woodlands', tier:'Tier 2', iso:'CenterPoint Energy / ERCOT', qDepth:'1 GW to 8 GW', qSub:'Under 1 year jump', waitColor:'ef4444', waitText:'4-6 yrs', availClass:'avail-critical', constraints:['8x queue jump in 12 months','50% load rise by 2031','Grid upgrade lag','On-site gas as bridge'], dev:'CenterPoint queue: 1 GW to 8 GW in under 12 months. Google/Meta/Amazon/OpenAI all seeking Houston capacity.', trend:'↑', operators:[{n:'Google',mw:'~500MW',s:'In Queue'},{n:'Meta',mw:'~500MW',s:'In Queue'},{n:'Amazon',mw:'~500MW',s:'In Queue'},{n:'OpenAI',mw:'~300MW',s:'In Queue'},{n:'CenterPoint queue',mw:'1→8 GW',s:'In Queue'}] },
+  { id:'mia', name:'Miami / South Florida', sub:'Doral / Boca Raton / Fort Lauderdale', tier:'Tier 2', iso:'FPL / SERC', qDepth:'23.57 GW (FL statewide)', qSub:'FPL gen interconnection queue', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['Extreme heat/cooling peaks','Hurricane resiliency premium','FPL large-load tariff','Rate allocation dispute'], dev:'FPL LLCS tariff: 10.16¢/kWh, 20-yr contract, 100% new gen costs, 2028 earliest. Fort Meade $2.6B hyperscale approved Apr 15.', trend:'↔', operators:[{n:'Iron Mountain MIA-1',mw:'16MW',s:'Under Construction'},{n:'Metrobloks Miami',mw:'15.2MW',s:'Under Construction'},{n:'FPL LLCS pipeline',mw:'9GW',s:'In Queue'}] },
+  { id:'sea', name:'Seattle / Puget Sound', sub:'Redmond / Bellevue / Tukwila', tier:'Tier 2', iso:'PSE / BPA / WECC', qDepth:'Constrained', qSub:'First WA ISP in development', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['Transmission permits lag','WA clean energy mandate','10% demand response by Jan 2027','Hydro variability'], dev:'WA PSE developing first statewide ISP. WA Dec 2025 DC workgroup report. Microsoft/Amazon/Google campus density creates competing demand.', trend:'↔', operators:[{n:'Microsoft',mw:'~500MW',s:'Expanding'},{n:'Amazon',mw:'~400MW',s:'Expanding'},{n:'Google',mw:'~200MW',s:'Expanding'},{n:'PSE load queue',mw:'3,000+MW',s:'In Queue'}] },
+  { id:'boi', name:'Boise, ID', sub:'Kuna / Meridian / Nampa', tier:'Tier 2', iso:'Idaho Power / WECC', qDepth:'1,700 MW peak growth (20yr)', qSub:'1,000 MW over next 5 yrs', waitColor:'22c55e', waitText:'2-4 yrs', availClass:'avail-moderate', constraints:['Hyperscale newcomer market','Large loads fund own infrastructure','Cluster window Mar 2026','Rate case 2025'], dev:'Meta $800M AI data center Kuna (2026). Diode Ventures $1B Gemstone Park (620 acres, 5 DCs). Large loads fund own infrastructure.', trend:'↓', operators:[{n:'Meta (Kuna)',mw:'$800M',s:'Under Construction'},{n:'Diode Ventures (Gemstone)',mw:'600-800MW',s:'In Queue'}] },
+
+  // EMERGING
+  { id:'dtw', name:'Detroit / SE Michigan', sub:'Ann Arbor / Saline / Washtenaw Co.', tier:'Emerging', iso:'DTE Energy / Consumers / MISO', qDepth:'1.4 GW DTE deal signed', qSub:'15 GW Consumers pipeline', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-tight', constraints:['15-yr contract minimum','80% min demand billing','$7B DC approved Dec 2025','12 GW DTE new gen plan'], dev:'MPSC approved DTE $7B/1.4 GW Washtenaw contracts Dec 18, 2025. DTE plans 12 GW new gen 2026-2032.', trend:'↓', operators:[{n:'Oracle/Stargate (OpenAI)',mw:'1.4GW',s:'Under Construction'},{n:'Consumers 1GW hyperscale',mw:'1GW',s:'Under Construction'},{n:'Microsoft (Gaines Twp)',mw:'~200MW',s:'In Queue'},{n:'Google (Michigan)',mw:'~500MW',s:'In Queue'}] },
+  { id:'hsv', name:'Huntsville, AL', sub:'Madison County / Decatur corridor', tier:'Emerging', iso:'TVA / Huntsville Utilities', qDepth:'8 DCs operational', qSub:'DC = 18% TVA industrial load', waitColor:'22c55e', waitText:'2-4 yrs', availClass:'avail-moderate', constraints:['TVA supply chain lag','Gas plant completion pace','Competitive TVA power rates'], dev:'N. Alabama fastest-growing DC market nationally. 23 DCs statewide. TVA 6.2 GW build-out underway.', trend:'↓', operators:[{n:'Meta (Huntsville)',mw:'~200MW',s:'Expanding'},{n:'Meta (Montgomery)',mw:'$800M',s:'Under Construction'},{n:'DC BLOX',mw:'~60MW',s:'Expanding'}] },
+  { id:'pit', name:'Pittsburgh, PA', sub:'Homer City / Monroeville / Coraopolis', tier:'Emerging', iso:'FirstEnergy / Duquesne Light / PJM', qDepth:'Homer City: 4.5 GW planned', qSub:'PJM + NYISO dual grid', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-moderate', constraints:['PJM 8-yr queue backlog','Legacy grid infra','Colocation model opportunity','$10B project planned'], dev:'Homer City/Kiewit: 4.5 GW gas at retired coal plant (~50 mi E of Pittsburgh), $10B project. PA PUC Model Large Load Tariff May 1.', trend:'↓', operators:[{n:'Homer City/Kiewit',mw:'4.5GW',s:'Under Construction'},{n:'PJM queue (FirstEnergy)',mw:'—',s:'In Queue'}] },
+  { id:'cvg', name:'Cincinnati, OH', sub:'West Chester / Mason / Florence KY', tier:'Emerging', iso:'Duke Energy Ohio / AEP / PJM', qDepth:'Limited — Columbus overflow', qSub:'PJM coordination required', waitColor:'f59e0b', waitText:'3-5 yrs', availClass:'avail-moderate', constraints:['Columbus overflow path','PJM queue dependency','KY cross-border planning','AEP 24 GW new load by 2030'], dev:'AEP projects 24 GW new load by 2030 (mostly DCs). Duke Energy Ohio/Indiana converging demand.', trend:'↓', operators:[{n:'AEP Ohio queue',mw:'9.8-13GW statewide',s:'In Queue'},{n:'Columbus overflow developers',mw:'—',s:'In Queue'}] },
+  { id:'jax', name:'Jacksonville, FL', sub:'Nassau County / JIA corridor', tier:'Emerging', iso:'JEA / Duke Energy FL / FPL', qDepth:'Early-stage pipeline', qSub:'23.57 GW FL statewide', waitColor:'22c55e', waitText:'2-4 yrs', availClass:'avail-available', constraints:['Fiber connectivity gap vs Miami','Hurricane zone premium','JEA municipally owned utility'], dev:'NextNRG Nassau County Campus: 200 MW smart microgrid 1,600 acres near JIA. FL incentive packages reshaping DC growth (2025 legislation).', trend:'↓', operators:[{n:'NextNRG (Nassau Co.)',mw:'200MW',s:'In Queue'},{n:'JEA supply',mw:'675MW',s:'In Queue'}] },
+  { id:'tpa', name:'Tampa / St. Pete', sub:'Hillsborough County / Pinellas County', tier:'Emerging', iso:'Duke Energy FL / TECO (Emera) / SERC', qDepth:'Part of 23.57 GW FL statewide', qSub:'DEF & TECO gen queues', waitColor:'22c55e', waitText:'2-4 yrs', availClass:'avail-moderate', constraints:['Hurricane resiliency premium','TECO/Duke dual-utility complexity','Heat/cooling peak demand','FL SB 484 reclaimed water'], dev:'365 Data Centers expanding (early 2026). Duke FL part of $103B capital plan. Fort Meade $2.6B hyperscale (Polk Co.) approved Apr 15.', trend:'↔', operators:[{n:'365 Data Centers',mw:'~25MW',s:'Expanding'},{n:'DataBank',mw:'~30MW',s:'Expanding'},{n:'Fort Meade hyperscale',mw:'$2.6B/4.4M sqft',s:'In Queue'}] },
+  { id:'oma', name:'Omaha, NE', sub:'Sarpy County / La Vista / Papillion', tier:'Emerging', iso:'OPPD / SPP', qDepth:'+470 MW peak load since 2019', qSub:'SPP GIAs expected Jan 2026', waitColor:'22c55e', waitText:'2-4 yrs', availClass:'avail-moderate', constraints:['Coal retirement timing','SPP GIA dependency','6.3% rate hike 2026','N. Omaha Station transition'], dev:'Google + Meta hyperscale anchor "Silicon Prairie." OPPD $2.98B 2026 plan. Rates up 6.3%. SPP GIAs expected.', trend:'↓', operators:[{n:'Google (Douglas Co.)',mw:'1GW+',s:'Expanding'},{n:'Google (Sarpy Co.)',mw:'—',s:'Under Construction'},{n:'Meta (Springfield NE)',mw:'~300MW',s:'In Queue'}] },
+  { id:'wv', name:'West Virginia', sub:'Falling Waters / Berkeley County / Morgantown', tier:'Emerging', iso:'AEP / Mon Power / PJM', qDepth:'600 MW contracted (Penzance)', qSub:'First WV intelligence center', waitColor:'22c55e', waitText:'3-5 yrs', availClass:'avail-moderate', constraints:['PJM queue dependency','HB 2002 enabling legislation','AEP Mon Power transmission'], dev:'Penzance $4B/600 MW campus announced April 2026 in Falling Waters (548 acres). First WV "High Impact Intelligence Center."', trend:'↓', operators:[{n:'Penzance $4B/600MW',mw:'600MW',s:'In Queue'}] },
+  { id:'stratos', name:'Utah — Stratos Campus', sub:'Box Elder County (off-grid)', tier:'Emerging', iso:'Off-Grid (Ruby Pipeline gas)', qDepth:'9 GW planned (off-grid)', qSub:'2x Utah statewide avg. consumption', waitColor:'22c55e', waitText:'TBD (off-grid)', availClass:'avail-moderate', constraints:['Off-grid natural gas (Ruby Pipeline)','County zoning vote May 4','Community opposition','No utility grid connection'], dev:'MIDA approved 40,000-acre Stratos campus (Kevin O\'Leary). Box Elder Co. commissioner vote May 4, 2026. Largest single-site power footprint ever proposed in US.', trend:'↓', operators:[{n:'Stratos (Kevin O\'Leary/MIDA)',mw:'9,000MW',s:'In Queue'}] }
+];
+
+// =====================================================================
+// RENDER MARKET TABLE
+// =====================================================================
+let currentFilter = 'all';
+let currentSearch = '';
+let sortCol = -1;
+let sortDir = 1;
+
+function getOpStatusClass(s) {
+  if (s === 'Expanding') return 'op-expanding';
+  if (s === 'Under Construction') return 'op-uc';
+  if (s === 'In Queue') return 'op-iq';
+  if (s === 'Operational') return 'op-op';
+  return 'op-iq';
+}
+
+function renderOperators(ops) {
+  return ops.map(op => `
+    <div class="operator-item">
+      <span>${op.n} <strong style="color:var(--text)">${op.mw}</strong></span>
+      <span class="op-status ${getOpStatusClass(op.s)}">${op.s}</span>
+    </div>
+  `).join('');
+}
+
+function renderPolicy(id) {
+  const p = policyData[id];
+  if (!p) return '<div class="policy-item"><div class="policy-label">No policy data available</div></div>';
+  return `
+    <div class="policy-item"><div class="policy-label">Min Load Threshold</div><div class="policy-value">${p.minLoad}</div></div>
+    <div class="policy-item"><div class="policy-label">Take-or-Pay Requirement</div><div class="policy-value">${p.takeOrPay}</div></div>
+    <div class="policy-item"><div class="policy-label">Collateral / MW</div><div class="policy-value">${p.collateral}</div></div>
+    <div class="policy-item"><div class="policy-label">Contract Term</div><div class="policy-value">${p.term}</div></div>
+    ${p.note ? `<div class="policy-note">${p.note}</div>` : ''}
+  `;
+}
+
+function tierBadgeClass(tier) {
+  if (tier === 'Tier 1') return 'tier-1';
+  if (tier === 'Tier 2') return 'tier-2';
+  return 'tier-emerging';
+}
+
+function trendClass(t) {
+  if (t === '↑') return 'trend-up';
+  if (t === '↓') return 'trend-down';
+  return 'trend-flat';
+}
+
+function buildRows() {
+  let filtered = markets.filter(m => {
+    if (currentFilter !== 'all' && m.tier !== currentFilter) return false;
+    if (currentSearch) {
+      const s = currentSearch.toLowerCase();
+      return m.name.toLowerCase().includes(s) || m.iso.toLowerCase().includes(s) || m.sub.toLowerCase().includes(s) || m.tier.toLowerCase().includes(s) || m.operators.some(op => op.n.toLowerCase().includes(s));
+    }
+    return true;
+  });
+
+  if (sortCol >= 0) {
+    filtered = filtered.slice().sort((a, b) => {
+      const vals = [a.name, a.tier, a.iso, a.qDepth, a.waitText, a.availClass, policyData[a.id]?.minLoad||'', policyData[a.id]?.takeOrPay||'', policyData[a.id]?.collateral||'', policyData[a.id]?.term||'', a.trend];
+      const vb = [b.name, b.tier, b.iso, b.qDepth, b.waitText, b.availClass, policyData[b.id]?.minLoad||'', policyData[b.id]?.takeOrPay||'', policyData[b.id]?.collateral||'', policyData[b.id]?.term||'', b.trend];
+      return sortDir * vals[sortCol].localeCompare(vb[sortCol]);
+    });
+  }
+
+  const tbody = document.getElementById('marketTbody');
+  tbody.innerHTML = '';
+
+  filtered.forEach(m => {
+    const p = policyData[m.id] || {};
+    const tr = document.createElement('tr');
+    tr.className = 'market-row';
+    tr.dataset.id = m.id;
+    tr.innerHTML = `
+      <td>
+        <div class="market-name-cell">
+          <div class="name">${m.name}</div>
+          <div class="sub">${m.sub}</div>
+        </div>
+      </td>
+      <td><span class="tier-badge ${tierBadgeClass(m.tier)}">${m.tier}</span></td>
+      <td style="color:var(--secondary);font-size:12px">${m.iso}</td>
+      <td style="font-size:12px"><strong>${m.qDepth}</strong><br><span style="color:var(--muted);font-size:11px">${m.qSub}</span></td>
+      <td><span class="wait-dot" style="background:#${m.waitColor}"></span>${m.waitText}</td>
+      <td><span class="avail-badge ${m.availClass}">${m.availClass.replace('avail-','').toUpperCase()}</span></td>
+      <td style="font-size:12px">${p.minLoad || '—'}</td>
+      <td style="font-size:12px">${p.takeOrPay || '—'}</td>
+      <td style="font-size:12px">${p.collateral || '—'}</td>
+      <td style="font-size:12px">${p.term || '—'}</td>
+      <td style="font-size:16px" class="${trendClass(m.trend)}">${m.trend}</td>
+      <td><button class="expand-btn" data-id="${m.id}" onclick="toggleExpand(event,'${m.id}')">+</button></td>
+    `;
+    tr.onclick = function(e) { if (!e.target.closest('button')) toggleExpand(e, m.id); };
+    tbody.appendChild(tr);
+
+    // expand row (hidden)
+    const exTr = document.createElement('tr');
+    exTr.className = 'expand-row';
+    exTr.id = 'expand-' + m.id;
+    exTr.style.display = 'none';
+    exTr.innerHTML = `<td colspan="12">
+      <div class="expand-panel">
+        <div class="expand-half">
+          <h4>Interconnection Queue — Who's Ahead</h4>
+          ${renderOperators(m.operators)}
+          <div style="margin-top:10px;font-size:11px;color:var(--muted);font-style:italic">${m.dev}</div>
+        </div>
+        <div class="expand-half">
+          <h4>Policy Requirements — What You're Committing To</h4>
+          ${renderPolicy(m.id)}
+        </div>
+      </div>
+    </td>`;
+    tbody.appendChild(exTr);
+  });
+}
+
+function toggleExpand(e, id) {
+  if (e) e.stopPropagation();
+  const row = document.getElementById('expand-' + id);
+  const btn = document.querySelector(`button[data-id="${id}"]`);
+  const isOpen = row.style.display !== 'none';
+  row.style.display = isOpen ? 'none' : 'table-row';
+  if (btn) btn.textContent = isOpen ? '+' : '−';
+}
+
+function filterMarkets(tier, btn) {
+  currentFilter = tier;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildRows();
+}
+
+function searchMarkets(val) {
+  currentSearch = val;
+  buildRows();
+}
+
+function sortTable(col) {
+  if (sortCol === col) sortDir *= -1;
+  else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll('table.market-table th').forEach((th, i) => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (i === col) th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+  });
+  buildRows();
+}
+
+// =====================================================================
+// GRID OPERATOR CARDS
+// =====================================================================
+const gridOps = [
+  { name: 'PJM', sub: '13 states + DC', status: 'CRITICAL', statusClass: 'status-critical',
+    stats: [{ l: 'Peak Load', v: '~154 GW' }, { l: 'Cycle 1 Queue', v: '811 projects' }, { l: 'Total GW', v: '220 GW' }, { l: 'Avg Wait', v: '8+ yrs' }],
+    detail: 'PJM Cycle 1 Results (Apr 27, 2026): 811 projects / 220 GW. DCs = 40% of capacity auction costs ($6.5B of $16.4B). Phase I studies begin Jul 28, 2026. 2027/28 BRA hit $333.44/MW-day cap. FERC colocation rules Dec 2025 created 3 new service tiers. BTM reforms Feb 23. Major transmission investment required across footprint.' },
+  { name: 'ERCOT', sub: 'Texas (isolated grid)', status: 'CRITICAL', statusClass: 'status-critical',
+    stats: [{ l: 'Large-Load Queue', v: '410 GW' }, { l: 'DC Queue Share', v: '87%' }, { l: 'Approved (12 mo)', v: '~2,168 MW' }, { l: 'Batch Zero', v: 'May 6-7 vote' }],
+    detail: 'ERCOT large-load queue: 410 GW total; 87% from data centers. Batch Zero PGRR145 governance votes May 6-7, 2026. Only ~2,168 MW approved to energize in past 12 months vs 410 GW queued. Oncor Southern DFW 765-kV line decision Jun 2026. TX SB 6 compliance required for all new large loads. Sequential study backlog creating multi-year delays.' },
+  { name: 'MISO', sub: '15 states + Manitoba', status: 'CONSTRAINED', statusClass: 'status-constrained',
+    stats: [{ l: 'Queue Total', v: '353 GW' }, { l: 'Requests', v: '1,696' }, { l: 'Peak Load', v: '~127 GW' }, { l: 'Load Growth', v: '35% by 2035' }],
+    detail: 'MISO ERAS Cycle 3 underway: 15 projects / 8.8 GW. 353 GW queue (1,696 requests). 35% load growth projected by 2035. Ameren IL signed 850 MW DC agreements ($46M nonrefundable). Plainfield IL DC moratorium Apr 2026. 43% reduced MISO surplus 2025-26. Iowa wind curtailment issue. Iowa HF 2447 quarterly reporting.' },
+  { name: 'CAISO', sub: 'California', status: 'MODERATE', statusClass: 'status-moderate',
+    stats: [{ l: 'Queue Total', v: '130 GW' }, { l: 'Projects', v: '427' }, { l: 'DC in Study', v: '4.5 GW (2025-26)' }, { l: 'Next Window', v: 'Oct 1-15, 2026' }],
+    detail: 'CAISO 130 GW (427 projects). New Interconnection Process Procedure (IPP) Board-approved Mar 2026, effective Jun 2025: prioritizes proximity to load. South Bay $2B+ transmission approved for 2.5 GW (2026-2039). Cluster 16 application window Oct 1-15 2026. CA carbon-free mandates add cost pressure. Santa Clara SVP operates independently.' },
+  { name: 'TVA', sub: 'Tennessee Valley region', status: 'CONSTRAINED', statusClass: 'status-constrained',
+    stats: [{ l: 'DC % Industrial Load', v: '18%' }, { l: 'New Build', v: '6.2 GW' }, { l: 'Cumberland Gas', v: 'Online Sep 2026' }, { l: 'Contract Minimum', v: '5 MW / 20yr' }],
+    detail: 'TVA DCs = 18% of industrial load. 6.2 GW build-out underway. Cumberland gas plant (1.45 GW) ahead of schedule — online Sep 2026. Kingston coal plant kept running (Feb 2026 board vote). Meta (Gallatin) 300 MW expanding. Google (Clarksville) ~200 MW expanding. xAI Colossus Memphis 250+ MW. Rate equity concerns rising. 100% demand charge floor policy.' },
+  { name: 'WECC / Northwest / Rockies', sub: 'Western Interconnect', status: 'MIXED', statusClass: 'status-mixed',
+    stats: [{ l: 'NV Queue', v: '49 GW' }, { l: 'Grant PUD', v: 'Demand caps' }, { l: 'RMP Grid Service', v: 'Cannot serve until 2031+' }, { l: 'PGE DeFlex', v: '400+ MW by 2029' }],
+    detail: 'NV Energy IRP: 5,900 MW new capacity needed for N. Nevada. Rocky Mountain Power cannot guarantee grid power before 2031; Utah SB 132 self-supply enabled. Grant County PUD placed hard demand caps Q3 2025; QTEP new Wanapum Dam-Quincy line mid-2027. PGE + GridCARE DeFlex Oct 2025: 80 MW in 2026, 400+ MW by 2029 — first US deployment. Greenlink Nevada transmission underway.' }
+];
+
+function renderGridCards() {
+  const container = document.getElementById('gridCards');
+  gridOps.forEach((op, i) => {
+    const card = document.createElement('div');
+    card.className = 'grid-card';
+    card.innerHTML = `
+      <div class="grid-card-header" onclick="toggleGridCard(${i})">
+        <div>
+          <div class="grid-card-name">${op.name}</div>
+          <div class="grid-card-sub">${op.sub}</div>
+        </div>
+        <span class="status-pill ${op.statusClass}">${op.status}</span>
+      </div>
+      <div class="grid-card-body" id="grid-body-${i}">
+        <div class="grid-stat-row">
+          ${op.stats.map(s => `<div class="grid-stat"><div class="label">${s.l}</div><div class="value">${s.v}</div></div>`).join('')}
+        </div>
+        <p style="font-size:12px;color:var(--secondary);line-height:1.6">${op.detail}</p>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleGridCard(i) {
+  const body = document.getElementById('grid-body-' + i);
+  body.classList.toggle('open');
+}
+
+// =====================================================================
+// INIT
+// =====================================================================
+document.addEventListener('DOMContentLoaded', function() {
+  buildRows();
+  renderGridCards();
+  initMap();
+  window._mapInit = true;
+});
+</script>
+</body>
+</html>
