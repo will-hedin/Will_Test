@@ -265,7 +265,6 @@
   <div class="map-layer-bar">
     <span class="layer-label">Layers:</span>
     <button class="layer-btn" id="btn-power"    onclick="toggleMapLayer('power')">⚡ Power Grid</button>
-    <button class="layer-btn" id="btn-telecoms" onclick="toggleMapLayer('telecoms')">📡 Telecoms</button>
     <button class="layer-btn" id="btn-cables"   onclick="toggleMapLayer('cables')">🌊 Submarine Cables</button>
     <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
     <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🤖 AI Clusters</button>
@@ -809,16 +808,6 @@ function toggleMapLayer(name) {
   if (name === 'power') {
     _showFilterGroup('grid-filter-group');
     _loadPowerGrid(_gridVoltMin || 345, stat);
-
-  } else if (name === 'telecoms') {
-    if (!_ovLayers.telecoms) {
-      _ovLayers.telecoms = L.tileLayer(
-        'https://tiles-{s}.openinframap.org/telecoms/{z}/{x}/{y}.png',
-        { subdomains: ['a','b','c'], maxZoom: 19, opacity: 0.85,
-          attribution: '© <a href="https://openinframap.org" target="_blank">OpenInfraMap</a> / OSM contributors' }
-      );
-    }
-    _ovLayers.telecoms.addTo(map);
 
   } else if (name === 'cables') {
     _loadITUCables(map, stat, btn);
