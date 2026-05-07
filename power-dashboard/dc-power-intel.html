@@ -298,8 +298,8 @@
     <div id="grid-filter-group" style="display:none;align-items:center;gap:5px;flex-wrap:wrap">
       <span class="filter-group-label">Grid voltage:</span>
       <button class="sub-filter-btn" onclick="applyGridFilter(115,this)" style="border-color:#60a5fa;color:#60a5fa">≥115 kV</button>
-      <button class="sub-filter-btn active" onclick="applyGridFilter(230,this)" style="border-color:#22c55e;color:#22c55e">≥230 kV</button>
-      <button class="sub-filter-btn" onclick="applyGridFilter(345,this)" style="border-color:#eab308;color:#eab308">≥345 kV</button>
+      <button class="sub-filter-btn" onclick="applyGridFilter(230,this)" style="border-color:#22c55e;color:#22c55e">≥230 kV</button>
+      <button class="sub-filter-btn active" onclick="applyGridFilter(345,this)" style="border-color:#eab308;color:#eab308">≥345 kV</button>
       <button class="sub-filter-btn" onclick="applyGridFilter(500,this)" style="border-color:#f97316;color:#f97316">≥500 kV</button>
       <button class="sub-filter-btn" onclick="applyGridFilter(765,this)" style="border-color:#ef4444;color:#ef4444">765 kV</button>
     </div>
@@ -807,7 +807,7 @@ function toggleMapLayer(name) {
 
   if (name === 'power') {
     _showFilterGroup('grid-filter-group');
-    _loadPowerGrid(_gridVoltMin, stat);
+    _loadPowerGrid(_gridVoltMin || 345, stat);
 
   } else if (name === 'telecoms') {
     if (!_ovLayers.telecoms) {
@@ -1102,15 +1102,9 @@ function applyPlantFilter(fuel, clickedBtn) {
   _loadPowerPlants(fuel, stat);
 }
 
-// ── Power Grid (OSM transmission lines via Overpass) ───────────────────────
-let _gridVoltMin = 230;
-const _gridVoltRegex = {
-  115: '115000|138000|161000|230000|345000|500000|765000',
-  230: '230000|345000|500000|765000',
-  345: '345000|500000|765000',
-  500: '500000|765000',
-  765: '765000'
-};
+// ── Power Grid (HIFLD transmission lines, CORS-safe) ──────────────────────
+const HIFLD_TX = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Electric_Power_Transmission_Lines/FeatureServer/0/query';
+let _gridVoltMin = 345;
 function _gridColor(vKv) {
   if (vKv >= 765) return '#ef4444';
   if (vKv >= 500) return '#f97316';
@@ -1134,40 +1128,49 @@ async function _loadPowerGrid(voltMin, stat) {
   if (_ovLayers.power) { map.removeLayer(_ovLayers.power); _ovLayers.power = null; }
   if (stat) stat.textContent = 'Loading transmission lines…';
 
-  const vReg = _gridVoltRegex[voltMin] || _gridVoltRegex[230];
-  const query = `[out:json][timeout:60];way[power=line]["voltage"~"${vReg}"](${US_BBOX});out geom qt 3000;`;
+  const PAGE = 2000;
+  const MAX  = voltMin >= 345 ? 8000 : 6000;
+  let allFeatures = [];
+  let offset = 0;
 
   try {
-    const res = await fetch(OVERPASS, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: 'data=' + encodeURIComponent(query)
-    });
-    const data = await res.json();
-    const elements = data.elements || [];
+    while (allFeatures.length < MAX) {
+      const url = `${HIFLD_TX}?where=VOLTAGE+%3E%3D+${voltMin}` +
+        `&outFields=VOLTAGE,OWNER,SUB_1,SUB_2` +
+        `&f=geojson&outSR=4326&resultRecordCount=${PAGE}&resultOffset=${offset}&geometryPrecision=4`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      const page = data.features || [];
+      allFeatures = allFeatures.concat(page);
+      if (stat && allFeatures.length > PAGE) stat.textContent = `Loading… ${allFeatures.length} lines`;
+      if (page.length < PAGE) break;
+      offset += PAGE;
+    }
+
     const layer = L.layerGroup();
-    elements.forEach(el => {
-      if (!el.geometry?.length) return;
-      const tags = el.tags || {};
-      const vStr = (tags.voltage || '').split(';')[0];
-      const vKv  = Math.round((parseInt(vStr) || 0) / 1000);
-      const col  = _gridColor(vKv);
-      const wt   = _gridWeight(vKv);
-      const latlngs = el.geometry.map(pt => [pt.lat, pt.lon]);
-      const line = L.polyline(latlngs, { color: col, weight: wt, opacity: 0.8 });
-      const circuits = tags.circuits ? ` · ${tags.circuits} circuit${tags.circuits>1?'s':''}` : '';
-      line.bindPopup(`
-        <div class="popup-title" style="color:${col}">${tags.name || 'Transmission Line'}</div>
-        <div class="popup-row"><span class="popup-label">Voltage</span><span class="popup-val">${vKv ? vKv + ' kV' : '—'}</span></div>
-        ${tags.operator ? `<div class="popup-row"><span class="popup-label">Operator</span><span class="popup-val">${tags.operator}</span></div>` : ''}
-        ${tags.cables   ? `<div class="popup-row"><span class="popup-label">Cables</span><span class="popup-val">${tags.cables}${circuits}</span></div>` : ''}
-        ${tags.ref      ? `<div class="popup-row"><span class="popup-label">Ref</span><span class="popup-val">${tags.ref}</span></div>` : ''}
-        <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: OpenStreetMap</div>
-      `);
-      layer.addLayer(line);
+    allFeatures.forEach(f => {
+      const p     = f.properties || {};
+      const vKv   = p.VOLTAGE || 0;
+      const col   = _gridColor(vKv);
+      const wt    = _gridWeight(vKv);
+      const geom  = f.geometry;
+      if (!geom?.coordinates?.length) return;
+      const rings = geom.type === 'MultiLineString' ? geom.coordinates : [geom.coordinates];
+      rings.forEach(ring => {
+        const latlngs = ring.map(([lon, lat]) => [lat, lon]);
+        const line = L.polyline(latlngs, { color: col, weight: wt, opacity: 0.85 });
+        const title = (p.SUB_1 && p.SUB_2) ? `${p.SUB_1} → ${p.SUB_2}` : 'Transmission Line';
+        line.bindPopup(`
+          <div class="popup-title" style="color:${col}">${title}</div>
+          <div class="popup-row"><span class="popup-label">Voltage</span><span class="popup-val">${vKv ? vKv + ' kV' : '—'}</span></div>
+          ${p.OWNER && p.OWNER !== 'NOT AVAILABLE' ? `<div class="popup-row"><span class="popup-label">Owner</span><span class="popup-val">${p.OWNER}</span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: HIFLD Open Data</div>
+        `);
+        layer.addLayer(line);
+      });
     });
     _ovLayers.power = layer.addTo(map);
-    if (stat) stat.textContent = `${elements.length} lines ≥${voltMin} kV`;
+    if (stat) stat.textContent = `${allFeatures.length} lines ≥${voltMin} kV`;
   } catch(e) {
     if (stat) stat.textContent = 'Grid data unavailable';
   }
