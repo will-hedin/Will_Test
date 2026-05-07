@@ -274,6 +274,8 @@
     <button class="layer-btn" id="btn-substations"  onclick="toggleMapLayer('substations')">🔌 Substations</button>
     <button class="layer-btn" id="btn-powerplants"  onclick="toggleMapLayer('powerplants')">🏭 Power Plants</button>
     <span class="layer-divider">·</span>
+    <button class="layer-btn" id="btn-satellite" onclick="toggleSatellite()">🛰 Satellite</button>
+    <span class="layer-divider">·</span>
     <a class="layer-btn" href="https://experience.arcgis.com/experience/0a317e8998534c30a9b2d3861c814d42/" target="_blank" rel="noopener">🛡 FEMA RAPT ↗</a>
     <span id="layer-status"></span>
   </div>
@@ -696,15 +698,25 @@ const providers = {
 function initMap() {
   window._mapInit = true;
   const map = L.map('map', { center: [39.5, -98.5], zoom: 4 });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    className: 'map-tiles'
-  }).addTo(map);
 
-  // Add dark filter via CSS
+  // Add dark filter via CSS (only applies to OSM tiles via className)
   const style = document.createElement('style');
-  style.textContent = '.map-tiles { filter: brightness(0.7) invert(1) contrast(1.1) hue-rotate(180deg) saturate(0.5) brightness(0.7); }';
+  style.textContent = '.map-tiles-dark { filter: brightness(0.7) invert(1) contrast(1.1) hue-rotate(180deg) saturate(0.5) brightness(0.7); }';
   document.head.appendChild(style);
+
+  const _baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    className: 'map-tiles-dark',
+    maxZoom: 19
+  });
+  const _baseSat = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    { attribution: 'Tiles © Esri — Source: Esri, USGS, NOAA', maxZoom: 19 }
+  );
+  _baseOSM.addTo(map);
+  window._baseOSM = _baseOSM;
+  window._baseSat = _baseSat;
+  window._satActive = false;
 
   const layers = {};
 
@@ -831,6 +843,23 @@ function toggleMapLayer(name) {
   } else if (name === 'powerplants') {
     _showFilterGroup('plant-filter-group');
     _loadPowerPlants('ALL', stat);
+  }
+}
+
+function toggleSatellite() {
+  const map = window._leafletMap;
+  const btn = document.getElementById('btn-satellite');
+  if (!map) return;
+  if (window._satActive) {
+    map.removeLayer(window._baseSat);
+    window._baseOSM.addTo(map);
+    window._satActive = false;
+    btn.classList.remove('active', 'active-epoch');
+  } else {
+    map.removeLayer(window._baseOSM);
+    window._baseSat.addTo(map);
+    window._satActive = true;
+    btn.classList.add('active', 'active-epoch');
   }
 }
 
