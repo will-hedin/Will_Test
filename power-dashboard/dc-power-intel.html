@@ -69,6 +69,16 @@
   .layer-btn.active-cables { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: #38bdf8; }
   .layer-btn.active-ixps { background: rgba(167,139,250,0.15); color: #a78bfa; border-color: #a78bfa; }
   .layer-btn.active-epoch { background: rgba(250,204,21,0.15); color: #facc15; border-color: #facc15; }
+  .layer-btn.active-rail      { background: rgba(107,114,128,0.15); color: #9ca3af; border-color: #6b7280; }
+  .layer-btn.active-rail-elec { background: rgba(34,197,94,0.15);  color: #22c55e; border-color: #22c55e; }
+  .layer-btn.active-substations { background: rgba(245,158,11,0.15); color: #f59e0b; border-color: #f59e0b; }
+  .layer-btn.active-powerplants { background: rgba(239,68,68,0.15);  color: #ef4444; border-color: #ef4444; }
+  .layer-divider { color: var(--border); padding: 0 2px; font-size: 16px; }
+  .hifld-filter-row { display: flex; align-items: flex-start; gap: 12px; padding: 6px 0 4px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .filter-group-label { font-size: 11px; color: var(--secondary); font-weight: 600; white-space: nowrap; }
+  .sub-filter-btn { padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border); background: var(--card); color: var(--secondary); cursor: pointer; font-size: 11px; transition: all 0.2s; }
+  .sub-filter-btn:hover { border-color: var(--accent); color: var(--text); }
+  .sub-filter-btn.active { background: rgba(79,142,247,0.18); color: var(--accent); border-color: var(--accent); }
   #layer-status { font-size: 11px; color: var(--secondary); margin-left: 6px; }
   .map-legend { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 160px; }
   .map-legend h4 { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; margin-bottom: 8px; }
@@ -258,7 +268,32 @@
     <button class="layer-btn" id="btn-cables"   onclick="toggleMapLayer('cables')">🌊 Submarine Cables</button>
     <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
     <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🛰 Epoch AI Sites</button>
+    <span class="layer-divider">·</span>
+    <button class="layer-btn" id="btn-rail"         onclick="toggleMapLayer('rail')">🚂 Railways</button>
+    <button class="layer-btn" id="btn-rail-elec"    onclick="toggleMapLayer('rail-elec')">⚡ Electrified Rail</button>
+    <button class="layer-btn" id="btn-substations"  onclick="toggleMapLayer('substations')">🔌 Substations</button>
+    <button class="layer-btn" id="btn-powerplants"  onclick="toggleMapLayer('powerplants')">🏭 Power Plants</button>
     <span id="layer-status"></span>
+  </div>
+  <div id="hifld-filter-row" class="hifld-filter-row" style="display:none">
+    <div id="sub-filter-group" style="display:none;align-items:center;gap:5px;flex-wrap:wrap">
+      <span class="filter-group-label">Substation voltage:</span>
+      <button class="sub-filter-btn" onclick="applySubFilter(0,this)">All</button>
+      <button class="sub-filter-btn active" onclick="applySubFilter(115,this)">≥115 kV</button>
+      <button class="sub-filter-btn" onclick="applySubFilter(230,this)">≥230 kV</button>
+      <button class="sub-filter-btn" onclick="applySubFilter(345,this)">≥345 kV</button>
+      <button class="sub-filter-btn" onclick="applySubFilter(500,this)">≥500 kV</button>
+    </div>
+    <div id="plant-filter-group" style="display:none;align-items:center;gap:5px;flex-wrap:wrap">
+      <span class="filter-group-label">Plant fuel:</span>
+      <button class="sub-filter-btn active" onclick="applyPlantFilter('ALL',this)">All</button>
+      <button class="sub-filter-btn" onclick="applyPlantFilter('NG',this)">Gas</button>
+      <button class="sub-filter-btn" onclick="applyPlantFilter('NU',this)">Nuclear</button>
+      <button class="sub-filter-btn" onclick="applyPlantFilter('COL',this)">Coal</button>
+      <button class="sub-filter-btn" onclick="applyPlantFilter('SUN',this)">Solar</button>
+      <button class="sub-filter-btn" onclick="applyPlantFilter('WND',this)">Wind</button>
+      <button class="sub-filter-btn" onclick="applyPlantFilter('WAT',this)">Hydro</button>
+    </div>
   </div>
   <div id="map"></div>
 </div>
@@ -748,6 +783,9 @@ function toggleMapLayer(name) {
     _ovActive[name] = false;
     if (btn) { btn.classList.remove('active', 'active-' + name); }
     if (stat) stat.textContent = '';
+    // Hide filter rows if neither HIFLD layer is active
+    if (name === 'substations') _hideFilterGroup('sub-filter-group');
+    if (name === 'powerplants') _hideFilterGroup('plant-filter-group');
     return;
   }
 
@@ -783,6 +821,34 @@ function toggleMapLayer(name) {
 
   } else if (name === 'epoch') {
     _loadEpochLayer(map, stat, btn);
+
+  } else if (name === 'rail') {
+    if (!_ovLayers.rail) {
+      _ovLayers.rail = L.tileLayer(
+        'https://tiles.openrailwaymap.org/standard/{z}/{x}/{y}.png',
+        { maxZoom: 19, opacity: 0.8,
+          attribution: 'Data © <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, Style: CC-BY-SA 2.0 <a href="https://openrailwaymap.org" target="_blank">OpenRailwayMap</a>' }
+      );
+    }
+    _ovLayers.rail.addTo(map);
+
+  } else if (name === 'rail-elec') {
+    if (!_ovLayers['rail-elec']) {
+      _ovLayers['rail-elec'] = L.tileLayer(
+        'https://tiles.openrailwaymap.org/electrification/{z}/{x}/{y}.png',
+        { maxZoom: 19, opacity: 0.85,
+          attribution: 'Data © <a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors, Style: CC-BY-SA 2.0 <a href="https://openrailwaymap.org" target="_blank">OpenRailwayMap</a>' }
+      );
+    }
+    _ovLayers['rail-elec'].addTo(map);
+
+  } else if (name === 'substations') {
+    _showFilterGroup('sub-filter-group');
+    _loadSubstations(115, stat);
+
+  } else if (name === 'powerplants') {
+    _showFilterGroup('plant-filter-group');
+    _loadPowerPlants('ALL', stat);
   }
 }
 
@@ -877,6 +943,139 @@ function _loadEpochLayer(map, stat, btn) {
   });
   _ovLayers.epoch = L.layerGroup(markers).addTo(map);
   if (stat) stat.textContent = `${usData.length} Epoch AI sites`;
+}
+
+// ── HIFLD Feature Service helpers (FEMA RAPT / DHS HIFLD) ─────────────────────
+const HIFLD = 'https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services';
+let _subVoltMin = 115;
+let _plantFuel  = 'ALL';
+
+function _showFilterGroup(id) {
+  document.getElementById('hifld-filter-row').style.display = 'flex';
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'flex';
+}
+function _hideFilterGroup(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'none';
+  // Hide outer row if both groups hidden
+  const sub = document.getElementById('sub-filter-group');
+  const pla = document.getElementById('plant-filter-group');
+  if (sub?.style.display === 'none' && pla?.style.display === 'none')
+    document.getElementById('hifld-filter-row').style.display = 'none';
+}
+
+function _subColor(v) {
+  if (v >= 500) return '#ef4444';
+  if (v >= 345) return '#f97316';
+  if (v >= 230) return '#eab308';
+  if (v >= 115) return '#84cc16';
+  return '#94a3b8';
+}
+const _plantColor = { NG:'#6b7280', NU:'#22c55e', COL:'#78350f', SUN:'#facc15',
+                      WND:'#60a5fa', WAT:'#06b6d4', OIL:'#dc2626', GEO:'#f97316' };
+const _fuelLabel  = { NG:'Natural Gas', NU:'Nuclear', COL:'Coal', SUN:'Solar',
+                      WND:'Wind', WAT:'Hydro', OIL:'Oil/Petroleum', GEO:'Geothermal' };
+
+async function _loadSubstations(voltMin, stat) {
+  const map = window._leafletMap;
+  if (!map) return;
+  _subVoltMin = voltMin;
+  if (_ovLayers.substations) { map.removeLayer(_ovLayers.substations); _ovLayers.substations = null; }
+  if (stat) stat.textContent = 'Loading substations…';
+
+  const where = voltMin > 0 ? `VOLTAGE%20>%3D%20${voltMin}` : '1%3D1';
+  const url = `${HIFLD}/Electric_Substations/FeatureServer/0/query?where=${where}` +
+    `&outFields=NAME,STATE,COUNTY,VOLTAGE,TYPE,STATUS,MAX_VOLT&f=geojson&outSR=4326&resultRecordCount=3000`;
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    const features = data.features || [];
+    _ovLayers.substations = L.geoJSON(data, {
+      pointToLayer: (f, latlng) => {
+        const v = f.properties?.VOLTAGE || f.properties?.MAX_VOLT || 0;
+        return L.circleMarker(latlng, {
+          radius: Math.max(4, Math.min(10, 2 + v / 80)),
+          fillColor: _subColor(v), color: '#000',
+          weight: 0.5, fillOpacity: 0.8
+        });
+      },
+      onEachFeature(f, layer) {
+        const p = f.properties || {};
+        layer.bindPopup(`
+          <div class="popup-title" style="color:#f59e0b">${p.NAME || 'Substation'}</div>
+          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Electric Substation</span></div>
+          ${p.VOLTAGE ? `<div class="popup-row"><span class="popup-label">Voltage</span><span class="popup-val">${p.VOLTAGE} kV</span></div>` : ''}
+          ${p.STATE   ? `<div class="popup-row"><span class="popup-label">State</span><span class="popup-val">${p.STATE}</span></div>` : ''}
+          ${p.COUNTY  ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${p.COUNTY}</span></div>` : ''}
+          ${p.STATUS  ? `<div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.STATUS}</span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: HIFLD / FEMA RAPT</div>
+        `);
+      }
+    }).addTo(map);
+    if (stat) stat.textContent = `${features.length} substations${voltMin > 0 ? ` ≥${voltMin} kV` : ''}`;
+  } catch(e) {
+    if (stat) stat.textContent = 'Substation data unavailable';
+  }
+}
+
+async function _loadPowerPlants(fuel, stat) {
+  const map = window._leafletMap;
+  if (!map) return;
+  _plantFuel = fuel;
+  if (_ovLayers.powerplants) { map.removeLayer(_ovLayers.powerplants); _ovLayers.powerplants = null; }
+  if (stat) stat.textContent = 'Loading power plants…';
+
+  const where = fuel === 'ALL' ? '1%3D1' : `PRIMVSOURCE%20%3D%20'${fuel}'`;
+  const url = `${HIFLD}/Power_Plants/FeatureServer/0/query?where=${where}` +
+    `&outFields=NAME,STATE,COUNTY,PRIMVSOURCE,SUMMER_CAP,INSTALL_YR,STATUS&f=geojson&outSR=4326&resultRecordCount=5000`;
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    const features = data.features || [];
+    _ovLayers.powerplants = L.geoJSON(data, {
+      pointToLayer: (f, latlng) => {
+        const src = f.properties?.PRIMVSOURCE || '';
+        const cap = f.properties?.SUMMER_CAP || 0;
+        const col = _plantColor[src] || '#94a3b8';
+        return L.circleMarker(latlng, {
+          radius: Math.max(4, Math.min(14, 3 + Math.sqrt(cap / 50))),
+          fillColor: col, color: '#000',
+          weight: 0.5, fillOpacity: 0.82
+        });
+      },
+      onEachFeature(f, layer) {
+        const p = f.properties || {};
+        const col = _plantColor[p.PRIMVSOURCE] || '#94a3b8';
+        layer.bindPopup(`
+          <div class="popup-title" style="color:${col}">${p.NAME || 'Power Plant'}</div>
+          <div class="popup-row"><span class="popup-label">Fuel</span><span class="popup-val">${_fuelLabel[p.PRIMVSOURCE] || p.PRIMVSOURCE || '—'}</span></div>
+          ${p.SUMMER_CAP ? `<div class="popup-row"><span class="popup-label">Capacity</span><span class="popup-val">${Number(p.SUMMER_CAP).toLocaleString()} MW</span></div>` : ''}
+          ${p.STATE  ? `<div class="popup-row"><span class="popup-label">State</span><span class="popup-val">${p.STATE}</span></div>` : ''}
+          ${p.COUNTY ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${p.COUNTY}</span></div>` : ''}
+          ${p.STATUS ? `<div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.STATUS}</span></div>` : ''}
+          ${p.INSTALL_YR ? `<div class="popup-row"><span class="popup-label">Installed</span><span class="popup-val">${p.INSTALL_YR}</span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: HIFLD / FEMA RAPT</div>
+        `);
+      }
+    }).addTo(map);
+    if (stat) stat.textContent = `${features.length} power plants${fuel !== 'ALL' ? ` (${_fuelLabel[fuel] || fuel})` : ''}`;
+  } catch(e) {
+    if (stat) stat.textContent = 'Power plant data unavailable';
+  }
+}
+
+function applySubFilter(voltMin, clickedBtn) {
+  document.querySelectorAll('#sub-filter-group .sub-filter-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn.classList.add('active');
+  const stat = document.getElementById('layer-status');
+  _loadSubstations(voltMin, stat);
+}
+function applyPlantFilter(fuel, clickedBtn) {
+  document.querySelectorAll('#plant-filter-group .sub-filter-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn.classList.add('active');
+  const stat = document.getElementById('layer-status');
+  _loadPowerPlants(fuel, stat);
 }
 
 // =====================================================================
