@@ -78,6 +78,8 @@ function initParcelsDropdown() {
         switchToStateView('Iowa', IOWA_COUNTIES, IOWA_CITY_ASSESSORS);
       } else if (region === 'nebraska') {
         switchToStateView('Nebraska', NEBRASKA_COUNTIES, []);
+      } else if (region === 'georgia') {
+        switchToStateView('Georgia', GEORGIA_COUNTIES, []);
       }
     });
   });
