@@ -268,7 +268,7 @@
     <button class="layer-btn" id="btn-telecoms" onclick="toggleMapLayer('telecoms')">📡 Telecoms</button>
     <button class="layer-btn" id="btn-cables"   onclick="toggleMapLayer('cables')">🌊 Submarine Cables</button>
     <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
-    <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🛰 Epoch AI Sites</button>
+    <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🤖 AI Clusters</button>
     <span class="layer-divider">·</span>
     <button class="layer-btn" id="btn-rail"         onclick="toggleMapLayer('rail')">🚂 Railways</button>
     <button class="layer-btn" id="btn-rail-elec"    onclick="toggleMapLayer('rail-elec')">⚡ Electrified Rail</button>
@@ -572,6 +572,7 @@ function switchTab(id, btn) {
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
   if (id === 'map' && !window._mapInit) initMap();
+  else if (id === 'map' && window._leafletMap) setTimeout(() => window._leafletMap.invalidateSize(), 50);
 }
 
 // =====================================================================
