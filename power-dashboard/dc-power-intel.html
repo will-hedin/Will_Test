@@ -295,6 +295,14 @@
       <button class="sub-filter-btn" onclick="applyPlantFilter('WND',this)">Wind</button>
       <button class="sub-filter-btn" onclick="applyPlantFilter('WAT',this)">Hydro</button>
     </div>
+    <div id="grid-filter-group" style="display:none;align-items:center;gap:5px;flex-wrap:wrap">
+      <span class="filter-group-label">Grid voltage:</span>
+      <button class="sub-filter-btn" onclick="applyGridFilter(115,this)" style="border-color:#60a5fa;color:#60a5fa">≥115 kV</button>
+      <button class="sub-filter-btn active" onclick="applyGridFilter(230,this)" style="border-color:#22c55e;color:#22c55e">≥230 kV</button>
+      <button class="sub-filter-btn" onclick="applyGridFilter(345,this)" style="border-color:#eab308;color:#eab308">≥345 kV</button>
+      <button class="sub-filter-btn" onclick="applyGridFilter(500,this)" style="border-color:#f97316;color:#f97316">≥500 kV</button>
+      <button class="sub-filter-btn" onclick="applyGridFilter(765,this)" style="border-color:#ef4444;color:#ef4444">765 kV</button>
+    </div>
   </div>
   <div id="map"></div>
 </div>
@@ -787,7 +795,7 @@ function toggleMapLayer(name) {
     _ovActive[name] = false;
     if (btn) { btn.classList.remove('active', 'active-' + name); }
     if (stat) stat.textContent = '';
-    // Hide filter rows if neither HIFLD layer is active
+    if (name === 'power')       _hideFilterGroup('grid-filter-group');
     if (name === 'substations') _hideFilterGroup('sub-filter-group');
     if (name === 'powerplants') _hideFilterGroup('plant-filter-group');
     return;
@@ -798,14 +806,8 @@ function toggleMapLayer(name) {
   if (btn) btn.classList.add('active', 'active-' + name);
 
   if (name === 'power') {
-    if (!_ovLayers.power) {
-      _ovLayers.power = L.tileLayer(
-        'https://tiles-{s}.openinframap.org/power/{z}/{x}/{y}.png',
-        { subdomains: ['a','b','c'], maxZoom: 19, opacity: 0.85,
-          attribution: '© <a href="https://openinframap.org" target="_blank">OpenInfraMap</a> / OSM contributors' }
-      );
-    }
-    _ovLayers.power.addTo(map);
+    _showFilterGroup('grid-filter-group');
+    _loadPowerGrid(_gridVoltMin, stat);
 
   } else if (name === 'telecoms') {
     if (!_ovLayers.telecoms) {
@@ -970,10 +972,10 @@ function _showFilterGroup(id) {
 function _hideFilterGroup(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = 'none';
-  // Hide outer row if both groups hidden
   const sub = document.getElementById('sub-filter-group');
   const pla = document.getElementById('plant-filter-group');
-  if (sub?.style.display === 'none' && pla?.style.display === 'none')
+  const grd = document.getElementById('grid-filter-group');
+  if (sub?.style.display === 'none' && pla?.style.display === 'none' && grd?.style.display === 'none')
     document.getElementById('hifld-filter-row').style.display = 'none';
 }
 
@@ -1098,6 +1100,84 @@ function applyPlantFilter(fuel, clickedBtn) {
   clickedBtn.classList.add('active');
   const stat = document.getElementById('layer-status');
   _loadPowerPlants(fuel, stat);
+}
+
+// ── Power Grid (OSM transmission lines via Overpass) ───────────────────────
+let _gridVoltMin = 230;
+const _gridVoltRegex = {
+  115: '115000|138000|161000|230000|345000|500000|765000',
+  230: '230000|345000|500000|765000',
+  345: '345000|500000|765000',
+  500: '500000|765000',
+  765: '765000'
+};
+function _gridColor(vKv) {
+  if (vKv >= 765) return '#ef4444';
+  if (vKv >= 500) return '#f97316';
+  if (vKv >= 345) return '#eab308';
+  if (vKv >= 230) return '#22c55e';
+  if (vKv >= 115) return '#60a5fa';
+  return '#94a3b8';
+}
+function _gridWeight(vKv) {
+  if (vKv >= 765) return 3;
+  if (vKv >= 500) return 2.5;
+  if (vKv >= 345) return 2;
+  if (vKv >= 230) return 1.5;
+  return 1;
+}
+
+async function _loadPowerGrid(voltMin, stat) {
+  const map = window._leafletMap;
+  if (!map) return;
+  _gridVoltMin = voltMin;
+  if (_ovLayers.power) { map.removeLayer(_ovLayers.power); _ovLayers.power = null; }
+  if (stat) stat.textContent = 'Loading transmission lines…';
+
+  const vReg = _gridVoltRegex[voltMin] || _gridVoltRegex[230];
+  const query = `[out:json][timeout:60];way[power=line]["voltage"~"${vReg}"](${US_BBOX});out geom qt 3000;`;
+
+  try {
+    const res = await fetch(OVERPASS, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'data=' + encodeURIComponent(query)
+    });
+    const data = await res.json();
+    const elements = data.elements || [];
+    const layer = L.layerGroup();
+    elements.forEach(el => {
+      if (!el.geometry?.length) return;
+      const tags = el.tags || {};
+      const vStr = (tags.voltage || '').split(';')[0];
+      const vKv  = Math.round((parseInt(vStr) || 0) / 1000);
+      const col  = _gridColor(vKv);
+      const wt   = _gridWeight(vKv);
+      const latlngs = el.geometry.map(pt => [pt.lat, pt.lon]);
+      const line = L.polyline(latlngs, { color: col, weight: wt, opacity: 0.8 });
+      const circuits = tags.circuits ? ` · ${tags.circuits} circuit${tags.circuits>1?'s':''}` : '';
+      line.bindPopup(`
+        <div class="popup-title" style="color:${col}">${tags.name || 'Transmission Line'}</div>
+        <div class="popup-row"><span class="popup-label">Voltage</span><span class="popup-val">${vKv ? vKv + ' kV' : '—'}</span></div>
+        ${tags.operator ? `<div class="popup-row"><span class="popup-label">Operator</span><span class="popup-val">${tags.operator}</span></div>` : ''}
+        ${tags.cables   ? `<div class="popup-row"><span class="popup-label">Cables</span><span class="popup-val">${tags.cables}${circuits}</span></div>` : ''}
+        ${tags.ref      ? `<div class="popup-row"><span class="popup-label">Ref</span><span class="popup-val">${tags.ref}</span></div>` : ''}
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: OpenStreetMap</div>
+      `);
+      layer.addLayer(line);
+    });
+    _ovLayers.power = layer.addTo(map);
+    if (stat) stat.textContent = `${elements.length} lines ≥${voltMin} kV`;
+  } catch(e) {
+    if (stat) stat.textContent = 'Grid data unavailable';
+  }
+}
+
+function applyGridFilter(voltMin, clickedBtn) {
+  document.querySelectorAll('#grid-filter-group .sub-filter-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn.classList.add('active');
+  const stat = document.getElementById('layer-status');
+  _loadPowerGrid(voltMin, stat);
 }
 
 // =====================================================================
