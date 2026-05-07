@@ -6,6 +6,7 @@
 <title>US Data Center Power & Policy Intelligence</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/data_centers.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -57,7 +58,18 @@
   .tab-content.active { display: block; }
 
   /* MAP */
-  #map { height: 560px; border-radius: 8px; border: 1px solid var(--border); }
+  #map { height: 540px; border-radius: 8px; border: 1px solid var(--border); }
+  .map-layer-bar { display: flex; align-items: center; gap: 6px; padding: 10px 0; flex-wrap: wrap; }
+  .map-layer-bar .layer-label { font-size: 11px; color: var(--secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 4px; }
+  .layer-btn { padding: 4px 11px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); color: var(--secondary); cursor: pointer; font-size: 12px; transition: all 0.2s; white-space: nowrap; }
+  .layer-btn:hover { border-color: var(--accent); color: var(--text); }
+  .layer-btn.active { background: rgba(79,142,247,0.15); color: var(--accent); border-color: var(--accent); }
+  .layer-btn.active-power { background: rgba(234,179,8,0.15); color: #eab308; border-color: #eab308; }
+  .layer-btn.active-telecoms { background: rgba(168,85,247,0.15); color: #a855f7; border-color: #a855f7; }
+  .layer-btn.active-cables { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: #38bdf8; }
+  .layer-btn.active-ixps { background: rgba(167,139,250,0.15); color: #a78bfa; border-color: #a78bfa; }
+  .layer-btn.active-epoch { background: rgba(250,204,21,0.15); color: #facc15; border-color: #facc15; }
+  #layer-status { font-size: 11px; color: var(--secondary); margin-left: 6px; }
   .map-legend { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 160px; }
   .map-legend h4 { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; margin-bottom: 8px; }
   .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; cursor: pointer; }
@@ -239,6 +251,15 @@
 
 <!-- TAB 1: MAP -->
 <div id="tab-map" class="tab-content active">
+  <div class="map-layer-bar">
+    <span class="layer-label">Layers:</span>
+    <button class="layer-btn" id="btn-power"    onclick="toggleMapLayer('power')">⚡ Power Grid</button>
+    <button class="layer-btn" id="btn-telecoms" onclick="toggleMapLayer('telecoms')">📡 Telecoms</button>
+    <button class="layer-btn" id="btn-cables"   onclick="toggleMapLayer('cables')">🌊 Submarine Cables</button>
+    <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
+    <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🛰 Epoch AI Sites</button>
+    <span id="layer-status"></span>
+  </div>
   <div id="map"></div>
 </div>
 
@@ -704,6 +725,158 @@ function initMap() {
     return div;
   };
   legend.addTo(map);
+  window._leafletMap = map;
+}
+
+// =====================================================================
+// OVERLAY LAYERS (OpenInfraMap · ITU BBMaps · Epoch AI)
+// =====================================================================
+const _ovLayers  = {};   // cached layer objects
+const _ovActive  = {};   // toggle state
+const ITU_WFS    = 'https://bbmaps.itu.int/geoserver/wfs';
+const NA_BBOX    = '-170,10,-40,75,EPSG:4326';
+
+function toggleMapLayer(name) {
+  const map  = window._leafletMap;
+  const btn  = document.getElementById('btn-' + name);
+  const stat = document.getElementById('layer-status');
+  if (!map) return;
+
+  if (_ovActive[name]) {
+    // Turn OFF
+    if (_ovLayers[name]) map.removeLayer(_ovLayers[name]);
+    _ovActive[name] = false;
+    if (btn) { btn.classList.remove('active', 'active-' + name); }
+    if (stat) stat.textContent = '';
+    return;
+  }
+
+  // Turn ON
+  _ovActive[name] = true;
+  if (btn) btn.classList.add('active', 'active-' + name);
+
+  if (name === 'power') {
+    if (!_ovLayers.power) {
+      _ovLayers.power = L.tileLayer(
+        'https://tiles-{s}.openinframap.org/power/{z}/{x}/{y}.png',
+        { subdomains: ['a','b','c'], maxZoom: 19, opacity: 0.85,
+          attribution: '© <a href="https://openinframap.org" target="_blank">OpenInfraMap</a> / OSM contributors' }
+      );
+    }
+    _ovLayers.power.addTo(map);
+
+  } else if (name === 'telecoms') {
+    if (!_ovLayers.telecoms) {
+      _ovLayers.telecoms = L.tileLayer(
+        'https://tiles-{s}.openinframap.org/telecoms/{z}/{x}/{y}.png',
+        { subdomains: ['a','b','c'], maxZoom: 19, opacity: 0.85,
+          attribution: '© <a href="https://openinframap.org" target="_blank">OpenInfraMap</a> / OSM contributors' }
+      );
+    }
+    _ovLayers.telecoms.addTo(map);
+
+  } else if (name === 'cables') {
+    _loadITUCables(map, stat, btn);
+
+  } else if (name === 'ixps') {
+    _loadITUIXPs(map, stat, btn);
+
+  } else if (name === 'epoch') {
+    _loadEpochLayer(map, stat, btn);
+  }
+}
+
+function _ituWfsUrl(typeName) {
+  return `${ITU_WFS}?service=wfs&version=2.0.0&request=GetFeature` +
+    `&typeNames=${encodeURIComponent(typeName)}&outputFormat=application/json` +
+    `&count=2000&SRSNAME=EPSG:4326&bbox=${NA_BBOX}`;
+}
+
+async function _loadITUCables(map, stat, btn) {
+  if (_ovLayers.cables) { _ovLayers.cables.addTo(map); return; }
+  if (stat) stat.textContent = 'Loading submarine cables…';
+  try {
+    const res  = await fetch(_ituWfsUrl('ITU:submarine_cables'));
+    const data = await res.json();
+    _ovLayers.cables = L.geoJSON(data, {
+      style: { color: '#38bdf8', weight: 2, opacity: 0.75 },
+      onEachFeature(feature, layer) {
+        const p = feature.properties || {};
+        layer.bindPopup(`
+          <div class="popup-title" style="color:#38bdf8">${p.cable_name || p.name || 'Submarine Cable'}</div>
+          ${p.owners     ? `<div class="popup-row"><span class="popup-label">Owner(s)</span><span class="popup-val">${p.owners}</span></div>` : ''}
+          ${p.rfs_year   ? `<div class="popup-row"><span class="popup-label">Ready</span><span class="popup-val">${p.rfs_year}</span></div>` : ''}
+          ${p.length_km  ? `<div class="popup-row"><span class="popup-label">Length</span><span class="popup-val">${Number(p.length_km).toLocaleString()} km</span></div>` : ''}
+          ${p.capacity_tbps ? `<div class="popup-row"><span class="popup-label">Capacity</span><span class="popup-val">${p.capacity_tbps} Tbps</span></div>` : ''}
+        `);
+      }
+    }).addTo(map);
+    if (stat) stat.textContent = `${(data.features||[]).length} cables`;
+  } catch(e) {
+    if (stat) stat.textContent = 'Cable data unavailable';
+    _ovActive.cables = false;
+    btn?.classList.remove('active','active-cables');
+  }
+}
+
+async function _loadITUIXPs(map, stat, btn) {
+  if (_ovLayers.ixps) { _ovLayers.ixps.addTo(map); return; }
+  if (stat) stat.textContent = 'Loading IXPs…';
+  try {
+    const res  = await fetch(_ituWfsUrl('ITU:ixp'));
+    const data = await res.json();
+    _ovLayers.ixps = L.geoJSON(data, {
+      filter: f => f.geometry?.type === 'Point',
+      pointToLayer: (_f, latlng) => L.circleMarker(latlng, {
+        radius: 5, fillColor: '#a78bfa', color: '#7c3aed',
+        weight: 1.2, fillOpacity: 0.85
+      }),
+      onEachFeature(feature, layer) {
+        const p = feature.properties || {};
+        layer.bindPopup(`
+          <div class="popup-title" style="color:#a78bfa">${p.name || p.long_name || 'IXP'}</div>
+          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Internet Exchange Point</span></div>
+          ${p.city    ? `<div class="popup-row"><span class="popup-label">City</span><span class="popup-val">${p.city}</span></div>` : ''}
+          ${p.country ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
+        `);
+      }
+    }).addTo(map);
+    if (stat) stat.textContent = `${(data.features||[]).filter(f=>f.geometry?.type==='Point').length} IXPs`;
+  } catch(e) {
+    if (stat) stat.textContent = 'IXP data unavailable';
+    _ovActive.ixps = false;
+    btn?.classList.remove('active','active-ixps');
+  }
+}
+
+function _loadEpochLayer(map, stat, btn) {
+  if (_ovLayers.epoch) { _ovLayers.epoch.addTo(map); return; }
+  if (typeof EPOCH_DATA_CENTERS === 'undefined') {
+    if (stat) stat.textContent = 'Epoch data not loaded';
+    return;
+  }
+  const usData = EPOCH_DATA_CENTERS.filter(d =>
+    ['United States','Canada','Mexico'].includes(d.country) && d.lat && d.lon
+  );
+  const markers = usData.map(d => {
+    const r = Math.max(5, Math.min(18, Math.sqrt((d.power || 1) / 4)));
+    return L.circleMarker([d.lat, d.lon], {
+      radius: r, fillColor: '#facc15', color: '#ca8a04',
+      weight: 1.5, fillOpacity: 0.78
+    }).bindPopup(`
+      <div class="popup-title" style="color:#facc15">${d.name}</div>
+      <div class="popup-row"><span class="popup-label">Owner</span><span class="popup-val">${d.owner}</span></div>
+      <div class="popup-row"><span class="popup-label">Tenant</span><span class="popup-val">${d.users || d.owner}</span></div>
+      ${d.power ? `<div class="popup-row"><span class="popup-label">Power</span><span class="popup-val">${d.power.toLocaleString()} MW</span></div>` : ''}
+      ${d.h100  ? `<div class="popup-row"><span class="popup-label">H100 equiv.</span><span class="popup-val">${Math.round(d.h100/1000)}k</span></div>` : ''}
+      ${d.cost  ? `<div class="popup-row"><span class="popup-label">Est. Cost</span><span class="popup-val">$${d.cost.toFixed(1)}B</span></div>` : ''}
+      ${d.project ? `<div class="popup-row"><span class="popup-label">Project</span><span class="popup-val">${d.project}</span></div>` : ''}
+      ${d.address ? `<div class="popup-row"><span class="popup-label">Address</span><span class="popup-val" style="font-size:11px;color:rgba(255,255,255,0.7)">${d.address}</span></div>` : ''}
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: Epoch AI Frontier Data Centers</div>
+    `);
+  });
+  _ovLayers.epoch = L.layerGroup(markers).addTo(map);
+  if (stat) stat.textContent = `${usData.length} Epoch AI sites`;
 }
 
 // =====================================================================
