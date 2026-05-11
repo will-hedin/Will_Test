@@ -17,18 +17,303 @@ header h1 span{color:#4f8ef7}
 .badge{background:#1e2235;border:1px solid #2d3148;border-radius:6px;padding:4px 10px;font-size:12px;color:#94a3b8}
 .badge.live{border-color:#22c55e;color:#22c55e}
 .badge.warn{border-color:#f59e0b;color:#f59e0b}
+.section-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:'';display:inline-block;width:3px;height:18px;background:#4f8ef7;border-radius:2px}
+.exec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:20px}
+.kpi-card{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:16px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi-card.blue::before{background:#4f8ef7}
+.kpi-card.red::before{background:#ef4444}
+.kpi-card.yellow::before{background:#f59e0b}
+.kpi-card.green::before{background:#22c55e}
+.kpi-card.purple::before{background:#a855f7}
+.kpi-card.orange::before{background:#f97316}
+.kpi-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.kpi-value{font-size:26px;font-weight:700;color:#fff;line-height:1}
+.kpi-sub{font-size:11px;color:#64748b;margin-top:4px}
+.kpi-trend{font-size:11px;color:#22c55e;margin-top:4px}
+.kpi-trend.down{color:#ef4444}
+.alert-bar{background:#1a1d27;border:1px solid #f59e0b40;border-left:3px solid #f59e0b;border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#fbbf24}
+.alert-bar strong{color:#f59e0b}
+.grid-ops{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;margin-bottom:20px}
+.grid-card{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s}
+.grid-card:hover{border-color:#4f8ef7}
+.grid-card-header{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2d3148}
+.grid-card-header h3{font-size:14px;font-weight:700;color:#fff}
+.grid-card-body{padding:14px 16px}
+.grid-stat{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #1e2235}
+.grid-stat:last-child{border-bottom:none}
+.grid-stat-label{color:#94a3b8;font-size:12px}
+.grid-stat-value{color:#e2e8f0;font-weight:600;font-size:12px}
+.grid-stat-value.red{color:#ef4444}
+.grid-stat-value.yellow{color:#f59e0b}
+.grid-stat-value.green{color:#22c55e}
+.grid-card-expand{padding:0 16px;max-height:0;overflow:hidden;transition:max-height 0.35s ease,padding 0.2s}
+.grid-card-expand.open{max-height:400px;padding:12px 16px}
+.expand-note{font-size:12px;color:#64748b;line-height:1.6}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.search-box{background:#1a1d27;border:1px solid #2d3148;border-radius:8px;padding:8px 14px;color:#e2e8f0;font-size:13px;width:260px;outline:none;transition:border-color 0.2s}
+.search-box:focus{border-color:#4f8ef7}
+.filter-btns{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{background:#1a1d27;border:1px solid #2d3148;border-radius:6px;padding:6px 14px;color:#94a3b8;font-size:12px;cursor:pointer;transition:all 0.2s}
+.fbtn:hover{border-color:#4f8ef7;color:#e2e8f0}
+.fbtn.active{background:#4f8ef7;border-color:#4f8ef7;color:#fff;font-weight:600}
+.fbtn.t1.active{background:#ef4444;border-color:#ef4444}
+.fbtn.t2.active{background:#f59e0b;border-color:#f59e0b}
+.fbtn.em.active{background:#22c55e;border-color:#22c55e}
+.table-wrap{overflow-x:auto;border-radius:10px;border:1px solid #2d3148;margin-bottom:20px}
+table{width:100%;border-collapse:collapse;min-width:1100px}
+thead tr{background:#1a1d27}
+th{padding:11px 13px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;white-space:nowrap;user-select:none;border-bottom:1px solid #2d3148}
+th:hover{color:#e2e8f0}
+th .sort-icon{display:inline-block;margin-left:4px;opacity:0.4;font-size:10px}
+th.sorted .sort-icon{opacity:1;color:#4f8ef7}
+tbody tr{border-bottom:1px solid #1e2235;transition:background 0.15s}
+tbody tr:hover{background:#1a1d27}
+tbody tr:last-child{border-bottom:none}
+td{padding:10px 13px;font-size:13px;vertical-align:top}
+.market-name{font-weight:600;color:#fff;white-space:nowrap}
+.market-sub{font-size:11px;color:#64748b;margin-top:2px}
+.tier-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap}
+.tier-1{background:#ef444420;color:#ef4444;border:1px solid #ef444440}
+.tier-2{background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40}
+.tier-em{background:#22c55e20;color:#22c55e;border:1px solid #22c55e40}
+.avail-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.avail-critical{background:#ef444420;color:#ef4444;border:1px solid #ef444440}
+.avail-tight{background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40}
+.avail-moderate{background:#3b82f620;color:#3b82f6;border:1px solid #3b82f640}
+.avail-available{background:#22c55e20;color:#22c55e;border:1px solid #22c55e40}
+.trend-up{color:#ef4444;font-weight:700;font-size:16px}
+.trend-flat{color:#f59e0b;font-weight:700;font-size:16px}
+.trend-down{color:#22c55e;font-weight:700;font-size:16px}
+.constraint-tag{display:inline-block;background:#1e2235;border:1px solid #2d3148;border-radius:4px;padding:2px 6px;font-size:11px;color:#94a3b8;margin:2px 2px 2px 0;white-space:nowrap}
+.dev-text{font-size:12px;color:#94a3b8;line-height:1.5;max-width:260px}
+.queue-val{font-weight:700;color:#e2e8f0;font-size:13px}
+.queue-sub{font-size:11px;color:#64748b}
+.wait-val{font-weight:600;color:#e2e8f0}
+.policy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-bottom:20px}
+.policy-card{background:#1a1d27;border:1px solid #2d3148;border-radius:10px;padding:16px}
+.policy-card h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.policy-card h4 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.policy-item{padding:7px 0;border-bottom:1px solid #1e2235;font-size:12px;color:#94a3b8;line-height:1.5}
+.policy-item:last-child{border-bottom:none}
+.policy-item .date{font-size:11px;color:#4f8ef7;margin-bottom:2px}
+.policy-item strong{color:#e2e8f0}
+.src-link{font-size:11px;color:#94a3b8;white-space:nowrap}
+.sources-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin-bottom:20px}
+.source-item{background:#1a1d27;border:1px solid #2d3148;border-radius:8px;padding:12px;font-size:12px}
+.source-item a{color:#4f8ef7}
+.source-item .src-label{font-size:11px;color:#64748b;margin-bottom:4px}
+footer{text-align:center;color:#334155;font-size:12px;padding:20px 0}
+.hidden{display:none}
+.op-toggle{background:none;border:1px solid #2d3148;border-radius:4px;padding:2px 8px;color:#4f8ef7;font-size:10px;cursor:pointer;margin-top:6px;transition:all 0.2s;display:inline-block}
+.op-toggle:hover{border-color:#4f8ef7;background:#1e2235}
+.op-toggle.open{color:#22c55e;border-color:#22c55e40}
+.op-expand-row{display:none;background:#0c0f18}
+.op-expand-row.open{display:table-row}
+.iq-wrap{padding:10px 16px 14px}
+.iq-table{width:100%;border-collapse:collapse;font-size:12px}
+.iq-table th{padding:6px 10px;text-align:left;font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #2d3148;white-space:nowrap}
+.iq-table td{padding:6px 10px;border-bottom:1px solid #1a1d27;color:#94a3b8;vertical-align:middle}
+.iq-table td:first-child{color:#e2e8f0}
+.iq-table tr:last-child td{border-bottom:none}
+.iq-status{display:inline-block;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+.iq-status.expanding{background:#22c55e20;color:#22c55e;border:1px solid #22c55e40}
+.iq-status.in-queue{background:#4f8ef720;color:#4f8ef7;border:1px solid #4f8ef740}
+.iq-status.under-const{background:#f59e0b20;color:#f59e0b;border:1px solid #f59e0b40}
+.iq-note{font-size:10px;color:#64748b;font-style:italic;padding:6px 10px}
+@media(max-width:768px){
+  header{flex-direction:column;align-items:flex-start}
+  .search-box{width:100%}
+  .exec-grid{grid-template-columns:repeat(2,1fr)}
+}
 </style>
 </head>
 <body>
 <div class="container">
+
 <header>
   <div>
     <h1>US Data Center <span>Power &amp; Interconnection Queue</span> Dashboard</h1>
+    <div style="font-size:12px;color:#64748b;margin-top:4px">38 markets tracked &bull; Tier 1, Tier 2 &amp; Emerging &bull; All major ISOs / RTOs / IOUs</div>
   </div>
   <div class="header-meta">
+    <span class="badge live">Live Research</span>
+    <span class="badge warn">Q2 2026 Data</span>
     <span class="badge">Updated May 11, 2026</span>
+    <span class="badge">39 Markets</span>
   </div>
 </header>
+
+<div class="alert-bar">
+  <strong>CRITICAL ALERT (May 11):</strong> <strong>NERC Level 3 "Essential Actions" Alert</strong> issued May 4 — multiple 1,000+ MW DC load drops in seconds; entities must respond by Aug 3; NERC cannot model 77% of DC load behavior during disturbances &bull; ERCOT Batch Zero <strong>PRS approved May 6; ROS approved May 7</strong> — governance cleared; TAC vote May 19-20; Board Jun 1; admission criteria on track for <strong>June 2026</strong> finalization; large-load queue holds at record <strong>410 GW</strong> (87% data centers) &bull; PJM <strong>Cycle 1 closed Apr 27</strong>: <strong>811 projects / 220 GW</strong> applied; PJM CEO: grid needs "fundamental redesign" (May 6) &bull; Duke Energy Q1: <strong>2.7 GW new DC ESAs signed in Q1 alone; total now 7.6 GW</strong> (two-thirds under construction) &bull; FERC <strong>RM26-4 action by end of June 2026</strong> (confirmed Apr 16) &bull; Virginia budget deadlock continues: <strong>Compass abandoned 800-acre PW Digital Gateway (May 8)</strong>; environmentalists rally May 6; <strong>Jul 1 deadline</strong> &bull; <strong>Utah Stratos 9 GW off-grid campus</strong> — Box Elder County commissioners <strong>unanimously approved May 4</strong>; referendum effort launched; Sierra Club warns of Great Salt Lake threat &bull; Georgia Power <strong>broke ground on Plant Wansley</strong> Apr 30 (2 GW total, <strong>"9,500 MW already under contract"</strong>) &bull; <strong>CO PUC suspended Xcel Large Load Tariff</strong> effective date 120 days at Apr 29 meeting &bull; <strong>PA PUC approved Model Large Load Tariff</strong> May 1 (50+ MW; nonbinding guidance) &bull; Dominion VA queue <strong>70 GW</strong> (~3x system peak)
+</div>
+
+<div class="section-title">Executive Summary</div>
+<div class="exec-grid">
+  <div class="kpi-card red">
+    <div class="kpi-label">ERCOT Large-Load Queue</div>
+    <div class="kpi-value">410 GW</div>
+    <div class="kpi-sub">Record high &mdash; Apr 2026</div>
+    <div class="kpi-trend down">87% DCs; Batch Zero PRS/ROS approved May 6-7</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-label">PJM Cycle 1 Results</div>
+    <div class="kpi-value">220 GW</div>
+    <div class="kpi-sub">811 projects applied (closed Apr 27)</div>
+    <div class="kpi-trend down">106 GW gas &bull; 67 GW storage &bull; 18 GW nuclear</div>
+  </div>
+  <div class="kpi-card yellow">
+    <div class="kpi-label">MISO Queue / Load Forecast</div>
+    <div class="kpi-value">353 GW</div>
+    <div class="kpi-sub">Load grows 35% by 2035 (121→163 GW); 43% CAGR DC load</div>
+    <div class="kpi-trend">ERAS Cycle 3: 53/68 slots; 8–14 GW DC additions 2026–27</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">CAISO Queue</div>
+    <div class="kpi-value">130 GW</div>
+    <div class="kpi-sub">427 projects; IPE 5.0 Board-approved Mar 2026</div>
+    <div class="kpi-trend">Cluster 16 window Oct 1–15, 2026; Cluster 17 in 2027–28</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">Dominion VA Total Queue</div>
+    <div class="kpi-value">70 GW</div>
+    <div class="kpi-sub">~3x system peak (24.7 GW Jan 2025)</div>
+    <div class="kpi-trend down">+185%+ since Jul 2023; GS-5 rate Jan 2027</div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-label">AEP Ohio DC Queue</div>
+    <div class="kpi-value">30+ GW</div>
+    <div class="kpi-sub">vs ~5 GW 2030 forecast</div>
+    <div class="kpi-trend down">New tariff Jul 2025</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-label">Ameren MO New Contracts</div>
+    <div class="kpi-value">2.2 GW</div>
+    <div class="kpi-sub">Signed Feb 2026 (confidential)</div>
+    <div class="kpi-trend">3 GW total construction agreements</div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">Duke Energy DC Agreements</div>
+    <div class="kpi-value">7.6 GW</div>
+    <div class="kpi-sub">+2.7 GW in Q1 2026 alone; $103B capex plan</div>
+    <div class="kpi-trend">Two-thirds under construction; 4-5% annual load growth</div>
+  </div>
+</div>
+
+<div class="section-title">Grid Operator Status (click to expand)</div>
+<div class="grid-ops">
+
+  <div class="grid-card" onclick="toggleCard('pjm')">
+    <div class="grid-card-header">
+      <h3>PJM Interconnection</h3>
+      <span class="tier-badge tier-1">CRITICAL</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">States Served</span><span class="grid-stat-value">13 states + DC</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Peak Load</span><span class="grid-stat-value">~154 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Avg Wait Time</span><span class="grid-stat-value red">8+ years (2025)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Cycle 1 Results (closed Apr 27)</span><span class="grid-stat-value red">811 projects / 220 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">2027/28 Capacity Auction</span><span class="grid-stat-value red">$333.44/MW-day cap; DCs = 40% of cost</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Phase I Studies Begin</span><span class="grid-stat-value yellow">Jul 28, 2026</span></div>
+    </div>
+    <div class="grid-card-expand" id="pjm">
+      <div class="expand-note"><strong>Cycle 1 results (closed Apr 27, 2026):</strong> 811 projects / 220 GW nameplate — 157 gas (105.8 GW), 349 storage (66.5 GW), 27 nuclear (17.9 GW), 142 solar (14.8 GW), 45 solar+storage hybrids (8.9 GW), 65 wind (4.7 GW). Study timeline: Phase I Jul 28–Nov 24, 2026; Phase II Jan 28–Jul 26, 2027; Phase III Aug 26, 2027–Feb 22, 2028. Data centers = 40% of 2027/28 BRA capacity costs ($6.5B of $16.4B). Transition Cycle 1 completed: 130 NSRs / ~17.4 GW. Colocation compliance filed Feb 16 (3 tiers). BTM reforms Feb 23 (50 MW netting). 2027/28 BRA hit $333.44/MW-day FERC cap; 6,623 MW short. Sources: <a href="https://insidelines.pjm.com/over-800-new-generation-projects-seek-to-connect-under-pjms-reformed-process/" target="_blank">PJM Cycle 1 Results</a>, <a href="https://www.utilitydive.com/news/data-centers-pjm-capacity-auction/808951/" target="_blank">DCs = 40% PJM Costs</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('ercot')">
+    <div class="grid-card-header">
+      <h3>ERCOT (Texas)</h3>
+      <span class="tier-badge tier-1">CRITICAL</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">Large-Load Queue (Apr 2026)</span><span class="grid-stat-value red">410 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Data Center Share</span><span class="grid-stat-value red">~87%</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Nov 2025 Queue</span><span class="grid-stat-value yellow">226 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Dec 2024 Queue</span><span class="grid-stat-value green">63 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Batch Zero NPRR/PGRR</span><span class="grid-stat-value green">Filed Mar 4, 2026</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Approved to Energize (12 mo)</span><span class="grid-stat-value yellow">~2,168 MW</span></div>
+    </div>
+    <div class="grid-card-expand" id="ercot">
+      <div class="expand-note">ERCOT legacy process designed for 40-50 large loads; now managing 410 GW (87% DCs). Batch Zero PGRR145 filed Mar 4, 2026 with two phases (Study + Refinement Study) covering 2028-2032 horizon; CLR and BYOG key mechanisms. <strong>PRS approved May 6; ROS approved May 7</strong> — governance cleared. Next: TAC vote May 19-20; Board vote Jun 1; target effective Jul 10, 2026. Frequency stability study (TSAT) results expected Q2 2026. Only ~2,168 MW approved to energize in past 12 months. 137 new requests (~140 GW) submitted but not yet reflected in official charts. Oncor Southern DFW filed 765-kV line (~180 mi) Dec 2025; decision Jun 2026. CenterPoint (Houston) queue: 1 GW to 8 GW in under one year. Sources: <a href="https://www.rtoinsider.com/129421-ercot-large-load-requests-soar-again/" target="_blank">RTO Insider</a>, <a href="https://www.zeroemissiongrid.com/insights-press-zeg-blog/ercot-large-load-interconnection-2026/" target="_blank">ZEG ERCOT 2026</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('miso')">
+    <div class="grid-card-header">
+      <h3>MISO</h3>
+      <span class="tier-badge tier-2">CONSTRAINED</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">Queue Size (Feb 2026)</span><span class="grid-stat-value red">353 GW (1,696 requests)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">System Peak Load</span><span class="grid-stat-value">127 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">ERAS Cycle 3</span><span class="grid-stat-value green">Underway; 53/68 slots filled</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">ERAS Cycle 3 BESS</span><span class="grid-stat-value green">2.3 GW (27% of capacity)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Queue Cap</span><span class="grid-stat-value yellow">FERC-approved</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Target Queue Time</span><span class="grid-stat-value green">1 year (reform goal)</span></div>
+    </div>
+    <div class="grid-card-expand" id="miso">
+      <div class="expand-note">MISO queue at 353 GW (1,696 requests) as of Feb 2026. <strong>Load forecast updated:</strong> MISO expects 35% growth to ~163 GW peak by 2035 (from 121 GW); data centers = 20% of MISO electricity by 2030; 43% compound annual DC load growth since 2020 (fastest-growing ISO). 8–14 GW of new DC capacity expected to come online across MISO 2026–27. ERAS Cycle 3 (announced Mar 9): 15 projects / 8.8 GW — 73% gas, 27% BESS; NIPSCO 37% of capacity. 53/68 slots filled; sunsets Aug 2027. Microsoft-MISO AI partnership announced to optimize grid planning. Sources: <a href="https://www.utilitydive.com/news/miso-long-range-forecast-data-center/817917/" target="_blank">MISO 35% Load Forecast</a>, <a href="https://modoenergy.com/research/en/miso-eras-cycle-3-bess-fast-track" target="_blank">Modo Energy ERAS Cycle 3</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('caiso')">
+    <div class="grid-card-header">
+      <h3>CAISO (California)</h3>
+      <span class="tier-badge tier-2">MODERATE</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">Active Queue</span><span class="grid-stat-value">130 GW (427 projects)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">DC Load in 2025-26 Study</span><span class="grid-stat-value yellow">4.5 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">CA DC Growth by 2030</span><span class="grid-stat-value">+1.8 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">CA DC Growth by 2040</span><span class="grid-stat-value">+4.9 GW</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Cluster 16 Window</span><span class="grid-stat-value green">Oct 1–15, 2026</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">IPE 5.0 Final Proposal</span><span class="grid-stat-value green">Board-approved Mar 2026</span></div>
+    </div>
+    <div class="grid-card-expand" id="caiso">
+      <div class="expand-note">CAISO's Interconnection Prioritization Process (IPP) replaces first-come-first-served with proximity-to-capacity scoring. South Bay $2B+ transmission plan approved May 2025 for 2.5 GW of DC and EV load 2026-2039. SMUD operates independently (2026 window: Jun 1 - Jul 15). CA Public Advocates scrutinizing DC ratepayer cost shifts Oct 2025. Sources: <a href="https://www.caiso.com/documents/briefing-on-the-status-of-interconnection-process-enhancements-and-the-interconnection-queue-jul-2025.pdf" target="_blank">CAISO Jul 2025 Brief</a>, <a href="https://www.zeroemissiongrid.com/iso-rto-meeting-summaries/caiso-interconnection-reforms-2025/" target="_blank">ZEG</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('tva')">
+    <div class="grid-card-header">
+      <h3>TVA (Tennessee Valley)</h3>
+      <span class="tier-badge tier-2">CONSTRAINED</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">DC Share of Industrial Load</span><span class="grid-stat-value red">18% (2025)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">DC Load Projection 2030</span><span class="grid-stat-value red">2x current</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">New Generation Plan</span><span class="grid-stat-value yellow">6.2 GW (largest ever)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Cumberland Gas (1.45 GW + 100 MW BESS)</span><span class="grid-stat-value green">Ahead of schedule; online Sep 2026</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Kingston Coal Units</span><span class="grid-stat-value yellow">Kept running past 2027 (Feb 2026 vote)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Jan 2025 Peak Record</span><span class="grid-stat-value red">35,430 MW</span></div>
+    </div>
+    <div class="grid-card-expand" id="tva">
+      <div class="expand-note">Cumberland gas ($2.1B, 1,450 MW) ahead of schedule — online as early as Sep 2026 (6th Circuit cleared pipeline obstacle Apr 4). Kingston coal units kept running past 2027 per Feb 2026 board vote; 1.5 GW gas replacement still planned but solar scrapped from site. 3,700+ MW of 6,200 MW new gen under construction. Tennessee has 60 DCs; 27 in Nashville area. Meta Gallatin = 300 MW. DC load: 18% of industrial, projected 2x by 2030. Sources: <a href="https://clarksvillenow.com/local/tva-on-track-building-new-cumberland-natural-gas-power-plant-southeast-of-clarksville-photos/" target="_blank">ClarksvilleNow</a>, <a href="https://www.wvlt.tv/2026/02/10/tva-proposes-keeping-kingston-coal-plant-running-past-2027/" target="_blank">WVLT</a></div>
+    </div>
+  </div>
+
+  <div class="grid-card" onclick="toggleCard('wecc')">
+    <div class="grid-card-header">
+      <h3>WECC / Northwest / Rockies</h3>
+      <span class="tier-badge tier-2">MIXED</span>
+    </div>
+    <div class="grid-card-body">
+      <div class="grid-stat"><span class="grid-stat-label">NV Energy (Nevada)</span><span class="grid-stat-value red">49 GW queue; 5.9 GW needed N. NV</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Rocky Mtn Power (UT)</span><span class="grid-stat-value red">Cannot fully serve until 2031+</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Idaho Power</span><span class="grid-stat-value yellow">1,700 MW peak growth (20yr)</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Grant County PUD (WA)</span><span class="grid-stat-value red">Load caps hit Q3/Q4 2025</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">PGE Oregon</span><span class="grid-stat-value green">DeFlex 400+ MW by 2029</span></div>
+      <div class="grid-stat"><span class="grid-stat-label">Xcel Colorado</span><span class="grid-stat-value yellow">5.8 GW pending; 3-5yr wait</span></div>
+    </div>
+    <div class="grid-card-expand" id="wecc">
+      <div class="expand-note">Utah SB 132 (2025) lets RMP large loads (100+ MW) self-supply if utility cannot serve on reasonable timeline. Grant PUD implementing QTEP (Quincy Transmission Expansion Plan) — new Wanapum Dam line by 2029, segment in service mid-2027. PGE + GridCARE DeFlex deployed Oct 2025: 80 MW incremental by 2026, 400+ MW by 2029 via AI forecasting and flexible dispatch. Sources: <a href="https://www.latitudemedia.com/news/utah-is-taking-a-different-approach-to-new-data-center-load/" target="_blank">Latitude Media UT</a>, <a href="https://grantpudqtep.org/" target="_blank">QTEP</a>, <a href="https://www.prnewswire.com/news-releases/portland-general-electric-and-gridcare-accelerate-hundreds-of-megawatts-of-data-center-power-in-leading-us-market-302577731.html" target="_blank">PGE/GridCARE</a></div>
+    </div>
+  </div>
+
+</div>
+
 </div>
 </body>
 </html>
