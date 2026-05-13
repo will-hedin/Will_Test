@@ -1046,6 +1046,7 @@ function toggleMapLayer(name) {
     if (btn) { btn.classList.remove('active', 'active-' + name); }
     if (stat) stat.textContent = '';
     if (name === 'power')       _hideFilterGroup('grid-filter-group');
+    if (name === 'fiber' && _fiberClickHandler) { map.off('click', _fiberClickHandler); _fiberClickHandler = null; }
     if (name === 'substations') _hideFilterGroup('sub-filter-group');
     if (name === 'powerplants') _hideFilterGroup('plant-filter-group');
     if (name === 'colo')        _hideColoFilter();
@@ -1338,94 +1339,70 @@ async function _loadITULandingStations(map, stat, btn) {
 
 function _fiberColor(typeInf) {
   const t = (typeInf || '').toLowerCase();
-  if (t.includes('operational'))       return '#10b981';
+  if (t.includes('operational'))        return '#10b981';
   if (t.includes('under construction')) return '#f59e0b';
   if (t.includes('planned'))            return '#94a3b8';
   if (t.includes('microwave'))          return '#a78bfa';
   return '#10b981';
 }
 
-function _ituWfsFiberUrl(typeName) {
-  const raw = `${ITU_WFS}?service=wfs&version=2.0.0&request=GetFeature` +
-    `&typeNames=${encodeURIComponent(typeName)}&outputFormat=application/json` +
-    `&count=5000&SRSNAME=EPSG:4326&bbox=${NA_BBOX}`;
-  return CORS_PROXY + encodeURIComponent(raw);
-}
+let _fiberClickHandler = null;
 
-async function _loadITUFiber(map, stat, btn) {
-  if (_ovLayers.fiber) { _ovLayers.fiber.addTo(map); return; }
-  if (stat) stat.textContent = 'Loading fiber routes…';
-  try {
-    const [routeRes, nodeRes] = await Promise.all([
-      fetch(_ituWfsFiberUrl('ITU:trx_public_2')),
-      fetch(_ituWfsFiberUrl('ITU:itu_nodes_public'))
-    ]);
-    const [routeData, nodeData] = await Promise.all([routeRes.json(), nodeRes.json()]);
-
-    const group = L.layerGroup();
-
-    // Routes
-    L.geoJSON(routeData, {
-      style(feature) {
-        const color = _fiberColor(feature.properties?.type_inf);
-        return { color, weight: 1.8, opacity: 0.75 };
-      },
-      onEachFeature(feature, layer) {
-        const p = feature.properties || {};
-        const color = _fiberColor(p.type_inf);
-        const goLive = p.golive_dat ? String(p.golive_dat).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : null;
-        layer.bindPopup(`
-          <div class="popup-title" style="color:${color}">${p.operator_l || 'Fiber Route'}</div>
-          ${(p.from_ && p.to_) ? `<div class="popup-sub">${p.from_} → ${p.to_}</div>` : ''}
-          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${p.type_inf || '—'}</span></div>
-          <div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.status || '—'}</span></div>
-          ${p.distance ? `<div class="popup-row"><span class="popup-label">Distance</span><span class="popup-val">${Number(p.distance).toLocaleString()} km</span></div>` : ''}
-          ${goLive ? `<div class="popup-row"><span class="popup-label">Go-Live</span><span class="popup-val">${goLive}</span></div>` : ''}
-          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>
-        `);
-      }
-    }).addTo(group);
-
-    // Nodes
-    const nodePts = (nodeData.features || []).filter(f =>
-      f.geometry?.type === 'Point' || f.geometry?.type === 'MultiPoint'
-    );
-    L.geoJSON({ type: 'FeatureCollection', features: nodePts }, {
-      filter: f => {
-        const c = f.geometry?.coordinates;
-        if (!c) return false;
-        const [lon, lat] = f.geometry.type === 'MultiPoint' ? c[0] : c;
-        return lat >= 24 && lat <= 72 && lon >= -170 && lon <= -60;
-      },
-      pointToLayer(feature, latlng) {
-        const color = _fiberColor(feature.properties?.type_infr);
-        return L.circleMarker(latlng, {
-          radius: 4, fillColor: color, color: '#fff',
-          weight: 1, fillOpacity: 0.9
-        });
-      },
-      onEachFeature(feature, layer) {
-        const p = feature.properties || {};
-        const color = _fiberColor(p.type_infr);
-        layer.bindPopup(`
-          <div class="popup-title" style="color:${color}">${p.name || 'Fiber Node'}</div>
-          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${p.type_infr || '—'}</span></div>
-          ${p.country ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
-          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>
-        `);
-      }
-    }).addTo(group);
-
-    group.addTo(map);
-    _ovLayers.fiber = group;
-    const routeCount = (routeData.features || []).length;
-    const nodeCount  = nodePts.length;
-    if (stat) stat.textContent = `${routeCount.toLocaleString()} routes · ${nodeCount.toLocaleString()} nodes`;
-  } catch(e) {
-    if (stat) stat.textContent = 'Fiber data unavailable';
-    _ovActive.fiber = false;
-    btn?.classList.remove('active', 'active-fiber');
+function _loadITUFiber(map, stat, btn) {
+  // WMS tiles — loaded as <img> tags so no CORS needed for rendering
+  if (!_ovLayers.fiber) {
+    _ovLayers.fiber = L.tileLayer.wms('https://bbmaps.itu.int/geoserver/ITU/wms', {
+      layers: 'ITU:trx_public_2,ITU:itu_nodes_public',
+      format: 'image/png',
+      transparent: true,
+      version: '1.1.1',
+      opacity: 0.85,
+      attribution: 'Fiber data © <a href="https://bbmaps.itu.int" target="_blank">ITU BBMaps</a>'
+    });
   }
+  _ovLayers.fiber.addTo(map);
+  if (stat) stat.textContent = 'Click a fiber route for details';
+
+  // Click handler: small-bbox WFS query (~8 KB) for popup details
+  _fiberClickHandler = async function(e) {
+    if (!_ovActive['fiber']) return;
+    const { lat, lng } = e.latlng;
+    const d = 0.25;
+    const bbox = `${lng-d},${lat-d},${lng+d},${lat+d},EPSG:4326`;
+    const raw = `${ITU_WFS}?service=wfs&version=2.0.0&request=GetFeature` +
+      `&typeNames=ITU:trx_public_2,ITU:itu_nodes_public` +
+      `&outputFormat=application/json&count=5&SRSNAME=EPSG:4326&bbox=${bbox}`;
+    try {
+      const res  = await fetch(CORS_PROXY + encodeURIComponent(raw));
+      const data = await res.json();
+      const feats = (data.features || []);
+      if (!feats.length) return;
+      const popupParts = feats.map(f => {
+        const p   = f.properties || {};
+        const isRoute = f.geometry?.type?.includes('Line');
+        const color   = _fiberColor(isRoute ? p.type_inf : p.type_infr);
+        if (isRoute) {
+          const goLive = p.golive_dat
+            ? String(p.golive_dat).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : null;
+          return `<div class="popup-title" style="color:${color}">${p.operator_l || 'Fiber Route'}</div>
+            ${(p.from_ && p.to_) ? `<div class="popup-sub">${p.from_} → ${p.to_}</div>` : ''}
+            <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${p.type_inf || '—'}</span></div>
+            <div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.status || '—'}</span></div>
+            ${p.distance ? `<div class="popup-row"><span class="popup-label">Distance</span><span class="popup-val">${Number(p.distance).toLocaleString()} km</span></div>` : ''}
+            ${goLive ? `<div class="popup-row"><span class="popup-label">Go-Live</span><span class="popup-val">${goLive}</span></div>` : ''}`;
+        } else {
+          return `<div class="popup-title" style="color:${color}">${p.name || 'Fiber Node'}</div>
+            <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${p.type_infr || '—'}</span></div>
+            ${p.country ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}`;
+        }
+      }).join('<hr style="border-color:var(--border);margin:6px 0">');
+      L.popup()
+        .setLatLng(e.latlng)
+        .setContent(`${popupParts}<div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>`)
+        .openOn(map);
+    } catch (_) {}
+  };
+  map.on('click', _fiberClickHandler);
 }
 
 function _loadEpochLayer(map, stat, btn) {
