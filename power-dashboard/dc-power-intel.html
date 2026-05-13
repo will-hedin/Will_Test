@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>US Data Center Power & Policy Intelligence</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="css/style.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script>window._DC_INTEL_MODE = true;</script>
 <script src="config.js"></script>
 <script src="data/data_centers.js"></script>
 <style>
@@ -81,6 +86,10 @@
   .sub-filter-btn:hover { border-color: var(--accent); color: var(--text); }
   .sub-filter-btn.active { background: rgba(79,142,247,0.18); color: var(--accent); border-color: var(--accent); }
   #layer-status { font-size: 11px; color: var(--secondary); margin-left: 6px; }
+  .hidden { display: none; }
+  /* Override css/style.css padding on view divs inside our tab system */
+  #tab-usgrid .view, #tab-epochdata .view, #tab-parcels .view { padding: 0; }
+  .layer-btn.active-landing { background: rgba(249,115,22,0.15); color: #f97316; border-color: #f97316; }
   .map-legend { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 160px; }
   .map-legend h4 { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; margin-bottom: 8px; }
   .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; cursor: pointer; }
@@ -214,6 +223,7 @@
 <body>
 
 <!-- HEADER -->
+<button id="theme-toggle" style="display:none">Dark Mode</button>
 <div class="header">
   <div class="header-top">
     <div>
@@ -258,6 +268,9 @@
   <button class="tab-btn" onclick="switchTab('grid',this)">⚡ Grid Operators</button>
   <button class="tab-btn" onclick="switchTab('policy',this)">📋 Policy Details</button>
   <button class="tab-btn" onclick="switchTab('reg',this)">🏛 Regulatory Watch</button>
+  <button class="tab-btn" onclick="switchTab('usgrid',this)">🗺 US Grid Map</button>
+  <button class="tab-btn" onclick="switchTab('epochdata',this)">📡 Epoch AI Data</button>
+  <button class="tab-btn" onclick="switchTab('parcels',this)">🏷 Land Parcels</button>
 </div>
 
 <!-- TAB 1: MAP -->
@@ -267,6 +280,7 @@
     <button class="layer-btn" id="btn-power"    onclick="toggleMapLayer('power')">⚡ Power Grid</button>
     <button class="layer-btn" id="btn-cables"   onclick="toggleMapLayer('cables')">🌊 Submarine Cables</button>
     <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
+    <button class="layer-btn" id="btn-landing"  onclick="toggleMapLayer('landing')">⚓ Landing Stations</button>
     <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🤖 AI Clusters</button>
     <span class="layer-divider">·</span>
     <button class="layer-btn" id="btn-rail"         onclick="toggleMapLayer('rail')">🚂 Railways</button>
@@ -565,6 +579,234 @@
   </div>
 </div>
 
+<!-- TAB 6: US GRID MAP -->
+<div id="tab-usgrid" class="tab-content">
+  <div id="map-view" class="view" style="padding:0">
+    <div class="view-controls">
+      <div class="toggle-group">
+        <button class="toggle-btn active" data-view="score">Infrastructure Score</button>
+        <button class="toggle-btn" data-view="iso">ISO Coverage</button>
+        <button class="toggle-btn" data-view="supply">Available Supply</button>
+        <button class="toggle-btn" data-view="345kv">345 kV Network</button>
+      </div>
+    </div>
+    <div class="map-container">
+      <svg id="us-map"></svg>
+      <div id="us-tooltip" class="tooltip hidden"></div>
+    </div>
+    <div id="us-legend" class="legend"></div>
+  </div>
+  <div id="state-view" class="view hidden" style="padding:0">
+    <div class="state-header">
+      <button id="back-btn" class="back-btn">← Back to US Map</button>
+      <div id="state-title">
+        <h2 id="state-name"></h2>
+        <span id="state-iso-badge" class="badge"></span>
+      </div>
+    </div>
+    <div class="metric-cards">
+      <div class="card"><div class="card-label">Installed Capacity</div><div class="card-value" id="val-capacity">—</div><div class="card-sub" id="sub-capacity">Loading…</div></div>
+      <div class="card"><div class="card-label">Generators</div><div class="card-value" id="val-generators">—</div><div class="card-sub" id="sub-generators">Operating units</div></div>
+      <div class="card"><div class="card-label">Commercial Price</div><div class="card-value" id="val-price">—</div><div class="card-sub" id="sub-price">cents/kWh</div></div>
+      <div class="card"><div class="card-label">Grid Operator</div><div class="card-value" id="val-iso">—</div><div class="card-sub" id="sub-iso">ISO / Utility</div></div>
+      <div class="card"><div class="card-label">Top Fuel Source</div><div class="card-value" id="val-fuel">—</div><div class="card-sub" id="sub-fuel">By installed capacity</div></div>
+      <div class="card"><div class="card-label">Available Supply</div><div class="card-value" id="val-headroom">—</div><div class="card-sub" id="sub-headroom">Capacity − peak demand</div></div>
+      <div class="card card-highlight"><div class="card-label">345+ kV Access</div><div class="card-value" id="val-transmission">—</div><div class="card-sub" id="sub-transmission">Loading OSM + HIFLD…</div></div>
+      <div class="card"><div class="card-label">Grid CO₂ Rate</div><div class="card-value" id="val-co2">—</div><div class="card-sub" id="sub-co2">lbs CO₂/MWh · EPA eGRID</div></div>
+    </div>
+    <div class="state-content">
+      <div class="county-map-panel">
+        <div class="panel-header">
+          <h3>County Infrastructure Map</h3>
+          <div class="county-mode-toggle">
+            <button class="county-mode-btn active" data-mode="generators">Gen Score</button>
+            <button class="county-mode-btn" data-mode="tx" disabled title="Loading…">TX Capacity</button>
+            <button class="county-mode-btn" data-mode="util" disabled title="Loading…">TX Util</button>
+          </div>
+          <div class="map-legend-inline" id="county-legend"></div>
+        </div>
+        <div class="tx-filters" id="tx-filters">
+          <span class="tx-filter-label">Lines:</span>
+          <button class="tx-filter" data-kv="110" style="--c:#94a3b8">110 kV</button>
+          <button class="tx-filter" data-kv="150" style="--c:#60a5fa">150 kV</button>
+          <button class="tx-filter active" data-kv="230" style="--c:#22d3ee">230 kV</button>
+          <button class="tx-filter active" data-kv="345" style="--c:#f59e0b">345 kV</button>
+          <button class="tx-filter active" data-kv="500" style="--c:#f97316">500+ kV</button>
+        </div>
+        <div class="map-wrapper" id="county-map-wrapper">
+          <div id="county-loading" class="loading-spinner">Loading map data…</div>
+          <div id="county-map"></div>
+          <div id="county-tooltip" class="tooltip hidden"></div>
+        </div>
+        <div class="fuel-legend" id="fuel-legend"></div>
+      </div>
+      <div class="charts-panel">
+        <div class="panel">
+          <h3>Top Generators by Capacity</h3>
+          <div id="generators-loading" class="loading-spinner" style="position:static;height:40px;background:transparent;border-radius:0">Fetching EIA data…</div>
+          <div id="generators-error" class="error-msg hidden"></div>
+          <table id="generators-table" class="data-table hidden">
+            <thead><tr><th style="width:40%">Plant</th><th style="width:22%">Fuel</th><th style="width:16%;text-align:right">MW</th><th style="width:22%">County</th></tr></thead>
+            <tbody id="generators-tbody"></tbody>
+          </table>
+        </div>
+        <div class="panel" id="tx-capacity-panel" style="display:none">
+          <h3>Transmission Capacity by Voltage Class <span id="tx-cap-total" style="font-weight:400;color:var(--text-muted)"></span></h3>
+          <div id="tx-capacity-bars"></div>
+          <p class="tx-cap-note">Capacity estimated as line-miles × MW/mile per voltage class. Actual thermal ratings vary by conductor, age, and ambient conditions.</p>
+        </div>
+      </div>
+    </div>
+    <div class="reg-section" id="reg-section" style="display:none">
+      <div class="reg-section-header">
+        <h3>Power Plant Development — Regulatory Environment</h3>
+        <span id="reg-structure-badge" class="reg-badge"></span>
+      </div>
+      <div class="reg-stat-grid">
+        <div class="reg-stat-card"><div class="reg-stat-label">State Regulator</div><div class="reg-stat-value" id="reg-regulator-val">—</div></div>
+        <div class="reg-stat-card"><div class="reg-stat-label">Market Structure</div><div class="reg-stat-value" id="reg-market-val">—</div><div class="reg-stat-sub" id="reg-cpcn-val"></div></div>
+        <div class="reg-stat-card"><div class="reg-stat-label">Clean Energy / RPS</div><div class="reg-stat-value" id="reg-rps-val">—</div></div>
+        <div class="reg-stat-card"><div class="reg-stat-label">Typical Timeline</div><div class="reg-stat-value" id="reg-timeline-val">—</div><div class="reg-stat-sub">plant-to-commercial</div></div>
+        <div class="reg-stat-card"><div class="reg-stat-label">Dev. Complexity</div><div class="reg-stat-value" id="reg-complexity-val">—</div></div>
+      </div>
+      <div class="reg-body">
+        <div class="reg-permits-col"><div class="reg-col-title">Key Permits &amp; Approvals</div><ul class="reg-permits-list" id="reg-permits-list"></ul></div>
+        <div class="reg-notes-col"><div class="reg-col-title">Regulatory Pathway Notes</div><p class="reg-notes-text" id="reg-notes-text"></p></div>
+      </div>
+    </div>
+    <div class="sources-bar" id="sources-bar">
+      <span class="sources-label">Data sources:</span>
+      <span class="src-badge" id="src-eia">EIA</span>
+      <span class="src-badge" id="src-osm">OSM</span>
+      <span class="src-badge" id="src-hifld">HIFLD</span>
+      <span class="src-badge src-static" id="src-egrid">EPA eGRID</span>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 7: EPOCH AI DATA CENTERS -->
+<div id="tab-epochdata" class="tab-content">
+  <div id="dc-view" class="view" style="padding:0">
+    <div class="dc-header">
+      <div class="dc-header-top">
+        <div>
+          <h2>Frontier Data Centers</h2>
+          <p class="dc-subtitle">AI hyperscale facilities tracked by Epoch AI · <a href="https://epoch.ai/data/data-centers/" target="_blank" rel="noopener">epoch.ai</a> · CC Attribution · Updated Apr 2026</p>
+        </div>
+        <div id="dc-count" class="dc-count"></div>
+      </div>
+      <div class="dc-filters">
+        <input type="text" id="dc-filter-search" class="dc-input" placeholder="Search name, owner, project…">
+        <select id="dc-filter-owner" class="dc-select"><option value="">All Owners</option></select>
+        <select id="dc-filter-country" class="dc-select">
+          <option value="">All Countries</option>
+          <option value="United States">United States</option>
+          <option value="China">China</option>
+          <option value="United Arab Emirates">UAE</option>
+        </select>
+        <label class="dc-label">Min Power <input type="number" id="dc-filter-minpower" class="dc-input dc-input-sm" placeholder="0" min="0" step="50"> MW</label>
+        <select id="dc-sort" class="dc-select">
+          <option value="power-desc">Sort: Power ↓</option>
+          <option value="h100-desc">Sort: H100 equiv ↓</option>
+          <option value="cost-desc">Sort: Cost ↓</option>
+          <option value="name-asc">Sort: Name A→Z</option>
+        </select>
+      </div>
+    </div>
+    <div class="dc-body">
+      <div class="dc-map-panel">
+        <div class="map-wrapper" id="dc-map-wrapper">
+          <svg id="dc-map"></svg>
+          <div id="dc-tooltip" class="tooltip hidden"></div>
+          <div class="map-zoom-controls">
+            <button id="dc-zoom-in" class="zoom-btn" title="Zoom in">+</button>
+            <button id="dc-zoom-reset" class="zoom-btn" title="Reset zoom">⊙</button>
+            <button id="dc-zoom-out" class="zoom-btn" title="Zoom out">−</button>
+          </div>
+        </div>
+      </div>
+      <div class="dc-table-panel">
+        <table class="data-table dc-table">
+          <thead><tr>
+            <th style="width:22%">Name</th>
+            <th style="width:12%">Owner</th>
+            <th style="width:12%">Users</th>
+            <th style="width:10%;text-align:right">Power (MW)</th>
+            <th style="width:10%;text-align:right">H100 equiv.</th>
+            <th style="width:10%;text-align:right">Est. Cost</th>
+            <th>Location</th>
+          </tr></thead>
+          <tbody id="dc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 8: LAND PARCELS -->
+<div id="tab-parcels" class="tab-content">
+  <div id="parcels-view" class="view" style="padding:0">
+    <div class="parcels-header">
+      <h2>Land Parcels Near 345/500 kV Lines</h2>
+      <div id="parcels-region-btns" style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap">
+        <button class="filter-btn active" onclick="switchParcelsRegion('clark',this)">Nevada — Clark County</button>
+        <button class="filter-btn" onclick="switchParcelsRegion('iowa',this)">Iowa</button>
+        <button class="filter-btn" onclick="switchParcelsRegion('nebraska',this)">Nebraska</button>
+        <button class="filter-btn" onclick="switchParcelsRegion('georgia',this)">Georgia</button>
+      </div>
+      <div id="state-county-row" class="iowa-county-row" style="display:none">
+        <label class="iowa-county-label">County:</label>
+        <select id="state-county-select" class="iowa-county-select"><option value="">— select a county —</option></select>
+        <a id="state-assessor-btn" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor" style="display:none">Open Assessor →</a>
+      </div>
+      <p id="parcels-subtitle" class="parcels-subtitle">Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via county assessor.</p>
+    </div>
+    <div class="parcels-body">
+      <div class="parcels-map-panel">
+        <div class="map-wrapper" id="parcels-map-wrapper"><svg id="parcels-map"></svg></div>
+        <div id="parcels-status" class="parcels-status">Select a region above.</div>
+      </div>
+      <div class="parcels-results-panel">
+        <div id="parcels-count" class="parcels-count"></div>
+        <div id="parcels-table-panel" class="panel" style="display:none">
+          <table class="data-table parcels-table">
+            <thead><tr>
+              <th style="width:30%">APN</th>
+              <th style="width:18%;text-align:right">Acres</th>
+              <th style="width:18%">Status</th>
+              <th style="width:34%">Owner Info</th>
+            </tr></thead>
+            <tbody id="parcels-tbody"></tbody>
+          </table>
+          <p class="parcels-note">Click <strong>View Owner →</strong> to open the county assessor parcel ownership history.</p>
+        </div>
+        <div id="state-info-panel" class="panel iowa-info-panel" style="display:none">
+          <div id="state-tx-summary" class="iowa-tx-summary"></div>
+          <div class="iowa-search-guide">
+            <p class="iowa-guide-title">Parcel search guide:</p>
+            <ul class="iowa-guide-list">
+              <li>Look for agricultural land ≥ 100 acres near the 345/500 kV corridors shown on the map</li>
+              <li>Search by owner name, address, or draw an area in the assessor map tool</li>
+              <li>Industrial or commercially-zoned parcels near substations are high-priority targets</li>
+            </ul>
+          </div>
+          <a id="state-assessor-cta" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor-cta" style="display:none">Search Parcels in County Assessor →</a>
+          <p id="state-platform-note" class="iowa-platform-note"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/api.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/transmission.js"></script>
+<script src="js/map.js"></script>
+<script src="js/parcels.js"></script>
+<script src="js/datacenters.js"></script>
+<script src="js/app.js"></script>
+
 <script>
 // =====================================================================
 // TAB SWITCHING
@@ -574,8 +816,36 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   btn.classList.add('active');
-  if (id === 'map' && !window._mapInit) initMap();
+  if (id === 'map' && !window._mapInit) initLeafletMap();
   else if (id === 'map' && window._leafletMap) setTimeout(() => window._leafletMap.invalidateSize(), 50);
+  else if (id === 'usgrid' && !window._usGridInit) {
+    window._usGridInit = true;
+    initTransmissionFilters();
+    showView('map-view');
+    initMapView();
+  }
+  else if (id === 'epochdata' && !window._epochDataInit) {
+    window._epochDataInit = true;
+    if (typeof initDataCentersView === 'function') initDataCentersView();
+  }
+  else if (id === 'parcels' && !window._parcelsInit) {
+    window._parcelsInit = true;
+    switchParcelsRegion('clark', document.querySelector('#parcels-region-btns .filter-btn'));
+  }
+}
+
+function switchParcelsRegion(region, btn) {
+  document.querySelectorAll('#parcels-region-btns .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (region === 'clark' && typeof switchToClarkView === 'function') {
+    switchToClarkView();
+  } else if (region === 'iowa' && typeof switchToStateView === 'function') {
+    switchToStateView('Iowa', typeof IOWA_COUNTIES !== 'undefined' ? IOWA_COUNTIES : [], typeof IOWA_CITY_ASSESSORS !== 'undefined' ? IOWA_CITY_ASSESSORS : []);
+  } else if (region === 'nebraska' && typeof switchToStateView === 'function') {
+    switchToStateView('Nebraska', typeof NEBRASKA_COUNTIES !== 'undefined' ? NEBRASKA_COUNTIES : [], []);
+  } else if (region === 'georgia' && typeof switchToStateView === 'function') {
+    switchToStateView('Georgia', typeof GEORGIA_COUNTIES !== 'undefined' ? GEORGIA_COUNTIES : [], []);
+  }
 }
 
 // =====================================================================
@@ -695,7 +965,7 @@ const providers = {
   ]},
 };
 
-function initMap() {
+function initLeafletMap() {
   window._mapInit = true;
   const map = L.map('map', { center: [39.5, -98.5], zoom: 4 });
 
@@ -775,8 +1045,7 @@ function initMap() {
 // =====================================================================
 const _ovLayers  = {};   // cached layer objects
 const _ovActive  = {};   // toggle state
-const ITU_WFS    = 'https://bbmaps.itu.int/geoserver/wfs';
-const NA_BBOX    = '-170,10,-40,75,EPSG:4326';
+// ITU_WFS and NA_BBOX are defined by datacenters.js (loaded after this block)
 const CORS_PROXY = 'https://corsproxy.io/?url=';
 const OVERPASS   = 'https://overpass-api.de/api/interpreter';
 const US_BBOX    = '24,-125,50,-66';
@@ -812,6 +1081,9 @@ function toggleMapLayer(name) {
 
   } else if (name === 'ixps') {
     _loadITUIXPs(map, stat, btn);
+
+  } else if (name === 'landing') {
+    _loadITULandingStations(map, stat, btn);
 
   } else if (name === 'epoch') {
     _loadEpochLayer(map, stat, btn);
@@ -852,12 +1124,21 @@ function toggleSatellite() {
   if (!map) return;
   if (window._satActive) {
     map.removeLayer(window._baseSat);
+    if (window._baseLabels) map.removeLayer(window._baseLabels);
     window._baseOSM.addTo(map);
     window._satActive = false;
     btn.classList.remove('active', 'active-epoch');
   } else {
     map.removeLayer(window._baseOSM);
     window._baseSat.addTo(map);
+    // ESRI reference overlay: state/country boundaries + city labels on top of satellite
+    if (!window._baseLabels) {
+      window._baseLabels = L.tileLayer(
+        'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+        { attribution: '© Esri', opacity: 0.9, maxZoom: 19 }
+      );
+    }
+    window._baseLabels.addTo(map);
     window._satActive = true;
     btn.classList.add('active', 'active-epoch');
   }
@@ -924,6 +1205,40 @@ async function _loadITUIXPs(map, stat, btn) {
     if (stat) stat.textContent = 'IXP data unavailable';
     _ovActive.ixps = false;
     btn?.classList.remove('active','active-ixps');
+  }
+}
+
+async function _loadITULandingStations(map, stat, btn) {
+  if (_ovLayers.landing) { _ovLayers.landing.addTo(map); return; }
+  if (stat) stat.textContent = 'Loading landing stations…';
+  try {
+    const res  = await fetch(_ituWfsUrl('ITU:landing_stations'));
+    const data = await res.json();
+    const pts  = (data.features || []).filter(f => f.geometry?.type === 'Point');
+    _ovLayers.landing = L.geoJSON({ type:'FeatureCollection', features: pts }, {
+      pointToLayer: (_f, latlng) => L.circleMarker(latlng, {
+        radius: 6, fillColor: '#f97316', color: '#ea580c',
+        weight: 1.5, fillOpacity: 0.9
+      }),
+      onEachFeature(feature, layer) {
+        const p = feature.properties || {};
+        layer.bindPopup(`
+          <div class="popup-title" style="color:#f97316">${p.name || p.station_name || 'Landing Station'}</div>
+          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Submarine Cable Landing Station</span></div>
+          ${p.cables    ? `<div class="popup-row"><span class="popup-label">Cables</span><span class="popup-val">${p.cables}</span></div>` : ''}
+          ${p.owners    ? `<div class="popup-row"><span class="popup-label">Owners</span><span class="popup-val">${p.owners}</span></div>` : ''}
+          ${p.rfs_year  ? `<div class="popup-row"><span class="popup-label">RFS Year</span><span class="popup-val">${p.rfs_year}</span></div>` : ''}
+          ${p.city      ? `<div class="popup-row"><span class="popup-label">City</span><span class="popup-val">${p.city}</span></div>` : ''}
+          ${p.country   ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>
+        `);
+      }
+    }).addTo(map);
+    if (stat) stat.textContent = `${pts.length} landing stations`;
+  } catch(e) {
+    if (stat) stat.textContent = 'Landing station data unavailable';
+    _ovActive.landing = false;
+    btn?.classList.remove('active', 'active-landing');
   }
 }
 
@@ -1489,7 +1804,7 @@ function toggleGridCard(i) {
 document.addEventListener('DOMContentLoaded', function() {
   buildRows();
   renderGridCards();
-  initMap();
+  initLeafletMap();
   window._mapInit = true;
 });
 </script>

@@ -27,12 +27,15 @@ function applyTheme(theme) {
 // ── View switching ────────────────────────────────────────────────────────────
 
 function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
-  // Sync nav tab active state (only for top-level tabs)
-  document.querySelectorAll('.nav-tab').forEach(btn =>
-    btn.classList.toggle('active', btn.dataset.tab === id)
-  );
+  // In DC Intel mode, scope to the US Grid tab container to avoid hiding other tab contents
+  const scope = window._DC_INTEL_MODE ? document.getElementById('tab-usgrid') : document;
+  (scope || document).querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+  document.getElementById(id)?.classList.remove('hidden');
+  if (!window._DC_INTEL_MODE) {
+    document.querySelectorAll('.nav-tab').forEach(btn =>
+      btn.classList.toggle('active', btn.dataset.tab === id)
+    );
+  }
 }
 
 function initNavTabs() {
@@ -551,4 +554,4 @@ async function init() {
   await initMapView();
 }
 
-document.addEventListener('DOMContentLoaded', init);
+if (!window._DC_INTEL_MODE) document.addEventListener('DOMContentLoaded', init);
