@@ -1049,7 +1049,8 @@ function initLeafletMap() {
   }
   const ownerSel = document.getElementById('hyper-owner-select');
   if (ownerSel && typeof HYPERSCALER_BUILDINGS !== 'undefined') {
-    const owners = [...new Set(HYPERSCALER_BUILDINGS.map(d => d.buildingOwner).filter(Boolean))].sort();
+    const hyperCompanies = new Set(Object.keys(HYPERSCALER_COLORS));
+    const owners = [...new Set(HYPERSCALER_BUILDINGS.map(d => d.buildingOwner).filter(o => o && !hyperCompanies.has(o)))].sort();
     owners.forEach(o => {
       const opt = document.createElement('option');
       opt.value = o; opt.textContent = o;
