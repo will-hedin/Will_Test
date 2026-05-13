@@ -1254,8 +1254,8 @@ const _FIPS_TO_ABBR = {
   '50':'VT','51':'VA','53':'WA','54':'WV','55':'WI','56':'WY'
 };
 
-let _countyGeoJsonLayer = null;
-let _countyFeatures = null;
+let _dcCountyLayer = null;
+let _dcCountyFeatures = null;
 let _countyHighlightGeoid = null;
 
 function _countyStyle(feature) {
@@ -1282,9 +1282,9 @@ function _showCountyFilterRow() {
 function _hideCountyFilterRow() {
   const row = document.getElementById('county-filter-row');
   if (row) row.classList.remove('visible');
-  if (_countyGeoJsonLayer && window._leafletMap) {
-    window._leafletMap.removeLayer(_countyGeoJsonLayer);
-    _countyGeoJsonLayer = null;
+  if (_dcCountyLayer && window._leafletMap) {
+    window._leafletMap.removeLayer(_dcCountyLayer);
+    _dcCountyLayer = null;
     _ovLayers.counties = null;
   }
   _countyHighlightGeoid = null;
@@ -1295,23 +1295,23 @@ async function _loadCountyBoundaries(stat) {
   if (!map) return;
 
   // If already on map, no-op
-  if (_countyGeoJsonLayer) return;
+  if (_dcCountyLayer) return;
 
   if (stat) stat.textContent = 'Loading county boundaries…';
 
-  if (!_countyFeatures) {
+  if (!_dcCountyFeatures) {
     try {
       const res = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json');
       const topology = await res.json();
       const fc = topojson.feature(topology, topology.objects.counties);
-      _countyFeatures = fc.features;
+      _dcCountyFeatures = fc.features;
     } catch(e) {
       if (stat) stat.textContent = 'County boundary data unavailable';
       return;
     }
   }
 
-  _countyGeoJsonLayer = L.geoJSON(_countyFeatures, {
+  _dcCountyLayer = L.geoJSON(_dcCountyFeatures, {
     style: _countyStyle,
     onEachFeature(feature, layer) {
       const name = feature.properties && feature.properties.name ? feature.properties.name : '';
@@ -1329,9 +1329,9 @@ async function _loadCountyBoundaries(stat) {
     }
   }).addTo(map);
 
-  _ovLayers.counties = _countyGeoJsonLayer;
+  _ovLayers.counties = _dcCountyLayer;
 
-  const n = _countyFeatures.length;
+  const n = _dcCountyFeatures.length;
   if (stat) stat.textContent = n + ' counties';
   const countEl = document.getElementById('county-count');
   if (countEl) countEl.textContent = n + ' counties';
@@ -1344,18 +1344,18 @@ async function onCountyStateChange() {
 
   _countyHighlightGeoid = null;
   if (countySel) { countySel.innerHTML = '<option value="">All Counties</option>'; countySel.disabled = true; }
-  if (_countyGeoJsonLayer) _countyGeoJsonLayer.resetStyle();
+  if (_dcCountyLayer) _dcCountyLayer.resetStyle();
 
   if (!stateSel || !stateSel.value) return;
   const fips = _STATE_FIPS[stateSel.value];
   if (!fips) return;
 
   // Ensure boundaries are loaded
-  if (!_countyGeoJsonLayer) await _loadCountyBoundaries(stat);
+  if (!_dcCountyLayer) await _loadCountyBoundaries(stat);
 
   // Populate county dropdown for selected state
-  if (_countyFeatures && countySel) {
-    _countyFeatures
+  if (_dcCountyFeatures && countySel) {
+    _dcCountyFeatures
       .filter(f => String(f.id || '').slice(0, 2) === fips)
       .sort((a, b) => (a.properties.name || '').localeCompare(b.properties.name || ''))
       .forEach(f => {
@@ -1383,14 +1383,14 @@ function onCountySelect() {
   const countySel = document.getElementById('county-county-select');
   const geoid = countySel ? countySel.value : '';
   _countyHighlightGeoid = geoid || null;
-  if (!_countyGeoJsonLayer) return;
+  if (!_dcCountyLayer) return;
 
-  _countyGeoJsonLayer.resetStyle();
+  _dcCountyLayer.resetStyle();
 
   if (!geoid) return;
 
   // Zoom to the selected county
-  _countyGeoJsonLayer.eachLayer(layer => {
+  _dcCountyLayer.eachLayer(layer => {
     if (!layer.feature) return;
     if (String(layer.feature.id) === geoid) {
       try { window._leafletMap.fitBounds(layer.getBounds(), { padding: [40, 40] }); } catch(e) {}
