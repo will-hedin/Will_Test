@@ -289,7 +289,7 @@
   <button class="tab-btn active" onclick="switchTab('map',this)">🗺 Hyperscaler Map</button>
   <button class="tab-btn" onclick="switchTab('markets',this)">📊 Market Intelligence</button>
   <button class="tab-btn" onclick="switchTab('grid',this)">⚡ Grid Operators</button>
-  <button class="tab-btn" onclick="switchTab('policy',this)">📋 Policy Details</button>
+  <button class="tab-btn" onclick="switchTab('policy',this)">📋 Utility Financial Guarantees</button>
   <button class="tab-btn" onclick="switchTab('reg',this)">🏛 Regulatory Watch</button>
   <button class="tab-btn" onclick="switchTab('usgrid',this)">🗺 US Grid Map</button>
   <button class="tab-btn" onclick="switchTab('epochdata',this)">📡 AI Clusters</button>
@@ -1095,11 +1095,7 @@ function toggleMapLayer(name) {
 
   } else if (name === 'counties') {
     _showCountyFilterRow();
-    const cStateSel = document.getElementById('county-state-select');
-    if (cStateSel && cStateSel.value) {
-      const fips = _STATE_FIPS[cStateSel.value];
-      if (fips) _loadCountyBoundaries(fips, stat);
-    }
+    _loadCountyBoundaries(stat);
   }
 }
 
@@ -1234,10 +1230,8 @@ function toggleSatellite() {
 }
 
 // =====================================================================
-// COUNTY BOUNDARIES LAYER
+// COUNTY BOUNDARIES LAYER  (us-atlas TopoJSON — all US counties)
 // =====================================================================
-const _TIGERWEB_COUNTY = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query';
-
 const _STATE_FIPS = {
   'Alabama':'01','Alaska':'02','Arizona':'04','Arkansas':'05','California':'06',
   'Colorado':'08','Connecticut':'09','Delaware':'10','District of Columbia':'11',
@@ -1251,20 +1245,35 @@ const _STATE_FIPS = {
   'South Dakota':'46','Tennessee':'47','Texas':'48','Utah':'49','Vermont':'50',
   'Virginia':'51','Washington':'53','West Virginia':'54','Wisconsin':'55','Wyoming':'56'
 };
+const _FIPS_TO_ABBR = {
+  '01':'AL','02':'AK','04':'AZ','05':'AR','06':'CA','08':'CO','09':'CT','10':'DE','11':'DC',
+  '12':'FL','13':'GA','15':'HI','16':'ID','17':'IL','18':'IN','19':'IA','20':'KS','21':'KY',
+  '22':'LA','23':'ME','24':'MD','25':'MA','26':'MI','27':'MN','28':'MS','29':'MO','30':'MT',
+  '31':'NE','32':'NV','33':'NH','34':'NJ','35':'NM','36':'NY','37':'NC','38':'ND','39':'OH',
+  '40':'OK','41':'OR','42':'PA','44':'RI','45':'SC','46':'SD','47':'TN','48':'TX','49':'UT',
+  '50':'VT','51':'VA','53':'WA','54':'WV','55':'WI','56':'WY'
+};
 
-let _countyLayerGroup = null;
+let _countyGeoJsonLayer = null;
+let _countyFeatures = null;
 let _countyHighlightGeoid = null;
-const _countyDataCache = {};
+
+function _countyStyle(feature) {
+  const id = feature && feature.id ? String(feature.id) : '';
+  if (_countyHighlightGeoid && id === _countyHighlightGeoid) {
+    return { color: '#4f8ef7', weight: 2.5, fillColor: 'rgba(79,142,247,0.15)', fillOpacity: 0.15, opacity: 0.95 };
+  }
+  return { color: '#64748b', weight: 0.8, fillColor: 'transparent', fillOpacity: 0, opacity: 0.8 };
+}
 
 function _showCountyFilterRow() {
   const row = document.getElementById('county-filter-row');
   if (row) row.classList.add('visible');
-  // Populate state dropdown once
   const sel = document.getElementById('county-state-select');
   if (sel && sel.options.length <= 1) {
-    Object.keys(_STATE_FIPS).sort().forEach(name => {
+    Object.keys(_STATE_FIPS).sort().forEach(stateName => {
       const opt = document.createElement('option');
-      opt.value = name; opt.textContent = name;
+      opt.value = stateName; opt.textContent = stateName;
       sel.appendChild(opt);
     });
   }
@@ -1273,143 +1282,120 @@ function _showCountyFilterRow() {
 function _hideCountyFilterRow() {
   const row = document.getElementById('county-filter-row');
   if (row) row.classList.remove('visible');
-  if (_countyLayerGroup && window._leafletMap) {
-    window._leafletMap.removeLayer(_countyLayerGroup);
-    _countyLayerGroup = null;
+  if (_countyGeoJsonLayer && window._leafletMap) {
+    window._leafletMap.removeLayer(_countyGeoJsonLayer);
+    _countyGeoJsonLayer = null;
+    _ovLayers.counties = null;
   }
   _countyHighlightGeoid = null;
 }
 
-async function _loadCountyBoundaries(stateFips, stat) {
+async function _loadCountyBoundaries(stat) {
   const map = window._leafletMap;
-  if (!map || !stateFips) return;
-  if (stat) stat.textContent = 'Loading counties…';
-  if (_countyLayerGroup) { map.removeLayer(_countyLayerGroup); _countyLayerGroup = null; }
+  if (!map) return;
 
-  let data = _countyDataCache[stateFips];
-  if (!data) {
+  // If already on map, no-op
+  if (_countyGeoJsonLayer) return;
+
+  if (stat) stat.textContent = 'Loading county boundaries…';
+
+  if (!_countyFeatures) {
     try {
-      const url = `${_TIGERWEB_COUNTY}?where=${encodeURIComponent(`STATE='${stateFips}'`)}&outFields=NAME%2CGEOID&f=geojson&geometryPrecision=4&outSR=4326&returnGeometry=true`;
-      const res = await fetch(url);
-      data = await res.json();
-      _countyDataCache[stateFips] = data;
+      const res = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json');
+      const topology = await res.json();
+      const fc = topojson.feature(topology, topology.objects.counties);
+      _countyFeatures = fc.features;
     } catch(e) {
-      if (stat) stat.textContent = 'County data unavailable';
+      if (stat) stat.textContent = 'County boundary data unavailable';
       return;
     }
   }
 
-  const features = data.features || [];
-  if (!features.length) { if (stat) stat.textContent = 'No county data'; return; }
-
-  // Populate county dropdown
-  const countySel = document.getElementById('county-county-select');
-  if (countySel) {
-    countySel.innerHTML = '<option value="">All Counties</option>';
-    [...features].sort((a, b) => a.properties.NAME.localeCompare(b.properties.NAME)).forEach(f => {
-      const opt = document.createElement('option');
-      opt.value = f.properties.GEOID;
-      opt.textContent = f.properties.NAME + ' County';
-      countySel.appendChild(opt);
-    });
-    countySel.disabled = false;
-    countySel.value = '';
-  }
-
-  const group = L.layerGroup();
-  features.forEach(feature => {
-    const name = feature.properties.NAME;
-    const geoid = feature.properties.GEOID;
-    const lyr = L.geoJSON(feature, {
-      style: { color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0, opacity: 0.75 }
-    });
-    lyr.bindTooltip(name + ' County', { permanent: false, direction: 'center', className: 'county-label' });
-    lyr.on('mouseover', function() {
-      if (_countyHighlightGeoid !== geoid)
-        lyr.setStyle({ color: '#94a3b8', weight: 1.5, fillColor: 'rgba(148,163,184,0.08)', fillOpacity: 0.08 });
-    });
-    lyr.on('mouseout', function() {
-      if (_countyHighlightGeoid !== geoid)
-        lyr.setStyle({ color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0 });
-    });
-    lyr._geoid = geoid;
-    lyr._countyName = name;
-    lyr.addTo(group);
-  });
-  group.addTo(map);
-  _countyLayerGroup = group;
-  _ovLayers.counties = group;
-
-  const countEl = document.getElementById('county-count');
-  if (countEl) countEl.textContent = `${features.length} counties`;
-  if (stat) stat.textContent = `${features.length} counties`;
-
-  // Re-apply any existing highlight
-  if (_countyHighlightGeoid) _applyCountyHighlight(_countyHighlightGeoid, false);
-}
-
-function _applyCountyHighlight(geoid, zoom) {
-  if (!_countyLayerGroup) return;
-  _countyLayerGroup.eachLayer(lyr => {
-    if (lyr._geoid === geoid) {
-      lyr.setStyle({ color: '#4f8ef7', weight: 2.5, fillColor: 'rgba(79,142,247,0.14)', fillOpacity: 0.14 });
-      if (zoom) {
-        try { window._leafletMap.fitBounds(lyr.getBounds(), { padding: [40, 40] }); } catch(e) {}
-      }
-    } else {
-      lyr.setStyle({ color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0 });
+  _countyGeoJsonLayer = L.geoJSON(_countyFeatures, {
+    style: _countyStyle,
+    onEachFeature(feature, layer) {
+      const name = feature.properties && feature.properties.name ? feature.properties.name : '';
+      const abbr = _FIPS_TO_ABBR[String(feature.id || '').slice(0, 2)] || '';
+      const label = name + ' County' + (abbr ? ', ' + abbr : '');
+      layer.bindTooltip(label, { permanent: false, direction: 'center', className: 'county-label', sticky: true });
+      layer.on('mouseover', function() {
+        if (String(feature.id) !== _countyHighlightGeoid)
+          layer.setStyle({ color: '#94a3b8', weight: 1.5, fillColor: 'rgba(148,163,184,0.1)', fillOpacity: 0.1 });
+      });
+      layer.on('mouseout', function() {
+        if (String(feature.id) !== _countyHighlightGeoid)
+          layer.setStyle(_countyStyle(feature));
+      });
     }
-  });
+  }).addTo(map);
+
+  _ovLayers.counties = _countyGeoJsonLayer;
+
+  const n = _countyFeatures.length;
+  if (stat) stat.textContent = n + ' counties';
+  const countEl = document.getElementById('county-count');
+  if (countEl) countEl.textContent = n + ' counties';
 }
 
 async function onCountyStateChange() {
   const stateSel = document.getElementById('county-state-select');
   const countySel = document.getElementById('county-county-select');
   const stat = document.getElementById('layer-status');
+
   _countyHighlightGeoid = null;
+  if (countySel) { countySel.innerHTML = '<option value="">All Counties</option>'; countySel.disabled = true; }
+  if (_countyGeoJsonLayer) _countyGeoJsonLayer.resetStyle();
 
-  if (!stateSel.value) {
-    if (countySel) { countySel.innerHTML = '<option value="">All Counties</option>'; countySel.disabled = true; }
-    if (_countyLayerGroup && window._leafletMap) { window._leafletMap.removeLayer(_countyLayerGroup); _countyLayerGroup = null; }
-    const countEl = document.getElementById('county-count');
-    if (countEl) countEl.textContent = '';
-    return;
-  }
-
+  if (!stateSel || !stateSel.value) return;
   const fips = _STATE_FIPS[stateSel.value];
   if (!fips) return;
 
-  // Zoom to state bounding box
-  const map = window._leafletMap;
-  if (map) {
-    try {
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(stateSel.value + ', United States')}&format=json&limit=1`;
-      const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
-      const data = await res.json();
-      if (data.length && data[0].boundingbox) {
-        const bb = data[0].boundingbox;
-        map.fitBounds([[+bb[0], +bb[2]], [+bb[1], +bb[3]]], { padding: [20, 20] });
-      }
-    } catch(e) {}
+  // Ensure boundaries are loaded
+  if (!_countyGeoJsonLayer) await _loadCountyBoundaries(stat);
+
+  // Populate county dropdown for selected state
+  if (_countyFeatures && countySel) {
+    _countyFeatures
+      .filter(f => String(f.id || '').slice(0, 2) === fips)
+      .sort((a, b) => (a.properties.name || '').localeCompare(b.properties.name || ''))
+      .forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = String(f.id);
+        opt.textContent = (f.properties.name || '') + ' County';
+        countySel.appendChild(opt);
+      });
+    countySel.disabled = false;
   }
 
-  _loadCountyBoundaries(fips, stat);
+  // Zoom to state
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(stateSel.value + ', United States')}&format=json&limit=1`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+    if (data.length && data[0].boundingbox) {
+      const bb = data[0].boundingbox;
+      window._leafletMap.fitBounds([[+bb[0], +bb[2]], [+bb[1], +bb[3]]], { padding: [20, 20] });
+    }
+  } catch(e) {}
 }
 
 function onCountySelect() {
   const countySel = document.getElementById('county-county-select');
   const geoid = countySel ? countySel.value : '';
   _countyHighlightGeoid = geoid || null;
-  if (!geoid) {
-    // Clear highlight
-    if (_countyLayerGroup) {
-      _countyLayerGroup.eachLayer(lyr => {
-        lyr.setStyle({ color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0 });
-      });
+  if (!_countyGeoJsonLayer) return;
+
+  _countyGeoJsonLayer.resetStyle();
+
+  if (!geoid) return;
+
+  // Zoom to the selected county
+  _countyGeoJsonLayer.eachLayer(layer => {
+    if (!layer.feature) return;
+    if (String(layer.feature.id) === geoid) {
+      try { window._leafletMap.fitBounds(layer.getBounds(), { padding: [40, 40] }); } catch(e) {}
     }
-    return;
-  }
-  _applyCountyHighlight(geoid, true);
+  });
 }
 
 function _ituWfsUrl(typeName) {
