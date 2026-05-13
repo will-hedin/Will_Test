@@ -86,6 +86,13 @@
   .sub-filter-btn:hover { border-color: var(--accent); color: var(--text); }
   .sub-filter-btn.active { background: rgba(79,142,247,0.18); color: var(--accent); border-color: var(--accent); }
   #layer-status { font-size: 11px; color: var(--secondary); margin-left: 6px; }
+  .map-search-row { display: flex; align-items: center; gap: 6px; padding: 6px 0 4px; }
+  .map-search-input { flex: 1; max-width: 340px; padding: 6px 10px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; }
+  .map-search-input:focus { border-color: var(--accent); }
+  .map-search-input::placeholder { color: var(--muted); }
+  .map-search-btn { padding: 6px 12px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .map-search-btn:hover { opacity: 0.85; }
+  .map-search-status { font-size: 11px; color: var(--secondary); }
   .hidden { display: none; }
   /* Override css/style.css padding on view divs inside our tab system */
   #tab-usgrid .view, #tab-epochdata .view, #tab-parcels .view { padding: 0; }
@@ -320,6 +327,11 @@
       <button class="sub-filter-btn" onclick="applyGridFilter(500,this)" style="border-color:#f97316;color:#f97316">≥500 kV</button>
       <button class="sub-filter-btn" onclick="applyGridFilter(765,this)" style="border-color:#ef4444;color:#ef4444">765 kV</button>
     </div>
+  </div>
+  <div class="map-search-row">
+    <input type="text" id="map-search-input" class="map-search-input" placeholder="Search address or location…" onkeydown="if(event.key==='Enter') geocodeAddress()">
+    <button class="map-search-btn" onclick="geocodeAddress()">Go</button>
+    <span id="map-search-status" class="map-search-status"></span>
   </div>
   <div id="map"></div>
 </div>
@@ -845,6 +857,39 @@ function switchParcelsRegion(region, btn) {
     switchToStateView('Nebraska', typeof NEBRASKA_COUNTIES !== 'undefined' ? NEBRASKA_COUNTIES : [], []);
   } else if (region === 'georgia' && typeof switchToStateView === 'function') {
     switchToStateView('Georgia', typeof GEORGIA_COUNTIES !== 'undefined' ? GEORGIA_COUNTIES : [], []);
+  }
+}
+
+// =====================================================================
+// ADDRESS SEARCH (Nominatim)
+// =====================================================================
+let _searchMarker = null;
+
+async function geocodeAddress() {
+  const input = document.getElementById('map-search-input');
+  const status = document.getElementById('map-search-status');
+  const q = input?.value.trim();
+  if (!q) return;
+  const map = window._leafletMap;
+  if (!map) { if (status) status.textContent = 'Map not loaded yet.'; return; }
+
+  if (status) status.textContent = 'Searching…';
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+    if (!data.length) { status.textContent = 'No results found.'; return; }
+    const { lat, lon, display_name } = data[0];
+    const latlng = [parseFloat(lat), parseFloat(lon)];
+    map.flyTo(latlng, 13, { duration: 1.2 });
+    if (_searchMarker) map.removeLayer(_searchMarker);
+    _searchMarker = L.marker(latlng)
+      .addTo(map)
+      .bindPopup(`<div class="popup-title">${display_name.split(',').slice(0,3).join(',')}</div>`)
+      .openPopup();
+    status.textContent = '';
+  } catch (e) {
+    if (status) status.textContent = 'Search error — try again.';
   }
 }
 
