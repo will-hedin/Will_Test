@@ -13,6 +13,7 @@
 <script>window._DC_INTEL_MODE = true;</script>
 <script src="config.js"></script>
 <script src="data/data_centers.js"></script>
+<script src="data/colo_locations.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -97,6 +98,16 @@
   /* Override css/style.css padding on view divs inside our tab system */
   #tab-usgrid .view, #tab-epochdata .view, #tab-parcels .view { padding: 0; }
   .layer-btn.active-landing { background: rgba(249,115,22,0.15); color: #f97316; border-color: #f97316; }
+  .layer-btn.active-colo { background: rgba(20,184,166,0.15); color: #14b8a6; border-color: #14b8a6; }
+  .colo-filter-row { display: none; align-items: center; gap: 8px; padding: 6px 0 4px; flex-wrap: wrap; border-top: 1px solid var(--border); }
+  .colo-filter-row.visible { display: flex; }
+  .colo-filter-label { font-size: 11px; color: var(--secondary); font-weight: 600; white-space: nowrap; }
+  .colo-select { padding: 4px 8px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; outline: none; cursor: pointer; max-width: 260px; }
+  .colo-select:focus { border-color: #14b8a6; }
+  .colo-status-btn { padding: 3px 9px; border-radius: 5px; border: 1px solid var(--border); background: var(--card); color: var(--secondary); cursor: pointer; font-size: 11px; transition: all 0.2s; }
+  .colo-status-btn:hover { border-color: #14b8a6; color: var(--text); }
+  .colo-status-btn.active { background: rgba(20,184,166,0.18); color: #14b8a6; border-color: #14b8a6; }
+  .colo-count { font-size: 11px; color: var(--secondary); margin-left: 4px; }
   .map-legend { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-width: 160px; }
   .map-legend h4 { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; margin-bottom: 8px; }
   .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; cursor: pointer; }
@@ -289,6 +300,7 @@
     <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
     <button class="layer-btn" id="btn-landing"  onclick="toggleMapLayer('landing')">⚓ Landing Stations</button>
     <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🤖 AI Clusters</button>
+    <button class="layer-btn" id="btn-colo"     onclick="toggleMapLayer('colo')">🏢 Colo DCs</button>
     <span class="layer-divider">·</span>
     <button class="layer-btn" id="btn-rail"         onclick="toggleMapLayer('rail')">🚂 Railways</button>
     <button class="layer-btn" id="btn-rail-elec"    onclick="toggleMapLayer('rail-elec')">⚡ Electrified Rail</button>
@@ -327,6 +339,17 @@
       <button class="sub-filter-btn" onclick="applyGridFilter(500,this)" style="border-color:#f97316;color:#f97316">≥500 kV</button>
       <button class="sub-filter-btn" onclick="applyGridFilter(765,this)" style="border-color:#ef4444;color:#ef4444">765 kV</button>
     </div>
+  </div>
+  <div class="colo-filter-row" id="colo-filter-row">
+    <span class="colo-filter-label">Operator:</span>
+    <select class="colo-select" id="colo-operator-select" onchange="applyColoFilter()">
+      <option value="">All Operators</option>
+    </select>
+    <span class="colo-filter-label" style="margin-left:8px">Status:</span>
+    <button class="colo-status-btn active" id="colo-status-all"        onclick="setColoStatus('all',this)">All</button>
+    <button class="colo-status-btn"        id="colo-status-operational" onclick="setColoStatus('Operational',this)">Operational</button>
+    <button class="colo-status-btn"        id="colo-status-planned"     onclick="setColoStatus('Planned',this)">Planned</button>
+    <span class="colo-count" id="colo-count"></span>
   </div>
   <div class="map-search-row">
     <input type="text" id="map-search-input" class="map-search-input" placeholder="Search address or location…" onkeydown="if(event.key==='Enter') geocodeAddress()">
@@ -1110,6 +1133,7 @@ function toggleMapLayer(name) {
     if (name === 'power')       _hideFilterGroup('grid-filter-group');
     if (name === 'substations') _hideFilterGroup('sub-filter-group');
     if (name === 'powerplants') _hideFilterGroup('plant-filter-group');
+    if (name === 'colo')        _hideColoFilter();
     return;
   }
 
@@ -1132,6 +1156,9 @@ function toggleMapLayer(name) {
 
   } else if (name === 'epoch') {
     _loadEpochLayer(map, stat, btn);
+
+  } else if (name === 'colo') {
+    _initColoLayer(map, stat);
 
   } else if (name === 'rail') {
     if (!_ovLayers.rail) {
@@ -1160,6 +1187,110 @@ function toggleMapLayer(name) {
   } else if (name === 'powerplants') {
     _showFilterGroup('plant-filter-group');
     _loadPowerPlants('ALL', stat);
+  }
+}
+
+// =====================================================================
+// COLO LAYER
+// =====================================================================
+const _COLO_PALETTE = [
+  '#14b8a6','#f97316','#a855f7','#22c55e','#f59e0b','#38bdf8','#e879f9',
+  '#84cc16','#fb923c','#6366f1','#34d399','#fbbf24','#60a5fa','#f472b6',
+  '#a78bfa','#4ade80','#facc15','#fb7185','#c084fc','#2dd4bf','#e11d48',
+  '#0891b2','#7c3aed','#16a34a','#d97706','#2563eb','#dc2626','#059669',
+  '#7e22ce','#ca8a04','#1d4ed8','#b91c1c','#047857','#6b21a8','#92400e'
+];
+const _coloOperatorColors = {};
+let _coloStatusFilter = 'all';
+let _coloLayerGroup = null;
+
+function _getColoColor(operator) {
+  if (!_coloOperatorColors[operator]) {
+    let h = 0;
+    for (let i = 0; i < operator.length; i++) h = (h * 31 + operator.charCodeAt(i)) & 0xffff;
+    _coloOperatorColors[operator] = _COLO_PALETTE[h % _COLO_PALETTE.length];
+  }
+  return _coloOperatorColors[operator];
+}
+
+function _initColoLayer(map, stat) {
+  const filterRow = document.getElementById('colo-filter-row');
+  if (filterRow) filterRow.classList.add('visible');
+
+  // Populate operator dropdown once
+  const sel = document.getElementById('colo-operator-select');
+  if (sel && sel.options.length <= 1 && typeof COLO_LOCATIONS !== 'undefined') {
+    const ops = [...new Set(COLO_LOCATIONS.map(d => d.operator))].sort();
+    ops.forEach(op => {
+      const opt = document.createElement('option');
+      opt.value = op;
+      opt.textContent = op;
+      sel.appendChild(opt);
+    });
+  }
+
+  _renderColoMarkers(map, stat);
+}
+
+function _renderColoMarkers(map, stat) {
+  if (!map) return;
+  if (_coloLayerGroup) { map.removeLayer(_coloLayerGroup); _coloLayerGroup = null; }
+  if (typeof COLO_LOCATIONS === 'undefined') { if (stat) stat.textContent = 'Colo data not loaded.'; return; }
+
+  const sel = document.getElementById('colo-operator-select');
+  const opFilter = sel ? sel.value : '';
+
+  let data = COLO_LOCATIONS;
+  if (opFilter) data = data.filter(d => d.operator === opFilter);
+  if (_coloStatusFilter !== 'all') data = data.filter(d => d.status === _coloStatusFilter);
+
+  const group = L.layerGroup();
+  data.forEach(d => {
+    const color = _getColoColor(d.operator);
+    const marker = L.circleMarker([d.lat, d.lon], {
+      radius: 5,
+      fillColor: color,
+      color: '#fff',
+      weight: 1,
+      fillOpacity: 0.82
+    });
+    const bid = d.buildingId ? `<br><span style="color:${color};font-size:11px">${d.buildingId}</span>` : '';
+    const loc = [d.address, d.city, d.state].filter(Boolean).join(', ');
+    marker.bindPopup(`
+      <div class="popup-title" style="color:${color}">${d.operator}</div>
+      <div class="popup-sub">${loc}${bid}</div>
+      <div class="popup-row"><span class="popup-label">Market</span><span class="popup-val">${d.market || '—'}</span></div>
+      <div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${d.status || '—'}</span></div>
+    `);
+    marker.addTo(group);
+  });
+  group.addTo(map);
+  _coloLayerGroup = group;
+  _ovLayers['colo'] = group;
+
+  const countEl = document.getElementById('colo-count');
+  if (countEl) countEl.textContent = `${data.length.toLocaleString()} locations`;
+  if (stat) stat.textContent = '';
+}
+
+function applyColoFilter() {
+  if (!_ovActive['colo']) return;
+  _renderColoMarkers(window._leafletMap, document.getElementById('layer-status'));
+}
+
+function setColoStatus(status, btn) {
+  _coloStatusFilter = status;
+  document.querySelectorAll('.colo-status-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyColoFilter();
+}
+
+function _hideColoFilter() {
+  const filterRow = document.getElementById('colo-filter-row');
+  if (filterRow) filterRow.classList.remove('visible');
+  if (_coloLayerGroup && window._leafletMap) {
+    window._leafletMap.removeLayer(_coloLayerGroup);
+    _coloLayerGroup = null;
   }
 }
 
