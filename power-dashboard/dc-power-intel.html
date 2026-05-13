@@ -76,6 +76,7 @@
   .layer-btn.active-telecoms { background: rgba(168,85,247,0.15); color: #a855f7; border-color: #a855f7; }
   .layer-btn.active-cables { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: #38bdf8; }
   .layer-btn.active-ixps { background: rgba(167,139,250,0.15); color: #a78bfa; border-color: #a78bfa; }
+  .layer-btn.active-fiber { background: rgba(16,185,129,0.15); color: #10b981; border-color: #10b981; }
   .layer-btn.active-epoch { background: rgba(250,204,21,0.15); color: #facc15; border-color: #facc15; }
   .layer-btn.active-rail      { background: rgba(107,114,128,0.15); color: #9ca3af; border-color: #6b7280; }
   .layer-btn.active-rail-elec { background: rgba(34,197,94,0.15);  color: #22c55e; border-color: #22c55e; }
@@ -299,6 +300,7 @@
     <button class="layer-btn" id="btn-cables"   onclick="toggleMapLayer('cables')">🌊 Submarine Cables</button>
     <button class="layer-btn" id="btn-ixps"     onclick="toggleMapLayer('ixps')">🔗 IXPs</button>
     <button class="layer-btn" id="btn-landing"  onclick="toggleMapLayer('landing')">⚓ Landing Stations</button>
+    <button class="layer-btn" id="btn-fiber"    onclick="toggleMapLayer('fiber')">🔌 Fiber Routes</button>
     <button class="layer-btn" id="btn-epoch"    onclick="toggleMapLayer('epoch')">🤖 AI Clusters</button>
     <button class="layer-btn" id="btn-colo"     onclick="toggleMapLayer('colo')">🏢 Colo DCs</button>
     <span class="layer-divider">·</span>
@@ -1067,6 +1069,9 @@ function toggleMapLayer(name) {
   } else if (name === 'landing') {
     _loadITULandingStations(map, stat, btn);
 
+  } else if (name === 'fiber') {
+    _loadITUFiber(map, stat, btn);
+
   } else if (name === 'epoch') {
     _loadEpochLayer(map, stat, btn);
 
@@ -1328,6 +1333,98 @@ async function _loadITULandingStations(map, stat, btn) {
     if (stat) stat.textContent = 'Landing station data unavailable';
     _ovActive.landing = false;
     btn?.classList.remove('active', 'active-landing');
+  }
+}
+
+function _fiberColor(typeInf) {
+  const t = (typeInf || '').toLowerCase();
+  if (t.includes('operational'))       return '#10b981';
+  if (t.includes('under construction')) return '#f59e0b';
+  if (t.includes('planned'))            return '#94a3b8';
+  if (t.includes('microwave'))          return '#a78bfa';
+  return '#10b981';
+}
+
+function _ituWfsFiberUrl(typeName) {
+  const raw = `${ITU_WFS}?service=wfs&version=2.0.0&request=GetFeature` +
+    `&typeNames=${encodeURIComponent(typeName)}&outputFormat=application/json` +
+    `&count=5000&SRSNAME=EPSG:4326&bbox=${NA_BBOX}`;
+  return CORS_PROXY + encodeURIComponent(raw);
+}
+
+async function _loadITUFiber(map, stat, btn) {
+  if (_ovLayers.fiber) { _ovLayers.fiber.addTo(map); return; }
+  if (stat) stat.textContent = 'Loading fiber routes…';
+  try {
+    const [routeRes, nodeRes] = await Promise.all([
+      fetch(_ituWfsFiberUrl('ITU:trx_public_2')),
+      fetch(_ituWfsFiberUrl('ITU:itu_nodes_public'))
+    ]);
+    const [routeData, nodeData] = await Promise.all([routeRes.json(), nodeRes.json()]);
+
+    const group = L.layerGroup();
+
+    // Routes
+    L.geoJSON(routeData, {
+      style(feature) {
+        const color = _fiberColor(feature.properties?.type_inf);
+        return { color, weight: 1.8, opacity: 0.75 };
+      },
+      onEachFeature(feature, layer) {
+        const p = feature.properties || {};
+        const color = _fiberColor(p.type_inf);
+        const goLive = p.golive_dat ? String(p.golive_dat).replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3') : null;
+        layer.bindPopup(`
+          <div class="popup-title" style="color:${color}">${p.operator_l || 'Fiber Route'}</div>
+          ${(p.from_ && p.to_) ? `<div class="popup-sub">${p.from_} → ${p.to_}</div>` : ''}
+          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${p.type_inf || '—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Status</span><span class="popup-val">${p.status || '—'}</span></div>
+          ${p.distance ? `<div class="popup-row"><span class="popup-label">Distance</span><span class="popup-val">${Number(p.distance).toLocaleString()} km</span></div>` : ''}
+          ${goLive ? `<div class="popup-row"><span class="popup-label">Go-Live</span><span class="popup-val">${goLive}</span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>
+        `);
+      }
+    }).addTo(group);
+
+    // Nodes
+    const nodePts = (nodeData.features || []).filter(f =>
+      f.geometry?.type === 'Point' || f.geometry?.type === 'MultiPoint'
+    );
+    L.geoJSON({ type: 'FeatureCollection', features: nodePts }, {
+      filter: f => {
+        const c = f.geometry?.coordinates;
+        if (!c) return false;
+        const [lon, lat] = f.geometry.type === 'MultiPoint' ? c[0] : c;
+        return lat >= 24 && lat <= 72 && lon >= -170 && lon <= -60;
+      },
+      pointToLayer(feature, latlng) {
+        const color = _fiberColor(feature.properties?.type_infr);
+        return L.circleMarker(latlng, {
+          radius: 4, fillColor: color, color: '#fff',
+          weight: 1, fillOpacity: 0.9
+        });
+      },
+      onEachFeature(feature, layer) {
+        const p = feature.properties || {};
+        const color = _fiberColor(p.type_infr);
+        layer.bindPopup(`
+          <div class="popup-title" style="color:${color}">${p.name || 'Fiber Node'}</div>
+          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${p.type_infr || '—'}</span></div>
+          ${p.country ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>
+        `);
+      }
+    }).addTo(group);
+
+    group.addTo(map);
+    _ovLayers.fiber = group;
+    const routeCount = (routeData.features || []).length;
+    const nodeCount  = nodePts.length;
+    if (stat) stat.textContent = `${routeCount.toLocaleString()} routes · ${nodeCount.toLocaleString()} nodes`;
+  } catch(e) {
+    if (stat) stat.textContent = 'Fiber data unavailable';
+    _ovActive.fiber = false;
+    btn?.classList.remove('active', 'active-fiber');
   }
 }
 
