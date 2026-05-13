@@ -97,7 +97,7 @@
   .map-search-status { font-size: 11px; color: var(--secondary); }
   .hidden { display: none; }
   /* Override css/style.css padding on view divs inside our tab system */
-  #tab-usgrid .view, #tab-epochdata .view, #tab-parcels .view { padding: 0; }
+  #tab-usgrid .view, #tab-epochdata .view { padding: 0; }
   .layer-btn.active-landing { background: rgba(249,115,22,0.15); color: #f97316; border-color: #f97316; }
   .layer-btn.active-colo { background: rgba(20,184,166,0.15); color: #14b8a6; border-color: #14b8a6; }
   .colo-filter-row { display: none; align-items: center; gap: 8px; padding: 6px 0 4px; flex-wrap: wrap; border-top: 1px solid var(--border); }
@@ -289,7 +289,6 @@
   <button class="tab-btn" onclick="switchTab('reg',this)">🏛 Regulatory Watch</button>
   <button class="tab-btn" onclick="switchTab('usgrid',this)">🗺 US Grid Map</button>
   <button class="tab-btn" onclick="switchTab('epochdata',this)">📡 AI Clusters</button>
-  <button class="tab-btn" onclick="switchTab('parcels',this)">🏷 Land Parcels</button>
 </div>
 
 <!-- TAB 1: MAP -->
@@ -796,66 +795,12 @@
 </div>
 
 <!-- TAB 8: LAND PARCELS -->
-<div id="tab-parcels" class="tab-content">
-  <div id="parcels-view" class="view" style="padding:0">
-    <div class="parcels-header">
-      <h2>Land Parcels Near 345/500 kV Lines</h2>
-      <div id="parcels-region-btns" style="display:flex;gap:8px;margin:10px 0;flex-wrap:wrap">
-        <button class="filter-btn active" onclick="switchParcelsRegion('clark',this)">Nevada — Clark County</button>
-        <button class="filter-btn" onclick="switchParcelsRegion('iowa',this)">Iowa</button>
-        <button class="filter-btn" onclick="switchParcelsRegion('nebraska',this)">Nebraska</button>
-        <button class="filter-btn" onclick="switchParcelsRegion('georgia',this)">Georgia</button>
-      </div>
-      <div id="state-county-row" class="iowa-county-row" style="display:none">
-        <label class="iowa-county-label">County:</label>
-        <select id="state-county-select" class="iowa-county-select"><option value="">— select a county —</option></select>
-        <a id="state-assessor-btn" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor" style="display:none">Open Assessor →</a>
-      </div>
-      <p id="parcels-subtitle" class="parcels-subtitle">Parcels ≥ 100 acres within 1 mile of high-voltage transmission infrastructure. Owner details via county assessor.</p>
-    </div>
-    <div class="parcels-body">
-      <div class="parcels-map-panel">
-        <div class="map-wrapper" id="parcels-map-wrapper"><svg id="parcels-map"></svg></div>
-        <div id="parcels-status" class="parcels-status">Select a region above.</div>
-      </div>
-      <div class="parcels-results-panel">
-        <div id="parcels-count" class="parcels-count"></div>
-        <div id="parcels-table-panel" class="panel" style="display:none">
-          <table class="data-table parcels-table">
-            <thead><tr>
-              <th style="width:30%">APN</th>
-              <th style="width:18%;text-align:right">Acres</th>
-              <th style="width:18%">Status</th>
-              <th style="width:34%">Owner Info</th>
-            </tr></thead>
-            <tbody id="parcels-tbody"></tbody>
-          </table>
-          <p class="parcels-note">Click <strong>View Owner →</strong> to open the county assessor parcel ownership history.</p>
-        </div>
-        <div id="state-info-panel" class="panel iowa-info-panel" style="display:none">
-          <div id="state-tx-summary" class="iowa-tx-summary"></div>
-          <div class="iowa-search-guide">
-            <p class="iowa-guide-title">Parcel search guide:</p>
-            <ul class="iowa-guide-list">
-              <li>Look for agricultural land ≥ 100 acres near the 345/500 kV corridors shown on the map</li>
-              <li>Search by owner name, address, or draw an area in the assessor map tool</li>
-              <li>Industrial or commercially-zoned parcels near substations are high-priority targets</li>
-            </ul>
-          </div>
-          <a id="state-assessor-cta" href="#" target="_blank" rel="noopener" class="btn-iowa-assessor-cta" style="display:none">Search Parcels in County Assessor →</a>
-          <p id="state-platform-note" class="iowa-platform-note"></p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script src="js/data.js"></script>
 <script src="js/api.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/transmission.js"></script>
 <script src="js/map.js"></script>
-<script src="js/parcels.js"></script>
 <script src="js/datacenters.js"></script>
 <script src="js/app.js"></script>
 
@@ -880,25 +825,8 @@ function switchTab(id, btn) {
     window._epochDataInit = true;
     if (typeof initDataCentersView === 'function') initDataCentersView();
   }
-  else if (id === 'parcels' && !window._parcelsInit) {
-    window._parcelsInit = true;
-    switchParcelsRegion('clark', document.querySelector('#parcels-region-btns .filter-btn'));
-  }
 }
 
-function switchParcelsRegion(region, btn) {
-  document.querySelectorAll('#parcels-region-btns .filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  if (region === 'clark' && typeof switchToClarkView === 'function') {
-    switchToClarkView();
-  } else if (region === 'iowa' && typeof switchToStateView === 'function') {
-    switchToStateView('Iowa', typeof IOWA_COUNTIES !== 'undefined' ? IOWA_COUNTIES : [], typeof IOWA_CITY_ASSESSORS !== 'undefined' ? IOWA_CITY_ASSESSORS : []);
-  } else if (region === 'nebraska' && typeof switchToStateView === 'function') {
-    switchToStateView('Nebraska', typeof NEBRASKA_COUNTIES !== 'undefined' ? NEBRASKA_COUNTIES : [], []);
-  } else if (region === 'georgia' && typeof switchToStateView === 'function') {
-    switchToStateView('Georgia', typeof GEORGIA_COUNTIES !== 'undefined' ? GEORGIA_COUNTIES : [], []);
-  }
-}
 
 // =====================================================================
 // ADDRESS SEARCH (Nominatim)
