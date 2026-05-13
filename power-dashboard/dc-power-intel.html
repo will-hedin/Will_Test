@@ -238,6 +238,9 @@
     .tabs-nav { gap: 0; }
     .tab-btn { padding: 10px 12px; font-size: 12px; }
   }
+  .layer-btn.active-counties { background: rgba(148,163,184,0.15); color: #94a3b8; border-color: #94a3b8; }
+  .county-label { background: rgba(15,17,23,0.88) !important; border: 1px solid rgba(45,49,72,0.9) !important; border-radius: 4px !important; box-shadow: none !important; color: #e2e8f0 !important; font-size: 10px !important; font-weight: 700; padding: 2px 6px !important; white-space: nowrap; pointer-events: none; letter-spacing: 0.03em; }
+  .county-label::before { display: none !important; }
 </style>
 </head>
 <body>
@@ -310,6 +313,7 @@
     <button class="layer-btn" id="btn-powerplants"  onclick="toggleMapLayer('powerplants')">🏭 Power Plants</button>
     <span class="layer-divider">·</span>
     <button class="layer-btn" id="btn-satellite" onclick="toggleSatellite()">🛰 Satellite</button>
+    <button class="layer-btn" id="btn-counties" onclick="toggleMapLayer('counties')">🏛 Counties</button>
     <span class="layer-divider">·</span>
     <a class="layer-btn" href="https://experience.arcgis.com/experience/0a317e8998534c30a9b2d3861c814d42/" target="_blank" rel="noopener">🛡 FEMA RAPT ↗</a>
     <span id="layer-status"></span>
@@ -368,6 +372,17 @@
     <button class="colo-status-btn"        id="colo-status-operational" onclick="setColoStatus('Operational',this)">Operational</button>
     <button class="colo-status-btn"        id="colo-status-planned"     onclick="setColoStatus('Planned',this)">Planned</button>
     <span class="colo-count" id="colo-count"></span>
+  </div>
+  <div class="colo-filter-row" id="county-filter-row">
+    <span class="colo-filter-label">State:</span>
+    <select class="colo-select" id="county-state-select" onchange="onCountyStateChange()" style="max-width:180px">
+      <option value="">Select State…</option>
+    </select>
+    <span class="colo-filter-label" style="margin-left:8px">County:</span>
+    <select class="colo-select" id="county-county-select" onchange="onCountySelect()" disabled style="max-width:200px">
+      <option value="">All Counties</option>
+    </select>
+    <span class="colo-count" id="county-count"></span>
   </div>
   <div class="map-search-row">
     <input type="text" id="map-search-input" class="map-search-input" placeholder="Search address or location…" onkeydown="if(event.key==='Enter') geocodeAddress()">
@@ -1020,6 +1035,7 @@ function toggleMapLayer(name) {
     if (name === 'substations') _hideFilterGroup('sub-filter-group');
     if (name === 'powerplants') _hideFilterGroup('plant-filter-group');
     if (name === 'colo')        _hideColoFilter();
+    if (name === 'counties')    _hideCountyFilterRow();
     return;
   }
 
@@ -1076,6 +1092,14 @@ function toggleMapLayer(name) {
   } else if (name === 'powerplants') {
     _showFilterGroup('plant-filter-group');
     _loadPowerPlants('ALL', stat);
+
+  } else if (name === 'counties') {
+    _showCountyFilterRow();
+    const cStateSel = document.getElementById('county-state-select');
+    if (cStateSel && cStateSel.value) {
+      const fips = _STATE_FIPS[cStateSel.value];
+      if (fips) _loadCountyBoundaries(fips, stat);
+    }
   }
 }
 
@@ -1207,6 +1231,185 @@ function toggleSatellite() {
     window._satActive = true;
     btn.classList.add('active', 'active-epoch');
   }
+}
+
+// =====================================================================
+// COUNTY BOUNDARIES LAYER
+// =====================================================================
+const _TIGERWEB_COUNTY = 'https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/State_County/MapServer/1/query';
+
+const _STATE_FIPS = {
+  'Alabama':'01','Alaska':'02','Arizona':'04','Arkansas':'05','California':'06',
+  'Colorado':'08','Connecticut':'09','Delaware':'10','District of Columbia':'11',
+  'Florida':'12','Georgia':'13','Hawaii':'15','Idaho':'16','Illinois':'17',
+  'Indiana':'18','Iowa':'19','Kansas':'20','Kentucky':'21','Louisiana':'22',
+  'Maine':'23','Maryland':'24','Massachusetts':'25','Michigan':'26','Minnesota':'27',
+  'Mississippi':'28','Missouri':'29','Montana':'30','Nebraska':'31','Nevada':'32',
+  'New Hampshire':'33','New Jersey':'34','New Mexico':'35','New York':'36',
+  'North Carolina':'37','North Dakota':'38','Ohio':'39','Oklahoma':'40',
+  'Oregon':'41','Pennsylvania':'42','Rhode Island':'44','South Carolina':'45',
+  'South Dakota':'46','Tennessee':'47','Texas':'48','Utah':'49','Vermont':'50',
+  'Virginia':'51','Washington':'53','West Virginia':'54','Wisconsin':'55','Wyoming':'56'
+};
+
+let _countyLayerGroup = null;
+let _countyHighlightGeoid = null;
+const _countyDataCache = {};
+
+function _showCountyFilterRow() {
+  const row = document.getElementById('county-filter-row');
+  if (row) row.classList.add('visible');
+  // Populate state dropdown once
+  const sel = document.getElementById('county-state-select');
+  if (sel && sel.options.length <= 1) {
+    Object.keys(_STATE_FIPS).sort().forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  }
+}
+
+function _hideCountyFilterRow() {
+  const row = document.getElementById('county-filter-row');
+  if (row) row.classList.remove('visible');
+  if (_countyLayerGroup && window._leafletMap) {
+    window._leafletMap.removeLayer(_countyLayerGroup);
+    _countyLayerGroup = null;
+  }
+  _countyHighlightGeoid = null;
+}
+
+async function _loadCountyBoundaries(stateFips, stat) {
+  const map = window._leafletMap;
+  if (!map || !stateFips) return;
+  if (stat) stat.textContent = 'Loading counties…';
+  if (_countyLayerGroup) { map.removeLayer(_countyLayerGroup); _countyLayerGroup = null; }
+
+  let data = _countyDataCache[stateFips];
+  if (!data) {
+    try {
+      const url = `${_TIGERWEB_COUNTY}?where=${encodeURIComponent(`STATE='${stateFips}'`)}&outFields=NAME%2CGEOID&f=geojson&geometryPrecision=4&outSR=4326&returnGeometry=true`;
+      const res = await fetch(url);
+      data = await res.json();
+      _countyDataCache[stateFips] = data;
+    } catch(e) {
+      if (stat) stat.textContent = 'County data unavailable';
+      return;
+    }
+  }
+
+  const features = data.features || [];
+  if (!features.length) { if (stat) stat.textContent = 'No county data'; return; }
+
+  // Populate county dropdown
+  const countySel = document.getElementById('county-county-select');
+  if (countySel) {
+    countySel.innerHTML = '<option value="">All Counties</option>';
+    [...features].sort((a, b) => a.properties.NAME.localeCompare(b.properties.NAME)).forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.properties.GEOID;
+      opt.textContent = f.properties.NAME + ' County';
+      countySel.appendChild(opt);
+    });
+    countySel.disabled = false;
+    countySel.value = '';
+  }
+
+  const group = L.layerGroup();
+  features.forEach(feature => {
+    const name = feature.properties.NAME;
+    const geoid = feature.properties.GEOID;
+    const lyr = L.geoJSON(feature, {
+      style: { color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0, opacity: 0.75 }
+    });
+    lyr.bindTooltip(name + ' County', { permanent: false, direction: 'center', className: 'county-label' });
+    lyr.on('mouseover', function() {
+      if (_countyHighlightGeoid !== geoid)
+        lyr.setStyle({ color: '#94a3b8', weight: 1.5, fillColor: 'rgba(148,163,184,0.08)', fillOpacity: 0.08 });
+    });
+    lyr.on('mouseout', function() {
+      if (_countyHighlightGeoid !== geoid)
+        lyr.setStyle({ color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0 });
+    });
+    lyr._geoid = geoid;
+    lyr._countyName = name;
+    lyr.addTo(group);
+  });
+  group.addTo(map);
+  _countyLayerGroup = group;
+  _ovLayers.counties = group;
+
+  const countEl = document.getElementById('county-count');
+  if (countEl) countEl.textContent = `${features.length} counties`;
+  if (stat) stat.textContent = `${features.length} counties`;
+
+  // Re-apply any existing highlight
+  if (_countyHighlightGeoid) _applyCountyHighlight(_countyHighlightGeoid, false);
+}
+
+function _applyCountyHighlight(geoid, zoom) {
+  if (!_countyLayerGroup) return;
+  _countyLayerGroup.eachLayer(lyr => {
+    if (lyr._geoid === geoid) {
+      lyr.setStyle({ color: '#4f8ef7', weight: 2.5, fillColor: 'rgba(79,142,247,0.14)', fillOpacity: 0.14 });
+      if (zoom) {
+        try { window._leafletMap.fitBounds(lyr.getBounds(), { padding: [40, 40] }); } catch(e) {}
+      }
+    } else {
+      lyr.setStyle({ color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0 });
+    }
+  });
+}
+
+async function onCountyStateChange() {
+  const stateSel = document.getElementById('county-state-select');
+  const countySel = document.getElementById('county-county-select');
+  const stat = document.getElementById('layer-status');
+  _countyHighlightGeoid = null;
+
+  if (!stateSel.value) {
+    if (countySel) { countySel.innerHTML = '<option value="">All Counties</option>'; countySel.disabled = true; }
+    if (_countyLayerGroup && window._leafletMap) { window._leafletMap.removeLayer(_countyLayerGroup); _countyLayerGroup = null; }
+    const countEl = document.getElementById('county-count');
+    if (countEl) countEl.textContent = '';
+    return;
+  }
+
+  const fips = _STATE_FIPS[stateSel.value];
+  if (!fips) return;
+
+  // Zoom to state bounding box
+  const map = window._leafletMap;
+  if (map) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(stateSel.value + ', United States')}&format=json&limit=1`;
+      const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      if (data.length && data[0].boundingbox) {
+        const bb = data[0].boundingbox;
+        map.fitBounds([[+bb[0], +bb[2]], [+bb[1], +bb[3]]], { padding: [20, 20] });
+      }
+    } catch(e) {}
+  }
+
+  _loadCountyBoundaries(fips, stat);
+}
+
+function onCountySelect() {
+  const countySel = document.getElementById('county-county-select');
+  const geoid = countySel ? countySel.value : '';
+  _countyHighlightGeoid = geoid || null;
+  if (!geoid) {
+    // Clear highlight
+    if (_countyLayerGroup) {
+      _countyLayerGroup.eachLayer(lyr => {
+        lyr.setStyle({ color: '#475569', weight: 1, fillColor: 'transparent', fillOpacity: 0 });
+      });
+    }
+    return;
+  }
+  _applyCountyHighlight(geoid, true);
 }
 
 function _ituWfsUrl(typeName) {
