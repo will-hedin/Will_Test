@@ -882,7 +882,6 @@ const HYPERSCALER_COLORS = {
 
 let _hyperLayerGroup = null;
 let _hyperStatusFilter = 'all';
-let _hyperCompanyLayers = {};  // per-company layer groups for legend toggles
 
 function _getHyperColor(company) {
   return HYPERSCALER_COLORS[company] || '#94a3b8';
@@ -991,35 +990,6 @@ function initLeafletMap() {
   // Render all hyperscaler buildings
   _renderHyperMarkers(map);
 
-  // Legend
-  const legend = L.control({ position: 'bottomright' });
-  legend.onAdd = function() {
-    const div = L.DomUtil.create('div', 'map-legend');
-    div.innerHTML = '<h4>Hyperscalers</h4>';
-    Object.entries(HYPERSCALER_COLORS).forEach(([name, color]) => {
-      const counts = typeof HYPERSCALER_BUILDINGS !== 'undefined'
-        ? HYPERSCALER_BUILDINGS.filter(d => d.company === name).length : 0;
-      if (!counts) return;
-      const item = document.createElement('label');
-      item.className = 'legend-item';
-      item.innerHTML = `
-        <input type="checkbox" checked data-company="${name}">
-        <span class="legend-dot" style="background:${color}"></span>
-        <span>${name} (${counts})</span>
-      `;
-      item.querySelector('input').addEventListener('change', function() {
-        const curSel = document.getElementById('hyper-company-select');
-        if (!this.checked) {
-          if (curSel && !curSel.value) { curSel.value = ''; }
-        }
-        applyHyperFilter();
-      });
-      div.appendChild(item);
-    });
-    L.DomEvent.disableClickPropagation(div);
-    return div;
-  };
-  legend.addTo(map);
   window._leafletMap = map;
 }
 
