@@ -346,6 +346,10 @@
     <select class="colo-select" id="hyper-company-select" onchange="applyHyperFilter()">
       <option value="">All Companies</option>
     </select>
+    <span class="colo-filter-label" style="margin-left:8px">Operator:</span>
+    <select class="colo-select" id="hyper-owner-select" onchange="applyHyperFilter()">
+      <option value="">All Operators</option>
+    </select>
     <span class="colo-filter-label" style="margin-left:8px">Status:</span>
     <button class="colo-status-btn active" id="hyper-status-all"  onclick="setHyperStatus('all',this)">All</button>
     <button class="colo-status-btn" id="hyper-status-operational"  onclick="setHyperStatus('Operational',this)">Operational</button>
@@ -960,9 +964,12 @@ function _renderHyperMarkers(map) {
   if (typeof HYPERSCALER_BUILDINGS === 'undefined') return;
 
   const sel = document.getElementById('hyper-company-select');
+  const ownerSel = document.getElementById('hyper-owner-select');
   const compFilter = sel ? sel.value : '';
+  const ownerFilter = ownerSel ? ownerSel.value : '';
   let data = HYPERSCALER_BUILDINGS;
   if (compFilter) data = data.filter(d => d.company === compFilter);
+  if (ownerFilter) data = data.filter(d => d.buildingOwner === ownerFilter);
   if (_hyperStatusFilter !== 'all') data = data.filter(d => d.status === _hyperStatusFilter);
 
   const group = L.layerGroup();
@@ -1030,7 +1037,7 @@ function initLeafletMap() {
   window._baseSat = _baseSat;
   window._satActive = false;
 
-  // Populate company dropdown
+  // Populate company and owner dropdowns
   const sel = document.getElementById('hyper-company-select');
   if (sel && typeof HYPERSCALER_BUILDINGS !== 'undefined') {
     const companies = [...new Set(HYPERSCALER_BUILDINGS.map(d => d.company))].sort();
@@ -1038,6 +1045,15 @@ function initLeafletMap() {
       const opt = document.createElement('option');
       opt.value = c; opt.textContent = c;
       sel.appendChild(opt);
+    });
+  }
+  const ownerSel = document.getElementById('hyper-owner-select');
+  if (ownerSel && typeof HYPERSCALER_BUILDINGS !== 'undefined') {
+    const owners = [...new Set(HYPERSCALER_BUILDINGS.map(d => d.buildingOwner).filter(Boolean))].sort();
+    owners.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o; opt.textContent = o;
+      ownerSel.appendChild(opt);
     });
   }
 
