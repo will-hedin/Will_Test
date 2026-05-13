@@ -946,7 +946,7 @@ function setHyperStatus(status, btn) {
 
 function initLeafletMap() {
   window._mapInit = true;
-  const map = L.map('map', { center: [39.5, -98.5], zoom: 4 });
+  const map = L.map('map', { center: [39.5, -98.5], zoom: 4, attributionControl: false });
 
   const style = document.createElement('style');
   style.textContent = '.map-tiles-dark { filter: brightness(0.7) invert(1) contrast(1.1) hue-rotate(180deg) saturate(0.5) brightness(0.7); }';
