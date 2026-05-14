@@ -588,8 +588,8 @@
   <div class="sec-section">
     <div class="sec-header">
       <div>
-        <h3>SEC EDGAR Intelligence — All Public Companies Requesting Data Center Capacity</h3>
-        <p>10-K · 10-Q · 10-K/A · 10-Q/A · 8-K · 8-K/A · DEF 14A · 15 topic areas · 3 years · Auto-loads on open</p>
+        <h3>SEC EDGAR Intelligence — Hyperscalers &amp; Public Data Center Companies</h3>
+        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · EQIX · DLR · IRM · AMT · DBRG · 15 topics · 3 years · Auto-loads</p>
       </div>
       <div class="sec-key-bar">
         <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key" oninput="secKeySave(this.value)">
@@ -2616,16 +2616,20 @@ function toggleGridCard(i) {
 const _SEC_API_KEY = '9d4e42767c7ac8080ab8e6de92e5b54f2a0a65f8fea3320a34b37194f8fcf4cf';
 
 const _SEC_COMPANIES = [
-  { ticker:'EQIX',  name:'Equinix',           markets:'70+ metros · 33 countries', sites:'260+ IBX centers',        capacity:'~4,500 MW',    revenue:'$8.7B (2024)',       status:'expanding', label:'Expanding'        },
-  { ticker:'DLR',   name:'Digital Realty',     markets:'50+ metros · 25 countries', sites:'300+ facilities',          capacity:'~3,500 MW',    revenue:'$5.5B (2024)',       status:'expanding', label:'Expanding'        },
-  { ticker:'IRM',   name:'Iron Mountain',      markets:'17 countries',              sites:'100+ data centers',        capacity:'~1,200 MW',    revenue:'$5.6B total (2024)', status:'rapid',     label:'Rapid Growth'     },
-  { ticker:'AMT',   name:'American Tower',     markets:'12 US markets (CoreSite)',  sites:'31 CoreSite DCs',          capacity:'~600 MW',      revenue:'$600M DC (2024)',    status:'steady',    label:'Steady Growth'    },
-  { ticker:'VRT',   name:'Vertiv Holdings',    markets:'Global OEM',                sites:'Infrastructure provider',  capacity:'N/A',          revenue:'$7.6B (2024)',       status:'expanding', label:'AI Demand Surge'  },
-  { ticker:'MSFT',  name:'Microsoft Azure',    markets:'60+ regions globally',      sites:'300+ globally',            capacity:'~15,000 MW',   revenue:'$26B cloud/qtr',     status:'rapid',     label:'$80B+ CapEx'      },
-  { ticker:'AMZN',  name:'Amazon (AWS)',        markets:'33 regions · 105 AZs',     sites:'100+ availability zones',  capacity:'~20,000 MW',   revenue:'$110B run rate',     status:'rapid',     label:'$75B CapEx'       },
-  { ticker:'GOOGL', name:'Alphabet / Google',  markets:'40+ cloud regions',         sites:'35+ DC campuses',          capacity:'~10,000 MW',   revenue:'$43B cloud (2024)',  status:'rapid',     label:'$75B CapEx'       },
-  { ticker:'META',  name:'Meta Platforms',     markets:'US + EU + Asia',            sites:'21 US + global DCs',       capacity:'~5,000 MW',    revenue:'$165B total (2024)', status:'rapid',     label:'$60B CapEx'       },
-  { ticker:'ORCL',  name:'Oracle Cloud',       markets:'45+ countries',             sites:'162 cloud regions',        capacity:'~3,000 MW',    revenue:'$57B total (2024)',  status:'expanding', label:'Rapid Expansion'  },
+  // Hyperscalers
+  { ticker:'MSFT',  name:'Microsoft Azure',       markets:'60+ regions globally',       sites:'300+ globally',               capacity:'~15,000 MW',   revenue:'$26B cloud/qtr',     status:'rapid',     label:'$80B+ CapEx'       },
+  { ticker:'AMZN',  name:'Amazon Web Services',   markets:'33 regions · 105 AZs',      sites:'100+ availability zones',     capacity:'~20,000 MW',   revenue:'$110B run rate',     status:'rapid',     label:'$75B CapEx'        },
+  { ticker:'GOOGL', name:'Alphabet / Google',     markets:'40+ cloud regions',          sites:'35+ DC campuses',             capacity:'~10,000 MW',   revenue:'$43B cloud (2024)',  status:'rapid',     label:'$75B CapEx'        },
+  { ticker:'META',  name:'Meta Platforms',        markets:'US + EU + Asia',             sites:'21 US + global DCs',          capacity:'~5,000 MW',    revenue:'$165B total (2024)', status:'rapid',     label:'$60B CapEx'        },
+  { ticker:'ORCL',  name:'Oracle Cloud',          markets:'45+ countries',              sites:'162 cloud regions',           capacity:'~3,000 MW',    revenue:'$57B total (2024)',  status:'expanding', label:'Rapid Expansion'   },
+  // AI-native cloud
+  { ticker:'CRWV',  name:'CoreWeave',             markets:'US + UK + EU',               sites:'32 US + global DCs',          capacity:'~1,100 MW',    revenue:'~$1.9B (2024)',      status:'rapid',     label:'AI GPU Cloud'      },
+  // DC REITs & Operators
+  { ticker:'EQIX',  name:'Equinix',               markets:'70+ metros · 33 countries',  sites:'260+ IBX centers',            capacity:'~4,500 MW',    revenue:'$8.7B (2024)',       status:'expanding', label:'Expanding'         },
+  { ticker:'DLR',   name:'Digital Realty',        markets:'50+ metros · 25 countries',  sites:'300+ facilities',             capacity:'~3,500 MW',    revenue:'$5.5B (2024)',       status:'expanding', label:'Expanding'         },
+  { ticker:'IRM',   name:'Iron Mountain',         markets:'17 countries',               sites:'100+ data centers',           capacity:'~1,200 MW',    revenue:'$5.6B total (2024)', status:'rapid',     label:'Rapid Growth'      },
+  { ticker:'AMT',   name:'American Tower / CoreSite', markets:'12 US markets',          sites:'31 CoreSite DCs',             capacity:'~600 MW',      revenue:'$600M DC (2024)',    status:'steady',    label:'CoreSite Division' },
+  { ticker:'DBRG',  name:'DigitalBridge Group',   markets:'Global · 350+ DC assets',    sites:'Portfolio operator',          capacity:'~10,000 MW',   revenue:'~$1.8B AUM (2024)',  status:'rapid',     label:'DC Investor'       },
 ];
 
 const _SEC_QUERIES = [
