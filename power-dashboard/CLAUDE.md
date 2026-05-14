@@ -43,6 +43,44 @@ Report a summary of changes found.
 
 ---
 
+### Step 2b — Refresh FERC Infrastructure Data
+
+The `_FERC_STATIC` constant in `dc-power-intel.html` must be refreshed monthly (FERC API requires same-origin headers, so data is embedded at build time).
+
+```bash
+python3 << 'PYEOF'
+import urllib.request, json
+headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json, text/plain, */*',
+    'Origin': 'https://data.ferc.gov',
+    'Referer': 'https://data.ferc.gov/nepa-schedule-for-pending-infrastructure-projects/nepa-schedule-for-pending-infrastructure-projects/',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'x-requested-with': 'XMLHttpRequest',
+}
+cols = ['Docket_Number','Applicant__s___','Project_Name','NEPA_Document_Type',
+        'Final_NEPA_Document_Target_Issuance_Date','Final_NEPA_Document_Actual_Issuance_Date']
+all_rows = []
+for start in range(0, 400, 100):
+    payload = json.dumps({'startRow':start,'endRow':start+100,'sortModel':[],'filterModel':{},'castData':[],'columns':cols}).encode()
+    req = urllib.request.Request('https://data.ferc.gov/api/v1/dataset/27/', data=payload, headers=headers, method='POST')
+    with urllib.request.urlopen(req, timeout=15) as r:
+        d = json.loads(r.read())
+    rows = d.get('rowData', [])
+    all_rows.extend(rows)
+    if len(rows) < 100: break
+records = [{'docket':r['Docket_Number'],'applicant':r['Applicant__s___'],'name':r['Project_Name'],
+            'nepaType':r.get('NEPA_Document_Type','') or '',
+            'targetDate':(r.get('Final_NEPA_Document_Target_Issuance_Date') or '').split('T')[0],
+            'actualDate':(r.get('Final_NEPA_Document_Actual_Issuance_Date') or '').split('T')[0]} for r in all_rows]
+print(f'const _FERC_STATIC = {json.dumps(records, separators=(",",":"))};\n// {len(records)} projects fetched')
+PYEOF
+```
+
+Replace the `const _FERC_STATIC = [...]` block in `dc-power-intel.html` with the new output. Update the "Dataset as of" date in `loadFercData()`.
+
+---
+
 ### Step 3 — Commit and push
 
 ```bash
