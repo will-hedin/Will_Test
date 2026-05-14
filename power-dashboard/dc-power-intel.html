@@ -1321,7 +1321,8 @@ function _renderHyperMarkers(map) {
   let data = HYPERSCALER_BUILDINGS;
   if (compFilter) data = data.filter(d => d.company === compFilter);
   if (ownerFilter) data = data.filter(d => d.buildingOwner === ownerFilter);
-  if (_hyperStatusFilter !== 'all') data = data.filter(d => d.status === _hyperStatusFilter);
+  if (_hyperStatusFilter === 'Operational') data = data.filter(d => d.status === 'Owned' || d.status === 'Operational');
+  else if (_hyperStatusFilter !== 'all') data = data.filter(d => d.status === _hyperStatusFilter);
 
   const group = L.layerGroup();
   data.forEach(d => {
