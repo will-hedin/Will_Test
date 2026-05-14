@@ -1405,41 +1405,130 @@ function _ituWfsUrl(typeName) {
   return CORS_PROXY + encodeURIComponent(raw);
 }
 
-async function _loadITUCables(map, stat, btn) {
+// Static GeoJSON for major US-connected submarine cables.
+// Pacific cables truncated near mid-Pacific to avoid antimeridian rendering artifacts.
+const _CABLE_FC = { type:'FeatureCollection', features:[
+  // Atlantic / Gulf
+  { type:'Feature', properties:{ name:'MAREA', owners:'Microsoft, Meta', rfs_year:2017, length:'6,600 km' },
+    geometry:{ type:'LineString', coordinates:[[-75.98,36.83],[-65,37],[-40,41],[-15,44],[-3.8,43.3]] }},
+  { type:'Feature', properties:{ name:'Dunant', owners:'Google', rfs_year:2021, length:'6,400 km' },
+    geometry:{ type:'LineString', coordinates:[[-75.98,36.84],[-55,39],[-25,43],[-10,46],[-1.8,46.7]] }},
+  { type:'Feature', properties:{ name:'Grace Hopper', owners:'Google', rfs_year:2022, length:'6,400 km' },
+    geometry:{ type:'LineString', coordinates:[[-74.27,39.95],[-50,43],[-20,50],[-5.2,50.5],[-3.0,43.3]] }},
+  { type:'Feature', properties:{ name:'AEConnect-1', owners:'AquaComms', rfs_year:2016, length:'14,000 km' },
+    geometry:{ type:'LineString', coordinates:[[-72.88,40.83],[-40,48],[-10,52],[-8.5,51.9]] }},
+  { type:'Feature', properties:{ name:'HAVFRUE / AEC-2', owners:'Google, Meta, Aqua Comms, Bulk Infrastructure', rfs_year:2020, length:'8,700 km' },
+    geometry:{ type:'LineString', coordinates:[[-74.17,40.08],[-35,48],[-10,53],[-7.2,55.1]] }},
+  { type:'Feature', properties:{ name:'TAT-14', owners:'Consortium', rfs_year:2001, length:'15,428 km' },
+    geometry:{ type:'LineString', coordinates:[[-74.07,40.12],[-55,40],[-30,42],[0,44],[3.5,52.2]] }},
+  { type:'Feature', properties:{ name:'Seabras-1', owners:'Seaborn Networks', rfs_year:2017, length:'10,556 km' },
+    geometry:{ type:'LineString', coordinates:[[-74.27,39.95],[-60,25],[-50,10],[-38.3,-3.7]] }},
+  { type:'Feature', properties:{ name:'Globenet', owners:'BTG Pactual', rfs_year:2000, length:'22,415 km' },
+    geometry:{ type:'LineString', coordinates:[[-80.18,25.73],[-70,15],[-60,10],[-50,0],[-38.5,-13.0]] }},
+  { type:'Feature', properties:{ name:'SAm-1', owners:'AT&T', rfs_year:2000, length:'25,000 km' },
+    geometry:{ type:'LineString', coordinates:[[-80.38,30.33],[-78,24],[-77,9],[-68,0],[-45,-10],[-35,-8.8]] }},
+  // Pacific (shown to mid-Pacific)
+  { type:'Feature', properties:{ name:'FASTER', owners:'Google, China Telecom, KDDI, SoftBank', rfs_year:2016, length:'9,000 km' },
+    geometry:{ type:'LineString', coordinates:[[-124.51,43.18],[-140,42],[-155,40],[-172,37]] }},
+  { type:'Feature', properties:{ name:'UNITY / EAC-Pacific', owners:'Google, KDDI, SoftBank', rfs_year:2010, length:'10,000 km' },
+    geometry:{ type:'LineString', coordinates:[[-118.40,33.86],[-135,33],[-155,32],[-172,30]] }},
+  { type:'Feature', properties:{ name:'Trans-Pacific Express (TPE)', owners:'AT&T, China Telecom, KT, Chunghwa Telecom', rfs_year:2008, length:'17,700 km' },
+    geometry:{ type:'LineString', coordinates:[[-124.51,43.18],[-145,40],[-162,37],[-178,35]] }},
+  { type:'Feature', properties:{ name:'New Cross Pacific (NCP)', owners:'Amazon, SoftBank, China Telecom', rfs_year:2016, length:'13,000 km' },
+    geometry:{ type:'LineString', coordinates:[[-124.51,43.19],[-145,41],[-163,38],[-178,36]] }},
+  { type:'Feature', properties:{ name:'Pacific Light Cable Network', owners:'Google, Meta, RTI', rfs_year:2022, length:'12,800 km' },
+    geometry:{ type:'LineString', coordinates:[[-118.40,33.85],[-140,30],[-160,25],[-178,22]] }},
+  { type:'Feature', properties:{ name:'Alaska United / Quintillion', owners:'Quintillion', rfs_year:2019, length:'1,450 km' },
+    geometry:{ type:'LineString', coordinates:[[-149.91,61.22],[-145,59],[-135,56],[-122.33,47.60]] }},
+]};
+
+// Static GeoJSON for US submarine cable landing stations
+const _LANDING_FC = { type:'FeatureCollection', features:[
+  // East Coast
+  { type:'Feature', properties:{ name:'Virginia Beach, VA', cables:'MAREA, Dunant', country:'US' },         geometry:{ type:'Point', coordinates:[-75.98,36.83] }},
+  { type:'Feature', properties:{ name:'Manasquan, NJ',       cables:'TAT-14, Seabras-1, Grace Hopper', country:'US' }, geometry:{ type:'Point', coordinates:[-74.07,40.12] }},
+  { type:'Feature', properties:{ name:'Tuckerton, NJ',        cables:'Grace Hopper, HAVFRUE', country:'US' },          geometry:{ type:'Point', coordinates:[-74.33,39.61] }},
+  { type:'Feature', properties:{ name:'Shirley (Long Island), NY', cables:'AEConnect-1', country:'US' },    geometry:{ type:'Point', coordinates:[-72.88,40.83] }},
+  { type:'Feature', properties:{ name:'Point Beach, NJ',      cables:'HAVFRUE, TAT-14', country:'US' },     geometry:{ type:'Point', coordinates:[-74.17,40.08] }},
+  { type:'Feature', properties:{ name:'Miami / Hollywood, FL',cables:'Globenet, SAm-1', country:'US' },     geometry:{ type:'Point', coordinates:[-80.18,25.73] }},
+  { type:'Feature', properties:{ name:'Jacksonville, FL',      cables:'SAm-1', country:'US' },               geometry:{ type:'Point', coordinates:[-81.32,30.33] }},
+  // West Coast
+  { type:'Feature', properties:{ name:'Bandon, OR',            cables:'FASTER, TPE, NCP, Hawaiki', country:'US' },     geometry:{ type:'Point', coordinates:[-124.51,43.18] }},
+  { type:'Feature', properties:{ name:'Nedonna Beach, OR',     cables:'North Pacific Cable', country:'US' },           geometry:{ type:'Point', coordinates:[-123.95,45.83] }},
+  { type:'Feature', properties:{ name:'Grover Beach, CA',      cables:'UNITY, Pacific Crossing-1', country:'US' },     geometry:{ type:'Point', coordinates:[-120.62,35.12] }},
+  { type:'Feature', properties:{ name:'Hermosa Beach / LA, CA',cables:'UNITY, Pacific Light Cable Network', country:'US' }, geometry:{ type:'Point', coordinates:[-118.40,33.86] }},
+  { type:'Feature', properties:{ name:'Seattle, WA',           cables:'Alaska United', country:'US' },                 geometry:{ type:'Point', coordinates:[-122.33,47.60] }},
+  // Hawaii & territories
+  { type:'Feature', properties:{ name:'Honolulu, HI',          cables:'TPC-5, SEA-US, Hawaiki', country:'US' },        geometry:{ type:'Point', coordinates:[-157.86,21.31] }},
+  { type:'Feature', properties:{ name:'Isabela, Puerto Rico',  cables:'Mid-Atlantic Crossing, PCCS', country:'US' },   geometry:{ type:'Point', coordinates:[-67.02,18.48] }},
+]};
+
+// City → [lat, lng] lookup for PeeringDB IXP geocoding
+const _IXP_CITY_COORDS = {
+  'Ashburn':[39.04,-77.49],'Chicago':[41.88,-87.63],'New York':[40.71,-74.01],
+  'Los Angeles':[34.05,-118.24],'Dallas':[32.78,-96.80],'Atlanta':[33.75,-84.39],
+  'Seattle':[47.61,-122.33],'San Jose':[37.34,-121.89],'Miami':[25.76,-80.19],
+  'Denver':[39.74,-104.99],'Washington':[38.91,-77.04],'Houston':[29.76,-95.37],
+  'Phoenix':[33.45,-112.07],'Portland':[45.52,-122.68],'Minneapolis':[44.98,-93.27],
+  'San Francisco':[37.77,-122.42],'Boston':[42.36,-71.06],'Philadelphia':[39.95,-75.17],
+  'Detroit':[42.33,-83.05],'Kansas City':[39.10,-94.58],'Salt Lake City':[40.76,-111.89],
+  'Charlotte':[35.23,-80.84],'Raleigh':[35.78,-78.64],'Baltimore':[39.29,-76.61],
+  'New Orleans':[29.95,-90.07],'Cleveland':[41.50,-81.69],'Pittsburgh':[40.44,-79.99],
+  'Columbus':[39.96,-82.99],'Indianapolis':[39.77,-86.16],'Jacksonville':[30.33,-81.66],
+  'Tampa':[27.95,-82.46],'Orlando':[28.54,-81.38],'San Antonio':[29.42,-98.49],
+  'Austin':[30.27,-97.74],'Omaha':[41.26,-95.93],'Memphis':[35.15,-90.05],
+  'Buffalo':[42.89,-78.88],'Sacramento':[38.58,-121.49],'San Diego':[32.72,-117.16],
+  'Spokane':[47.66,-117.43],'Albuquerque':[35.08,-106.65],'Las Vegas':[36.17,-115.14],
+  'Nashville':[36.16,-86.78],'Louisville':[38.25,-85.76],'St. Louis':[38.63,-90.20],
+  'Milwaukee':[43.04,-87.91],'Cincinnati':[39.10,-84.51],'Hartford':[41.76,-72.69],
+  'Honolulu':[21.31,-157.86],'Anchorage':[61.22,-149.90],'San Juan':[18.47,-66.11],
+  'Richmond':[37.54,-77.44],'Norfolk':[36.85,-76.29],'Virginia Beach':[36.85,-75.98],
+  'Boca Raton':[26.35,-80.08],'Newark':[40.74,-74.17],'Palo Alto':[37.44,-122.14],
+  'Sunnyvale':[37.37,-122.04],'Santa Clara':[37.35,-121.96],'Fremont':[37.55,-121.99],
+  'San Mateo':[37.56,-122.33],'Reston':[38.96,-77.36],'Herndon':[38.97,-77.39],
+  'Sterling':[39.00,-77.43],'McLean':[38.94,-77.18],'Secaucus':[40.79,-74.06],
+  'Jersey City':[40.72,-74.08],'Parsippany':[40.86,-74.42],'Scottsdale':[33.49,-111.93],
+  'Tempe':[33.43,-111.94],'Chandler':[33.31,-111.84],'Aurora':[39.73,-104.83],
+  'Englewood':[39.65,-104.99],'Fort Worth':[32.75,-97.33],'Plano':[33.02,-96.70],
+  'Irving':[32.81,-96.94],'El Segundo':[33.92,-118.41],'Irvine':[33.68,-117.79],
+  'Anaheim':[33.84,-117.91],'Long Beach':[33.77,-118.19],'Elk Grove Village':[42.00,-87.97],
+};
+
+function _loadITUCables(map, stat, btn) {
   if (_ovLayers.cables) { _ovLayers.cables.addTo(map); return; }
   if (stat) stat.textContent = 'Loading submarine cables…';
-  try {
-    const res  = await fetch(_ituWfsUrl('ITU:submarine_cables'));
-    const data = await res.json();
-    _ovLayers.cables = L.geoJSON(data, {
-      style: { color: '#38bdf8', weight: 2, opacity: 0.75 },
-      onEachFeature(feature, layer) {
-        const p = feature.properties || {};
-        layer.bindPopup(`
-          <div class="popup-title" style="color:#38bdf8">${p.cable_name || p.name || 'Submarine Cable'}</div>
-          ${p.owners     ? `<div class="popup-row"><span class="popup-label">Owner(s)</span><span class="popup-val">${p.owners}</span></div>` : ''}
-          ${p.rfs_year   ? `<div class="popup-row"><span class="popup-label">Ready</span><span class="popup-val">${p.rfs_year}</span></div>` : ''}
-          ${p.length_km  ? `<div class="popup-row"><span class="popup-label">Length</span><span class="popup-val">${Number(p.length_km).toLocaleString()} km</span></div>` : ''}
-          ${p.capacity_tbps ? `<div class="popup-row"><span class="popup-label">Capacity</span><span class="popup-val">${p.capacity_tbps} Tbps</span></div>` : ''}
-        `);
-      }
-    }).addTo(map);
-    if (stat) stat.textContent = `${(data.features||[]).length} cables`;
-  } catch(e) {
-    if (stat) stat.textContent = 'Cable data unavailable';
-    _ovActive.cables = false;
-    btn?.classList.remove('active','active-cables');
-  }
+  _ovLayers.cables = L.geoJSON(_CABLE_FC, {
+    style: { color: '#38bdf8', weight: 2, opacity: 0.75 },
+    onEachFeature(feature, layer) {
+      const p = feature.properties || {};
+      layer.bindPopup(`
+        <div class="popup-title" style="color:#38bdf8">${p.name || 'Submarine Cable'}</div>
+        ${p.owners   ? `<div class="popup-row"><span class="popup-label">Owner(s)</span><span class="popup-val">${p.owners}</span></div>` : ''}
+        ${p.rfs_year ? `<div class="popup-row"><span class="popup-label">Ready</span><span class="popup-val">${p.rfs_year}</span></div>` : ''}
+        ${p.length   ? `<div class="popup-row"><span class="popup-label">Length</span><span class="popup-val">${p.length}</span></div>` : ''}
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: TeleGeography</div>
+      `);
+    }
+  }).addTo(map);
+  if (stat) stat.textContent = `${_CABLE_FC.features.length} cables`;
 }
 
 async function _loadITUIXPs(map, stat, btn) {
   if (_ovLayers.ixps) { _ovLayers.ixps.addTo(map); return; }
   if (stat) stat.textContent = 'Loading IXPs…';
   try {
-    const res  = await fetch(_ituWfsUrl('ITU:ixp'));
-    const data = await res.json();
-    _ovLayers.ixps = L.geoJSON(data, {
-      filter: f => f.geometry?.type === 'Point',
+    const res  = await fetch('https://www.peeringdb.com/api/ix?country=US&format=json');
+    const json = await res.json();
+    const jitter = () => (Math.random() - 0.5) * 0.05;
+    const features = (json.data || []).map(ix => {
+      const c = _IXP_CITY_COORDS[ix.city];
+      if (!c) return null;
+      return { type:'Feature',
+        properties:{ name:ix.name, city:ix.city, country:ix.country, net_count:ix.net_count, website:ix.website },
+        geometry:{ type:'Point', coordinates:[c[1]+jitter(), c[0]+jitter()] }
+      };
+    }).filter(Boolean);
+    _ovLayers.ixps = L.geoJSON({ type:'FeatureCollection', features }, {
       pointToLayer: (_f, latlng) => L.circleMarker(latlng, {
         radius: 5, fillColor: '#a78bfa', color: '#7c3aed',
         weight: 1.2, fillOpacity: 0.85
@@ -1447,14 +1536,16 @@ async function _loadITUIXPs(map, stat, btn) {
       onEachFeature(feature, layer) {
         const p = feature.properties || {};
         layer.bindPopup(`
-          <div class="popup-title" style="color:#a78bfa">${p.name || p.long_name || 'IXP'}</div>
+          <div class="popup-title" style="color:#a78bfa">${p.name || 'IXP'}</div>
           <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Internet Exchange Point</span></div>
-          ${p.city    ? `<div class="popup-row"><span class="popup-label">City</span><span class="popup-val">${p.city}</span></div>` : ''}
-          ${p.country ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
+          ${p.city      ? `<div class="popup-row"><span class="popup-label">City</span><span class="popup-val">${p.city}</span></div>` : ''}
+          ${p.net_count ? `<div class="popup-row"><span class="popup-label">Networks</span><span class="popup-val">${p.net_count}</span></div>` : ''}
+          ${p.website   ? `<div class="popup-row"><span class="popup-label">Website</span><span class="popup-val"><a href="${p.website}" target="_blank" style="color:#a78bfa">${p.website}</a></span></div>` : ''}
+          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: PeeringDB</div>
         `);
       }
     }).addTo(map);
-    if (stat) stat.textContent = `${(data.features||[]).filter(f=>f.geometry?.type==='Point').length} IXPs`;
+    if (stat) stat.textContent = `${features.length} IXPs`;
   } catch(e) {
     if (stat) stat.textContent = 'IXP data unavailable';
     _ovActive.ixps = false;
@@ -1462,38 +1553,26 @@ async function _loadITUIXPs(map, stat, btn) {
   }
 }
 
-async function _loadITULandingStations(map, stat, btn) {
+function _loadITULandingStations(map, stat, btn) {
   if (_ovLayers.landing) { _ovLayers.landing.addTo(map); return; }
   if (stat) stat.textContent = 'Loading landing stations…';
-  try {
-    const res  = await fetch(_ituWfsUrl('ITU:landing_stations'));
-    const data = await res.json();
-    const pts  = (data.features || []).filter(f => f.geometry?.type === 'Point');
-    _ovLayers.landing = L.geoJSON({ type:'FeatureCollection', features: pts }, {
-      pointToLayer: (_f, latlng) => L.circleMarker(latlng, {
-        radius: 6, fillColor: '#f97316', color: '#ea580c',
-        weight: 1.5, fillOpacity: 0.9
-      }),
-      onEachFeature(feature, layer) {
-        const p = feature.properties || {};
-        layer.bindPopup(`
-          <div class="popup-title" style="color:#f97316">${p.name || p.station_name || 'Landing Station'}</div>
-          <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Submarine Cable Landing Station</span></div>
-          ${p.cables    ? `<div class="popup-row"><span class="popup-label">Cables</span><span class="popup-val">${p.cables}</span></div>` : ''}
-          ${p.owners    ? `<div class="popup-row"><span class="popup-label">Owners</span><span class="popup-val">${p.owners}</span></div>` : ''}
-          ${p.rfs_year  ? `<div class="popup-row"><span class="popup-label">RFS Year</span><span class="popup-val">${p.rfs_year}</span></div>` : ''}
-          ${p.city      ? `<div class="popup-row"><span class="popup-label">City</span><span class="popup-val">${p.city}</span></div>` : ''}
-          ${p.country   ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
-          <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: ITU BBMaps</div>
-        `);
-      }
-    }).addTo(map);
-    if (stat) stat.textContent = `${pts.length} landing stations`;
-  } catch(e) {
-    if (stat) stat.textContent = 'Landing station data unavailable';
-    _ovActive.landing = false;
-    btn?.classList.remove('active', 'active-landing');
-  }
+  _ovLayers.landing = L.geoJSON(_LANDING_FC, {
+    pointToLayer: (_f, latlng) => L.circleMarker(latlng, {
+      radius: 6, fillColor: '#f97316', color: '#ea580c',
+      weight: 1.5, fillOpacity: 0.9
+    }),
+    onEachFeature(feature, layer) {
+      const p = feature.properties || {};
+      layer.bindPopup(`
+        <div class="popup-title" style="color:#f97316">${p.name || 'Landing Station'}</div>
+        <div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">Submarine Cable Landing Station</span></div>
+        ${p.cables  ? `<div class="popup-row"><span class="popup-label">Cables</span><span class="popup-val">${p.cables}</span></div>` : ''}
+        ${p.country ? `<div class="popup-row"><span class="popup-label">Country</span><span class="popup-val">${p.country}</span></div>` : ''}
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Source: TeleGeography</div>
+      `);
+    }
+  }).addTo(map);
+  if (stat) stat.textContent = `${_LANDING_FC.features.length} landing stations`;
 }
 
 function _fiberColor(typeInf) {
