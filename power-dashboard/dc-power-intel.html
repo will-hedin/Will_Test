@@ -194,6 +194,51 @@
   .grid-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; }
   .grid-stat .value { font-size: 14px; font-weight: 700; color: var(--text); }
 
+  /* ── FERC Energy Infrastructure Expansion ── */
+  .ferc-ctrl-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .ferc-fetch-btn { background:var(--accent); color:#000; border:none; border-radius:6px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; }
+  .ferc-fetch-btn:hover { opacity:.85; } .ferc-fetch-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .ferc-status-txt { font-size:11px; color:var(--muted); }
+  .ferc-type-chips { display:flex; gap:7px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+  .ferc-chip { display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid transparent; opacity:.4; transition:opacity .15s,transform .1s; user-select:none; }
+  .ferc-chip:hover { opacity:.7; } .ferc-chip.active { opacity:1; }
+  .ferc-chip-hydro { background:rgba(56,189,248,.14); color:#38bdf8; border-color:rgba(56,189,248,.3); }
+  .ferc-chip-pipeline { background:rgba(249,115,22,.14); color:#f97316; border-color:rgba(249,115,22,.3); }
+  .ferc-chip-lng { background:rgba(251,191,36,.14); color:#fbbf24; border-color:rgba(251,191,36,.3); }
+  .ferc-chip-storage { background:rgba(167,139,250,.14); color:#a78bfa; border-color:rgba(167,139,250,.3); }
+  .ferc-kpi-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .ferc-kpi { flex:1; min-width:100px; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:10px 14px; }
+  .ferc-kpi-val { font-size:24px; font-weight:800; color:var(--accent); line-height:1.1; }
+  .ferc-kpi-lbl { font-size:10px; color:var(--muted); margin-top:3px; text-transform:uppercase; letter-spacing:.03em; }
+  .ferc-layout { display:grid; grid-template-columns:1fr 360px; gap:14px; margin-bottom:20px; }
+  @media(max-width:900px){ .ferc-layout { grid-template-columns:1fr; } }
+  .ferc-map-wrap { height:420px; border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+  #ferc-map { height:100%; width:100%; }
+  .ferc-state-wrap { max-height:420px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; }
+  .ferc-state-tbl { width:100%; border-collapse:collapse; font-size:11.5px; }
+  .ferc-state-tbl th { position:sticky; top:0; background:var(--bg); padding:6px 8px; text-align:left; border-bottom:1px solid var(--border); font-size:10px; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+  .ferc-state-tbl td { padding:5px 8px; border-bottom:1px solid rgba(255,255,255,.04); cursor:pointer; }
+  .ferc-state-tbl tr:hover td { background:rgba(255,255,255,.03); }
+  .ferc-state-tbl td.cnt { text-align:center; font-variant-numeric:tabular-nums; }
+  .ferc-state-name { font-weight:600; }
+  .ferc-total-col { font-weight:700; }
+  .ferc-proj-wrap { overflow-y:auto; max-height:480px; border:1px solid var(--border); border-radius:8px; }
+  .ferc-proj-tbl { width:100%; border-collapse:collapse; font-size:11.5px; }
+  .ferc-proj-tbl th { background:var(--card); padding:7px 10px; text-align:left; border-bottom:1px solid var(--border); font-size:10px; text-transform:uppercase; color:var(--muted); position:sticky; top:0; white-space:nowrap; }
+  .ferc-proj-tbl td { padding:6px 10px; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
+  .ferc-proj-tbl tr:hover td { background:rgba(255,255,255,.03); }
+  .ferc-badge { display:inline-block; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:700; white-space:nowrap; }
+  .ferc-badge-hydro { background:rgba(56,189,248,.14); color:#38bdf8; }
+  .ferc-badge-pipeline { background:rgba(249,115,22,.14); color:#f97316; }
+  .ferc-badge-lng { background:rgba(251,191,36,.14); color:#fbbf24; }
+  .ferc-badge-storage { background:rgba(167,139,250,.14); color:#a78bfa; }
+  .ferc-sect-hdr { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); padding:2px 0 8px; border-bottom:1px solid var(--border); margin:0 0 10px; }
+  .ferc-pin { width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#000; border:2px solid rgba(255,255,255,.55); box-shadow:0 1px 5px rgba(0,0,0,.5); cursor:pointer; }
+  .ferc-pin-hydro { background:#38bdf8; } .ferc-pin-pipeline { background:#f97316; }
+  .ferc-pin-lng { background:#fbbf24; } .ferc-pin-storage { background:#a78bfa; }
+  .ferc-src-note { font-size:10px; color:var(--muted); margin-top:10px; line-height:1.6; }
+  .ferc-filter-sel { background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:3px 7px; font-size:11px; }
+
   /* POLICY TABLE */
   .policy-table-wrap { overflow-x: auto; margin-bottom: 20px; }
   table.policy-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -396,6 +441,7 @@
   <button class="tab-btn" onclick="switchTab('reg',this)">🏛 Regulatory Watch</button>
   <button class="tab-btn" onclick="switchTab('usgrid',this)">⚡ Grid & Map</button>
   <button class="tab-btn" onclick="switchTab('epochdata',this)">📡 AI Clusters</button>
+  <button class="tab-btn" onclick="switchTab('ferc',this)">🏗 Energy Infrastructure</button>
 </div>
 
 <!-- TAB 1: MAP -->
@@ -1035,6 +1081,96 @@
 
 <!-- TAB 8: LAND PARCELS -->
 
+<!-- TAB: ENERGY INFRASTRUCTURE EXPANSION -->
+<div id="tab-ferc" class="tab-content">
+
+  <!-- Controls -->
+  <div class="ferc-ctrl-bar">
+    <button class="ferc-fetch-btn" id="ferc-fetch-btn" onclick="loadFercData()">↻ Load FERC Data</button>
+    <span class="ferc-status-txt" id="ferc-status">Live data from <a href="https://data.ferc.gov" target="_blank" rel="noopener" style="color:var(--accent)">data.ferc.gov</a> — NEPA Schedule for Pending Infrastructure Projects</span>
+  </div>
+
+  <!-- Type filter chips + dropdowns -->
+  <div class="ferc-type-chips">
+    <span class="ferc-chip ferc-chip-hydro active" onclick="_fercToggleType('hydro')">💧 Hydropower</span>
+    <span class="ferc-chip ferc-chip-pipeline active" onclick="_fercToggleType('pipeline')">🔶 Gas Pipeline</span>
+    <span class="ferc-chip ferc-chip-lng active" onclick="_fercToggleType('lng')">🏭 LNG Facility</span>
+    <span class="ferc-chip ferc-chip-storage active" onclick="_fercToggleType('storage')">🔷 Gas Storage</span>
+    <span style="margin-left:auto;display:flex;gap:6px;align-items:center">
+      <select class="ferc-filter-sel" id="ferc-status-sel" onchange="_fercApplyFilters()">
+        <option value="">All Status</option>
+        <option value="pending">Pending Review</option>
+        <option value="completed">Completed</option>
+      </select>
+      <select class="ferc-filter-sel" id="ferc-state-sel" onchange="_fercApplyFilters()">
+        <option value="">All States</option>
+      </select>
+    </span>
+  </div>
+
+  <!-- KPI row -->
+  <div class="ferc-kpi-row">
+    <div class="ferc-kpi"><div class="ferc-kpi-val" id="ferc-kpi-total">—</div><div class="ferc-kpi-lbl">Total Projects</div></div>
+    <div class="ferc-kpi"><div class="ferc-kpi-val" style="color:#fbbf24" id="ferc-kpi-pending">—</div><div class="ferc-kpi-lbl">Pending Review</div></div>
+    <div class="ferc-kpi"><div class="ferc-kpi-val" style="color:#38bdf8" id="ferc-kpi-hydro">—</div><div class="ferc-kpi-lbl">Hydropower</div></div>
+    <div class="ferc-kpi"><div class="ferc-kpi-val" style="color:#f97316" id="ferc-kpi-gas">—</div><div class="ferc-kpi-lbl">Gas / LNG / Storage</div></div>
+    <div class="ferc-kpi"><div class="ferc-kpi-val" id="ferc-kpi-states">—</div><div class="ferc-kpi-lbl">States Active</div></div>
+  </div>
+
+  <!-- Map + State table side-by-side -->
+  <div class="ferc-layout">
+    <div>
+      <div class="ferc-sect-hdr" style="margin-bottom:8px">Project Map <span style="font-weight:400;color:var(--muted);font-size:10px">— click marker for details · click state row to zoom</span></div>
+      <div class="ferc-map-wrap"><div id="ferc-map"></div></div>
+    </div>
+    <div>
+      <div class="ferc-sect-hdr">Projects by State</div>
+      <div class="ferc-state-wrap">
+        <table class="ferc-state-tbl">
+          <thead><tr>
+            <th>State</th>
+            <th title="Hydropower">💧</th>
+            <th title="Gas Pipeline">🔶</th>
+            <th title="LNG Facility">🏭</th>
+            <th title="Gas Storage">🔷</th>
+            <th>Total</th>
+            <th>Pend.</th>
+          </tr></thead>
+          <tbody id="ferc-state-tbody">
+            <tr><td colspan="7" style="color:var(--muted);padding:20px;text-align:center">Load data to see state breakdown</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full project list -->
+  <div class="ferc-sect-hdr">All Projects <span id="ferc-proj-count" style="font-weight:400;color:var(--muted);font-size:10px"></span></div>
+  <div class="ferc-proj-wrap">
+    <table class="ferc-proj-tbl">
+      <thead><tr>
+        <th>Docket</th>
+        <th>Type</th>
+        <th>Project Name</th>
+        <th>Applicant</th>
+        <th>State</th>
+        <th>NEPA</th>
+        <th>Target Date</th>
+        <th>Status</th>
+      </tr></thead>
+      <tbody id="ferc-proj-tbody">
+        <tr><td colspan="8" style="color:var(--muted);padding:20px;text-align:center">Click "Load FERC Data" above to fetch live data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ferc-src-note">
+    Source: <a href="https://data.ferc.gov/nepa-schedule-for-pending-infrastructure-projects/nepa-schedule-for-pending-infrastructure-projects/" target="_blank" rel="noopener" style="color:var(--accent)">FERC NEPA Schedule for Pending Infrastructure Projects</a>
+    · Federal Energy Regulatory Commission · Updated daily · Covers hydropower relicensing (P-dockets) and natural gas facility certifications (CP-dockets)
+    · Project locations are inferred from project name and applicant; some may be approximate
+  </div>
+</div>
+
 <script src="js/data.js"></script>
 <script src="js/api.js"></script>
 <script src="js/charts.js"></script>
@@ -1065,6 +1201,13 @@ function switchTab(id, btn) {
     if (typeof initDataCentersView === 'function') initDataCentersView();
   }
   else if (id === 'reg' && !window._legiscanLoaded) loadLegiScan();
+  else if (id === 'ferc' && !window._fercInit) {
+    window._fercInit = true;
+    initFercMap();
+    loadFercData();
+  } else if (id === 'ferc' && _fercMap) {
+    setTimeout(() => _fercMap.invalidateSize(), 50);
+  }
 }
 
 
@@ -2938,6 +3081,311 @@ function _lsStatusLabel(b) {
   if (k === 'failed')     return 'Failed';
   if (k === 'introduced') return 'Introduced';
   return 'In Committee';
+}
+
+// =====================================================================
+// FERC ENERGY INFRASTRUCTURE EXPANSION
+// Source: data.ferc.gov — NEPA Schedule for Pending Infrastructure Projects
+// Dataset 27 · Hydropower (P-dockets) + Natural Gas (CP-dockets)
+// =====================================================================
+
+let _fercProjects = [];
+let _fercMap = null;
+let _fercMarkerLayer = null;
+let _fercActiveTypes = new Set(['hydro','pipeline','lng','storage']);
+let _fercStateFilter = '';
+let _fercStatusFilter = '';
+
+const _FERC_TYPE_META = {
+  hydro:    { label:'Hydropower',   color:'#38bdf8', abbr:'H' },
+  pipeline: { label:'Gas Pipeline', color:'#f97316', abbr:'P' },
+  lng:      { label:'LNG Facility', color:'#fbbf24', abbr:'L' },
+  storage:  { label:'Gas Storage',  color:'#a78bfa', abbr:'S' },
+};
+
+const _FERC_STATE_CENTERS = {
+  AL:[32.8,-86.6],AK:[64.2,-153.4],AZ:[34.3,-111.1],AR:[34.9,-92.4],CA:[37.2,-119.5],
+  CO:[39.0,-105.5],CT:[41.6,-72.7],DE:[39.0,-75.5],FL:[28.7,-82.5],GA:[32.7,-83.4],
+  HI:[20.3,-156.4],ID:[44.4,-114.6],IL:[40.0,-89.2],IN:[39.9,-86.3],IA:[42.1,-93.5],
+  KS:[38.5,-98.4],KY:[37.5,-84.9],LA:[30.9,-91.8],ME:[45.3,-69.4],MD:[39.1,-76.8],
+  MA:[42.2,-71.7],MI:[44.3,-85.4],MN:[46.4,-93.1],MS:[32.7,-89.7],MO:[38.5,-92.5],
+  MT:[46.9,-110.5],NE:[41.5,-99.9],NV:[38.5,-117.1],NH:[43.7,-71.6],NJ:[40.1,-74.5],
+  NM:[34.8,-106.2],NY:[42.7,-75.5],NC:[35.5,-79.4],ND:[47.4,-100.5],OH:[40.4,-82.8],
+  OK:[35.6,-96.9],OR:[44.0,-120.5],PA:[40.9,-77.8],RI:[41.7,-71.5],SC:[33.8,-80.9],
+  SD:[44.4,-100.3],TN:[35.8,-86.4],TX:[31.2,-99.3],UT:[39.3,-111.1],VT:[44.1,-72.7],
+  VA:[37.5,-78.5],WA:[47.4,-120.4],WV:[38.6,-80.6],WI:[44.5,-90.1],WY:[43.0,-107.6]
+};
+
+function _fercType(docket, name) {
+  if (/^P[-\s\d]/i.test(docket || '')) return 'hydro';
+  const n = (name || '').toLowerCase();
+  if (/lng|liquefaction|liquefied|export terminal|import terminal|cryogenic/i.test(n)) return 'lng';
+  if (/\bstorage\b|abandonment/i.test(n)) return 'storage';
+  return 'pipeline';
+}
+
+function _fercState(name, applicant) {
+  const t = ((name || '') + ' ' + (applicant || '')).toLowerCase();
+  const stateNames = {
+    'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA',
+    'colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA',
+    'hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS',
+    'kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA',
+    'michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT',
+    'nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM',
+    'new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK',
+    'oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC',
+    'south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT',
+    'virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'
+  };
+  for (const [sn, code] of Object.entries(stateNames)) { if (t.includes(sn)) return code; }
+  const kws = [
+    ['sabine pass','LA'],['sabine','LA'],['calcasieu','LA'],['delfin','LA'],['gulf south','LA'],
+    ['columbia gulf','LA'],['freeport lng','TX'],['freeport','TX'],['corpus christi','TX'],
+    ['golden pass','TX'],['permian','TX'],['panhandle eastern','TX'],['el paso natural','TX'],
+    ['rio grande lng','TX'],['rio grande','TX'],['texas eastern','TX'],['southern union','TX'],
+    ['transwestern','AZ'],['kosciusko','MS'],['southern natural','AL'],['elba island','GA'],
+    ['southern lng','GA'],['columbia gas','WV'],['monongahela','WV'],['mountain valley','VA'],
+    ['mvp boost','VA'],['appalachian','WV'],['equitrans','WV'],['transco','PA'],
+    ['transcontinental','PA'],['iroquois','NY'],['algonquin','MA'],['maritimes','ME'],
+    ['pacific connector','OR'],['pacific gas','CA'],['kern river','CA'],['klamath','CA'],
+    ['hells canyon','ID'],['snake river','ID'],['clearwater river','ID'],
+    ['pend oreille','WA'],['lewis river','WA'],['cowlitz','WA'],['columbia river','WA'],
+    ['chelan','WA'],['grant county pud','WA'],['wanapum','WA'],['skagit','WA'],
+    ['boundary dam','WA'],['nooksack','WA'],['deschutes','OR'],['rogue river','OR'],
+    ['willamette','OR'],['clackamas','OR'],['feather river','CA'],['american river','CA'],
+    ['pit river','CA'],['stanislaus','CA'],['don pedro','CA'],['mokelumne','CA'],
+    ['merced river','CA'],['sierra','CA'],['eel river','CA'],['yuba','CA'],
+    ['salt river','AZ'],['verde river','AZ'],['glen canyon','AZ'],['flaming gorge','UT'],
+    ['gunnison','CO'],['poudre','CO'],['colorado river','CO'],['morrow point','CO'],
+    ['bighorn','MT'],['flathead','MT'],['hungry horse','MT'],['libby dam','MT'],
+    ['clark fork','MT'],['yellowtail','MT'],['green river','WY'],['north platte','WY'],
+    ['shoshone','WY'],['oahe','SD'],['big stone','SD'],['garrison','ND'],['fort peck','MT'],
+    ['lac qui parle','MN'],['minnesota power','MN'],['mississippi river','MN'],
+    ['wolf river','WI'],['menominee','WI'],['st. croix','WI'],['muskingum','OH'],
+    ['raystown','PA'],['youghiogheny','PA'],['lehigh','PA'],['susquehanna','PA'],
+    ['allegheny','PA'],['niagara','NY'],['esopus','NY'],['schoharie','NY'],['raquette','NY'],
+    ['penobscot','ME'],['kennebec','ME'],['androscoggin','ME'],['deerfield','MA'],
+    ['housatonic','CT'],['farmington river','CT'],['new river','VA'],['james river','VA'],
+    ['shenandoah','VA'],['roanoke river','VA'],['gauley','WV'],['cheat river','WV'],
+    ['tygart','WV'],['big sandy','WV'],['catawba','NC'],['yadkin','NC'],
+    ['oconee','GA'],['tugaloo','GA'],['flint river','GA'],['apalachicola','FL'],
+    ['cumberland river','KY'],['ouachita','AR'],['ozarks','MO'],['meramec','MO'],
+    ['grand river','OK'],['hudson','NY'],['lamoille','VT'],['winooski','VT'],
+    ['merrimack','NH'],['tva','TN'],['tennessee river','TN'],
+  ];
+  for (const [kw, state] of kws) { if (t.includes(kw)) return state; }
+  return null;
+}
+
+function initFercMap() {
+  const cont = document.getElementById('ferc-map');
+  if (!cont || _fercMap) return;
+  _fercMap = L.map('ferc-map', {
+    center: [39, -96], zoom: 4,
+    zoomControl: true, attributionControl: false, scrollWheelZoom: false
+  });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    maxZoom: 18, subdomains: 'abcd'
+  }).addTo(_fercMap);
+  _fercMarkerLayer = L.layerGroup().addTo(_fercMap);
+}
+
+function _fercMakeIcon(type) {
+  const m = _FERC_TYPE_META[type] || _FERC_TYPE_META.pipeline;
+  return L.divIcon({ html:`<div class="ferc-pin ferc-pin-${type}">${m.abbr}</div>`,
+    className:'', iconSize:[22,22], iconAnchor:[11,11] });
+}
+
+function _fercToggleType(type) {
+  if (_fercActiveTypes.has(type)) _fercActiveTypes.delete(type);
+  else _fercActiveTypes.add(type);
+  document.querySelectorAll('.ferc-chip').forEach(c => {
+    const m = c.getAttribute('onclick')?.match(/'(\w+)'/);
+    if (m) c.classList.toggle('active', _fercActiveTypes.has(m[1]));
+  });
+  _fercApplyFilters();
+}
+
+function _fercApplyFilters() {
+  _fercStateFilter  = document.getElementById('ferc-state-sel')?.value  || '';
+  _fercStatusFilter = document.getElementById('ferc-status-sel')?.value || '';
+  renderFercMap();
+  renderFercStateTable();
+  renderFercProjects();
+}
+
+function _fercFiltered() {
+  return _fercProjects.filter(p =>
+    _fercActiveTypes.has(p.type) &&
+    (!_fercStateFilter  || p.state === _fercStateFilter) &&
+    (!_fercStatusFilter ||
+      (_fercStatusFilter === 'pending'   &&  p.isPending) ||
+      (_fercStatusFilter === 'completed' && !p.isPending))
+  );
+}
+
+function renderFercMap() {
+  if (!_fercMap || !_fercMarkerLayer) return;
+  _fercMarkerLayer.clearLayers();
+  const data = _fercFiltered();
+  const byState = {};
+  data.forEach(p => { const s = p.state || '_UNK'; (byState[s] = byState[s] || []).push(p); });
+  Object.entries(byState).forEach(([state, projs]) => {
+    const center = _FERC_STATE_CENTERS[state];
+    if (!center) return;
+    const n = projs.length;
+    projs.forEach((p, i) => {
+      const angle = (i / Math.max(n, 1)) * 2 * Math.PI;
+      const r = n === 1 ? 0 : Math.min(0.35 + i * 0.12, 1.7);
+      const lat = center[0] + Math.sin(angle) * r * 0.45;
+      const lng = center[1] + Math.cos(angle) * r * 1.05;
+      const mk  = L.marker([lat, lng], { icon: _fercMakeIcon(p.type) });
+      const meta = _FERC_TYPE_META[p.type];
+      const fmtD = d => d ? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+      mk.bindPopup(`<div style="min-width:220px;font-size:12px;line-height:1.6">
+        <div style="font-weight:700;margin-bottom:3px">${p.name}</div>
+        <div style="color:#94a3b8;font-size:11px;margin-bottom:6px">${p.applicant}</div>
+        <span style="background:${meta.color}22;color:${meta.color};padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">${meta.label}</span>
+        ${p.state ? ` &nbsp;<span style="color:#94a3b8;font-size:10px">${p.state}</span>` : ''}
+        ${p.nepaType ? ` &nbsp;<span style="color:#94a3b8;font-size:10px">NEPA: ${p.nepaType}</span>` : ''}
+        <div style="font-size:11px;margin-top:5px">Docket: <strong style="color:#e2e8f0">${p.docket}</strong></div>
+        <div style="font-size:11px">Target: <strong style="color:#e2e8f0">${fmtD(p.targetDate)}</strong></div>
+        <div style="margin-top:4px">${p.isPending ? '<span style="color:#fbbf24">⏳ Pending Review</span>' : '<span style="color:#4ade80">✓ Completed</span>'}</div>
+      </div>`);
+      _fercMarkerLayer.addLayer(mk);
+    });
+  });
+}
+
+function renderFercStateTable() {
+  const tbody = document.getElementById('ferc-state-tbody');
+  if (!tbody) return;
+  const byState = {};
+  _fercFiltered().forEach(p => {
+    if (!p.state) return;
+    if (!byState[p.state]) byState[p.state] = { hydro:0, pipeline:0, lng:0, storage:0, pending:0 };
+    byState[p.state][p.type]++;
+    if (p.isPending) byState[p.state].pending++;
+  });
+  const rows = Object.entries(byState)
+    .map(([s, c]) => ({ s, ...c, total: c.hydro+c.pipeline+c.lng+c.storage }))
+    .sort((a,b) => b.total - a.total);
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);padding:16px;text-align:center">No data matching filters</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => `<tr onclick="fercZoomState('${r.s}')">
+    <td class="ferc-state-name">${r.s}</td>
+    <td class="cnt">${r.hydro   || ''}</td>
+    <td class="cnt">${r.pipeline|| ''}</td>
+    <td class="cnt">${r.lng     || ''}</td>
+    <td class="cnt">${r.storage || ''}</td>
+    <td class="cnt ferc-total-col">${r.total}</td>
+    <td class="cnt">${r.pending ? `<span style="color:#fbbf24">${r.pending}</span>` : ''}</td>
+  </tr>`).join('');
+}
+
+function renderFercProjects() {
+  const tbody   = document.getElementById('ferc-proj-tbody');
+  const countEl = document.getElementById('ferc-proj-count');
+  if (!tbody) return;
+  const data = _fercFiltered().slice().sort((a,b) => {
+    if ( a.isPending && !b.isPending) return -1;
+    if (!a.isPending &&  b.isPending) return 1;
+    return (a.targetDate||'').localeCompare(b.targetDate||'');
+  });
+  if (countEl) countEl.textContent = `(${data.length} projects)`;
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);padding:16px;text-align:center">No projects match current filters</td></tr>';
+    return;
+  }
+  const fmtD = d => d ? new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+  tbody.innerHTML = data.map(p => {
+    const meta   = _FERC_TYPE_META[p.type];
+    const status = p.isPending
+      ? '<span style="color:#fbbf24">⏳ Pending</span>'
+      : '<span style="color:#4ade80">✓ Done</span>';
+    return `<tr>
+      <td style="font-family:monospace;font-size:10px;white-space:nowrap">${p.docket}</td>
+      <td><span class="ferc-badge ferc-badge-${p.type}">${meta.label}</span></td>
+      <td style="max-width:230px">${p.name}</td>
+      <td style="max-width:190px;color:var(--secondary);font-size:11px">${p.applicant}</td>
+      <td style="text-align:center">${p.state || '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="text-align:center;font-size:11px">${p.nepaType || '—'}</td>
+      <td style="white-space:nowrap;font-size:11px">${fmtD(p.targetDate)}</td>
+      <td>${status}</td>
+    </tr>`;
+  }).join('');
+}
+
+function fercUpdateMetrics() {
+  const all = _fercProjects;
+  document.getElementById('ferc-kpi-total').textContent   = all.length  || '—';
+  document.getElementById('ferc-kpi-pending').textContent = all.filter(p => p.isPending).length || '—';
+  document.getElementById('ferc-kpi-hydro').textContent   = all.filter(p => p.type==='hydro').length || '—';
+  document.getElementById('ferc-kpi-gas').textContent     = all.filter(p => p.type!=='hydro').length || '—';
+  const states = new Set(all.map(p => p.state).filter(Boolean));
+  document.getElementById('ferc-kpi-states').textContent  = states.size || '—';
+  const sel = document.getElementById('ferc-state-sel');
+  if (sel) {
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All States</option>' +
+      [...states].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+    if (cur) sel.value = cur;
+  }
+}
+
+function fercZoomState(state) {
+  const c = _FERC_STATE_CENTERS[state];
+  if (c && _fercMap) _fercMap.setView(c, 6, { animate:true });
+  const sel = document.getElementById('ferc-state-sel');
+  if (sel) { sel.value = state; _fercApplyFilters(); }
+}
+
+async function loadFercData() {
+  const statusEl = document.getElementById('ferc-status');
+  const btn      = document.getElementById('ferc-fetch-btn');
+  if (btn) btn.disabled = true;
+  if (statusEl) statusEl.textContent = 'Fetching from data.ferc.gov…';
+  try {
+    const apiUrl = 'https://data.ferc.gov/api/v1/dataset/27/';
+    const payload = JSON.stringify({
+      startRow:0, endRow:300, sortModel:[], filterModel:{}, castData:[],
+      columns:['Docket_Number','Applicant__s___','Project_Name','NEPA_Document_Type',
+               'Final_NEPA_Document_Target_Issuance_Date','Final_NEPA_Document_Actual_Issuance_Date']
+    });
+    const res = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:payload
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const rows = json.data || json.rows || (Array.isArray(json) ? json : []);
+    _fercProjects = rows.map(r => {
+      const isArr = Array.isArray(r);
+      const docket     = isArr ? r[0] : (r.Docket_Number||'');
+      const applicant  = isArr ? r[1] : (r['Applicant__s___']||r.Applicant_s_||'');
+      const name       = isArr ? r[2] : (r.Project_Name||'');
+      const nepaType   = isArr ? r[3] : (r.NEPA_Document_Type||'');
+      const targetDate = isArr ? r[4] : (r.Final_NEPA_Document_Target_Issuance_Date||null);
+      const actualDate = isArr ? r[5] : (r.Final_NEPA_Document_Actual_Issuance_Date||null);
+      return { docket, applicant, name, nepaType, targetDate, actualDate,
+               type: _fercType(docket, name),
+               state: _fercState(name, applicant),
+               isPending: !!(targetDate && !actualDate) };
+    });
+    const updDate = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    if (statusEl) statusEl.textContent =
+      `${_fercProjects.length} projects loaded · FERC NEPA Schedule · As of ${updDate}`;
+    fercUpdateMetrics();
+    renderFercMap();
+    renderFercStateTable();
+    renderFercProjects();
+  } catch(e) {
+    if (statusEl) statusEl.innerHTML =
+      `<span style="color:#fca5a5">Load failed: ${e.message}</span> — <a href="https://data.ferc.gov/nepa-schedule-for-pending-infrastructure-projects/nepa-schedule-for-pending-infrastructure-projects/" target="_blank" rel="noopener" style="color:var(--accent)">Open data.ferc.gov</a>`;
+  }
+  if (btn) btn.disabled = false;
 }
 
 // =====================================================================
