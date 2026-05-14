@@ -273,6 +273,52 @@
   .sec-filters input:focus,.sec-filters select:focus { border-color:var(--accent); }
   .sec-filters input { flex:1; min-width:160px; }
   .sec-prompt { background:rgba(79,142,247,0.06); border:1px solid rgba(79,142,247,0.15); border-radius:8px; padding:16px 18px; color:var(--secondary); font-size:13px; text-align:center; line-height:1.7; }
+  /* Company accordion panels */
+  .sec-panels { display:flex; flex-direction:column; gap:7px; }
+  .sec-panel   { background:var(--card); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:border-color 0.15s; }
+  .sec-panel.has-data { border-color:rgba(79,142,247,0.35); }
+  .sec-panel-hdr  { display:flex; align-items:center; justify-content:space-between; padding:11px 15px; cursor:pointer; gap:10px; flex-wrap:wrap; }
+  .sec-panel-hdr:hover { background:rgba(255,255,255,0.02); }
+  .sec-panel-left { display:flex; align-items:center; gap:10px; flex-wrap:wrap; min-width:0; }
+  .sec-panel-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; flex-wrap:wrap; }
+  .sec-p-ticker   { font-size:15px; font-weight:800; color:var(--accent); white-space:nowrap; }
+  .sec-p-name     { font-size:12px; color:var(--secondary); white-space:nowrap; }
+  .sec-p-meta     { font-size:11px; color:var(--muted); }
+  .sec-p-pills    { display:flex; gap:4px; flex-wrap:wrap; }
+  .sec-pill       { font-size:10px; font-weight:700; padding:1px 7px; border-radius:8px; white-space:nowrap; }
+  .sec-pill.capacity  { background:rgba(34,197,94,0.12);   color:var(--green); }
+  .sec-pill.expansion { background:rgba(79,142,247,0.12);  color:var(--accent); }
+  .sec-pill.leases    { background:rgba(168,85,247,0.12);  color:#d8b4fe; }
+  .sec-pill.distress  { background:rgba(239,68,68,0.12);   color:#f87171; }
+  .sec-pill.power     { background:rgba(245,158,11,0.12);  color:var(--yellow); }
+  .sec-pill.capex     { background:rgba(148,163,184,0.12); color:var(--secondary); }
+  .sec-p-chev     { font-size:10px; color:var(--muted); transition:transform 0.2s; flex-shrink:0; }
+  .sec-panel.open .sec-p-chev { transform:rotate(180deg); }
+  .sec-panel-body { display:none; border-top:1px solid var(--border); padding:14px 16px; }
+  .sec-panel.open .sec-panel-body { display:block; }
+  /* Stat grid inside panel */
+  .sec-stat-grid  { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:7px; margin-bottom:14px; }
+  .sec-stat-card  { background:var(--bg); border-radius:6px; padding:8px 10px; }
+  .sec-stat-lbl   { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:2px; }
+  .sec-stat-val   { font-size:12px; font-weight:600; color:var(--text); }
+  /* Filing list inside panel */
+  .sec-flist h4   { font-size:11px; text-transform:uppercase; color:var(--muted); letter-spacing:0.5px; margin:0 0 8px; font-weight:700; }
+  .sec-frow       { background:var(--bg); border:1px solid var(--border); border-radius:5px; padding:7px 10px; margin-bottom:5px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .sec-frow-form  { font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; background:rgba(79,142,247,0.1); color:var(--accent); white-space:nowrap; }
+  .sec-frow-link  { font-size:12px; color:var(--accent); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .sec-frow-date  { font-size:11px; color:var(--muted); white-space:nowrap; }
+  /* Extract section */
+  .sec-extract-btn { display:inline-flex; align-items:center; gap:6px; background:rgba(79,142,247,0.1); border:1px solid rgba(79,142,247,0.25); color:var(--accent); border-radius:5px; padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; margin:10px 0 12px; }
+  .sec-extract-btn:hover { background:rgba(79,142,247,0.2); }
+  .sec-extract-btn:disabled { opacity:0.5; cursor:default; }
+  .sec-excerpts   { display:flex; flex-direction:column; gap:8px; }
+  .sec-excerpt    { border-left:3px solid var(--accent); padding:9px 13px; background:rgba(79,142,247,0.04); border-radius:0 5px 5px 0; }
+  .sec-excerpt.neg { border-left-color:#f87171; background:rgba(239,68,68,0.04); }
+  .sec-excerpt.pos { border-left-color:var(--green); background:rgba(34,197,94,0.04); }
+  .sec-exc-hdr    { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+  .sec-exc-body   { font-size:12px; color:var(--secondary); line-height:1.75; }
+  .sec-exc-body mark { background:rgba(79,142,247,0.18); color:var(--text); padding:0 2px; border-radius:2px; }
+  .sec-no-data    { color:var(--muted); font-size:12px; padding:4px 0; font-style:italic; }
 
   /* MARKET NAME CELL */
   .market-name-cell .name { font-weight: 600; font-size: 13px; }
@@ -493,52 +539,58 @@
       </div>
     </div>
 
-    <!-- Company spotlight cards (JS-rendered) -->
-    <div class="sec-company-grid" id="sec-company-grid"></div>
-
-    <!-- Filters (shown after load) -->
-    <div class="sec-filters" id="sec-filters" style="display:none">
-      <input type="text" id="sec-q" placeholder="Filter by company, ticker, keyword…" oninput="renderSecTable()">
-      <select id="sec-co-filter" onchange="renderSecTable()"><option value="">All Companies</option></select>
-      <select id="sec-topic-filter" onchange="renderSecTable()">
-        <option value="">All Topics</option>
-        <option value="Capacity / MW">Capacity / MW</option>
-        <option value="Expansion / New Sites">Expansion / New Sites</option>
-        <option value="Leases / Customers">Leases / Customers</option>
-        <option value="Distress / Asset Sales">Distress / Asset Sales</option>
-        <option value="Power / Grid Delays">Power / Grid Delays</option>
-        <option value="CapEx / Investment">CapEx / Investment</option>
-      </select>
-      <select id="sec-form-filter" onchange="renderSecTable()">
-        <option value="">All Forms</option>
-        <option value="10-K">10-K (Annual)</option>
-        <option value="10-Q">10-Q (Quarterly)</option>
-        <option value="8-K">8-K (Material Event)</option>
-      </select>
-    </div>
-
+    <!-- Company accordion panels — JS-rendered on init, populated after search -->
     <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR across 6 data center topic areas…</div>
     <div id="sec-error" class="ls-error hidden"></div>
     <div id="sec-prompt" class="sec-prompt">
-      Enter a <a href="https://sec-api.io/signup" target="_blank" rel="noopener">sec-api.io</a> API key above and click <strong>🔍 Search SEC</strong> to load real-time filing intelligence across all public data center companies.
-      <br>Free tier available · Covers 10-K, 10-Q &amp; 8-K filings · 6 targeted DC topic searches · Last 18 months of filings
+      Enter a <a href="https://sec-api.io/signup" target="_blank" rel="noopener">sec-api.io</a> API key above and click <strong>🔍 Search SEC</strong> to load filing intelligence for all 10 companies below.
+      <br>Free tier available (100 queries/month) · 10-K · 10-Q · 8-K · Last 18 months · Extract actual filing text per company
     </div>
-    <div id="sec-table-wrap" class="hidden" style="overflow-x:auto">
-      <table class="ls-table">
-        <thead><tr>
-          <th style="width:16%">Company</th>
-          <th style="width:7%">Ticker</th>
-          <th style="width:7%">Form</th>
-          <th style="width:10%">Filed</th>
-          <th style="width:17%">Topic</th>
-          <th style="width:43%">Filing</th>
-        </tr></thead>
-        <tbody id="sec-tbody"></tbody>
-      </table>
+    <div class="sec-panels" id="sec-panels"></div>
+
+    <!-- All-filings table (shown after search, collapsible) -->
+    <div id="sec-all-filings" class="hidden" style="margin-top:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:pointer" onclick="document.getElementById('sec-table-inner').classList.toggle('hidden');this.querySelector('.sec-p-chev').style.transform=document.getElementById('sec-table-inner').classList.contains('hidden')?'':'rotate(180deg)'">
+        <span style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">All Filings <span id="sec-count" style="font-weight:400"></span></span>
+        <span class="sec-p-chev">▼</span>
+      </div>
+      <div id="sec-table-inner" class="hidden">
+        <div class="sec-filters">
+          <input type="text" id="sec-q" placeholder="Filter by company, ticker, keyword…" oninput="renderSecTable()">
+          <select id="sec-co-filter" onchange="renderSecTable()"><option value="">All Companies</option></select>
+          <select id="sec-topic-filter" onchange="renderSecTable()">
+            <option value="">All Topics</option>
+            <option value="Capacity / MW">Capacity / MW</option>
+            <option value="Expansion / New Sites">Expansion / New Sites</option>
+            <option value="Leases / Customers">Leases / Customers</option>
+            <option value="Distress / Asset Sales">Distress / Asset Sales</option>
+            <option value="Power / Grid Delays">Power / Grid Delays</option>
+            <option value="CapEx / Investment">CapEx / Investment</option>
+          </select>
+          <select id="sec-form-filter" onchange="renderSecTable()">
+            <option value="">All Forms</option>
+            <option value="10-K">10-K (Annual)</option>
+            <option value="10-Q">10-Q (Quarterly)</option>
+            <option value="8-K">8-K (Material Event)</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="ls-table">
+            <thead><tr>
+              <th style="width:16%">Company</th>
+              <th style="width:7%">Ticker</th>
+              <th style="width:7%">Form</th>
+              <th style="width:10%">Filed</th>
+              <th style="width:17%">Topic</th>
+              <th style="width:43%">Filing</th>
+            </tr></thead>
+            <tbody id="sec-tbody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <div id="sec-footer" class="hidden" style="font-size:11px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px">
-      <span>Source: <a href="https://sec-api.io" target="_blank" rel="noopener" style="color:var(--accent)">sec-api.io</a> / <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · Real-time · Updated on demand</span>
-      <span id="sec-count"></span>
+    <div id="sec-footer" class="hidden" style="font-size:11px;color:var(--muted);margin-top:10px">
+      Source: <a href="https://sec-api.io" target="_blank" rel="noopener" style="color:var(--accent)">sec-api.io</a> / <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · Real-time on demand · Extractor API pulls Item 1, 2 &amp; 7 text
     </div>
   </div>
 </div>
@@ -2377,151 +2429,184 @@ function toggleGridCard(i) {
 // =====================================================================
 
 const _SEC_COMPANIES = [
-  { ticker:'EQIX',  name:'Equinix',           sites:'260+ IBX centers',       capacity:'~4,500 MW',    revenue:'$8.7B (2024)',      status:'expanding', label:'Expanding'       },
-  { ticker:'DLR',   name:'Digital Realty',     sites:'300+ facilities',         capacity:'~3,500 MW',    revenue:'$5.5B (2024)',      status:'expanding', label:'Expanding'       },
-  { ticker:'IRM',   name:'Iron Mountain',      sites:'100+ data centers',       capacity:'~1,200 MW',    revenue:'$5.6B total (2024)',status:'rapid',     label:'Rapid Growth'    },
-  { ticker:'AMT',   name:'American Tower',     sites:'31 (CoreSite)',           capacity:'~600 MW',      revenue:'$600M DC (2024)',   status:'steady',    label:'Steady Growth'   },
-  { ticker:'VRT',   name:'Vertiv Holdings',    sites:'Infrastructure OEM',      capacity:'N/A',          revenue:'$7.6B (2024)',      status:'expanding', label:'AI Demand Surge' },
-  { ticker:'MSFT',  name:'Microsoft Azure',    sites:'300+ globally',           capacity:'~15,000 MW',   revenue:'$26B cloud/qtr',    status:'rapid',     label:'$80B+ CapEx'     },
-  { ticker:'AMZN',  name:'Amazon (AWS)',       sites:'100+ AZs, 33 regions',   capacity:'~20,000 MW',   revenue:'$110B run rate',    status:'rapid',     label:'$75B CapEx'      },
-  { ticker:'GOOGL', name:'Alphabet / Google',  sites:'35+ DC campuses',         capacity:'~10,000 MW',   revenue:'$43B cloud (2024)', status:'rapid',     label:'$75B CapEx'      },
-  { ticker:'META',  name:'Meta Platforms',     sites:'21 US + global DCs',      capacity:'~5,000 MW',    revenue:'$165B total (2024)',status:'rapid',     label:'$60B CapEx'      },
-  { ticker:'ORCL',  name:'Oracle Cloud',       sites:'162 cloud regions',       capacity:'~3,000 MW',    revenue:'$57B total (2024)', status:'expanding', label:'Rapid Expansion' },
+  { ticker:'EQIX',  name:'Equinix',           markets:'70+ metros · 33 countries', sites:'260+ IBX centers',        capacity:'~4,500 MW',    revenue:'$8.7B (2024)',       status:'expanding', label:'Expanding'        },
+  { ticker:'DLR',   name:'Digital Realty',     markets:'50+ metros · 25 countries', sites:'300+ facilities',          capacity:'~3,500 MW',    revenue:'$5.5B (2024)',       status:'expanding', label:'Expanding'        },
+  { ticker:'IRM',   name:'Iron Mountain',      markets:'17 countries',              sites:'100+ data centers',        capacity:'~1,200 MW',    revenue:'$5.6B total (2024)', status:'rapid',     label:'Rapid Growth'     },
+  { ticker:'AMT',   name:'American Tower',     markets:'12 US markets (CoreSite)',  sites:'31 CoreSite DCs',          capacity:'~600 MW',      revenue:'$600M DC (2024)',    status:'steady',    label:'Steady Growth'    },
+  { ticker:'VRT',   name:'Vertiv Holdings',    markets:'Global OEM',                sites:'Infrastructure provider',  capacity:'N/A',          revenue:'$7.6B (2024)',       status:'expanding', label:'AI Demand Surge'  },
+  { ticker:'MSFT',  name:'Microsoft Azure',    markets:'60+ regions globally',      sites:'300+ globally',            capacity:'~15,000 MW',   revenue:'$26B cloud/qtr',     status:'rapid',     label:'$80B+ CapEx'      },
+  { ticker:'AMZN',  name:'Amazon (AWS)',        markets:'33 regions · 105 AZs',     sites:'100+ availability zones',  capacity:'~20,000 MW',   revenue:'$110B run rate',     status:'rapid',     label:'$75B CapEx'       },
+  { ticker:'GOOGL', name:'Alphabet / Google',  markets:'40+ cloud regions',         sites:'35+ DC campuses',          capacity:'~10,000 MW',   revenue:'$43B cloud (2024)',  status:'rapid',     label:'$75B CapEx'       },
+  { ticker:'META',  name:'Meta Platforms',     markets:'US + EU + Asia',            sites:'21 US + global DCs',       capacity:'~5,000 MW',    revenue:'$165B total (2024)', status:'rapid',     label:'$60B CapEx'       },
+  { ticker:'ORCL',  name:'Oracle Cloud',       markets:'45+ countries',             sites:'162 cloud regions',        capacity:'~3,000 MW',    revenue:'$57B total (2024)',  status:'expanding', label:'Rapid Expansion'  },
 ];
 
-// Six targeted queries covering every relevant DC topic
 const _SEC_QUERIES = [
-  { q:'"data center" AND ("new capacity" OR "megawatt" OR "additional capacity" OR "commissioned" OR "power capacity")',                      label:'Capacity / MW'         },
-  { q:'"data center" AND ("expansion" OR "new campus" OR "new facility" OR "under construction" OR "greenfield" OR "new site")',              label:'Expansion / New Sites' },
-  { q:'"data center" AND ("new lease" OR "leasing" OR "new customer" OR "pre-leased" OR "signed lease" OR "anchor tenant")',                  label:'Leases / Customers'    },
-  { q:'"data center" AND ("impairment" OR "write-down" OR "asset sale" OR "divestiture" OR "declining revenue" OR "headwinds" OR "offload")', label:'Distress / Asset Sales'},
-  { q:'"data center" AND ("power delay" OR "grid constraint" OR "interconnection delay" OR "utility delay" OR "capacity constraints")',        label:'Power / Grid Delays'   },
-  { q:'"data center" AND ("capital expenditure" OR "capex" OR "capital investment" OR "billion" AND "invest" OR "strategic investment")',     label:'CapEx / Investment'    },
+  { q:'"data center" AND ("new capacity" OR "megawatt" OR "additional capacity" OR "commissioned" OR "power capacity")',                        label:'Capacity / MW'         },
+  { q:'"data center" AND ("expansion" OR "new campus" OR "new facility" OR "under construction" OR "greenfield" OR "new site")',                label:'Expansion / New Sites' },
+  { q:'"data center" AND ("new lease" OR "leasing" OR "new customer" OR "pre-leased" OR "signed lease" OR "anchor tenant")',                    label:'Leases / Customers'    },
+  { q:'"data center" AND ("impairment" OR "write-down" OR "asset sale" OR "divestiture" OR "declining revenue" OR "headwinds" OR "offload")',   label:'Distress / Asset Sales'},
+  { q:'"data center" AND ("power delay" OR "grid constraint" OR "interconnection delay" OR "utility delay" OR "capacity constraints")',          label:'Power / Grid Delays'   },
+  { q:'"data center" AND ("capital expenditure" OR "capex" OR "capital investment" OR "strategic investment")',                                  label:'CapEx / Investment'    },
 ];
 
 let _secResults   = [];
 let _secTimestamp = null;
 
-function secKeySave(v) {
-  try { localStorage.setItem('sec_api_key', v.trim()); } catch(e) {}
-}
-function secKeyLoad() {
-  try { return localStorage.getItem('sec_api_key') || ''; } catch(e) { return ''; }
+function secKeySave(v) { try { localStorage.setItem('sec_api_key', v.trim()); } catch(e) {} }
+function secKeyLoad()  { try { return localStorage.getItem('sec_api_key') || ''; } catch(e) { return ''; } }
+
+function _secTopicCls(topic) {
+  if (topic.includes('Capacity'))   return 'capacity';
+  if (topic.includes('Expansion'))  return 'expansion';
+  if (topic.includes('Leases'))     return 'leases';
+  if (topic.includes('Distress'))   return 'distress';
+  if (topic.includes('Power'))      return 'power';
+  return 'capex';
 }
 
 function initSecSection() {
-  const grid = document.getElementById('sec-company-grid');
-  if (!grid) return;
-  grid.innerHTML = _SEC_COMPANIES.map(c => `
-    <div class="sec-co-card" id="sec-co-${c.ticker}" onclick="secFilterCo('${c.ticker}')">
-      <span class="sec-co-badge" id="sec-badge-${c.ticker}"></span>
-      <div class="sec-co-ticker">${c.ticker}</div>
-      <div class="sec-co-name">${c.name}</div>
-      <div class="sec-co-stat"><span>Sites</span><strong>${c.sites}</strong></div>
-      <div class="sec-co-stat"><span>Capacity</span><strong>${c.capacity}</strong></div>
-      <div class="sec-co-stat"><span>Revenue</span><strong>${c.revenue}</strong></div>
-      <span class="sec-co-status ${c.status}">${c.label}</span>
+  const panels = document.getElementById('sec-panels');
+  if (!panels) return;
+  panels.innerHTML = _SEC_COMPANIES.map(co => `
+    <div class="sec-panel" id="sec-panel-${co.ticker}">
+      <div class="sec-panel-hdr" onclick="toggleSecPanel('${co.ticker}')">
+        <div class="sec-panel-left">
+          <span class="sec-p-ticker">${co.ticker}</span>
+          <span class="sec-p-name">${co.name}</span>
+          <span class="sec-co-status ${co.status}" style="font-size:10px;padding:2px 8px">${co.label}</span>
+          <div class="sec-p-pills" id="sec-pills-${co.ticker}"></div>
+        </div>
+        <div class="sec-panel-right">
+          <span class="sec-p-meta">${co.sites} · ${co.capacity}</span>
+          <span class="sec-p-chev">▼</span>
+        </div>
+      </div>
+      <div class="sec-panel-body" id="sec-body-${co.ticker}">
+        <div class="sec-stat-grid">
+          <div class="sec-stat-card"><div class="sec-stat-lbl">Sites</div><div class="sec-stat-val">${co.sites}</div></div>
+          <div class="sec-stat-card"><div class="sec-stat-lbl">Capacity</div><div class="sec-stat-val">${co.capacity}</div></div>
+          <div class="sec-stat-card"><div class="sec-stat-lbl">Revenue</div><div class="sec-stat-val">${co.revenue}</div></div>
+          <div class="sec-stat-card"><div class="sec-stat-lbl">Markets</div><div class="sec-stat-val">${co.markets}</div></div>
+        </div>
+        <div class="sec-flist">
+          <h4>Filings Found <span id="sec-fcount-${co.ticker}" style="font-weight:400;color:var(--muted)"></span></h4>
+          <div id="sec-flist-${co.ticker}"><p class="sec-no-data">Run a search above to populate filings for ${co.ticker}.</p></div>
+        </div>
+        <button class="sec-extract-btn" id="sec-ext-btn-${co.ticker}" onclick="fetchSecDetails('${co.ticker}')">
+          📄 Extract Details from Latest 10-K / 10-Q
+        </button>
+        <div id="sec-ext-${co.ticker}"></div>
+      </div>
     </div>`).join('');
   const saved = secKeyLoad();
   const keyEl = document.getElementById('sec-key');
   if (saved && keyEl) keyEl.value = saved;
 }
 
+function toggleSecPanel(ticker) {
+  document.getElementById('sec-panel-' + ticker)?.classList.toggle('open');
+}
+
 async function loadSecFilings(force = false) {
   if (_secResults.length && !force) return;
-
   const key = (document.getElementById('sec-key')?.value || '').trim() || secKeyLoad();
-  const elErr   = document.getElementById('sec-error');
-  if (!key) {
-    elErr.textContent = 'Enter a sec-api.io API key above to search SEC filings.';
-    elErr.classList.remove('hidden');
-    return;
-  }
+  const elErr = document.getElementById('sec-error');
+  if (!key) { elErr.textContent = 'Enter a sec-api.io API key to search SEC filings.'; elErr.classList.remove('hidden'); return; }
 
-  const elLoad    = document.getElementById('sec-loading');
-  const elWrap    = document.getElementById('sec-table-wrap');
-  const elFooter  = document.getElementById('sec-footer');
-  const elPrompt  = document.getElementById('sec-prompt');
-  const elFilters = document.getElementById('sec-filters');
-  const elBtn     = document.getElementById('sec-search-btn');
+  const elLoad   = document.getElementById('sec-loading');
+  const elFooter = document.getElementById('sec-footer');
+  const elPrompt = document.getElementById('sec-prompt');
+  const elBtn    = document.getElementById('sec-search-btn');
+  const elAll    = document.getElementById('sec-all-filings');
 
   elLoad.classList.remove('hidden');
   elErr.classList.add('hidden');
-  elWrap.classList.add('hidden');
-  elFooter.classList.add('hidden');
-  if (elPrompt)  elPrompt.style.display = 'none';
-  if (elBtn)     elBtn.disabled = true;
+  if (elPrompt) elPrompt.style.display = 'none';
+  if (elBtn)    elBtn.disabled = true;
 
-  const startDate = new Date(Date.now() - 548 * 86400000).toISOString().slice(0,10); // 18 months
+  const startDate = new Date(Date.now() - 548 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
-  const seen      = new Set();
-  const results   = [];
-  let   apiErr    = null;
+  const seen = new Set(), results = [];
+  let apiErr = null;
 
   for (const { q, label } of _SEC_QUERIES) {
     try {
       const apiUrl = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
       const body   = JSON.stringify({ query:q, formTypes:['10-K','10-Q','8-K'], startDate, endDate, page:'1' });
-      const res    = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), {
-        method:'POST', headers:{'Content-Type':'application/json'}, body
-      });
-      const json = await res.json();
-
-      if (json.statusCode === 401 || json.message?.toLowerCase().includes('unauthorized') || json.error?.toLowerCase().includes('invalid')) {
-        apiErr = 'Invalid API key — sign up for a free key at sec-api.io/signup';
-        break;
+      const res    = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), { method:'POST', headers:{'Content-Type':'application/json'}, body });
+      const json   = await res.json();
+      if (json.statusCode === 401 || (json.message||'').toLowerCase().includes('unauthorized') || (json.error||'').toLowerCase().includes('invalid')) {
+        apiErr = 'Invalid API key — get a free key at sec-api.io/signup'; break;
       }
       for (const f of (json.filings || [])) {
         if (!f.accessionNo || seen.has(f.accessionNo)) continue;
-        seen.add(f.accessionNo);
-        results.push({ ...f, _topic: label });
+        seen.add(f.accessionNo); results.push({ ...f, _topic: label });
       }
-      elLoad.querySelector ? null : null; // keep spinner text (no-op)
     } catch(e) {
-      console.warn('SEC query error:', label, e);
-      apiErr = 'Request failed — check your key or try again (' + (e.message||'network error') + ')';
-      break;
+      apiErr = 'Request failed (' + (e.message||'network error') + ') — check key or CORS'; break;
     }
   }
 
   elLoad.classList.add('hidden');
   if (elBtn) elBtn.disabled = false;
 
-  if (apiErr) {
-    elErr.textContent = apiErr;
-    elErr.classList.remove('hidden');
-    if (elPrompt) elPrompt.style.display = '';
-    return;
-  }
-  if (!results.length) {
-    elErr.textContent = 'No filings returned. The API may be rate-limited — free tier allows ~100 queries/month.';
-    elErr.classList.remove('hidden');
-    if (elPrompt) elPrompt.style.display = '';
-    return;
-  }
+  if (apiErr) { elErr.textContent = apiErr; elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return; }
+  if (!results.length) { elErr.textContent = 'No filings returned — free tier allows ~100 queries/month.'; elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return; }
 
   results.sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
-  _secResults   = results;
-  _secTimestamp = new Date();
+  _secResults = results; _secTimestamp = new Date();
 
-  // Populate company filter dropdown
-  const coEl   = document.getElementById('sec-co-filter');
+  // Populate All Filings dropdown
+  const coEl = document.getElementById('sec-co-filter');
   const tickers = [...new Set(results.map(r => r.ticker).filter(Boolean))].sort();
-  coEl.innerHTML = '<option value="">All Companies</option>' +
-    tickers.map(t => `<option value="${t}">${t}</option>`).join('');
+  coEl.innerHTML = '<option value="">All Companies</option>' + tickers.map(t => `<option value="${t}">${t}</option>`).join('');
 
-  // Update badge counts on spotlight cards
-  const counts = {};
-  results.forEach(r => { if(r.ticker) counts[r.ticker] = (counts[r.ticker]||0)+1; });
-  Object.entries(counts).forEach(([tk,n]) => {
-    const b = document.getElementById('sec-badge-'+tk);
-    if (b) { b.textContent = n+' filings'; b.classList.add('show'); }
+  renderSecPanels();
+  renderSecTable();
+  if (elAll) elAll.classList.remove('hidden');
+  if (elFooter) elFooter.classList.remove('hidden');
+}
+
+function renderSecPanels() {
+  const byTicker = {};
+  _secResults.forEach(f => {
+    const tk = f.ticker || '_OTHER';
+    if (!byTicker[tk]) byTicker[tk] = [];
+    byTicker[tk].push(f);
   });
 
-  if (elFilters) elFilters.style.display = 'flex';
-  renderSecTable();
-  elWrap.classList.remove('hidden');
-  elFooter.classList.remove('hidden');
+  _SEC_COMPANIES.forEach(co => {
+    const filings = (byTicker[co.ticker] || []).sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
+    const panel = document.getElementById('sec-panel-' + co.ticker);
+    if (!panel) return;
+
+    // Topic pills
+    const topics = {};
+    filings.forEach(f => { topics[f._topic] = (topics[f._topic]||0)+1; });
+    const pillsEl = document.getElementById('sec-pills-' + co.ticker);
+    if (pillsEl) pillsEl.innerHTML = Object.entries(topics).map(([t,n]) =>
+      `<span class="sec-pill ${_secTopicCls(t)}">${t.split('/')[0].trim()} (${n})</span>`).join('');
+
+    // Filing count
+    const fcountEl = document.getElementById('sec-fcount-' + co.ticker);
+    if (fcountEl) fcountEl.textContent = filings.length ? `(${filings.length})` : '';
+
+    if (!filings.length) return;
+    panel.classList.add('has-data');
+
+    // Filing list
+    const listEl = document.getElementById('sec-flist-' + co.ticker);
+    if (listEl) listEl.innerHTML = filings.map(f => {
+      const coFull = (f.companyNameLong||'').replace(/\s*\(CIK.*?\)/g,'').replace(/\s*\(.*?\)/g,'').trim();
+      return `<div class="sec-frow">
+        <span class="sec-frow-form">${f.formType}</span>
+        <span class="sec-pill ${_secTopicCls(f._topic)}">${f._topic.split('/')[0].trim()}</span>
+        <a class="sec-frow-link" href="${f.filingUrl||'#'}" target="_blank" rel="noopener" title="${coFull}">${coFull.slice(0,55) || co.name} — ${f.formType}</a>
+        <span class="sec-frow-date">${(f.filedAt||'').slice(0,10)}</span>
+      </div>`;
+    }).join('');
+  });
 }
 
 function renderSecTable() {
@@ -2530,49 +2615,138 @@ function renderSecTable() {
   const qCo    = document.getElementById('sec-co-filter')?.value    || '';
   const qTopic = document.getElementById('sec-topic-filter')?.value || '';
   const qForm  = document.getElementById('sec-form-filter')?.value  || '';
-
   const filtered = _secResults.filter(f => {
     if (qCo    && f.ticker   !== qCo)    return false;
     if (qTopic && f._topic   !== qTopic) return false;
     if (qForm  && f.formType !== qForm)  return false;
     if (qText) {
-      const hay = `${f.companyNameLong||''} ${f.ticker||''} ${f.description||''} ${f._topic||''} ${f.formType||''}`.toLowerCase();
+      const hay = `${f.companyNameLong||''} ${f.ticker||''} ${f._topic||''} ${f.formType||''}`.toLowerCase();
       if (!hay.includes(qText)) return false;
     }
     return true;
   });
-
   const tbody = document.getElementById('sec-tbody');
+  if (!tbody) return;
   tbody.innerHTML = filtered.map(f => {
-    const meta  = _SEC_COMPANIES.find(c => c.ticker === f.ticker);
+    const meta   = _SEC_COMPANIES.find(c => c.ticker === f.ticker);
     const coName = meta ? meta.name : (f.companyNameLong||'—').replace(/\s*\(.*?\)\s*/g,'').trim().slice(0,28);
-    const cls   = f._topic.includes('Distress') ? 'inactive'
-                : (f._topic.includes('Capacity')||f._topic.includes('Expansion')) ? 'active' : 'pending';
-    const date  = (f.filedAt||'—').slice(0,10);
-    const link  = f.filingUrl || '#';
-    const desc  = (f.description || f.formType || '—').replace(/</g,'&lt;');
+    const cls    = f._topic.includes('Distress') ? 'inactive' : (f._topic.includes('Capacity')||f._topic.includes('Expansion')) ? 'active' : 'pending';
     const coFull = (f.companyNameLong||'').replace(/\s*\(CIK.*?\)/g,'').replace(/\s*\(.*?\)/g,'').trim();
     return `<tr>
       <td style="font-size:12px">${coName}</td>
       <td><strong>${f.ticker||'—'}</strong></td>
       <td style="font-size:11px;color:var(--muted)">${f.formType||'—'}</td>
-      <td style="white-space:nowrap;font-size:11px">${date}</td>
+      <td style="white-space:nowrap;font-size:11px">${(f.filedAt||'—').slice(0,10)}</td>
       <td><span class="policy-status-${cls}" style="font-size:11px;white-space:nowrap">${f._topic}</span></td>
-      <td style="font-size:11px"><a href="${link}" target="_blank" rel="noopener" style="color:var(--accent)" title="${coFull}">${desc} — ${coFull.slice(0,45)}</a></td>
+      <td style="font-size:11px"><a href="${f.filingUrl||'#'}" target="_blank" rel="noopener" style="color:var(--accent)" title="${coFull}">${coFull.slice(0,55)} — ${f.formType}</a></td>
     </tr>`;
-  }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No filings match current filters</td></tr>`;
-
+  }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No filings match filters</td></tr>`;
   const cnt = document.getElementById('sec-count');
-  if (cnt) cnt.textContent = `${filtered.length} of ${_secResults.length} filings shown · ${_secTimestamp?.toLocaleDateString()||''}`;
+  if (cnt) cnt.textContent = `— ${filtered.length} of ${_secResults.length} filings`;
 }
 
-function secFilterCo(ticker) {
-  const el = document.getElementById('sec-co-filter');
-  if (!el || !_secResults.length) return;
-  el.value = (el.value === ticker) ? '' : ticker;
-  document.querySelectorAll('.sec-co-card').forEach(c => c.classList.remove('active'));
-  if (el.value) document.getElementById('sec-co-'+el.value)?.classList.add('active');
-  renderSecTable();
+// ─── Extractor API: pulls Item 1, 2, 7 from 10-K or MD&A from 10-Q ──────────
+async function fetchSecDetails(ticker) {
+  const key = (document.getElementById('sec-key')?.value || '').trim() || secKeyLoad();
+  if (!key) return;
+
+  const btn     = document.getElementById('sec-ext-btn-' + ticker);
+  const panel   = document.getElementById('sec-ext-' + ticker);
+  if (!panel) return;
+
+  // Find most recent 10-K, fall back to most recent 10-Q
+  const filings = _secResults.filter(f => f.ticker === ticker);
+  const tenK = filings.find(f => f.formType === '10-K');
+  const tenQ = filings.find(f => f.formType === '10-Q');
+  const filing = tenK || tenQ;
+
+  if (!filing) {
+    panel.innerHTML = '<p class="sec-no-data">No 10-K or 10-Q found for ' + ticker + ' in current results. Run a search first.</p>';
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Extracting filing text from SEC EDGAR…</p>';
+
+  const isK    = filing.formType === '10-K';
+  const items  = isK ? ['1','2','7'] : ['part1item2'];
+  const labels = isK ? { '1':'Business Overview','2':'Properties / Facilities','7':'MD&A' }
+                     : { 'part1item2':'MD&A (10-Q)' };
+  const EXTRACTOR = 'https://api.sec-api.io/extractor';
+
+  const allExcerpts = [];
+
+  for (const item of items) {
+    try {
+      const url  = `${EXTRACTOR}?url=${encodeURIComponent(filing.filingUrl)}&item=${item}&type=text&token=${encodeURIComponent(key)}`;
+      const res  = await fetch(CORS_PROXY + encodeURIComponent(url));
+      const text = await res.text();
+      if (!text || text.length < 100 || text.startsWith('{')) continue; // error JSON
+
+      const excerpts = _secParseExcerpts(text);
+      excerpts.forEach(e => allExcerpts.push({ ...e, itemLabel: labels[item] || item, formType: filing.formType, date: filing.filedAt }));
+    } catch(e) { console.warn('Extractor:', ticker, item, e); }
+  }
+
+  if (btn) btn.disabled = false;
+
+  if (!allExcerpts.length) {
+    panel.innerHTML = `<p class="sec-no-data">No data center content found in the extracted filing text, or extraction failed for this filing format.<br>
+      <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">View full ${filing.formType} on SEC EDGAR ↗</a></p>`;
+    return;
+  }
+
+  panel.innerHTML = `
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
+      Extracted from <strong>${filing.formType}</strong> filed ${(filing.filedAt||'').slice(0,10)} ·
+      <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">Full filing ↗</a> ·
+      ${allExcerpts.length} data center passages found
+    </div>
+    <div class="sec-excerpts">
+      ${allExcerpts.map(e => `
+        <div class="sec-excerpt ${e.isDistress ? 'neg' : e.isPositive ? 'pos' : ''}">
+          <div class="sec-exc-hdr">${e.itemLabel} · ${e.formType} · ${(e.date||'').slice(0,10)}</div>
+          <div class="sec-exc-body">${_secHighlight(e.text.slice(0, 700))}${e.text.length > 700 ? '…' : ''}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function _secParseExcerpts(fullText) {
+  const text = fullText.replace(/##TABLE_START[\s\S]*?##TABLE_END/g, '[table omitted]');
+  const paras = text.split(/\n{2,}/).map(p => p.trim().replace(/\n/g,' ')).filter(p => p.length > 80);
+
+  const DC_TERMS = [
+    'data center','datacenter','data centre','data centres','megawatt','colocation',
+    'colo','hyperscale','capacity','expansion','new facility','new campus','new site',
+    'under construction','commissioned','lease','leased','leasing','tenant','customer',
+    'power delivery','interconnection','grid','capital expenditure','capex',
+    'impairment','write-down','asset sale','declining','vendor','vertiv','schneider',
+    'cooling','power usage effectiveness','pue','kwh','mw','gw','
+  '];
+
+  return paras
+    .map(p => ({
+      text: p,
+      score: DC_TERMS.filter(t => p.toLowerCase().includes(t)).length,
+      isDistress: /impairment|write.down|declining|headwind|delay|constraint|moratorium|divest|terminat|cancel|shortage/i.test(p),
+      isPositive: /expansion|growth|new campus|commission|capacity addition|signed|new customer|hyperscale|construction|record|milestone|pre.leas/i.test(p),
+    }))
+    .filter(x => x.score > 0)
+    .sort((a,b) => b.score - a.score)
+    .slice(0, 9);
+}
+
+function _secHighlight(text) {
+  const esc = text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const terms = [
+    'data center','data centers','datacenter','megawatt','megawatts','colocation',
+    'hyperscale','expansion','lease','leased','leasing','capacity','power delay',
+    'interconnection','capital expenditure','capex','impairment','write-down',
+    'under construction','commissioned','new site','new campus','new facility',
+    'vendor','cooling','Vertiv','Schneider','customer',
+  ];
+  return terms.reduce((s, t) =>
+    s.replace(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`), esc);
 }
 
 // =====================================================================
