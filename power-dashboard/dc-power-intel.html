@@ -2731,8 +2731,15 @@ async function loadSecFilings(force = false) {
     elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return;
   }
 
-  results.sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
-  _secResults = results; _secTimestamp = new Date();
+  // Keep only filings from companies in the watched list
+  const _allowedTickers = new Set(_SEC_COMPANIES.map(c => c.ticker));
+  const filtered = results.filter(f => f.ticker && _allowedTickers.has(f.ticker));
+  if (!filtered.length) {
+    elErr.textContent = `API returned ${results.length} filings but none matched watched companies — tickers found: ${[...new Set(results.map(r=>r.ticker).filter(Boolean))].join(', ').slice(0,200)}`;
+    elErr.classList.remove('hidden'); elLoad.classList.add('hidden'); if (elBtn) elBtn.disabled = false; return;
+  }
+  filtered.sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
+  _secResults = filtered; _secTimestamp = new Date();
 
   // Populate All Filings dropdown
   const coEl = document.getElementById('sec-co-filter');
