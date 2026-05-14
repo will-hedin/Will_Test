@@ -589,7 +589,7 @@
     <div class="sec-header">
       <div>
         <h3>SEC EDGAR Intelligence — All Public Companies Requesting Data Center Capacity</h3>
-        <p>10-K · 10-Q · 10-K/A · 10-Q/A · 8-K · DEF 14A · S-1 · 20-F · 15 topic areas · 3 years · Auto-loads on open</p>
+        <p>10-K · 10-Q · 10-K/A · 10-Q/A · 8-K · 8-K/A · DEF 14A · 15 topic areas · 3 years · Auto-loads on open</p>
       </div>
       <div class="sec-key-bar">
         <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key" oninput="secKeySave(this.value)">
@@ -641,8 +641,7 @@
             <option value="10-Q/A">10-Q/A (Amendment)</option>
             <option value="8-K">8-K (Material Event)</option>
             <option value="DEF 14A">DEF 14A (Proxy)</option>
-            <option value="S-1">S-1 (Registration)</option>
-            <option value="20-F">20-F (Foreign Annual)</option>
+            <option value="8-K/A">8-K/A (Amendment)</option>
           </select>
         </div>
         <div style="overflow-x:auto">
@@ -2693,26 +2692,28 @@ async function loadSecFilings(force = false) {
 
   const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
-  const SEC_FORMS = ['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A','S-1','S-1/A','20-F'];
+  const SEC_FORMS = ['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A'];
+  const SEC_URL   = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
   const seen = new Set(), results = [];
   let apiErr = null;
+  let lastResponse = null;
 
   for (const { q, label } of _SEC_QUERIES) {
     for (const page of ['1','2']) {
       try {
-        const apiUrl = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
-        const body   = JSON.stringify({ query:q, formTypes: SEC_FORMS, startDate, endDate, page });
-        const res    = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), { method:'POST', headers:{'Content-Type':'application/json'}, body });
-        const json   = await res.json();
-        if (json.statusCode === 401 || (json.message||'').toLowerCase().includes('unauthorized') || (json.error||'').toLowerCase().includes('invalid')) {
-          apiErr = 'Invalid API key'; break;
+        const body = JSON.stringify({ query:q, formTypes: SEC_FORMS, startDate, endDate, page });
+        const res  = await fetch(SEC_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body });
+        const json = await res.json();
+        lastResponse = json;
+        if (!res.ok || json.statusCode === 401 || (json.message||'').toLowerCase().includes('unauthorized') || (json.error||'').toLowerCase().includes('invalid')) {
+          apiErr = `API error ${res.status}: ${json.message || json.error || JSON.stringify(json).slice(0,120)}`; break;
         }
         const batch = json.filings || [];
         for (const f of batch) {
           if (!f.accessionNo || seen.has(f.accessionNo)) continue;
           seen.add(f.accessionNo); results.push({ ...f, _topic: label });
         }
-        if (batch.length < 10) break; // no more pages
+        if (batch.length < 10) break;
       } catch(e) {
         apiErr = 'Request failed (' + (e.message||'network error') + ')'; break;
       }
@@ -2724,7 +2725,11 @@ async function loadSecFilings(force = false) {
   if (elBtn) elBtn.disabled = false;
 
   if (apiErr) { elErr.textContent = apiErr; elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return; }
-  if (!results.length) { elErr.textContent = 'No filings returned — free tier allows ~100 queries/month.'; elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return; }
+  if (!results.length) {
+    const hint = lastResponse ? ` (API returned: ${JSON.stringify(lastResponse).slice(0,200)})` : '';
+    elErr.textContent = 'No filings returned.' + hint;
+    elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return;
+  }
 
   results.sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
   _secResults = results; _secTimestamp = new Date();
@@ -2896,7 +2901,7 @@ async function fetchSecDetails(ticker) {
   for (const item of items) {
     try {
       const url  = `${EXTRACTOR}?url=${encodeURIComponent(filing.filingUrl)}&item=${item}&type=text&token=${encodeURIComponent(key)}`;
-      const res  = await fetch(CORS_PROXY + encodeURIComponent(url));
+      const res  = await fetch(url);
       const text = await res.text();
       if (!text || text.length < 100 || text.startsWith('{')) continue; // error JSON
 
