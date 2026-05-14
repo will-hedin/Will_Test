@@ -1204,10 +1204,10 @@ function switchTab(id, btn) {
   else if (id === 'reg' && !window._legiscanLoaded) loadLegiScan();
   else if (id === 'ferc' && !window._fercInit) {
     window._fercInit = true;
-    initFercMap();
-    loadFercData();
-  } else if (id === 'ferc' && _fercMap) {
-    setTimeout(() => _fercMap.invalidateSize(), 50);
+    // Delay so the browser paints the tab before Leaflet measures the container
+    setTimeout(() => { initFercMap(); loadFercData(); }, 60);
+  } else if (id === 'ferc') {
+    setTimeout(() => { if (_fercMap) _fercMap.invalidateSize(); }, 60);
   }
 }
 
@@ -3193,6 +3193,7 @@ function initFercMap() {
     maxZoom: 18, subdomains: 'abcd'
   }).addTo(_fercMap);
   _fercMarkerLayer = L.layerGroup().addTo(_fercMap);
+  setTimeout(() => _fercMap.invalidateSize(), 200);
 }
 
 function _fercMakeIcon(type) {
@@ -3347,28 +3348,35 @@ function fercZoomState(state) {
   if (sel) { sel.value = state; _fercApplyFilters(); }
 }
 
-async function loadFercData() {
+function loadFercData() {
   // FERC API requires Origin:data.ferc.gov which browsers cannot spoof.
-  // Data is embedded at build time and refreshed monthly via national-update-power-and-parcel.
+  // Data is embedded at build time; refreshed monthly via national-update-power-and-parcel.
   const statusEl = document.getElementById('ferc-status');
   const btn      = document.getElementById('ferc-fetch-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+  try {
+    _fercProjects = _FERC_STATIC.map(r => ({
+      ...r,
+      type:      _fercType(r.docket, r.name),
+      state:     _fercState(r.name, r.applicant),
+      isPending: !!(r.targetDate && !r.actualDate),
+    }));
 
-  _fercProjects = _FERC_STATIC.map(r => ({
-    ...r,
-    type:      _fercType(r.docket, r.name),
-    state:     _fercState(r.name, r.applicant),
-    isPending: !!(r.targetDate && !r.actualDate),
-  }));
+    fercUpdateMetrics();
+    renderFercMap();
+    renderFercStateTable();
+    renderFercProjects();
 
-  if (statusEl) statusEl.innerHTML =
-    `${_fercProjects.length} projects · <a href="https://data.ferc.gov/nepa-schedule-for-pending-infrastructure-projects/nepa-schedule-for-pending-infrastructure-projects/" target="_blank" rel="noopener" style="color:var(--accent)">FERC NEPA Schedule</a> · Dataset as of May 13, 2026`;
+    // Ensure Leaflet redraws after all content is painted
+    setTimeout(() => { if (_fercMap) _fercMap.invalidateSize(); }, 100);
 
-  fercUpdateMetrics();
-  renderFercMap();
-  renderFercStateTable();
-  renderFercProjects();
-
+    if (statusEl) statusEl.innerHTML =
+      `${_fercProjects.length} projects · <a href="https://data.ferc.gov/nepa-schedule-for-pending-infrastructure-projects/nepa-schedule-for-pending-infrastructure-projects/" target="_blank" rel="noopener" style="color:var(--accent)">FERC NEPA Schedule</a> · Dataset as of May 13, 2026`;
+  } catch(e) {
+    if (statusEl) statusEl.innerHTML =
+      `<span style="color:#fca5a5">Error: ${e.message}</span>`;
+    console.error('loadFercData error:', e);
+  }
   if (btn) { btn.disabled = false; btn.textContent = '↻ Reload'; }
 }
 
