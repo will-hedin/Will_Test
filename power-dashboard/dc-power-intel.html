@@ -589,20 +589,19 @@
     <div class="sec-header">
       <div>
         <h3>SEC EDGAR Intelligence — Public Data Center Companies</h3>
-        <p>10-K · 10-Q · 8-K filings · Capacity, expansion, leases, power delays, CapEx &amp; distress signals</p>
+        <p>10-K · 10-Q · 10-K/A · 10-Q/A · 8-K · DEF 14A · 9 topic areas · 3 years · Auto-loads on open</p>
       </div>
       <div class="sec-key-bar">
-        <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key (free at sec-api.io/signup)" oninput="secKeySave(this.value)">
-        <button class="ls-refresh-btn" id="sec-search-btn" onclick="loadSecFilings(true)">🔍 Search SEC</button>
+        <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key" oninput="secKeySave(this.value)">
+        <button class="ls-refresh-btn" id="sec-search-btn" onclick="loadSecFilings(true)">↻ Reload</button>
       </div>
     </div>
 
     <!-- Company accordion panels — JS-rendered on init, populated after search -->
-    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR across 6 data center topic areas…</div>
+    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR across 9 topic areas · fetching 3 years of filings…</div>
     <div id="sec-error" class="ls-error hidden"></div>
-    <div id="sec-prompt" class="sec-prompt">
-      Enter a <a href="https://sec-api.io/signup" target="_blank" rel="noopener">sec-api.io</a> API key above and click <strong>🔍 Search SEC</strong> to load filing intelligence for all 10 companies below.
-      <br>Free tier available (100 queries/month) · 10-K · 10-Q · 8-K · Last 18 months · Extract actual filing text per company
+    <div id="sec-prompt" class="sec-prompt hidden">
+      Loading SEC EDGAR filing intelligence for all 10 companies…
     </div>
     <div class="sec-panels" id="sec-panels"></div>
 
@@ -624,12 +623,18 @@
             <option value="Distress / Asset Sales">Distress / Asset Sales</option>
             <option value="Power / Grid Delays">Power / Grid Delays</option>
             <option value="CapEx / Investment">CapEx / Investment</option>
+            <option value="AI Infrastructure">AI Infrastructure</option>
+            <option value="Power & Sustainability">Power &amp; Sustainability</option>
+            <option value="M&A / Partnerships">M&amp;A / Partnerships</option>
           </select>
           <select id="sec-form-filter" onchange="renderSecTable()">
             <option value="">All Forms</option>
             <option value="10-K">10-K (Annual)</option>
+            <option value="10-K/A">10-K/A (Amendment)</option>
             <option value="10-Q">10-Q (Quarterly)</option>
+            <option value="10-Q/A">10-Q/A (Amendment)</option>
             <option value="8-K">8-K (Material Event)</option>
+            <option value="DEF 14A">DEF 14A (Proxy)</option>
           </select>
         </div>
         <div style="overflow-x:auto">
@@ -648,7 +653,7 @@
       </div>
     </div>
     <div id="sec-footer" class="hidden" style="font-size:11px;color:var(--muted);margin-top:10px">
-      Source: <a href="https://sec-api.io" target="_blank" rel="noopener" style="color:var(--accent)">sec-api.io</a> / <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · Real-time on demand · Extractor API pulls Item 1, 2 &amp; 7 text
+      Source: <a href="https://sec-api.io" target="_blank" rel="noopener" style="color:var(--accent)">sec-api.io</a> / <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · 10-K · 10-Q · 8-K · DEF 14A · 3 years · Extractor API pulls Items 1, 1A, 2 &amp; 7
     </div>
   </div>
 </div>
@@ -1233,6 +1238,7 @@ function switchTab(id, btn) {
   btn.classList.add('active');
   if (id === 'map' && !window._mapInit) initLeafletMap();
   else if (id === 'map' && window._leafletMap) setTimeout(() => window._leafletMap.invalidateSize(), 50);
+  else if (id === 'markets' && !window._secInit) { window._secInit = true; loadSecFilings(); }
   else if (id === 'usgrid' && !window._usGridInit) {
     window._usGridInit = true;
     initTransmissionFilters();
@@ -2600,6 +2606,8 @@ function toggleGridCard(i) {
 // Uses sec-api.io full-text search across 10-K, 10-Q, 8-K filings
 // =====================================================================
 
+const _SEC_API_KEY = '9d4e42767c7ac8080ab8e6de92e5b54f2a0a65f8fea3320a34b37194f8fcf4cf';
+
 const _SEC_COMPANIES = [
   { ticker:'EQIX',  name:'Equinix',           markets:'70+ metros · 33 countries', sites:'260+ IBX centers',        capacity:'~4,500 MW',    revenue:'$8.7B (2024)',       status:'expanding', label:'Expanding'        },
   { ticker:'DLR',   name:'Digital Realty',     markets:'50+ metros · 25 countries', sites:'300+ facilities',          capacity:'~3,500 MW',    revenue:'$5.5B (2024)',       status:'expanding', label:'Expanding'        },
@@ -2620,20 +2628,25 @@ const _SEC_QUERIES = [
   { q:'"data center" AND ("impairment" OR "write-down" OR "asset sale" OR "divestiture" OR "declining revenue" OR "headwinds" OR "offload")',   label:'Distress / Asset Sales'},
   { q:'"data center" AND ("power delay" OR "grid constraint" OR "interconnection delay" OR "utility delay" OR "capacity constraints")',          label:'Power / Grid Delays'   },
   { q:'"data center" AND ("capital expenditure" OR "capex" OR "capital investment" OR "strategic investment")',                                  label:'CapEx / Investment'    },
+  { q:'"data center" AND ("artificial intelligence" OR "GPU cluster" OR "NVIDIA" OR "accelerator" OR "inference" OR "large language model" OR "AI workload")', label:'AI Infrastructure'    },
+  { q:'"data center" AND ("power purchase agreement" OR "PPA" OR "renewable energy" OR "clean energy" OR "carbon neutral" OR "sustainability" OR "net zero")',  label:'Power & Sustainability'},
+  { q:'"data center" AND ("acquisition" OR "merger" OR "joint venture" OR "strategic partnership" OR "land acquisition" OR "campus acquisition")',              label:'M&A / Partnerships'   },
 ];
 
 let _secResults   = [];
 let _secTimestamp = null;
 
 function secKeySave(v) { try { localStorage.setItem('sec_api_key', v.trim()); } catch(e) {} }
-function secKeyLoad()  { try { return localStorage.getItem('sec_api_key') || ''; } catch(e) { return ''; } }
+function secKeyLoad()  { try { return localStorage.getItem('sec_api_key') || _SEC_API_KEY; } catch(e) { return _SEC_API_KEY; } }
 
 function _secTopicCls(topic) {
-  if (topic.includes('Capacity'))   return 'capacity';
-  if (topic.includes('Expansion'))  return 'expansion';
-  if (topic.includes('Leases'))     return 'leases';
-  if (topic.includes('Distress'))   return 'distress';
-  if (topic.includes('Power'))      return 'power';
+  if (topic.includes('Capacity'))      return 'capacity';
+  if (topic.includes('Expansion'))     return 'expansion';
+  if (topic.includes('Leases'))        return 'leases';
+  if (topic.includes('Distress'))      return 'distress';
+  if (topic.includes('Power') || topic.includes('Sustain')) return 'power';
+  if (topic.includes('AI'))            return 'expansion';
+  if (topic.includes('M&A') || topic.includes('Partner')) return 'leases';
   return 'capex';
 }
 
@@ -2666,14 +2679,14 @@ function initSecSection() {
           <div id="sec-flist-${co.ticker}"><p class="sec-no-data">Run a search above to populate filings for ${co.ticker}.</p></div>
         </div>
         <button class="sec-extract-btn" id="sec-ext-btn-${co.ticker}" onclick="fetchSecDetails('${co.ticker}')">
-          📄 Extract Details from Latest 10-K / 10-Q
+          📄 Extract Details (Items 1, 1A, 2 &amp; 7)
         </button>
         <div id="sec-ext-${co.ticker}"></div>
       </div>
     </div>`).join('');
   const saved = secKeyLoad();
   const keyEl = document.getElementById('sec-key');
-  if (saved && keyEl) keyEl.value = saved;
+  if (keyEl) { keyEl.value = saved; secKeySave(saved); }
 }
 
 function toggleSecPanel(ticker) {
@@ -2697,27 +2710,33 @@ async function loadSecFilings(force = false) {
   if (elPrompt) elPrompt.style.display = 'none';
   if (elBtn)    elBtn.disabled = true;
 
-  const startDate = new Date(Date.now() - 548 * 86400000).toISOString().slice(0,10);
+  const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
+  const SEC_FORMS = ['10-K','10-K/A','10-Q','10-Q/A','8-K','DEF 14A'];
   const seen = new Set(), results = [];
   let apiErr = null;
 
   for (const { q, label } of _SEC_QUERIES) {
-    try {
-      const apiUrl = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
-      const body   = JSON.stringify({ query:q, formTypes:['10-K','10-Q','8-K'], startDate, endDate, page:'1' });
-      const res    = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), { method:'POST', headers:{'Content-Type':'application/json'}, body });
-      const json   = await res.json();
-      if (json.statusCode === 401 || (json.message||'').toLowerCase().includes('unauthorized') || (json.error||'').toLowerCase().includes('invalid')) {
-        apiErr = 'Invalid API key — get a free key at sec-api.io/signup'; break;
+    for (const page of ['1','2']) {
+      try {
+        const apiUrl = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
+        const body   = JSON.stringify({ query:q, formTypes: SEC_FORMS, startDate, endDate, page });
+        const res    = await fetch(CORS_PROXY + encodeURIComponent(apiUrl), { method:'POST', headers:{'Content-Type':'application/json'}, body });
+        const json   = await res.json();
+        if (json.statusCode === 401 || (json.message||'').toLowerCase().includes('unauthorized') || (json.error||'').toLowerCase().includes('invalid')) {
+          apiErr = 'Invalid API key'; break;
+        }
+        const batch = json.filings || [];
+        for (const f of batch) {
+          if (!f.accessionNo || seen.has(f.accessionNo)) continue;
+          seen.add(f.accessionNo); results.push({ ...f, _topic: label });
+        }
+        if (batch.length < 10) break; // no more pages
+      } catch(e) {
+        apiErr = 'Request failed (' + (e.message||'network error') + ')'; break;
       }
-      for (const f of (json.filings || [])) {
-        if (!f.accessionNo || seen.has(f.accessionNo)) continue;
-        seen.add(f.accessionNo); results.push({ ...f, _topic: label });
-      }
-    } catch(e) {
-      apiErr = 'Request failed (' + (e.message||'network error') + ') — check key or CORS'; break;
     }
+    if (apiErr) break;
   }
 
   elLoad.classList.add('hidden');
@@ -2840,10 +2859,11 @@ async function fetchSecDetails(ticker) {
   if (btn) btn.disabled = true;
   panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Extracting filing text from SEC EDGAR…</p>';
 
-  const isK    = filing.formType === '10-K';
-  const items  = isK ? ['1','2','7'] : ['part1item2'];
-  const labels = isK ? { '1':'Business Overview','2':'Properties / Facilities','7':'MD&A' }
-                     : { 'part1item2':'MD&A (10-Q)' };
+  const isK    = filing.formType === '10-K' || filing.formType === '10-K/A';
+  const isQ    = filing.formType === '10-Q' || filing.formType === '10-Q/A';
+  const items  = isK ? ['1','1A','2','7'] : isQ ? ['part1item2'] : ['1'];
+  const labels = isK ? { '1':'Business Overview','1A':'Risk Factors','2':'Properties / Facilities','7':'MD&A' }
+                     : isQ ? { 'part1item2':'MD&A (10-Q)' } : { '1':'Filing Content' };
   const EXTRACTOR = 'https://api.sec-api.io/extractor';
 
   const allExcerpts = [];
@@ -2893,7 +2913,10 @@ function _secParseExcerpts(fullText) {
     'under construction','commissioned','lease','leased','leasing','tenant','customer',
     'power delivery','interconnection','grid','capital expenditure','capex',
     'impairment','write-down','asset sale','declining','vendor','vertiv','schneider',
-    'cooling','power usage effectiveness','pue','kwh','mw','gw'
+    'cooling','power usage effectiveness','pue','kwh','mw','gw',
+    'artificial intelligence','gpu','nvidia','accelerator','inference','training cluster',
+    'power purchase agreement','ppa','renewable energy','clean energy','net zero',
+    'acquisition','merger','joint venture','strategic partnership','land acquisition',
   ];
 
   return paras
@@ -2916,6 +2939,9 @@ function _secHighlight(text) {
     'interconnection','capital expenditure','capex','impairment','write-down',
     'under construction','commissioned','new site','new campus','new facility',
     'vendor','cooling','Vertiv','Schneider','customer',
+    'artificial intelligence','GPU','NVIDIA','accelerator','inference','training',
+    'power purchase agreement','PPA','renewable energy','net zero','clean energy',
+    'acquisition','merger','joint venture','strategic partnership',
   ];
   return terms.reduce((s, t) =>
     s.replace(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`), esc);
