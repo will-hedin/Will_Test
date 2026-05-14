@@ -175,6 +175,7 @@
   .policy-note { font-size: 11px; color: var(--secondary); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); font-style: italic; }
 
   /* GRID OPERATOR CARDS */
+  .grid-ops-sect-hdr { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--accent); padding:4px 0 10px; border-bottom:1px solid var(--border); margin-bottom:16px; }
   .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
   .grid-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .grid-card-header { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
@@ -391,10 +392,9 @@
 <div class="tabs-nav">
   <button class="tab-btn active" onclick="switchTab('map',this)">🗺 Hyperscaler Map</button>
   <button class="tab-btn" onclick="switchTab('markets',this)">📊 Market Intelligence</button>
-  <button class="tab-btn" onclick="switchTab('grid',this)">⚡ Grid Operators</button>
   <button class="tab-btn" onclick="switchTab('policy',this)">📋 Utility Financial Guarantees</button>
   <button class="tab-btn" onclick="switchTab('reg',this)">🏛 Regulatory Watch</button>
-  <button class="tab-btn" onclick="switchTab('usgrid',this)">🗺 US Grid Map</button>
+  <button class="tab-btn" onclick="switchTab('usgrid',this)">⚡ Grid & Map</button>
   <button class="tab-btn" onclick="switchTab('epochdata',this)">📡 AI Clusters</button>
 </div>
 
@@ -596,10 +596,6 @@
 </div>
 
 <!-- TAB 3: GRID OPERATORS -->
-<div id="tab-grid" class="tab-content">
-  <div class="grid-cards" id="gridCards"></div>
-</div>
-
 <!-- TAB 4: POLICY DETAILS -->
 <div id="tab-policy" class="tab-content">
   <div class="policy-table-wrap">
@@ -870,8 +866,11 @@
   </div>
 </div>
 
-<!-- TAB 6: US GRID MAP -->
+<!-- TAB 6: US GRID MAP (combined with Grid Operators) -->
 <div id="tab-usgrid" class="tab-content">
+  <div class="grid-ops-sect-hdr">⚡ Grid Operators — DC Power Availability by Region</div>
+  <div class="grid-cards" id="gridCards" style="margin-bottom:28px"></div>
+  <div class="grid-ops-sect-hdr">🗺 US State Infrastructure Map</div>
   <div id="map-view" class="view" style="padding:0">
     <div class="view-controls">
       <div class="toggle-group">
