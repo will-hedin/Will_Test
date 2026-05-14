@@ -217,6 +217,28 @@
   .reg-body .reg-title { font-size: 13px; font-weight: 600; color: var(--text); }
   .reg-body .reg-desc { font-size: 12px; color: var(--secondary); margin-top: 3px; }
 
+  /* LEGISCAN LIVE LEGISLATION */
+  .ls-controls { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px; }
+  .ls-controls h3 { margin:0; border:none; padding:0; font-size:14px; font-weight:700; color:var(--secondary); text-transform:uppercase; letter-spacing:0.5px; }
+  .ls-status { font-size:12px; color:var(--muted); }
+  .ls-refresh-btn { background:var(--accent); border:none; color:#fff; border-radius:5px; padding:5px 12px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .ls-refresh-btn:hover { opacity:0.85; }
+  .ls-refresh-btn:disabled { opacity:0.5; cursor:default; }
+  .ls-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .ls-filters input, .ls-filters select { background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:5px; padding:5px 8px; font-size:12px; outline:none; }
+  .ls-filters input:focus, .ls-filters select:focus { border-color:var(--accent); }
+  .ls-filters input { flex:1; min-width:160px; }
+  table.ls-table { width:100%; border-collapse:collapse; font-size:12px; }
+  table.ls-table th { background:#13151f; color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:0.5px; padding:7px 10px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
+  table.ls-table td { padding:7px 10px; border-bottom:1px solid rgba(45,49,72,0.6); vertical-align:top; }
+  table.ls-table .ls-title-cell { max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  table.ls-table .ls-action-cell { max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; color:var(--secondary); }
+  table.ls-table tr:hover td { background:rgba(255,255,255,0.02); }
+  .ls-loading { padding:24px; text-align:center; color:var(--muted); font-size:13px; }
+  .ls-error { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:7px; padding:12px 14px; color:#fca5a5; font-size:13px; margin-bottom:8px; }
+  .policy-status-inactive { color:#f87171; font-weight:600; }
+  .policy-status-pending { color:var(--yellow); font-weight:600; }
+
   /* MARKET NAME CELL */
   .market-name-cell .name { font-weight: 600; font-size: 13px; }
   .market-name-cell .sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
@@ -645,6 +667,57 @@
       </div>
     </div>
   </div>
+
+  <!-- LEGISCAN LIVE FEED -->
+  <div class="reg-section">
+    <div class="ls-controls">
+      <h3>Live State Legislation — All 50 States</h3>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="ls-status" id="ls-status">Click Refresh to load</span>
+        <button class="ls-refresh-btn" id="ls-refresh-btn" onclick="loadLegiScan(true)">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="ls-filters">
+      <input type="text" id="ls-q" placeholder="Search bills…" oninput="renderLegiScan()">
+      <select id="ls-state" onchange="renderLegiScan()"><option value="">All States</option></select>
+      <select id="ls-topic" onchange="renderLegiScan()">
+        <option value="">All Topics</option>
+        <option value="Data Centers">Data Centers</option>
+        <option value="Power / Utility">Power / Utility</option>
+        <option value="Zoning / Land Use">Zoning / Land Use</option>
+        <option value="Large Load">Large Load</option>
+        <option value="Hyperscale">Hyperscale</option>
+      </select>
+      <select id="ls-status-filter" onchange="renderLegiScan()">
+        <option value="">All Status</option>
+        <option value="enacted">Enacted / Signed</option>
+        <option value="passed">Passed</option>
+        <option value="committee">In Committee</option>
+        <option value="introduced">Introduced</option>
+        <option value="failed">Failed / Vetoed</option>
+      </select>
+    </div>
+    <div id="ls-loading" class="ls-loading hidden">Searching legislation across all 50 states…</div>
+    <div id="ls-error" class="ls-error hidden"></div>
+    <div id="ls-table-wrap" class="hidden" style="overflow-x:auto">
+      <table class="ls-table">
+        <thead><tr>
+          <th style="width:5%">State</th>
+          <th style="width:8%">Bill</th>
+          <th style="width:36%">Title</th>
+          <th style="width:20%">Last Action</th>
+          <th style="width:11%">Status</th>
+          <th style="width:9%">Date</th>
+          <th style="width:11%">Topic</th>
+        </tr></thead>
+        <tbody id="ls-tbody"></tbody>
+      </table>
+    </div>
+    <div id="ls-footer" class="hidden" style="font-size:11px;color:var(--muted);margin-top:8px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px">
+      <span>Source: <a href="https://legiscan.com" target="_blank" rel="noopener" style="color:var(--accent)">LegiScan</a> · Data center, power policy &amp; zoning bills · All 50 states + US Congress · Current sessions</span>
+      <span id="ls-count"></span>
+    </div>
+  </div>
 </div>
 
 <!-- TAB 6: US GRID MAP -->
@@ -842,6 +915,7 @@ function switchTab(id, btn) {
     window._epochDataInit = true;
     if (typeof initDataCentersView === 'function') initDataCentersView();
   }
+  else if (id === 'reg' && !window._legiscanLoaded) loadLegiScan();
 }
 
 
@@ -2197,6 +2271,169 @@ function renderGridCards() {
 function toggleGridCard(i) {
   const body = document.getElementById('grid-body-' + i);
   body.classList.toggle('open');
+}
+
+// =====================================================================
+// LEGISCAN — Live state legislation, all 50 states
+// Searches for data center, power/utility, zoning, large-load, hyperscale bills
+// =====================================================================
+const _LS_KEY = '2105de345f9cd307c8a1fc8681a4aac9';
+
+// Five targeted searches covering every relevant DC legislative topic
+const _LS_QUERIES = [
+  { q: '"data center"',          label: 'Data Centers'     },
+  { q: '"data center" utility',  label: 'Power / Utility'  },
+  { q: '"data center" zoning',   label: 'Zoning / Land Use'},
+  { q: '"large load"',           label: 'Large Load'       },
+  { q: 'hyperscale',             label: 'Hyperscale'       },
+];
+
+let _lsResults   = [];     // deduplicated, sorted bills
+let _lsTimestamp = null;
+
+async function loadLegiScan(force = false) {
+  if (window._legiscanLoaded && !force) return;
+
+  const elLoad    = document.getElementById('ls-loading');
+  const elError   = document.getElementById('ls-error');
+  const elWrap    = document.getElementById('ls-table-wrap');
+  const elFooter  = document.getElementById('ls-footer');
+  const elStatus  = document.getElementById('ls-status');
+  const elRefresh = document.getElementById('ls-refresh-btn');
+
+  elLoad.classList.remove('hidden');
+  elError.classList.add('hidden');
+  elWrap.classList.add('hidden');
+  elFooter.classList.add('hidden');
+  elStatus.textContent = 'Loading…';
+  if (elRefresh) elRefresh.disabled = true;
+
+  const seen    = new Set();
+  const results = [];
+
+  for (const { q, label } of _LS_QUERIES) {
+    try {
+      // Fetch up to 3 pages per query to get broad state coverage
+      for (let page = 1; page <= 3; page++) {
+        const apiUrl = `https://api.legiscan.com/?key=${_LS_KEY}&op=getSearch&state=ALL` +
+                       `&query=${encodeURIComponent(q)}&year=2&page=${page}`;
+        const res  = await fetch(CORS_PROXY + encodeURIComponent(apiUrl));
+        const json = await res.json();
+
+        if (json.status !== 'OK' || !json.searchresult) break;
+
+        const summary = json.searchresult.summary || {};
+        const bills = Object.values(json.searchresult)
+          .filter(v => v && typeof v === 'object' && v.bill_id && !seen.has(v.bill_id));
+
+        for (const b of bills) {
+          seen.add(b.bill_id);
+          results.push({ ...b, _topic: label });
+        }
+
+        elStatus.textContent = `${results.length} bills…`;
+
+        // Stop paging if we're on the last page
+        if (page >= (summary.page_total || 1)) break;
+      }
+    } catch (e) {
+      console.warn('LegiScan query error:', q, e);
+    }
+  }
+
+  elLoad.classList.add('hidden');
+  if (elRefresh) elRefresh.disabled = false;
+
+  if (results.length === 0) {
+    elError.textContent = 'No results returned. The LegiScan API may be temporarily unavailable or the CORS proxy blocked the request.';
+    elError.classList.remove('hidden');
+    elStatus.textContent = 'Failed';
+    return;
+  }
+
+  // Sort newest first
+  results.sort((a, b) => (b.last_action_date || '').localeCompare(a.last_action_date || ''));
+  _lsResults   = results;
+  _lsTimestamp = new Date();
+  window._legiscanLoaded = true;
+
+  // Populate state filter dropdown
+  const stateEl = document.getElementById('ls-state');
+  const states  = [...new Set(results.map(r => r.state).filter(Boolean))].sort();
+  stateEl.innerHTML = '<option value="">All States</option>' +
+    states.map(s => `<option value="${s}">${s}</option>`).join('');
+
+  elStatus.textContent = `${results.length} bills · ${_lsTimestamp.toLocaleDateString()}`;
+  renderLegiScan();
+  elWrap.classList.remove('hidden');
+  elFooter.classList.remove('hidden');
+}
+
+function renderLegiScan() {
+  if (!_lsResults.length) return;
+
+  const qText    = (document.getElementById('ls-q')?.value || '').toLowerCase();
+  const qState   = document.getElementById('ls-state')?.value || '';
+  const qTopic   = document.getElementById('ls-topic')?.value || '';
+  const qStatus  = document.getElementById('ls-status-filter')?.value || '';
+
+  const filtered = _lsResults.filter(b => {
+    if (qState  && b.state !== qState)           return false;
+    if (qTopic  && b._topic !== qTopic)           return false;
+    if (qStatus && _lsStatusKey(b) !== qStatus)   return false;
+    if (qText) {
+      const hay = `${b.title||''} ${b.bill_number||''} ${b.state||''} ${b.last_action||''} ${b._topic||''}`.toLowerCase();
+      if (!hay.includes(qText)) return false;
+    }
+    return true;
+  });
+
+  const tbody = document.getElementById('ls-tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = filtered.map(b => {
+    const statusKey   = _lsStatusKey(b);
+    const statusLabel = _lsStatusLabel(b);
+    const statusClass = statusKey === 'enacted' ? 'active'
+                      : statusKey === 'passed'   ? 'new'
+                      : statusKey === 'failed'   ? 'inactive'
+                      : 'pending';
+    const title   = (b.title || '—').replace(/</g,'&lt;');
+    const action  = (b.last_action || '—').replace(/</g,'&lt;');
+    const date    = b.last_action_date || '—';
+    const billUrl = b.url || '#';
+    return `<tr>
+      <td><strong>${b.state||'—'}</strong></td>
+      <td><a href="${billUrl}" target="_blank" rel="noopener" style="color:var(--accent);white-space:nowrap">${b.bill_number||'—'}</a></td>
+      <td class="ls-title-cell" title="${title}">${title}</td>
+      <td class="ls-action-cell" title="${action}">${action}</td>
+      <td><span class="policy-status-${statusClass}">${statusLabel}</span></td>
+      <td style="white-space:nowrap;font-size:11px">${date}</td>
+      <td style="font-size:11px;color:var(--muted)">${b._topic||'—'}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No bills match current filters</td></tr>`;
+
+  const countEl = document.getElementById('ls-count');
+  if (countEl) countEl.textContent = `${filtered.length} of ${_lsResults.length} bills shown`;
+}
+
+function _lsStatusKey(b) {
+  const a = (b.last_action || '').toLowerCase();
+  if (a.includes('signed') || a.includes('enacted') || a.includes('chaptered') || a.includes('approved by governor')) return 'enacted';
+  if (a.includes('passed') || a.includes('enrolled') || a.includes('engrossed')) return 'passed';
+  if (a.includes('failed') || a.includes('died') || a.includes('vetoed') || a.includes('withdrawn') || a.includes('defeated')) return 'failed';
+  if (a.includes('committee') || a.includes('referred')) return 'committee';
+  if (a.includes('introduced') || a.includes('filed') || a.includes('prefiled')) return 'introduced';
+  return 'committee';
+}
+
+function _lsStatusLabel(b) {
+  const k = _lsStatusKey(b);
+  if (k === 'enacted')    return 'Enacted';
+  if (k === 'passed')     return 'Passed';
+  if (k === 'failed')     return 'Failed';
+  if (k === 'introduced') return 'Introduced';
+  return 'In Committee';
 }
 
 // =====================================================================
