@@ -232,6 +232,11 @@
   table.ls-table th { background:#13151f; color:var(--muted); text-transform:uppercase; font-size:10px; letter-spacing:0.5px; padding:7px 10px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
   table.ls-table td { padding:7px 10px; border-bottom:1px solid rgba(45,49,72,0.6); vertical-align:top; }
   table.ls-table .ls-title-cell { max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .ls-state-cell { cursor:pointer; white-space:nowrap; }
+  .ls-state-cell:hover strong { color:var(--accent); text-decoration:underline; }
+  .ls-state-active { color:var(--accent) !important; }
+  .ls-clear-state { display:inline-flex; align-items:center; gap:4px; background:rgba(79,142,247,0.15); border:1px solid var(--accent); color:var(--accent); border-radius:4px; padding:2px 7px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .ls-clear-state:hover { background:rgba(79,142,247,0.3); }
   table.ls-table .ls-action-cell { max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:11px; color:var(--secondary); }
   table.ls-table tr:hover td { background:rgba(255,255,255,0.02); }
   .ls-loading { padding:24px; text-align:center; color:var(--muted); font-size:13px; }
@@ -679,7 +684,8 @@
     </div>
     <div class="ls-filters">
       <input type="text" id="ls-q" placeholder="Search bills…" oninput="renderLegiScan()">
-      <select id="ls-state" onchange="renderLegiScan()"><option value="">All States</option></select>
+      <select id="ls-state" onchange="lsClearStateChip(); renderLegiScan()"><option value="">All States</option></select>
+      <span id="ls-state-chip" class="ls-clear-state hidden" onclick="lsClearState()">× Clear state</span>
       <select id="ls-topic" onchange="renderLegiScan()">
         <option value="">All Topics</option>
         <option value="Data Centers">Data Centers</option>
@@ -2371,6 +2377,7 @@ async function loadLegiScan(force = false) {
 
 function renderLegiScan() {
   if (!_lsResults.length) return;
+  lsClearStateChip();
 
   const qText    = (document.getElementById('ls-q')?.value || '').toLowerCase();
   const qState   = document.getElementById('ls-state')?.value || '';
@@ -2402,8 +2409,9 @@ function renderLegiScan() {
     const action  = (b.last_action || '—').replace(/</g,'&lt;');
     const date    = b.last_action_date || '—';
     const billUrl = b.url || '#';
+    const isActive = qState && qState === b.state;
     return `<tr>
-      <td><strong>${b.state||'—'}</strong></td>
+      <td class="ls-state-cell" onclick="lsFilterState('${b.state||''}')"><strong class="${isActive?'ls-state-active':''}">${b.state||'—'}</strong></td>
       <td><a href="${billUrl}" target="_blank" rel="noopener" style="color:var(--accent);white-space:nowrap">${b.bill_number||'—'}</a></td>
       <td class="ls-title-cell" title="${title}">${title}</td>
       <td class="ls-action-cell" title="${action}">${action}</td>
@@ -2415,6 +2423,33 @@ function renderLegiScan() {
 
   const countEl = document.getElementById('ls-count');
   if (countEl) countEl.textContent = `${filtered.length} of ${_lsResults.length} bills shown`;
+}
+
+function lsFilterState(s) {
+  const el = document.getElementById('ls-state');
+  if (!el) return;
+  el.value = (el.value === s) ? '' : s;   // click same state again to deselect
+  lsClearStateChip();
+  renderLegiScan();
+}
+
+function lsClearState() {
+  const el = document.getElementById('ls-state');
+  if (el) el.value = '';
+  lsClearStateChip();
+  renderLegiScan();
+}
+
+function lsClearStateChip() {
+  const chip = document.getElementById('ls-state-chip');
+  const sel  = document.getElementById('ls-state');
+  if (!chip || !sel) return;
+  if (sel.value) {
+    chip.textContent = `× ${sel.value}`;
+    chip.classList.remove('hidden');
+  } else {
+    chip.classList.add('hidden');
+  }
 }
 
 function _lsStatusKey(b) {
