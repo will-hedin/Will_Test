@@ -237,7 +237,17 @@
   .ferc-pin-hydro { background:#38bdf8; } .ferc-pin-pipeline { background:#f97316; }
   .ferc-pin-lng { background:#fbbf24; } .ferc-pin-storage { background:#a78bfa; }
   .ferc-src-note { font-size:10px; color:var(--muted); margin-top:10px; line-height:1.6; }
-  .ferc-filter-sel { background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:3px 7px; font-size:11px; }
+  .ferc-filter-sel { background:var(--card); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:4px 7px; font-size:11px; }
+  .ferc-filter-bar { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px 14px; margin-bottom:14px; }
+  .ferc-filter-row { display:flex; gap:8px; align-items:flex-end; flex-wrap:wrap; margin-bottom:10px; }
+  .ferc-filter-group { display:flex; flex-direction:column; gap:3px; }
+  .ferc-filter-lbl { font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:600; }
+  .ferc-search-inp { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:4px; padding:5px 10px; font-size:12px; width:230px; }
+  .ferc-search-inp:focus { outline:none; border-color:var(--accent); }
+  .ferc-search-inp::placeholder { color:var(--muted); }
+  .ferc-clear-btn { background:rgba(239,68,68,.12); color:#fca5a5; border:1px solid rgba(239,68,68,.2); border-radius:4px; padding:5px 10px; font-size:11px; cursor:pointer; white-space:nowrap; }
+  .ferc-clear-btn:hover { background:rgba(239,68,68,.22); }
+  .ferc-results-line { font-size:10px; color:var(--muted); margin-top:4px; }
 
   /* POLICY TABLE */
   .policy-table-wrap { overflow-x: auto; margin-bottom: 20px; }
@@ -1090,22 +1100,52 @@
     <span class="ferc-status-txt" id="ferc-status">226 FERC infrastructure projects · NEPA Schedule · Hydropower + Natural Gas</span>
   </div>
 
-  <!-- Type filter chips + dropdowns -->
-  <div class="ferc-type-chips">
-    <span class="ferc-chip ferc-chip-hydro active" onclick="_fercToggleType('hydro')">💧 Hydropower</span>
-    <span class="ferc-chip ferc-chip-pipeline active" onclick="_fercToggleType('pipeline')">🔶 Gas Pipeline</span>
-    <span class="ferc-chip ferc-chip-lng active" onclick="_fercToggleType('lng')">🏭 LNG Facility</span>
-    <span class="ferc-chip ferc-chip-storage active" onclick="_fercToggleType('storage')">🔷 Gas Storage</span>
-    <span style="margin-left:auto;display:flex;gap:6px;align-items:center">
-      <select class="ferc-filter-sel" id="ferc-status-sel" onchange="_fercApplyFilters()">
-        <option value="">All Status</option>
-        <option value="pending">Pending Review</option>
-        <option value="completed">Completed</option>
-      </select>
-      <select class="ferc-filter-sel" id="ferc-state-sel" onchange="_fercApplyFilters()">
-        <option value="">All States</option>
-      </select>
-    </span>
+  <!-- Filter bar -->
+  <div class="ferc-filter-bar">
+    <div class="ferc-filter-row">
+      <div class="ferc-filter-group">
+        <span class="ferc-filter-lbl">Search</span>
+        <input class="ferc-search-inp" id="ferc-search" type="text" placeholder="Project name, applicant, docket…" oninput="_fercApplyFilters()">
+      </div>
+      <div class="ferc-filter-group">
+        <span class="ferc-filter-lbl">State</span>
+        <select class="ferc-filter-sel" id="ferc-state-sel" onchange="_fercApplyFilters()">
+          <option value="">All States</option>
+        </select>
+      </div>
+      <div class="ferc-filter-group">
+        <span class="ferc-filter-lbl">NEPA Type</span>
+        <select class="ferc-filter-sel" id="ferc-nepa-sel" onchange="_fercApplyFilters()">
+          <option value="">All NEPA</option>
+          <option value="EIS">EIS — Environmental Impact Statement</option>
+          <option value="EA">EA — Environmental Assessment</option>
+          <option value="none">Not Specified</option>
+        </select>
+      </div>
+      <div class="ferc-filter-group">
+        <span class="ferc-filter-lbl">Target Year</span>
+        <select class="ferc-filter-sel" id="ferc-year-sel" onchange="_fercApplyFilters()">
+          <option value="">Any Year</option>
+        </select>
+      </div>
+      <div class="ferc-filter-group">
+        <span class="ferc-filter-lbl">Status</span>
+        <select class="ferc-filter-sel" id="ferc-status-sel" onchange="_fercApplyFilters()">
+          <option value="">All Status</option>
+          <option value="pending">⏳ Pending Review</option>
+          <option value="completed">✓ Completed</option>
+        </select>
+      </div>
+      <button class="ferc-clear-btn" id="ferc-clear-btn" onclick="_fercClearFilters()" style="display:none">× Clear All</button>
+    </div>
+    <div class="ferc-type-chips" style="margin-bottom:0">
+      <span class="ferc-filter-lbl" style="align-self:center">Project Type:</span>
+      <span class="ferc-chip ferc-chip-hydro active" onclick="_fercToggleType('hydro')">💧 Hydropower</span>
+      <span class="ferc-chip ferc-chip-pipeline active" onclick="_fercToggleType('pipeline')">🔶 Gas Pipeline</span>
+      <span class="ferc-chip ferc-chip-lng active" onclick="_fercToggleType('lng')">🏭 LNG Facility</span>
+      <span class="ferc-chip ferc-chip-storage active" onclick="_fercToggleType('storage')">🔷 Gas Storage</span>
+      <span class="ferc-results-line" id="ferc-results-line" style="margin-left:auto;align-self:center"></span>
+    </div>
   </div>
 
   <!-- KPI row -->
@@ -1129,10 +1169,10 @@
         <table class="ferc-state-tbl">
           <thead><tr>
             <th>State</th>
-            <th title="Hydropower">💧</th>
-            <th title="Gas Pipeline">🔶</th>
-            <th title="LNG Facility">🏭</th>
-            <th title="Gas Storage">🔷</th>
+            <th title="Hydropower" style="font-size:15px">💧</th>
+            <th title="Gas Pipeline" style="font-size:15px">🔶</th>
+            <th title="LNG Facility" style="font-size:15px">🏭</th>
+            <th title="Gas Storage" style="font-size:15px">🔷</th>
             <th>Total</th>
             <th>Pend.</th>
           </tr></thead>
@@ -3096,9 +3136,12 @@ const _FERC_STATIC = [{"docket":"P-1971-079","applicant":"Idaho Power Company","
 let _fercProjects = [];
 let _fercMap = null;
 let _fercMarkerLayer = null;
-let _fercActiveTypes = new Set(['hydro','pipeline','lng','storage']);
-let _fercStateFilter = '';
+let _fercActiveTypes  = new Set(['hydro','pipeline','lng','storage']);
+let _fercStateFilter  = '';
 let _fercStatusFilter = '';
+let _fercNepaFilter   = '';
+let _fercYearFilter   = '';
+let _fercSearchFilter = '';
 
 const _FERC_TYPE_META = {
   hydro:    { label:'Hydropower',   color:'#38bdf8', abbr:'H' },
@@ -3215,19 +3258,53 @@ function _fercToggleType(type) {
 function _fercApplyFilters() {
   _fercStateFilter  = document.getElementById('ferc-state-sel')?.value  || '';
   _fercStatusFilter = document.getElementById('ferc-status-sel')?.value || '';
+  _fercNepaFilter   = document.getElementById('ferc-nepa-sel')?.value   || '';
+  _fercYearFilter   = document.getElementById('ferc-year-sel')?.value   || '';
+  _fercSearchFilter = (document.getElementById('ferc-search')?.value    || '').trim().toLowerCase();
+  const btn = document.getElementById('ferc-clear-btn');
+  if (btn) btn.style.display =
+    (_fercStateFilter || _fercStatusFilter || _fercNepaFilter || _fercYearFilter ||
+     _fercSearchFilter || _fercActiveTypes.size < 4) ? '' : 'none';
   renderFercMap();
   renderFercStateTable();
   renderFercProjects();
 }
 
+function _fercClearFilters() {
+  _fercActiveTypes  = new Set(['hydro','pipeline','lng','storage']);
+  _fercStateFilter  = _fercStatusFilter = _fercNepaFilter = _fercYearFilter = _fercSearchFilter = '';
+  ['ferc-state-sel','ferc-status-sel','ferc-nepa-sel','ferc-year-sel'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const srch = document.getElementById('ferc-search'); if (srch) srch.value = '';
+  document.querySelectorAll('.ferc-chip').forEach(c => c.classList.add('active'));
+  document.getElementById('ferc-clear-btn').style.display = 'none';
+  renderFercMap(); renderFercStateTable(); renderFercProjects();
+}
+
 function _fercFiltered() {
-  return _fercProjects.filter(p =>
-    _fercActiveTypes.has(p.type) &&
-    (!_fercStateFilter  || p.state === _fercStateFilter) &&
-    (!_fercStatusFilter ||
-      (_fercStatusFilter === 'pending'   &&  p.isPending) ||
-      (_fercStatusFilter === 'completed' && !p.isPending))
-  );
+  return _fercProjects.filter(p => {
+    if (!_fercActiveTypes.has(p.type)) return false;
+    if (_fercStateFilter  && p.state !== _fercStateFilter)  return false;
+    if (_fercStatusFilter) {
+      if (_fercStatusFilter === 'pending'   && !p.isPending) return false;
+      if (_fercStatusFilter === 'completed' &&  p.isPending) return false;
+    }
+    if (_fercNepaFilter) {
+      if (_fercNepaFilter === 'none' && p.nepaType) return false;
+      if (_fercNepaFilter !== 'none' && p.nepaType !== _fercNepaFilter) return false;
+    }
+    if (_fercYearFilter) {
+      const ty = (p.targetDate || '').substring(0,4);
+      const ay = (p.actualDate || '').substring(0,4);
+      if (ty !== _fercYearFilter && ay !== _fercYearFilter) return false;
+    }
+    if (_fercSearchFilter) {
+      const hay = (p.name + ' ' + p.applicant + ' ' + p.docket).toLowerCase();
+      if (!hay.includes(_fercSearchFilter)) return false;
+    }
+    return true;
+  });
 }
 
 function renderFercMap() {
@@ -3300,7 +3377,10 @@ function renderFercProjects() {
     if (!a.isPending &&  b.isPending) return 1;
     return (a.targetDate||'').localeCompare(b.targetDate||'');
   });
-  if (countEl) countEl.textContent = `(${data.length} projects)`;
+  if (countEl) countEl.textContent = `(${data.length} of ${_fercProjects.length})`;
+  const rl = document.getElementById('ferc-results-line');
+  if (rl) rl.textContent = data.length < _fercProjects.length
+    ? `${data.length} of ${_fercProjects.length} projects match filters` : '';
   if (!data.length) {
     tbody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);padding:16px;text-align:center">No projects match current filters</td></tr>';
     return;
@@ -3332,12 +3412,25 @@ function fercUpdateMetrics() {
   document.getElementById('ferc-kpi-gas').textContent     = all.filter(p => p.type!=='hydro').length || '—';
   const states = new Set(all.map(p => p.state).filter(Boolean));
   document.getElementById('ferc-kpi-states').textContent  = states.size || '—';
-  const sel = document.getElementById('ferc-state-sel');
-  if (sel) {
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">All States</option>' +
+  const stateSel = document.getElementById('ferc-state-sel');
+  if (stateSel) {
+    const cur = stateSel.value;
+    stateSel.innerHTML = '<option value="">All States</option>' +
       [...states].sort().map(s => `<option value="${s}">${s}</option>`).join('');
-    if (cur) sel.value = cur;
+    if (cur) stateSel.value = cur;
+  }
+  // Populate year dropdown from target + actual dates
+  const years = new Set();
+  all.forEach(p => {
+    if (p.targetDate) years.add(p.targetDate.substring(0,4));
+    if (p.actualDate) years.add(p.actualDate.substring(0,4));
+  });
+  const yearSel = document.getElementById('ferc-year-sel');
+  if (yearSel) {
+    const cur = yearSel.value;
+    yearSel.innerHTML = '<option value="">Any Year</option>' +
+      [...years].filter(Boolean).sort().reverse().map(y => `<option value="${y}">${y}</option>`).join('');
+    if (cur) yearSel.value = cur;
   }
 }
 
