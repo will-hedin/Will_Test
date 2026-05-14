@@ -588,8 +588,8 @@
   <div class="sec-section">
     <div class="sec-header">
       <div>
-        <h3>SEC EDGAR Intelligence — Public Data Center Companies</h3>
-        <p>10-K · 10-Q · 10-K/A · 10-Q/A · 8-K · DEF 14A · 9 topic areas · 3 years · Auto-loads on open</p>
+        <h3>SEC EDGAR Intelligence — All Public Companies Requesting Data Center Capacity</h3>
+        <p>10-K · 10-Q · 10-K/A · 10-Q/A · 8-K · DEF 14A · S-1 · 20-F · 15 topic areas · 3 years · Auto-loads on open</p>
       </div>
       <div class="sec-key-bar">
         <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key" oninput="secKeySave(this.value)">
@@ -598,7 +598,7 @@
     </div>
 
     <!-- Company accordion panels — JS-rendered on init, populated after search -->
-    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR across 9 topic areas · fetching 3 years of filings…</div>
+    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR · 15 topics · all public companies · 3 years of filings…</div>
     <div id="sec-error" class="ls-error hidden"></div>
     <div id="sec-prompt" class="sec-prompt hidden">
       Loading SEC EDGAR filing intelligence for all 10 companies…
@@ -626,6 +626,12 @@
             <option value="AI Infrastructure">AI Infrastructure</option>
             <option value="Power & Sustainability">Power &amp; Sustainability</option>
             <option value="M&A / Partnerships">M&amp;A / Partnerships</option>
+            <option value="Colocation Demand">Colocation Demand</option>
+            <option value="Cooling Technology">Cooling Technology</option>
+            <option value="Power Generation">Power Generation</option>
+            <option value="Grid Access">Grid Access</option>
+            <option value="Gov / Defense">Gov / Defense</option>
+            <option value="Hardware Supply">Hardware Supply</option>
           </select>
           <select id="sec-form-filter" onchange="renderSecTable()">
             <option value="">All Forms</option>
@@ -635,6 +641,8 @@
             <option value="10-Q/A">10-Q/A (Amendment)</option>
             <option value="8-K">8-K (Material Event)</option>
             <option value="DEF 14A">DEF 14A (Proxy)</option>
+            <option value="S-1">S-1 (Registration)</option>
+            <option value="20-F">20-F (Foreign Annual)</option>
           </select>
         </div>
         <div style="overflow-x:auto">
@@ -2631,6 +2639,12 @@ const _SEC_QUERIES = [
   { q:'"data center" AND ("artificial intelligence" OR "GPU cluster" OR "NVIDIA" OR "accelerator" OR "inference" OR "large language model" OR "AI workload")', label:'AI Infrastructure'    },
   { q:'"data center" AND ("power purchase agreement" OR "PPA" OR "renewable energy" OR "clean energy" OR "carbon neutral" OR "sustainability" OR "net zero")',  label:'Power & Sustainability'},
   { q:'"data center" AND ("acquisition" OR "merger" OR "joint venture" OR "strategic partnership" OR "land acquisition" OR "campus acquisition")',              label:'M&A / Partnerships'   },
+  { q:'"data center" AND ("colocation" OR "colo lease" OR "wholesale lease" OR "hyperscale lease" OR "pre-lease" OR "build-to-suit" OR "turnkey")',             label:'Colocation Demand'    },
+  { q:'"data center" AND ("liquid cooling" OR "immersion cooling" OR "direct liquid" OR "coolant distribution" OR "thermal management" OR "heat reuse")',        label:'Cooling Technology'   },
+  { q:'"data center" AND ("nuclear" OR "small modular reactor" OR "SMR" OR "on-site generation" OR "behind the meter" OR "dedicated generation" OR "gas turbine")', label:'Power Generation' },
+  { q:'"data center" AND ("interconnection queue" OR "transmission" OR "substation upgrade" OR "utility agreement" OR "large load" OR "load growth" OR "grid access")', label:'Grid Access'   },
+  { q:'"data center" AND ("government" OR "federal" OR "Department of Defense" OR "DoD" OR "classified" OR "FedRAMP" OR "IL4" OR "IL5" OR "national security")', label:'Gov / Defense'        },
+  { q:'"data center" AND ("server" OR "rack" OR "H100" OR "GB200" OR "Blackwell" OR "hardware procurement" OR "chip supply" OR "semiconductor" OR "SMCI")',      label:'Hardware Supply'      },
 ];
 
 let _secResults   = [];
@@ -2640,50 +2654,17 @@ function secKeySave(v) { try { localStorage.setItem('sec_api_key', v.trim()); } 
 function secKeyLoad()  { try { return localStorage.getItem('sec_api_key') || _SEC_API_KEY; } catch(e) { return _SEC_API_KEY; } }
 
 function _secTopicCls(topic) {
-  if (topic.includes('Capacity'))      return 'capacity';
-  if (topic.includes('Expansion'))     return 'expansion';
-  if (topic.includes('Leases'))        return 'leases';
-  if (topic.includes('Distress'))      return 'distress';
-  if (topic.includes('Power') || topic.includes('Sustain')) return 'power';
-  if (topic.includes('AI'))            return 'expansion';
-  if (topic.includes('M&A') || topic.includes('Partner')) return 'leases';
+  if (topic.includes('Capacity'))                          return 'capacity';
+  if (topic.includes('Expansion'))                         return 'expansion';
+  if (topic.includes('Leases') || topic.includes('Colo'))  return 'leases';
+  if (topic.includes('Distress'))                          return 'distress';
+  if (topic.includes('Power') || topic.includes('Sustain') || topic.includes('Grid') || topic.includes('Generation')) return 'power';
+  if (topic.includes('AI') || topic.includes('Hardware'))  return 'expansion';
+  if (topic.includes('M&A') || topic.includes('Partner') || topic.includes('Gov')) return 'leases';
   return 'capex';
 }
 
 function initSecSection() {
-  const panels = document.getElementById('sec-panels');
-  if (!panels) return;
-  panels.innerHTML = _SEC_COMPANIES.map(co => `
-    <div class="sec-panel" id="sec-panel-${co.ticker}">
-      <div class="sec-panel-hdr" onclick="toggleSecPanel('${co.ticker}')">
-        <div class="sec-panel-left">
-          <span class="sec-p-ticker">${co.ticker}</span>
-          <span class="sec-p-name">${co.name}</span>
-          <span class="sec-co-status ${co.status}" style="font-size:10px;padding:2px 8px">${co.label}</span>
-          <div class="sec-p-pills" id="sec-pills-${co.ticker}"></div>
-        </div>
-        <div class="sec-panel-right">
-          <span class="sec-p-meta">${co.sites} · ${co.capacity}</span>
-          <span class="sec-p-chev">▼</span>
-        </div>
-      </div>
-      <div class="sec-panel-body" id="sec-body-${co.ticker}">
-        <div class="sec-stat-grid">
-          <div class="sec-stat-card"><div class="sec-stat-lbl">Sites</div><div class="sec-stat-val">${co.sites}</div></div>
-          <div class="sec-stat-card"><div class="sec-stat-lbl">Capacity</div><div class="sec-stat-val">${co.capacity}</div></div>
-          <div class="sec-stat-card"><div class="sec-stat-lbl">Revenue</div><div class="sec-stat-val">${co.revenue}</div></div>
-          <div class="sec-stat-card"><div class="sec-stat-lbl">Markets</div><div class="sec-stat-val">${co.markets}</div></div>
-        </div>
-        <div class="sec-flist">
-          <h4>Filings Found <span id="sec-fcount-${co.ticker}" style="font-weight:400;color:var(--muted)"></span></h4>
-          <div id="sec-flist-${co.ticker}"><p class="sec-no-data">Run a search above to populate filings for ${co.ticker}.</p></div>
-        </div>
-        <button class="sec-extract-btn" id="sec-ext-btn-${co.ticker}" onclick="fetchSecDetails('${co.ticker}')">
-          📄 Extract Details (Items 1, 1A, 2 &amp; 7)
-        </button>
-        <div id="sec-ext-${co.ticker}"></div>
-      </div>
-    </div>`).join('');
   const saved = secKeyLoad();
   const keyEl = document.getElementById('sec-key');
   if (keyEl) { keyEl.value = saved; secKeySave(saved); }
@@ -2712,7 +2693,7 @@ async function loadSecFilings(force = false) {
 
   const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
-  const SEC_FORMS = ['10-K','10-K/A','10-Q','10-Q/A','8-K','DEF 14A'];
+  const SEC_FORMS = ['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A','S-1','S-1/A','20-F'];
   const seen = new Set(), results = [];
   let apiErr = null;
 
@@ -2762,42 +2743,86 @@ async function loadSecFilings(force = false) {
 function renderSecPanels() {
   const byTicker = {};
   _secResults.forEach(f => {
-    const tk = f.ticker || '_OTHER';
+    const tk = (f.ticker || '').trim() || '_OTHER';
     if (!byTicker[tk]) byTicker[tk] = [];
     byTicker[tk].push(f);
   });
 
-  _SEC_COMPANIES.forEach(co => {
-    const filings = (byTicker[co.ticker] || []).sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
-    const panel = document.getElementById('sec-panel-' + co.ticker);
-    if (!panel) return;
+  const featured = new Set(_SEC_COMPANIES.map(c => c.ticker));
+  const tickers = Object.keys(byTicker)
+    .filter(t => t !== '_OTHER')
+    .sort((a, b) => {
+      const af = featured.has(a) ? 0 : 1, bf = featured.has(b) ? 0 : 1;
+      if (af !== bf) return af - bf;
+      return byTicker[b].length - byTicker[a].length;
+    });
 
-    // Topic pills
+  const panels = document.getElementById('sec-panels');
+  if (!panels) return;
+
+  panels.innerHTML = tickers.map(tk => {
+    const filings = byTicker[tk].sort((a, b) => (b.filedAt||'').localeCompare(a.filedAt||''));
+    const meta = _SEC_COMPANIES.find(c => c.ticker === tk);
+    const coName = meta ? meta.name
+      : (filings[0]?.companyNameLong||tk).replace(/\s*\(CIK.*?\)/g,'').replace(/\s*\(.*?\)/g,'').trim().slice(0,45);
+
     const topics = {};
     filings.forEach(f => { topics[f._topic] = (topics[f._topic]||0)+1; });
-    const pillsEl = document.getElementById('sec-pills-' + co.ticker);
-    if (pillsEl) pillsEl.innerHTML = Object.entries(topics).map(([t,n]) =>
+    const pillsHtml = Object.entries(topics).map(([t,n]) =>
       `<span class="sec-pill ${_secTopicCls(t)}">${t.split('/')[0].trim()} (${n})</span>`).join('');
 
-    // Filing count
-    const fcountEl = document.getElementById('sec-fcount-' + co.ticker);
-    if (fcountEl) fcountEl.textContent = filings.length ? `(${filings.length})` : '';
+    const statusHtml = meta
+      ? `<span class="sec-co-status ${meta.status}" style="font-size:10px;padding:2px 8px">${meta.label}</span>` : '';
 
-    if (!filings.length) return;
-    panel.classList.add('has-data');
+    const statCards = meta ? `
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Sites</div><div class="sec-stat-val">${meta.sites}</div></div>
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Capacity</div><div class="sec-stat-val">${meta.capacity}</div></div>
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Revenue</div><div class="sec-stat-val">${meta.revenue}</div></div>
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Markets</div><div class="sec-stat-val">${meta.markets}</div></div>
+    ` : `
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Filings</div><div class="sec-stat-val">${filings.length}</div></div>
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Latest</div><div class="sec-stat-val">${(filings[0]?.filedAt||'').slice(0,10)||'—'}</div></div>
+      <div class="sec-stat-card"><div class="sec-stat-lbl">Topics Hit</div><div class="sec-stat-val">${Object.keys(topics).length}</div></div>
+    `;
 
-    // Filing list
-    const listEl = document.getElementById('sec-flist-' + co.ticker);
-    if (listEl) listEl.innerHTML = filings.map(f => {
+    const metaLine = meta ? `${meta.sites} · ${meta.capacity}` : `${filings.length} filing${filings.length!==1?'s':''}`;
+
+    const rowsHtml = filings.map(f => {
       const coFull = (f.companyNameLong||'').replace(/\s*\(CIK.*?\)/g,'').replace(/\s*\(.*?\)/g,'').trim();
       return `<div class="sec-frow">
         <span class="sec-frow-form">${f.formType}</span>
         <span class="sec-pill ${_secTopicCls(f._topic)}">${f._topic.split('/')[0].trim()}</span>
-        <a class="sec-frow-link" href="${f.filingUrl||'#'}" target="_blank" rel="noopener" title="${coFull}">${coFull.slice(0,55) || co.name} — ${f.formType}</a>
+        <a class="sec-frow-link" href="${f.filingUrl||'#'}" target="_blank" rel="noopener" title="${coFull}">${coFull.slice(0,55)||coName} — ${f.formType}</a>
         <span class="sec-frow-date">${(f.filedAt||'').slice(0,10)}</span>
       </div>`;
     }).join('');
-  });
+
+    return `<div class="sec-panel has-data" id="sec-panel-${tk}">
+      <div class="sec-panel-hdr" onclick="toggleSecPanel('${tk}')">
+        <div class="sec-panel-left">
+          <span class="sec-p-ticker">${tk}</span>
+          <span class="sec-p-name">${coName}</span>
+          ${statusHtml}
+          <div class="sec-p-pills">${pillsHtml}</div>
+        </div>
+        <div class="sec-panel-right">
+          <span class="sec-p-meta">${metaLine}</span>
+          <span class="sec-p-chev">▼</span>
+        </div>
+      </div>
+      <div class="sec-panel-body" id="sec-body-${tk}">
+        <div class="sec-stat-grid">${statCards}</div>
+        <div class="sec-flist">
+          <h4>Filings Found <span style="font-weight:400;color:var(--muted)">(${filings.length})</span></h4>
+          <div>${rowsHtml}</div>
+        </div>
+        <button class="sec-extract-btn" id="sec-ext-btn-${tk}" onclick="fetchSecDetails('${tk}')">
+          📄 Extract Details (Items 1, 1A, 2 &amp; 7)
+        </button>
+        <div id="sec-ext-${tk}"></div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderSecTable() {
@@ -2845,14 +2870,14 @@ async function fetchSecDetails(ticker) {
   const panel   = document.getElementById('sec-ext-' + ticker);
   if (!panel) return;
 
-  // Find most recent 10-K, fall back to most recent 10-Q
-  const filings = _secResults.filter(f => f.ticker === ticker);
-  const tenK = filings.find(f => f.formType === '10-K');
-  const tenQ = filings.find(f => f.formType === '10-Q');
-  const filing = tenK || tenQ;
+  const filings = _secResults.filter(f => f.ticker === ticker)
+    .sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
+  const tenK = filings.find(f => f.formType === '10-K' || f.formType === '10-K/A');
+  const tenQ = filings.find(f => f.formType === '10-Q' || f.formType === '10-Q/A');
+  const filing = tenK || tenQ || filings[0];
 
   if (!filing) {
-    panel.innerHTML = '<p class="sec-no-data">No 10-K or 10-Q found for ' + ticker + ' in current results. Run a search first.</p>';
+    panel.innerHTML = '<p class="sec-no-data">No extractable filings found for ' + ticker + ' in current results.</p>';
     return;
   }
 
@@ -2942,6 +2967,10 @@ function _secHighlight(text) {
     'artificial intelligence','GPU','NVIDIA','accelerator','inference','training',
     'power purchase agreement','PPA','renewable energy','net zero','clean energy',
     'acquisition','merger','joint venture','strategic partnership',
+    'colocation','wholesale lease','build-to-suit','liquid cooling','immersion',
+    'nuclear','SMR','small modular','on-site generation','behind the meter',
+    'interconnection queue','substation','large load','H100','GB200','Blackwell',
+    'FedRAMP','Department of Defense','DoD',
   ];
   return terms.reduce((s, t) =>
     s.replace(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`), esc);
