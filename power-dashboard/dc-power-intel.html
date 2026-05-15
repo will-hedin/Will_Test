@@ -2696,22 +2696,27 @@ async function loadSecFilings(force = false) {
 
   const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
-  const SEC_FORMS = ['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A'];
-  const SEC_URL   = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
+  const SEC_FORMS   = ['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A'];
+  const SEC_API_URL = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
+  // EDGAR EFTS — free, native CORS, no auth needed; used as primary or fallback
+  const EFTS_URL    = 'https://efts.sec.gov/LATEST/search-index';
   const seen = new Set(), results = [];
   let apiErr = null;
-  let lastResponse = null;
 
   for (const { q, label } of _SEC_QUERIES) {
     for (const page of ['1','2']) {
       try {
+        // Primary: sec-api.io via CORS proxy (richest data, ticker field included)
         const body = JSON.stringify({ query:q, formTypes: SEC_FORMS, startDate, endDate, page });
-        const res  = await fetch(SEC_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body });
+        const proxyUrl = CORS_PROXY + encodeURIComponent(SEC_API_URL);
+        const res  = await fetch(proxyUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body });
         const json = await res.json();
-        lastResponse = json;
-        if (!res.ok || json.statusCode === 401 || (json.message||'').toLowerCase().includes('unauthorized') || (json.error||'').toLowerCase().includes('invalid')) {
-          apiErr = `API error ${res.status}: ${json.message || json.error || JSON.stringify(json).slice(0,120)}`; break;
-        }
+        console.log('[SEC]', label, 'p'+page, res.status, JSON.stringify(json).slice(0,200));
+        const isAuthErr = !res.ok || json.statusCode === 401 || json.status === 401
+          || (json.message||'').toLowerCase().includes('unauthorized')
+          || (json.error||'').toLowerCase().includes('unauthorized')
+          || (json.error||'').toLowerCase().includes('invalid');
+        if (isAuthErr) { apiErr = `Auth error: ${json.message || json.error || res.status}`; break; }
         const batch = json.filings || [];
         for (const f of batch) {
           if (!f.accessionNo || seen.has(f.accessionNo)) continue;
@@ -2719,7 +2724,34 @@ async function loadSecFilings(force = false) {
         }
         if (batch.length < 10) break;
       } catch(e) {
-        apiErr = 'Request failed (' + (e.message||'network error') + ')'; break;
+        console.warn('[SEC] proxy failed, trying EFTS:', e.message);
+        // Fallback: SEC EDGAR EFTS (free, CORS-safe, GET-based)
+        try {
+          const pageFrom = (parseInt(page)-1) * 10;
+          const eftsQ = encodeURIComponent(q) + `&forms=${SEC_FORMS.slice(0,3).join(',')}`
+            + `&dateRange=custom&startdt=${startDate}&enddt=${endDate}&from=${pageFrom}`;
+          const eftsRes = await fetch(`${EFTS_URL}?q=${eftsQ}`);
+          const eftsJson = await eftsRes.json();
+          const hits = (eftsJson.hits?.hits || []);
+          for (const h of hits) {
+            const s = h._source || {};
+            const accNo = s.accession_no || h._id;
+            if (!accNo || seen.has(accNo)) continue;
+            seen.add(accNo);
+            const ticker = (s.tickers || [])[0] || '';
+            results.push({
+              accessionNo: accNo, ticker, _topic: label,
+              companyNameLong: s.entity_name || s.display_names?.[0]?.name || '',
+              formType: s.form_type || '',
+              filedAt: s.file_date || s.period_of_report || '',
+              filingUrl: `https://www.sec.gov/Archives/edgar/full-index/${accNo.replace(/-/g,'')}.htm`,
+            });
+          }
+          if (hits.length < 10) break;
+        } catch(e2) {
+          console.error('[SEC] EFTS also failed:', e2.message);
+          break;
+        }
       }
     }
     if (apiErr) break;
@@ -2730,8 +2762,7 @@ async function loadSecFilings(force = false) {
 
   if (apiErr) { elErr.textContent = apiErr; elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return; }
   if (!results.length) {
-    const hint = lastResponse ? ` (API returned: ${JSON.stringify(lastResponse).slice(0,200)})` : '';
-    elErr.textContent = 'No filings returned.' + hint;
+    elErr.textContent = 'No filings returned — open browser console (F12) to see API responses';
     elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return;
   }
 
@@ -2912,7 +2943,7 @@ async function fetchSecDetails(ticker) {
   for (const item of items) {
     try {
       const url  = `${EXTRACTOR}?url=${encodeURIComponent(filing.filingUrl)}&item=${item}&type=text&token=${encodeURIComponent(key)}`;
-      const res  = await fetch(url);
+      const res  = await fetch(CORS_PROXY + encodeURIComponent(url));
       const text = await res.text();
       if (!text || text.length < 100 || text.startsWith('{')) continue; // error JSON
 
