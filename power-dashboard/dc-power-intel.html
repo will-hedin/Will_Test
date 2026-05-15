@@ -589,7 +589,7 @@
     <div class="sec-header">
       <div>
         <h3>SEC EDGAR Intelligence — Hyperscalers &amp; Public Data Center Companies</h3>
-        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · EQIX · DLR · IRM · AMT · DBRG · 15 topics · 3 years · Auto-loads</p>
+        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · NVDA · EQIX · DLR · IRM · AMT · GMG · 15 topics · 3 years · Auto-loads</p>
       </div>
       <div class="sec-key-bar">
         <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key" oninput="secKeySave(this.value)">
@@ -2629,7 +2629,8 @@ const _SEC_COMPANIES = [
   { ticker:'DLR',   name:'Digital Realty',        markets:'50+ metros · 25 countries',  sites:'300+ facilities',             capacity:'~3,500 MW',    revenue:'$5.5B (2024)',       status:'expanding', label:'Expanding'         },
   { ticker:'IRM',   name:'Iron Mountain',         markets:'17 countries',               sites:'100+ data centers',           capacity:'~1,200 MW',    revenue:'$5.6B total (2024)', status:'rapid',     label:'Rapid Growth'      },
   { ticker:'AMT',   name:'American Tower / CoreSite', markets:'12 US markets',          sites:'31 CoreSite DCs',             capacity:'~600 MW',      revenue:'$600M DC (2024)',    status:'steady',    label:'CoreSite Division' },
-  { ticker:'DBRG',  name:'DigitalBridge Group',   markets:'Global · 350+ DC assets',    sites:'Portfolio operator',          capacity:'~10,000 MW',   revenue:'~$1.8B AUM (2024)',  status:'rapid',     label:'DC Investor'       },
+  { ticker:'NVDA',  name:'NVIDIA Corporation',     markets:'Global AI infrastructure',   sites:'Partner DCs worldwide',       capacity:'GPU supply chain', revenue:'$130B (FY2025)',   status:'rapid',     label:'AI Chips / DGX'    },
+  { ticker:'GMG',   name:'Goodman Group',          markets:'North America + EU + APAC',  sites:'85+ logistics/DC properties', capacity:'~3,000 MW pipeline', revenue:'~$4B (FY2024)', status:'rapid',     label:'DC Developer'      },
 ];
 
 const _SEC_QUERIES = [
@@ -2695,15 +2696,15 @@ async function loadSecFilings(force = false) {
   // CIK → ticker map so EFTS results can be matched to watched companies
   const _CIK_TICKER = {
     '789019':'MSFT', '1018724':'AMZN', '1652044':'GOOGL', '1326801':'META',
-    '1341439':'ORCL', '2015610':'CRWV', '1101239':'EQIX', '1297996':'DLR',
-    '1020569':'IRM', '1053507':'AMT', '1490660':'DBRG',
+    '1341439':'ORCL', '2015610':'CRWV', '1045810':'NVDA', '1101239':'EQIX',
+    '1297996':'DLR', '1020569':'IRM', '1053507':'AMT',
   };
   // Also match by entity name fragment for robustness
   const _NAME_TICKER = {
     'microsoft':'MSFT', 'amazon':'AMZN', 'alphabet':'GOOGL', 'google':'GOOGL',
     'meta platforms':'META', 'oracle':'ORCL', 'coreweave':'CRWV',
-    'equinix':'EQIX', 'digital realty':'DLR', 'iron mountain':'IRM',
-    'american tower':'AMT', 'digitalbridge':'DBRG',
+    'nvidia':'NVDA', 'equinix':'EQIX', 'digital realty':'DLR',
+    'iron mountain':'IRM', 'american tower':'AMT', 'goodman':'GMG',
   };
   const _allowedTickers = new Set(_SEC_COMPANIES.map(c => c.ticker));
 
