@@ -2679,10 +2679,8 @@ function toggleSecPanel(ticker) {
 
 async function loadSecFilings(force = false) {
   if (_secResults.length && !force) return;
-  const key = (document.getElementById('sec-key')?.value || '').trim() || secKeyLoad();
-  const elErr = document.getElementById('sec-error');
-  if (!key) { elErr.textContent = 'Enter a sec-api.io API key to search SEC filings.'; elErr.classList.remove('hidden'); return; }
 
+  const elErr    = document.getElementById('sec-error');
   const elLoad   = document.getElementById('sec-loading');
   const elFooter = document.getElementById('sec-footer');
   const elPrompt = document.getElementById('sec-prompt');
@@ -2694,75 +2692,82 @@ async function loadSecFilings(force = false) {
   if (elPrompt) elPrompt.style.display = 'none';
   if (elBtn)    elBtn.disabled = true;
 
+  // CIK → ticker map so EFTS results can be matched to watched companies
+  const _CIK_TICKER = {
+    '789019':'MSFT', '1018724':'AMZN', '1652044':'GOOGL', '1326801':'META',
+    '1341439':'ORCL', '2015610':'CRWV', '1101239':'EQIX', '1297996':'DLR',
+    '1020569':'IRM', '1053507':'AMT', '1490660':'DBRG',
+  };
+  // Also match by entity name fragment for robustness
+  const _NAME_TICKER = {
+    'microsoft':'MSFT', 'amazon':'AMZN', 'alphabet':'GOOGL', 'google':'GOOGL',
+    'meta platforms':'META', 'oracle':'ORCL', 'coreweave':'CRWV',
+    'equinix':'EQIX', 'digital realty':'DLR', 'iron mountain':'IRM',
+    'american tower':'AMT', 'digitalbridge':'DBRG',
+  };
+  const _allowedTickers = new Set(_SEC_COMPANIES.map(c => c.ticker));
+
+  function _resolveTicker(s) {
+    // Try tickers array first
+    for (const t of (s.tickers || [])) { if (_allowedTickers.has(t)) return t; }
+    // Try CIK lookup
+    const cik = (s.display_names || [])[0]?.entity_id || '';
+    if (_CIK_TICKER[cik] && _allowedTickers.has(_CIK_TICKER[cik])) return _CIK_TICKER[cik];
+    // Try entity name
+    const name = (s.entity_name || '').toLowerCase();
+    for (const [frag, tk] of Object.entries(_NAME_TICKER)) {
+      if (name.includes(frag) && _allowedTickers.has(tk)) return tk;
+    }
+    return null;
+  }
+
   const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
-  const SEC_FORMS   = ['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A'];
-  const SEC_API_URL = `https://api.sec-api.io/full-text-search?token=${encodeURIComponent(key)}`;
-  // EDGAR EFTS — free, native CORS, no auth needed; used as primary or fallback
-  const EFTS_URL    = 'https://efts.sec.gov/LATEST/search-index';
+  const EFTS      = 'https://efts.sec.gov/LATEST/search-index';
+  const FORMS     = '10-K,10-K%2FA,10-Q,10-Q%2FA,8-K,8-K%2FA,DEF+14A';
   const seen = new Set(), results = [];
-  let apiErr = null;
 
   for (const { q, label } of _SEC_QUERIES) {
-    for (const page of ['1','2']) {
+    for (const page of [0, 10]) {  // page offsets: 0=first 10, 10=next 10
       try {
-        // Primary: sec-api.io via CORS proxy (richest data, ticker field included)
-        const body = JSON.stringify({ query:q, formTypes: SEC_FORMS, startDate, endDate, page });
-        const proxyUrl = CORS_PROXY + encodeURIComponent(SEC_API_URL);
-        const res  = await fetch(proxyUrl, { method:'POST', headers:{'Content-Type':'application/json'}, body });
+        const url = `${EFTS}?q=${encodeURIComponent(q)}&forms=${FORMS}`
+          + `&dateRange=custom&startdt=${startDate}&enddt=${endDate}&from=${page}`;
+        const res  = await fetch(url);
         const json = await res.json();
-        console.log('[SEC]', label, 'p'+page, res.status, JSON.stringify(json).slice(0,200));
-        const isAuthErr = !res.ok || json.statusCode === 401 || json.status === 401
-          || (json.message||'').toLowerCase().includes('unauthorized')
-          || (json.error||'').toLowerCase().includes('unauthorized')
-          || (json.error||'').toLowerCase().includes('invalid');
-        if (isAuthErr) { apiErr = `Auth error: ${json.message || json.error || res.status}`; break; }
-        const batch = json.filings || [];
-        for (const f of batch) {
-          if (!f.accessionNo || seen.has(f.accessionNo)) continue;
-          seen.add(f.accessionNo); results.push({ ...f, _topic: label });
+        const hits = json.hits?.hits || [];
+        for (const h of hits) {
+          const s   = h._source || {};
+          const acc = s.accession_no || h._id || '';
+          if (!acc || seen.has(acc)) continue;
+          const ticker = _resolveTicker(s);
+          if (!ticker) continue;  // not a watched company
+          seen.add(acc);
+          const cik     = (s.display_names || [])[0]?.entity_id || '';
+          const accClean = acc.replace(/-/g, '');
+          const filingUrl = cik
+            ? `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/`
+            : `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(acc)}`;
+          results.push({
+            accessionNo: acc, ticker, _topic: label,
+            companyNameLong: s.entity_name || (s.display_names||[])[0]?.name || ticker,
+            formType: s.form_type || '',
+            filedAt:  s.file_date || '',
+            filingUrl,
+          });
         }
-        if (batch.length < 10) break;
+        if (hits.length < 10) break;
       } catch(e) {
-        console.warn('[SEC] proxy failed, trying EFTS:', e.message);
-        // Fallback: SEC EDGAR EFTS (free, CORS-safe, GET-based)
-        try {
-          const pageFrom = (parseInt(page)-1) * 10;
-          const eftsQ = encodeURIComponent(q) + `&forms=${SEC_FORMS.slice(0,3).join(',')}`
-            + `&dateRange=custom&startdt=${startDate}&enddt=${endDate}&from=${pageFrom}`;
-          const eftsRes = await fetch(`${EFTS_URL}?q=${eftsQ}`);
-          const eftsJson = await eftsRes.json();
-          const hits = (eftsJson.hits?.hits || []);
-          for (const h of hits) {
-            const s = h._source || {};
-            const accNo = s.accession_no || h._id;
-            if (!accNo || seen.has(accNo)) continue;
-            seen.add(accNo);
-            const ticker = (s.tickers || [])[0] || '';
-            results.push({
-              accessionNo: accNo, ticker, _topic: label,
-              companyNameLong: s.entity_name || s.display_names?.[0]?.name || '',
-              formType: s.form_type || '',
-              filedAt: s.file_date || s.period_of_report || '',
-              filingUrl: `https://www.sec.gov/Archives/edgar/full-index/${accNo.replace(/-/g,'')}.htm`,
-            });
-          }
-          if (hits.length < 10) break;
-        } catch(e2) {
-          console.error('[SEC] EFTS also failed:', e2.message);
-          break;
-        }
+        console.error('[SEC EFTS]', label, e.message);
+        break;
       }
     }
-    if (apiErr) break;
   }
 
   elLoad.classList.add('hidden');
   if (elBtn) elBtn.disabled = false;
 
-  if (apiErr) { elErr.textContent = apiErr; elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return; }
   if (!results.length) {
-    elErr.textContent = 'No filings returned — open browser console (F12) to see API responses';
+    elErr.textContent = 'No filings found for watched companies — try ↻ Reload or check console (F12)';
     elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return;
   }
 
