@@ -592,7 +592,6 @@
         <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · NVDA · EQIX · DLR · IRM · AMT · GMG · 15 topics · 3 years · Auto-loads</p>
       </div>
       <div class="sec-key-bar">
-        <input type="text" id="sec-key" class="sec-key-input" placeholder="sec-api.io API key" oninput="secKeySave(this.value)">
         <button class="ls-refresh-btn" id="sec-search-btn" onclick="loadSecFilings(true)">↻ Reload</button>
       </div>
     </div>
@@ -660,7 +659,7 @@
       </div>
     </div>
     <div id="sec-footer" class="hidden" style="font-size:11px;color:var(--muted);margin-top:10px">
-      Source: <a href="https://sec-api.io" target="_blank" rel="noopener" style="color:var(--accent)">sec-api.io</a> / <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · 10-K · 10-Q · 8-K · DEF 14A · 3 years · Extractor API pulls Items 1, 1A, 2 &amp; 7
+      Source: <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · 10-K · 10-Q · 8-K · DEF 14A · 3 years · Extract Details fetches filing direct from EDGAR (free)
     </div>
   </div>
 </div>
@@ -2916,11 +2915,8 @@ function renderSecTable() {
 
 // ─── Extractor API: pulls Item 1, 2, 7 from 10-K or MD&A from 10-Q ──────────
 async function fetchSecDetails(ticker) {
-  const key = (document.getElementById('sec-key')?.value || '').trim() || secKeyLoad();
-  if (!key) return;
-
-  const btn     = document.getElementById('sec-ext-btn-' + ticker);
-  const panel   = document.getElementById('sec-ext-' + ticker);
+  const btn   = document.getElementById('sec-ext-btn-' + ticker);
+  const panel = document.getElementById('sec-ext-' + ticker);
   if (!panel) return;
 
   const filings = _secResults.filter(f => f.ticker === ticker)
@@ -2935,50 +2931,80 @@ async function fetchSecDetails(ticker) {
   }
 
   if (btn) btn.disabled = true;
-  panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Extracting filing text from SEC EDGAR…</p>';
+  panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Fetching filing index from SEC EDGAR…</p>';
 
-  const isK    = filing.formType === '10-K' || filing.formType === '10-K/A';
-  const isQ    = filing.formType === '10-Q' || filing.formType === '10-Q/A';
-  const items  = isK ? ['1','1A','2','7'] : isQ ? ['part1item2'] : ['1'];
-  const labels = isK ? { '1':'Business Overview','1A':'Risk Factors','2':'Properties / Facilities','7':'MD&A' }
-                     : isQ ? { 'part1item2':'MD&A (10-Q)' } : { '1':'Filing Content' };
-  const EXTRACTOR = 'https://api.sec-api.io/extractor';
+  try {
+    // Parse CIK from filingUrl: https://www.sec.gov/Archives/edgar/data/{cik}/{accClean}/
+    const cikMatch = filing.filingUrl.match(/\/edgar\/data\/(\d+)\//);
+    if (!cikMatch) throw new Error('Cannot resolve CIK for this filing — try the direct link below.');
+    const cik = cikMatch[1];
 
-  const allExcerpts = [];
+    // Normalise accession number: ensure dashes in XXXXXXXXXX-YY-ZZZZZZ format
+    const rawAcc = (filing.accessionNo || '').replace(/-/g,'');
+    if (rawAcc.length !== 18) throw new Error('Unexpected accession number format: ' + filing.accessionNo);
+    const acc      = `${rawAcc.slice(0,10)}-${rawAcc.slice(10,12)}-${rawAcc.slice(12)}`; // with dashes
+    const accClean = rawAcc; // without dashes
 
-  for (const item of items) {
-    try {
-      const url  = `${EXTRACTOR}?url=${encodeURIComponent(filing.filingUrl)}&item=${item}&type=text&token=${encodeURIComponent(key)}`;
-      const res  = await fetch(CORS_PROXY + encodeURIComponent(url));
-      const text = await res.text();
-      if (!text || text.length < 100 || text.startsWith('{')) continue; // error JSON
+    // Fetch filing index JSON to find the primary document
+    const indexUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${acc}-index.json`;
+    panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Fetching document index…</p>';
+    const idxRes = await fetch(indexUrl);
+    if (!idxRes.ok) throw new Error(`Index fetch ${idxRes.status} — filing may not be available yet.`);
+    const idx = await idxRes.json();
 
-      const excerpts = _secParseExcerpts(text);
-      excerpts.forEach(e => allExcerpts.push({ ...e, itemLabel: labels[item] || item, formType: filing.formType, date: filing.filedAt }));
-    } catch(e) { console.warn('Extractor:', ticker, item, e); }
+    // Pick primary document: match form type, then largest .htm, then first doc
+    const docs = idx.documents || [];
+    const primaryDoc =
+      docs.find(d => d.type === filing.formType && /\.(htm|html)$/i.test(d.name)) ||
+      docs.find(d => /\.(htm|html)$/i.test(d.name) && d.type && !['XML','XBRL','EX-','R'].some(x => (d.type||'').startsWith(x))) ||
+      docs.find(d => /\.(htm|html)$/i.test(d.name)) ||
+      docs[0];
+
+    if (!primaryDoc?.name) throw new Error('No primary document found in filing index.');
+
+    const docUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${primaryDoc.name}`;
+    panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Downloading filing — large documents may take a moment…</p>';
+
+    const docRes = await fetch(docUrl);
+    if (!docRes.ok) throw new Error(`Document fetch ${docRes.status}`);
+    const html = await docRes.text();
+
+    // Strip markup and decode common entities
+    const text = html
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&')
+      .replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
+      .replace(/&#\d+;/g, ' ').replace(/\s{2,}/g, ' ');
+
+    const excerpts = _secParseExcerpts(text);
+    const formLabel = filing.formType;
+
+    if (!excerpts.length) {
+      panel.innerHTML = `<p class="sec-no-data">No data center passages found in this filing.<br>
+        <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">View full ${formLabel} on SEC EDGAR ↗</a></p>`;
+    } else {
+      panel.innerHTML = `
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
+          Extracted from <strong>${formLabel}</strong> filed ${(filing.filedAt||'').slice(0,10)} ·
+          <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">Full filing ↗</a> ·
+          ${excerpts.length} data center passages found
+        </div>
+        <div class="sec-excerpts">
+          ${excerpts.map(e => `
+            <div class="sec-excerpt ${e.isDistress ? 'neg' : e.isPositive ? 'pos' : ''}">
+              <div class="sec-exc-hdr">${formLabel} · ${(filing.filedAt||'').slice(0,10)}</div>
+              <div class="sec-exc-body">${_secHighlight(e.text.slice(0,700))}${e.text.length > 700 ? '…' : ''}</div>
+            </div>`).join('')}
+        </div>`;
+    }
+  } catch(err) {
+    panel.innerHTML = `<p class="sec-no-data">Extraction failed: ${err.message}<br>
+      <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">View full filing on SEC EDGAR ↗</a></p>`;
+  } finally {
+    if (btn) btn.disabled = false;
   }
-
-  if (btn) btn.disabled = false;
-
-  if (!allExcerpts.length) {
-    panel.innerHTML = `<p class="sec-no-data">No data center content found in the extracted filing text, or extraction failed for this filing format.<br>
-      <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">View full ${filing.formType} on SEC EDGAR ↗</a></p>`;
-    return;
-  }
-
-  panel.innerHTML = `
-    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
-      Extracted from <strong>${filing.formType}</strong> filed ${(filing.filedAt||'').slice(0,10)} ·
-      <a href="${filing.filingUrl}" target="_blank" rel="noopener" style="color:var(--accent)">Full filing ↗</a> ·
-      ${allExcerpts.length} data center passages found
-    </div>
-    <div class="sec-excerpts">
-      ${allExcerpts.map(e => `
-        <div class="sec-excerpt ${e.isDistress ? 'neg' : e.isPositive ? 'pos' : ''}">
-          <div class="sec-exc-hdr">${e.itemLabel} · ${e.formType} · ${(e.date||'').slice(0,10)}</div>
-          <div class="sec-exc-body">${_secHighlight(e.text.slice(0, 700))}${e.text.length > 700 ? '…' : ''}</div>
-        </div>`).join('')}
-    </div>`;
 }
 
 function _secParseExcerpts(fullText) {
