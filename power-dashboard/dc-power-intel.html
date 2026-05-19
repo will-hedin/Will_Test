@@ -378,6 +378,22 @@
   /* Dashboard summary cards */
   .sec-dash-card  { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px 14px; cursor:pointer; transition:border-color .15s,transform .1s; }
   .sec-dash-card:hover { border-color:rgba(79,142,247,0.5); transform:translateY(-1px); }
+  /* Competitor tracker table */
+  .sec-tracker-tbl { width:100%; border-collapse:collapse; font-size:11px; min-width:900px; }
+  .sec-tracker-tbl th { background:var(--bg); color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:.4px; padding:7px 10px; text-align:left; white-space:nowrap; border-bottom:1px solid var(--border); position:sticky;top:0;z-index:1; }
+  .sec-tracker-tbl td { padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:top; white-space:nowrap; }
+  .sec-tracker-tbl tr:hover td { background:rgba(255,255,255,.02); }
+  .sec-tracker-tbl .co-cell { display:flex;flex-direction:column; }
+  .sec-tracker-tbl .co-ticker { font-weight:700;font-size:12px; }
+  .sec-tracker-tbl .co-name { font-size:10px;color:var(--muted);margin-top:1px; }
+  .lev-green { color:#4caf50;font-weight:600; } .lev-yellow { color:#ff9800;font-weight:600; } .lev-red { color:#f44336;font-weight:600; }
+  /* Metric category cards */
+  .sec-metric-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0 14px; }
+  .sec-metric-card { background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:10px 12px; }
+  .sec-metric-card-title { font-size:10px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:7px; }
+  .sec-metric-bullet { font-size:11px; color:var(--secondary); padding:3px 0; border-bottom:1px solid rgba(255,255,255,.04); line-height:1.4; }
+  .sec-metric-bullet:last-child { border-bottom:none; }
+  @media(max-width:700px) { .sec-metric-grid { grid-template-columns:1fr; } }
 
   /* MARKET NAME CELL */
   .market-name-cell .name { font-weight: 600; font-size: 13px; }
@@ -611,18 +627,15 @@
       <!-- Summary stat cards -->
       <div id="sec-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px"></div>
 
-      <!-- Timeline chart + topic breakdown side by side -->
-      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start">
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
-          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Quarterly Filing Activity — 3 Years</div>
-          <div style="height:220px;position:relative">
-            <canvas id="sec-timeline-chart"></canvas>
-          </div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
-          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Filings by Topic</div>
-          <div id="sec-topic-bars"></div>
-        </div>
+      <!-- Competitor tracker table -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Competitor Intelligence Tracker — MW · Utilization · Pricing · Margins · Leverage</div>
+        <div id="sec-tracker-table" style="overflow-x:auto"></div>
+      </div>
+      <!-- Topic breakdown -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Recent Filings by Type</div>
+        <div id="sec-topic-bars"></div>
       </div>
     </div>
 
@@ -2985,8 +2998,9 @@ function renderSecPanels() {
       </div>
       <div class="sec-panel-body" id="sec-body-${tk}">
         <div class="sec-stat-grid">${statCards}</div>
+        ${renderSecMetricCards(tk)}
         <div class="sec-flist">
-          <h4>Filings Found <span style="font-weight:400;color:var(--muted)">(${filings.length})</span></h4>
+          <h4>Recent Filings <span style="font-weight:400;color:var(--muted)">(${filings.length})</span></h4>
           <div>${rowsHtml}</div>
         </div>
         <button class="sec-extract-btn" id="sec-ext-btn-${tk}" onclick="fetchSecDetails('${tk}')">
@@ -3036,6 +3050,1170 @@ function renderSecTable() {
 
 // ─── Dashboard: summary grid + quarterly timeline chart ───────────────────────
 
+const _SEC_METRICS = {
+  EQIX: {
+    capacity: [
+      '260+ IBX data centers across 77 metros in 36 countries as of end-2024',
+      'xScale JV portfolio: ~150 MW leased in 2024, ~3x increase vs. prior year',
+      '$15B+ xScale JV with GIC and CPP Investments announced Oct 2024',
+      'Colocation revenue driven by ~470,000+ installed cross-connects globally',
+      'Organic development pipeline: $2.6–2.85B non-recurring CapEx in 2024',
+    ],
+    revenue: [
+      'FY2024 total revenue: ~$8.74B, up ~8% YoY',
+      'Colocation services ~75% of revenue; interconnection ~15%; managed infra ~10%',
+      'Normalized constant-currency growth ~7–8% excluding power pass-through',
+      'MRR per cabinet remains industry benchmark at ~$210+ per kW implied',
+      'Churn historically low at ~2–3% annualized; sticky enterprise customer base',
+    ],
+    profitability: [
+      'Adjusted EBITDA FY2024: ~$4.1B; margin ~47% (160bps improvement YoY)',
+      'AFFO per share grew ~10% YoY to ~$35/share range',
+      'Key cost drivers: power (pass-through model), data center rent, labor',
+      'Recurring CapEx: $230–250M (maintenance); non-recurring drives expansion',
+      'GAAP net income impacted by D&A; AFFO is primary cash-flow metric',
+    ],
+    capital: [
+      'Total CapEx FY2024: ~$2.85–3.1B; majority in xScale JV and new builds',
+      'Build cost estimated at $8–12M/MW for retail colo; xScale higher per build',
+      'Net Debt/EBITDA: ~5.2–5.5x; investment-grade balance sheet maintained',
+      'ROIC on new development targeted at 8–12% cash-on-cash unlevered',
+      'Dividend grew ~10% in 2024; structured as REIT requiring 90%+ payout',
+    ],
+    leaseStructure: [
+      'Retail colo leases: 1–5 year terms with annual escalators of 2–4%',
+      'xScale wholesale: 10–15 year hyperscale leases with fixed escalators',
+      'Power pass-through model: customers bear commodity price risk directly',
+      'Metered power billing standard; partial gross/net lease hybrid structure',
+      'Early termination penalties protect recurring revenue from churn',
+    ],
+    customerMix: [
+      'No single customer >5% of revenue; highly diversified base of 10,500+ customers',
+      'Hyperscale (cloud) segment growing fastest via xScale JV product',
+      'Enterprise (~55%) and cloud/network (~45%) roughly balanced in legacy IBX',
+      'Named wins include AWS, Google, Meta, Microsoft, Alibaba for xScale',
+      'Interconnection community creates high switching costs (ecosystem lock-in)',
+    ],
+    geographic: [
+      'Americas: ~50% of revenue (US largest; Chicago, Dallas, NY, Silicon Valley, DC)',
+      'EMEA: ~30% of revenue (London, Frankfurt, Amsterdam, Paris, Dubai key)',
+      'Asia-Pacific: ~20% of revenue (Singapore, Tokyo, Sydney, HK, Seoul)',
+      'New markets added 2024–25: Riyadh, Kuala Lumpur, Athens, Seoul expansion',
+      'xScale EMEA and APAC drove 48MW incremental Q1 2024 leasing',
+    ],
+    power: [
+      'Committed to 100% renewable energy globally by 2030; ~96% RE match in 2023',
+      'Climate Neutral by 2030 target with science-based scope 1/2/3 reductions',
+      'On-site solar deployed at select campuses; majority via PPAs and RECs',
+      'PUE averages ~1.45 across legacy IBX portfolio; newer builds <1.35',
+      'Power procurement via long-term PPAs; energy pass-through to customers',
+    ],
+    devRisk: [
+      'Permitting delays and power interconnection queues extending 18–36 months in key metros',
+      'Construction cost inflation: steel, copper, labor up ~15–25% vs. 2021 baselines',
+      'xScale execution risk: JV governance and capital call coordination with GIC/CPP',
+      'Power availability (grid capacity) is #1 constraint for new IBX site selection',
+      'FX headwinds: ~$150M+ revenue impact annually from USD strength vs. EUR/GBP',
+    ],
+    capMarkets: [
+      'Investment-grade rated (Baa2/BBB); weighted avg cost of debt ~3.5–4.0%',
+      'REIT structure: dividend ~$17.16/share annualized in 2024, ~2% yield on elevated stock',
+      'At-the-market (ATM) equity program and JV monetization fund growth without full dilution',
+      '2025 revenue guidance: ~$9.1–9.2B (~5% growth); AFFO/share +6–8%',
+      'S&P 500 constituent; access to deep institutional capital market',
+    ],
+  },
+
+  DLR: {
+    capacity: [
+      '~300+ data centers across 50+ metros globally; ~2,700 MW IT load in place',
+      '~1.2 GW under construction at year-end 2024 — up >50% sequentially',
+      'Land bank grown to 5 GW potential capacity runway (record high)',
+      'Record $1B+ in total new leasing signed in FY2024',
+      '61%+ of development pipeline preleased to hyperscale customers',
+    ],
+    revenue: [
+      'FY2024 total revenue: ~$5.43B (broadly flat vs. FY2023 due to asset sales)',
+      'Core FFO: ~$2.03B; FFO per share ~$6.30, up ~6% YoY',
+      'Hyperscale/wholesale leasing drives bookings; colocation ~30% of base',
+      'PlatformDIGITAL ecosystem: 5,000+ customers, 300+ networks, 1,100+ cloud on-ramps',
+      'Churn improved to ~6–7% annualized; strong net absorption from hyperscalers',
+    ],
+    profitability: [
+      'FFO margin: ~37% (up from ~35% in FY2023)',
+      'Adjusted EBITDA margin ~45–47%; improvement driven by lease-up of new builds',
+      'Key cost: real estate taxes, depreciation, power (gross lease model)',
+      'JV structure (Digital Core REIT Singapore, others) enhances capital efficiency',
+      'Gross margin on colocation ~55–60%; wholesale/hyperscale thinner at ~35–40%',
+    ],
+    capital: [
+      'Development CapEx FY2024: ~$3B gross; funded via JV equity and debt',
+      'Net Debt/EBITDA: ~4.8x at year-end 2024 (reduced from 5.4x at Q3 2024)',
+      'Raised >$2B in new debt and equity capital in 2024 to fund growth pipeline',
+      'Build cost: ~$7–10M/MW for wholesale; higher in constrained markets (London, Frankfurt)',
+      'ROIC on stabilized assets targets >8%; development yields ~7–9%',
+    ],
+    leaseStructure: [
+      'Wholesale hyperscale leases: 10–15+ year terms with 2–3% annual escalators',
+      'Retail colocation: 1–5 year terms, higher $/kW but shorter duration',
+      'Gross lease model: DLR bears power cost risk (partially hedged via PPAs)',
+      'Power pass-through adopted in newer hyperscale structures to reduce risk',
+      'Interconnection and cross-connect fees provide recurring high-margin revenue',
+    ],
+    customerMix: [
+      'Top 20 customers ~50% of revenue; Meta, Microsoft, Oracle, Google among largest',
+      'Hyperscale segment ~60% of new bookings; enterprise/colo ~40%',
+      'No single customer >10% of total revenue',
+      'AI/ML workloads driving new hyperscale demand; backlog at record $16.5B+',
+      'Strong cloud exchange (ServiceFabric) creates ecosystem stickiness',
+    ],
+    geographic: [
+      'North America ~55% of revenue (Northern Virginia, Dallas, Chicago, Phoenix top)',
+      'EMEA ~30% of revenue (London, Frankfurt, Amsterdam, Dublin, Paris)',
+      'Asia-Pacific ~15% (Singapore, Tokyo, Sydney, Seoul growing rapidly)',
+      'New 2024–25: Seoul campus, Frankfurt expansion, Chicago Elk Grove mega-campus',
+      'Singapore JV (Digital Core REIT) listed on SGX; partial monetization vehicle',
+    ],
+    power: [
+      'Committed to 100% renewable energy by 2030; ~70% green power match in 2024',
+      'Long-term PPAs signed in key markets; on-site solar at select campuses',
+      'Average PUE ~1.4 portfolio-wide; newer builds targeting 1.25–1.3',
+      'Increasingly adopting power pass-through in large hyperscale leases',
+      '2025–2027 renewable procurement ramp to meet SBTi-aligned targets',
+    ],
+    devRisk: [
+      'Power interconnection queue delays: 24–48 months in Northern Virginia, London, Frankfurt',
+      'Construction cost inflation added ~10–15% to $/MW vs. 2022 estimates',
+      'Northern Virginia data center alley: permitting moratoriums risk stalling new supply',
+      'JV governance complexity: Singapore REIT, Realty Income JV, third-party partnerships',
+      '2025 guidance: >10% revenue and EBITDA growth on normalized constant-currency basis',
+    ],
+    capMarkets: [
+      'Investment-grade rated (Baa2/BBB); cost of debt ~4.0–4.5% on new issuances',
+      'Dividend: ~$1.22/share quarterly (~$4.88 annualized); ~2.5% yield',
+      'ATM equity and JV monetization used to fund $16.5B+ development pipeline',
+      '2025 guidance: revenue and EBITDA growth >10% on normalized constant-currency basis',
+      'Actively recycling non-core assets (e.g. legacy single-tenant properties) to fund pipeline',
+    ],
+  },
+
+  IRM: {
+    capacity: [
+      'Total data center capacity: ~500+ MW live; pipeline to ~1.3 GW fully built-out',
+      '2024 new leasing: ~130 MW signed (record, up from ~66 MW in Q2 run-rate)',
+      'Acquired Richmond VA development site: 200+ MW of future capacity',
+      'Over 70 data center facilities across North America, Europe, and Asia-Pacific',
+      'Project Matterhorn transformation: $4B+ invested since 2022 in DC expansion',
+    ],
+    revenue: [
+      'FY2024 total revenue: $6.15B (record; +12.2% YoY)',
+      'Data center segment revenue FY2024: ~$620M (+25% YoY, record)',
+      'Global Records Management (RIM): still ~60% of total revenue; slow secular decline',
+      'Asset Lifecycle Management (ALM) growing as new vertical',
+      'Data center revenue targeted to reach $1B+ by 2026 per Project Matterhorn plan',
+    ],
+    profitability: [
+      'Adjusted EBITDA FY2024: $2.24B (+14.0% YoY); margin ~36%',
+      'AFFO FY2024: $1.34B (+11.0% YoY)',
+      'Data center segment carries higher margin (~45–50%) vs. legacy RIM (~35%)',
+      'Recurring CapEx: $143M; growth CapEx ~$1.65B (majority to data centers)',
+      'EBITDA margin expansion driven by mix shift toward higher-margin data center business',
+    ],
+    capital: [
+      'Growth CapEx FY2024: ~$1.65B; total CapEx ~$1.8B (majority pre-leased)',
+      'Net Lease-Adjusted Leverage: 5.0x (lowest since pre-REIT conversion in 2014)',
+      'Build cost: ~$8–12M/MW; leveraging existing land bank and power relationships',
+      'ROIC on data center investments: ~8–10% cash-on-cash targeted',
+      'Quarterly dividend raised 10% in 2024 to reflect AFFO growth',
+    ],
+    leaseStructure: [
+      'Data center leases: 10–15 year hyperscale-style terms, pre-leased before delivery',
+      'Annual rent escalators: CPI-linked or fixed 2–3%; power pass-through standard',
+      'Legacy RIM leases: rolling monthly/annual with sticky retention (~95%)',
+      'Gross lease structure in data centers: IRM bears power cost risk',
+      'Cross-sell strategy: RIM customers migrating data center workloads to IRM facilities',
+    ],
+    customerMix: [
+      'Hyperscale/enterprise mix: DC bookings tilted heavily toward enterprise and cloud',
+      'Top 10 customers ~25–30% of combined revenue; no single customer >5%',
+      'Legacy RIM: Fortune 1000 companies, government, healthcare (deeply embedded)',
+      'Data center named wins: AWS, Microsoft, government agencies, financial services',
+      'Cross-sell from 225,000+ RIM customer relationships is key DC growth channel',
+    ],
+    geographic: [
+      'North America: ~70% of revenue; data center cluster in Northern Virginia, Phoenix, Atlanta',
+      'Europe: ~20% of revenue; UK, Germany, Netherlands data center presence',
+      'Asia-Pacific: ~10%; Australia, Singapore expansion underway',
+      'New 2024: Richmond VA mega-campus (350+ MW planned), Phoenix expansion',
+      'International RIM provides stable cash base to fund DC growth globally',
+    ],
+    power: [
+      'Committed to carbon neutrality by 2040; interim targets under SBTi',
+      'Increasing renewable energy procurement via PPAs for data center portfolio',
+      'Average PUE for data centers: ~1.5; newer builds targeting 1.3–1.4',
+      'Solar partnerships under development for Phoenix and Virginia campuses',
+      'Power procurement strategy: long-term PPAs and utility green tariff programs',
+    ],
+    devRisk: [
+      'Power queue delays in Northern Virginia (Prince William, Loudoun counties): 24–36 months',
+      'Rapid DC expansion increases execution risk for a company historically a records manager',
+      'Cost inflation: construction costs up ~15% vs. original Project Matterhorn estimates',
+      'Significant debt issuance to fund DC growth may compress credit headroom',
+      '2025 guidance: revenue growth 8–11%; EBITDA growth 11–13%',
+    ],
+    capMarkets: [
+      'Ba1/BB+ rated (speculative grade); cost of debt ~5.5–6.5% range',
+      'Dividend raised 10% in 2024; ~$2.47/share annualized; REIT structure',
+      'ATM equity and asset sales used to partially fund DC pipeline',
+      '2025 AFFO guidance: $1.47–1.51B per share (~10% growth)',
+      'Credit positive: leverage at 5.0x — lowest since 2014 REIT conversion',
+    ],
+  },
+
+  AMT: {
+    capacity: [
+      'CoreSite portfolio: 28 data centers across 10 US markets; ~256 MW capacity',
+      'Total occupancy: ~85.5%; 39,250+ cross-connects (4.9% YoY growth)',
+      '3.67 million net rentable sq ft across colocation campuses',
+      'Stonepeak JV (29% stake sold for $2.5B): Denver new campus 18 MW; $250M cost',
+      'CoreSite is AMT\'s only data center vertical; towers remain primary business',
+    ],
+    revenue: [
+      'CoreSite FY2024 data center revenue: $924.8M (+11% YoY)',
+      'AMT total FY2024 revenue: ~$9.7B; CoreSite = ~9.5% of total property revenue',
+      'MRR per cabinet: $1,799 (+8.5% YoY) — strong retail colo pricing power',
+      'Interconnection revenue growing faster than colocation as AI drives cross-connects',
+      'Annualized churn: ~4–5%; low given enterprise hybrid IT sticky workloads',
+    ],
+    profitability: [
+      'CoreSite operating profit FY2024: $455.2M (+10% YoY); ~49% segment margin',
+      'AMT total Adjusted EBITDA Q4 2024: $1.692B (+5.1% YoY)',
+      'Data center segment outpacing tower segments (North America, APAC) on profit growth',
+      'Key cost drivers: power, facility maintenance, interconnection infrastructure',
+      'AFFO from CoreSite provides steady dividend support within REIT structure',
+    ],
+    capital: [
+      '2025 planned capital deployment: ~$1.7B total ($1.5B discretionary)',
+      'CoreSite CapEx: ~$600M in 2025 (per guidance); build cost ~$14–16M/MW',
+      'AMT Net Debt/EBITDA: ~6.5–7.0x (elevated; tower disposition strategy ongoing)',
+      'Sold India tower assets to Brookfield for $2.5B in 2024 to reduce leverage',
+      'ROIC on CoreSite development: ~7–9%; improving as campuses densify',
+    ],
+    leaseStructure: [
+      'Retail colo leases: 2–5 year terms with 3% annual escalators',
+      'Power pass-through model in place: customers bear energy cost risk',
+      'Interconnection: flat-rate MRR cross-connects with high-margin profile',
+      'Campus strategy (on-campus interconnection ecosystems) increases tenant retention',
+      'Hybrid metered/committed power plans available to enterprise customers',
+    ],
+    customerMix: [
+      'Enterprise-focused: financial services, healthcare, media, government',
+      'Hybrid IT model: customers co-deploy on-premise and cloud in CoreSite facilities',
+      'Cloud on-ramps to AWS, Azure, Google Cloud within CoreSite campuses',
+      'Top customer concentration: no single customer >5% of CoreSite revenue',
+      '42% of energy from renewables (908 GWh consumed; 381 GWh renewable in 2024)',
+    ],
+    geographic: [
+      'CoreSite markets: Northern Virginia, Silicon Valley, Chicago, Denver, LA, NY, Boston',
+      'New capacity: Denver JV with Stonepeak; Silicon Valley SV9 campus expansion',
+      'All 10 CoreSite markets remain Tier 1 US colocation hubs',
+      'International: AMT tower portfolio spans 20+ countries but CoreSite is US-only',
+      'No international DC expansion planned; focused on deepening US campus density',
+    ],
+    power: [
+      '42% renewable energy in 2024; VA3 campus 100% renewable-powered',
+      'PUE: ~1.4 portfolio average; newer builds improving toward 1.3',
+      'SVP Energy Innovator Award; LEED Gold at Santa Clara campus',
+      'Power procurement via utility green tariffs and on-site solar where feasible',
+      'Net-zero carbon commitment with roadmap to 100% renewable by 2030',
+    ],
+    devRisk: [
+      'AMT\'s leverage (~6.5–7x) constrains aggressive CoreSite development vs. pure-play peers',
+      'Power availability delays in Silicon Valley and Northern Virginia impact timeline',
+      'Integration complexity: data center ops culture vs. AMT\'s tower-infrastructure DNA',
+      'Stonepeak JV (Denver) adds governance complexity for new campus deliveries',
+      '2025 CoreSite capex of $600M signals moderate acceleration but not EQIX/DLR scale',
+    ],
+    capMarkets: [
+      'Baa3/BBB- rated (investment grade, low end); cost of debt ~4.5–5.0%',
+      'Dividend: ~$6.48/share annualized (~2.5% yield); REIT payout structure',
+      'Tower asset monetization (India exit) and JV sales reduce leverage over time',
+      'Q4 2024 EPS: $2.62; revenue: $2.548B (beat estimates)',
+      '2025 capital deployment plan: $1.7B, anchored by CoreSite and tower growth',
+    ],
+  },
+
+  MSFT: {
+    capacity: [
+      'N/A (captive) — Azure operates 300+ data centers across 60+ regions globally',
+      'Active capacity estimated at 5+ GW globally; pipeline to add 1.5 GW by mid-2025',
+      'PP&E at cost as of June 2024: $212B; net PP&E: $135.6B',
+      'Finance lease additions in FY2024: $11.6B (data center right-of-use assets)',
+      'Committed $35.4B in construction contracts for new data center builds at June 2024',
+    ],
+    revenue: [
+      'N/A (captive) — Azure cloud services revenue grew 29% in FY2024',
+      'Microsoft Cloud total revenue FY2024: $137.4B (+24% YoY)',
+      'Intelligent Cloud segment (Azure + SQL + other): ~$105B annualized run-rate',
+      'AI services (Copilot, Azure OpenAI) becoming material revenue driver in 2H 2024',
+      'Office 365 Commercial, Teams, and LinkedIn bundled into cloud revenue base',
+    ],
+    profitability: [
+      'N/A (captive) — Intelligent Cloud segment operating margin: ~43–45%',
+      'Company-wide operating margin FY2024: ~45%',
+      'Depreciation: $15.2B in FY2024 (heavy PP&E base reflecting scale of builds)',
+      'R&D: ~$29B in FY2024; significant AI/infrastructure model investment',
+      'Net income FY2024: ~$88B; EPS ~$11.80 GAAP',
+    ],
+    capital: [
+      'N/A (captive) — FY2024 CapEx: ~$55.7B (cash paid for PP&E and finance leases)',
+      'FY2025 CapEx guidance: $80B+ per management commentary',
+      'Net cash position: ~$76B (cash and investments less debt)',
+      'Debt: ~$47B long-term; Aaa/AAA rated — lowest cost of capital among all peers',
+      'ROIC on Azure infrastructure: not disclosed; proxied by Intelligent Cloud margin expansion',
+    ],
+    leaseStructure: [
+      'N/A (captive) — mix of owned campuses and 10–20 year ground/building leases',
+      'Long-term land leases in global markets where ownership not feasible',
+      'Colocation agreements with EQIX, DLR for edge/interconnection nodes',
+      'Operating and finance leases totaling ~$25.9B net right-of-use assets (data centers)',
+      'Power purchase agreements (PPAs) structured under long-term 15–20 year terms',
+    ],
+    customerMix: [
+      'N/A (captive) — infrastructure serves Microsoft\'s Azure, M365, Xbox, Bing workloads',
+      'Azure customers include enterprise, government, SMB; OpenAI is largest disclosed tenant',
+      'Azure Arc and hybrid cloud extend Microsoft infrastructure into on-premise deployments',
+      'Government cloud (Azure Government, DoD IL5/IL6) adds classified capacity requirement',
+      'Copilot AI workloads driving incremental GPU cluster demand inside Azure regions',
+    ],
+    geographic: [
+      'N/A (captive) — 60+ Azure regions; US assets: $186.1B (long-lived), international: $115.3B',
+      'Largest investments: East US (Virginia), West US (Iowa, Wyoming), Europe (Ireland, Netherlands)',
+      'New 2024–25 regions: Malaysia, Mexico, Italy, Poland, New Zealand, Spain',
+      'Middle East and Africa expansion: Qatar, Saudi Arabia, South Africa',
+      '34+ GW of renewable energy contracted across 24 countries for carbon-negative goal',
+    ],
+    power: [
+      'N/A (captive) — contracted >34 GW of renewable energy globally',
+      'Carbon negative by 2030 target; carbon removal by 2050 for all historical emissions',
+      'Nuclear: 20-year PPA with Constellation for Three Mile Island restart (835 MW)',
+      'Hydrogen and long-duration storage pilots underway for 24/7 matching',
+      'PUE improving toward 1.12–1.15 in newer AI-optimized data center designs',
+    ],
+    devRisk: [
+      'Power availability constraints caused Azure capacity shortfalls admitted by management in 2024',
+      '$35.4B committed construction contracts represent execution and cost risk at scale',
+      '2 GW of planned data center leases reportedly paused/renegotiated in early 2025',
+      'Supply chain for high-density AI GPU infrastructure (liquid cooling) remains tight',
+      'Permitting, grid connection, and community opposition risk in high-density markets',
+    ],
+    capMarkets: [
+      'Aaa/AAA rated — lowest borrowing cost of any peer; ~3.0% blended cost of debt',
+      'FY2024 net income: ~$88B; free cash flow ~$70B after CapEx ramp',
+      'Dividend: $3.00/share annualized; $60B+ share buyback program ongoing',
+      'Market cap: ~$3T; PE ~35x; AI growth expectations fully priced',
+      'FY2025 CapEx: $80B+ guided; management expects returns to accelerate into FY2026',
+    ],
+  },
+
+  AMZN: {
+    capacity: [
+      'N/A (captive) — AWS operates in 34 geographic regions with 108+ availability zones',
+      'AWS added ~3.8 GW of new power capacity in the 12 months through 2024',
+      'Total AWS power roughly doubled from 2022 to 2024; plan to double again by 2027',
+      'AWS operates ~100+ data centers globally; single campus can exceed 400 MW',
+      'Northern Virginia (US-East-1) remains largest AWS region globally',
+    ],
+    revenue: [
+      'N/A (captive) — AWS FY2024 revenue: $107.6B (+19% YoY; first $100B+ year)',
+      'AWS operating income FY2024: $39.8B (vs. $24.6B in 2023)',
+      'AWS operating margin FY2024: ~37%; significant expansion from 2022 lows',
+      'AWS ~17% of Amazon total revenue; ~60%+ of Amazon total operating income',
+      'AI and generative AI (Bedrock, Trainium, SageMaker) increasingly material growth driver',
+    ],
+    profitability: [
+      'N/A (captive) — AWS segment operating margin: ~37% (record high in 2024)',
+      'Amazon consolidated operating income FY2024: ~$68B',
+      'Amazon net income FY2024: ~$59B (+200%+ YoY recovery from 2022 losses)',
+      'Depreciation and amortization: ~$52B (reflecting massive PP&E base)',
+      'Cost structure: labor, server hardware, power, networking dominate AWS costs',
+    ],
+    capital: [
+      'N/A (captive) — Amazon FY2024 total CapEx: ~$83B (majority to AWS infrastructure)',
+      '2025 CapEx guidance: ~$100B (confirmed by management); 2026 guidance: $200B',
+      'Balance sheet: ~$90B+ cash and equivalents; net cash positive',
+      'No external leverage dependency; self-funded via operating cash flow',
+      'Custom silicon (Trainium, Inferentia, Graviton) reduces dependency on NVIDIA',
+    ],
+    leaseStructure: [
+      'N/A (captive) — AWS uses owned campuses and long-term leased colocation globally',
+      'Major landlords include Equinix, DLR, QTS, CyrusOne for edge/colocation nodes',
+      'Ground leases for owned campuses in key US markets (Virginia, Oregon, Ohio)',
+      'Power PPAs: 100+ renewable energy agreements across US, Europe, Asia-Pacific',
+      'AWS Outposts and Local Zones extend captive infrastructure to customer premises',
+    ],
+    customerMix: [
+      'N/A (captive) — infrastructure serves Amazon.com, AWS cloud customers, Prime Video',
+      'AWS customers: 1M+ active businesses globally across enterprise, startup, government',
+      'US Government: AWS GovCloud (US) hosts sensitive federal workloads including CIA',
+      'AI/ML workload growth: generative AI customers growing 3x YoY per management',
+      'Amazon.com e-commerce and logistics consume ~30–40% of total infrastructure',
+    ],
+    geographic: [
+      'N/A (captive) — Americas: ~55% capacity; EMEA: ~25%; APAC: ~20%',
+      'Committed $150B+ in US data center investment over next 15 years (announced 2025)',
+      'New 2024–25 regions: Malaysia, Thailand, New Zealand, Mexico, Saudi Arabia',
+      'AWS Dedicated Local Zones: sovereign cloud in 30+ countries',
+      'Northern Virginia cluster: largest single concentration of AWS capacity globally',
+    ],
+    power: [
+      'N/A (captive) — AWS reached 100% renewable energy in 2023 ahead of 2025 target',
+      'World\'s largest corporate purchaser of renewable energy for 4 consecutive years',
+      'PUE global average: 1.15 (among most efficient in industry)',
+      'Water Usage Effectiveness (WUE): 0.15 L/kWh in 2024 (17% improvement YoY)',
+      'Nuclear PPAs and SMR investments: signed 6 SMR agreements with X-energy in 2023',
+    ],
+    devRisk: [
+      'Grid connection delays in Northern Virginia, Europe impacting capacity timelines',
+      'Supply chain risk: NVIDIA GPU allocation and custom silicon ramp-up pacing',
+      'Hyperscale build cost inflation: structural steel, electrical equipment up 20–30%',
+      'Community and regulatory opposition to new campuses in established markets',
+      'Management cited \'supply constrained\' for AWS capacity in 2023–2024 earnings calls',
+    ],
+    capMarkets: [
+      'Aa2/AA rated; ~$5–8B annual debt issuance at ~3.5% blended cost',
+      'Free cash flow FY2024: ~$38B after $83B CapEx; meaningful self-funding capacity',
+      'No dividend; $10B share repurchase program active',
+      'Amazon market cap: ~$2T; forward P/E ~40x factoring AWS AI optionality',
+      '$200B 2026 CapEx plan: largest single-year infrastructure commitment in corporate history',
+    ],
+  },
+
+  GOOGL: {
+    capacity: [
+      'N/A (captive) — Google Cloud operates 40+ regions; ~2 GW+ active capacity globally',
+      'FY2024 CapEx: $52.5B; Q4 2024 alone: $14B (primarily infrastructure)',
+      'Acquired Intersect Power (2025) to co-develop generation with new data centers',
+      'Campus builds routinely exceed 200–400 MW; liquid-cooled AI clusters in Mayes County OK',
+      '2025 CapEx guidance: $75B; 2026 guided as \'significant further increase\'',
+    ],
+    revenue: [
+      'N/A (captive) — Google Cloud revenue Q2 2024: $10.3B+ (first $10B quarter)',
+      'Google Cloud FY2024 revenue grew ~28–32% YoY; reached ~$43B run-rate by Q4',
+      'Google Cloud exceeded $1B quarterly operating profit for first time in Q2 2024',
+      'Alphabet total FY2024 revenue: ~$350B; Cloud ~12% of total',
+      'Search and YouTube remain >70% of revenue; Cloud fastest-growing segment',
+    ],
+    profitability: [
+      'N/A (captive) — Google Cloud operating margin: ~10–12% (improving from breakeven)',
+      'Alphabet operating margin FY2024: ~30% (record high)',
+      'Alphabet net income FY2024: ~$100B; EPS ~$8.04',
+      'Heavy depreciation: multi-hundred-billion PP&E base; D&A ~$15–18B annually',
+      'AI (Gemini) inference costs declining with custom TPU and Trillium chips',
+    ],
+    capital: [
+      'N/A (captive) — FY2024 CapEx: $52.5B; plan to reach $75B in 2025',
+      'Cash and equivalents: ~$110B; no material net debt',
+      'Alphabet Aaa/AA+ rated; debt ~$15B; effectively zero leverage',
+      'Custom TPU (Tensor Processing Unit) investment reduces NVIDIA dependency',
+      'ROIC on infrastructure: not disclosed; Cloud margin expansion implies payback accelerating',
+    ],
+    leaseStructure: [
+      'N/A (captive) — primarily owned campuses in US, Europe, Asia-Pacific',
+      'Long-term ground leases in high-value markets (London, Singapore, Tokyo)',
+      'Colocation agreements with Equinix and others for edge PoPs',
+      'Power PPAs: 30+ GW contracted globally; includes geothermal, wind, solar',
+      '20-year power agreements standard; hourly matching (24/7 RE) pioneered by Google',
+    ],
+    customerMix: [
+      'N/A (captive) — infrastructure serves Google Search, YouTube, Gmail, Maps, Cloud',
+      'Google Cloud customers: enterprise migrating from legacy IT; AI/ML startup base',
+      'Top verticals: financial services, retail, healthcare, media',
+      'Gemini AI API and Vertex AI driving AI cloud revenue vs. AWS/Azure',
+      'Workspace (formerly G Suite) provides recurring SaaS base alongside GCP',
+    ],
+    geographic: [
+      'N/A (captive) — 13 owned data center regions in US; 14 in EMEA; 8 in APAC',
+      'Americas: Iowa, Oregon, South Carolina, Virginia, Texas major campuses',
+      'EMEA: Ireland, Netherlands, Belgium, Finland, Denmark; expanding to Spain, Germany',
+      'APAC: Singapore, Taiwan, Japan, India expanding for Cloud growth',
+      'New 2024–25: Thailand, Malaysia, New Zealand announced; South Africa expansion',
+    ],
+    power: [
+      'N/A (captive) — committed to 24/7 carbon-free energy by 2030 (pioneered concept)',
+      'Largest corporate buyer of renewable energy globally for years; 30+ GW contracted',
+      'Operates geothermal, nuclear, and advanced wind; acquired Intersect Power in 2025',
+      'PUE: ~1.10 global average — most efficient major hyperscaler',
+      'Hourly matching of carbon-free energy (CFE) in all grids by 2030 target',
+    ],
+    devRisk: [
+      'Grid connection and permitting delays in US Southeast and EMEA key bottlenecks',
+      'Rapid CapEx ramp ($75B in 2025) creates execution risk in procurement and construction',
+      'Geopolitical risk: EU data sovereignty regulations require complex regional architectures',
+      'Custom TPU supply chain constraints as demand for AI training capacity surges',
+      'Competition with AWS/Azure for talent, power contracts, and hyperscale land sites',
+    ],
+    capMarkets: [
+      'Aaa/AA+ rated; ~$15B long-term debt; blended cost ~2.5–3.0%',
+      'Free cash flow: ~$70B+ annually after CapEx; significant buyback capacity',
+      'Dividend initiated in 2024 ($0.20/share quarterly); $70B buyback authorized',
+      'Alphabet market cap: ~$2T; PE ~22x; Cloud margin expansion is key re-rating catalyst',
+      '2025 CapEx: $75B — representing the largest announced single-year infrastructure plan',
+    ],
+  },
+
+  META: {
+    capacity: [
+      'N/A (captive) — ~30 owned data center campuses globally; ~52 buildings, ~36M sq ft',
+      'All owned facilities LEED Gold or higher; designing for 800+ MW single campus',
+      'FY2024 CapEx: ~$38–40B; 2025 guidance raised to ~$65B',
+      'Lloydminster, Alberta mega-campus: largest single campus planned at 1.8M sq ft',
+      '100% of CapEx directed at expanding AI and Llama infrastructure capacity',
+    ],
+    revenue: [
+      'N/A (captive) — Meta FY2024 total revenue: ~$164B (+19% YoY; Q4: $48.4B)',
+      'Family of Apps (Facebook, Instagram, WhatsApp) = 98%+ of revenue (advertising)',
+      'Reality Labs (VR/AR hardware): ~$2B revenue, ~$17B operating loss in FY2024',
+      'Ad revenue per user (ARPU) US/Canada: ~$68/quarter',
+      'AI-powered ad targeting driving >20% YoY revenue growth in 2H 2024',
+    ],
+    profitability: [
+      'N/A (captive) — Operating margin FY2024: ~42% (up from 35% in FY2023)',
+      'Net income FY2024: ~$62B; EPS ~$24.00',
+      'Year of Efficiency (2023) cost cuts permanently improved structural margins',
+      'D&A: ~$12B in FY2024 (data center and server depreciation major component)',
+      'AI Infra costs (Llama, FAIR research) partially offset advertising margin gains',
+    ],
+    capital: [
+      'N/A (captive) — FY2024 CapEx: ~$38–40B; 2025 guidance: $60–65B',
+      'Net cash: ~$45B (cash less debt); Aa1/AA+ equivalent balance sheet',
+      'Custom silicon: MTIA chip for inference workloads reduces GPU dependency',
+      'ROIC on AI infra investment: management cites improving ROI on Advantage+ ad tools',
+      '2026 CapEx: projected $135B+ per analyst models (AI infra buildout peak)',
+    ],
+    leaseStructure: [
+      'N/A (captive) — primarily owns data center campuses; minimal colocation',
+      'Long-term ground leases for campus development in select markets',
+      '20-year nuclear PPA with Constellation Energy (Clinton Clean Energy Center, 1,121 MW)',
+      '800 MW clean energy deal with Invenergy (wind and solar, US locations)',
+      'Power pass-through N/A: Meta is end-user; bears full energy cost directly',
+    ],
+    customerMix: [
+      'N/A (captive) — infrastructure serves Facebook, Instagram, WhatsApp, Threads, Horizon',
+      '3.35B daily active people across Meta family of apps (Q4 2024)',
+      'AI recommendation models (Reels, Feed) are largest single internal GPU consumer',
+      'Llama open-source models create ecosystem but do not generate direct data center revenue',
+      'No external cloud revenue; 100% captive to Meta\'s internal workloads',
+    ],
+    geographic: [
+      'N/A (captive) — major campuses: Menlo Park CA, Forest City NC, Prineville OR, Altoona IA',
+      'European: Odense Denmark, Papillion NE, Vitoria Spain, Clonee Ireland',
+      'Asia-Pacific: Singapore operational; new campuses in Malaysia',
+      'New 2024–25: DeKalb IL (nuclear-powered), Chesterfield MO, Louisiana data center',
+      '100% renewable energy matching since 2020; net-zero Scope 1+2 since 2020',
+    ],
+    power: [
+      'N/A (captive) — 100% renewable energy matching achieved in 2020; maintained since',
+      '20-year nuclear PPA: Constellation Clinton Clean Energy Center (1,121 MW)',
+      '~1,800 MW total with Invenergy wind/solar partnership (800 MW clean energy deal)',
+      'Multi-gigawatt nuclear deals signed 2025–26 as AI power demand surges',
+      'Net-zero Scope 1+2 since 2020; 94% Scope 1+2 reduction from 2017 baseline',
+    ],
+    devRisk: [
+      'Power procurement at scale (multi-GW) creates concentration risk in specific grid regions',
+      'Data center construction delays: record CapEx volume strains contractor and equipment supply',
+      'Regulatory: EU DMA compliance adds operational overhead; potential ad revenue constraints',
+      'Reality Labs ongoing losses ($17B in 2024) consume capital that could fund infra',
+      'AI governance risk: Llama model proliferation may invite regulatory scrutiny',
+    ],
+    capMarkets: [
+      'Aa1/AA equivalent; minimal debt; ~$30B+ cash on balance sheet after buybacks',
+      'No corporate dividend; $50B+ annual share buyback program',
+      'Meta market cap: ~$1.3T; PE ~25x; AI-driven ad revenue growth re-rated in 2024',
+      '2025 CapEx: $60–65B — represents ~40% of free cash flow committed to infrastructure',
+      'Board authorized $50B buyback; management committed to returning excess cash',
+    ],
+  },
+
+  ORCL: {
+    capacity: [
+      'N/A (captive) — 162 Oracle Cloud Infrastructure (OCI) regions in operation or construction',
+      'Largest OCI design: 800 MW data center with acre-scale NVIDIA GPU clusters',
+      'OCI Dedicated Regions: 7 live at Microsoft; 4 live at Google (with 38 more building)',
+      'Oracle announced $400B US AI/cloud infrastructure investment commitment in 2025',
+      'OCI Gen2 AI infrastructure: liquid-cooled GPU pods; RDMA networking for AI training',
+    ],
+    revenue: [
+      'N/A (captive) — Oracle Cloud Services and License Support FY2025: $44.0B (+12% YoY)',
+      'Cloud services = 43% of total revenue in FY2025 (up from 37% in FY2024)',
+      'Total Oracle FY2025 revenue: ~$57.1B; cloud services growing ~20%+ organically',
+      'Remaining Performance Obligations (RPO): $130B+ at FY2025 year-end',
+      'Cerner (healthcare IT acquisition) adds $6B+ in recurring SaaS/services revenue',
+    ],
+    profitability: [
+      'N/A (captive) — Non-GAAP operating margin FY2025: ~30.8%',
+      'GAAP net margin FY2025: ~21.7%',
+      'Cloud gross margins targeted at 55%+ at scale; currently ~50% as infrastructure matures',
+      'Significant D&A from $77B+ Cerner acquisition and rapid data center build-out',
+      'Non-GAAP EPS FY2025: ~$6.00; GAAP EPS ~$5.00',
+    ],
+    capital: [
+      'N/A (captive) — FY2026 CapEx guidance: ~$35B (data center and AI infrastructure)',
+      'Balance sheet: ~$75B long-term debt; BB+/Baa2 rated (below Hyperscaler peers)',
+      'Cash: ~$10B; net debt is significant (~$65B net)',
+      'OCI build cost: undisclosed; 800 MW design implies very large capital commitment per region',
+      'ROIC: improving as OCI utilization rises; FY2025 RPO of $130B+ provides revenue visibility',
+    ],
+    leaseStructure: [
+      'N/A (captive) — OCI regions: mix of owned data centers and long-term land/building leases',
+      'OCI Dedicated Regions: deployed inside customer data centers under multiyear contracts',
+      'Database cloud services: consumption-based billing (BYOL or subscription)',
+      'Long-term infrastructure contracts with hyperscalers (MSFT Azure, Google) for OCI regions',
+      'Average OCI customer contract: 3–5 years for mid-market; 5–10 years for government',
+    ],
+    customerMix: [
+      'N/A (captive) — OCI customers: enterprise migrating Oracle DB workloads to cloud',
+      'Top verticals: financial services (Nomura, Moody\'s), retail, government, healthcare',
+      'US Federal: FedRAMP High authorized; significant DoD workloads on OCI GovCloud',
+      'AI customers: Cohere, xAI (Grok training), and other LLM developers for GPU cloud',
+      'Americas 72%, EMEA 18%, APAC 10% of cloud and license revenue growth in FY2024',
+    ],
+    geographic: [
+      'N/A (captive) — 68+ countries with OCI presence (data centers, Dedicated Regions, or cloud)',
+      'US: Ashburn VA, Phoenix AZ, Chicago IL, San Jose CA primary OCI regions',
+      'EMEA: Frankfurt, London, Amsterdam, UAE, Saudi Arabia, Israel',
+      'APAC: Tokyo, Singapore, Sydney, Mumbai; Seoul and Osaka announced',
+      'Americas 72% of cloud revenue growth; fastest-growing region for OCI',
+    ],
+    power: [
+      'N/A (captive) — committed to 100% renewable energy for all global OCI regions',
+      'Wind PPAs in US, Europe; solar partnerships in Middle East and Asia',
+      'PUE targets: <1.3 for new builds; liquid cooling deployed in AI GPU clusters',
+      'On-site generation partnerships for new mega-campus builds (US Midwest)',
+      'Climate goals: net-zero operations by 2030; 100% renewable by 2025 targeted',
+    ],
+    devRisk: [
+      'Aggressive 162-region footprint creates significant execution and cost risk',
+      'High leverage ($65B+ net debt) limits financial flexibility vs. zero-debt hyperscalers',
+      'OCI market share remains well behind AWS/Azure/GCP; profitability per region uncertain',
+      'Cerner integration ($28B acquisition) remains complex multi-year execution challenge',
+      'Power procurement and permitting delays common across new OCI region builds',
+    ],
+    capMarkets: [
+      'Baa2/BB+ rated; higher cost of debt (~4.5–5.5%) vs. investment-grade hyperscalers',
+      'No dividend currently; share buybacks modest vs. cash flow given debt burden',
+      'FY2025 RPO: $130B+ (strong backlog visibility for revenue growth)',
+      'FY2026 CapEx: ~$35B — largest in Oracle\'s history; mostly OCI expansion',
+      'Market cap: ~$500B; PE ~30x; re-rated higher on OCI growth and AI GPU cloud demand',
+    ],
+  },
+
+  CRWV: {
+    capacity: [
+      '~420 MW of active power at Q1 2025 IPO; contracted power: ~1.6 GW',
+      'Core Scientific acquisition (announced July 2025): adds ~1.3 GW gross power',
+      'GPU cluster portfolio: NVIDIA H100, H200, Blackwell clusters; liquid-cooled pods',
+      'Operates owned and leased data centers across US (NJ, TX, WA, IL key markets)',
+      'Revenue backlog: $25.9B at Q1 2025; ~$55B+ by Q3 2025',
+    ],
+    revenue: [
+      'FY2024 revenue: $1.92B; growing to ~$5–6B run-rate by end of 2025',
+      '62% of FY2024 revenue from Microsoft (extreme customer concentration)',
+      'Revenue model: reserved GPU capacity contracts (typically 1–3 year terms)',
+      'GAAP operating income FY2024: $324M (17% margin)',
+      'GAAP net loss FY2024: $863M (heavy interest expense from $22B+ debt)',
+    ],
+    profitability: [
+      'Adjusted EBITDA positive; GAAP net loss driven by $349M interest expense in FY2024',
+      'Interest expense run-rate increasing: $513M in first half of 2025 alone',
+      'Gross margin ~55–60% on compute revenue; high fixed depreciation on GPU fleet',
+      'GPU clusters depreciated over ~5 years; heavy D&A drives GAAP losses',
+      'Path to GAAP profitability dependent on scale diluting interest and depreciation burden',
+    ],
+    capital: [
+      'FY2024 CapEx: $8.7B (massive vs. $1.9B revenue; pure growth-mode infrastructure)',
+      '2026 CapEx guidance: $31–35B',
+      'Total debt: ~$22.7B (long-term); 9.25% senior notes due 2030; 9.0% notes due 2031',
+      'Total funding raised: $14.5B+ (mostly debt); IPO raised ~$1.5B equity in March 2025',
+      'Debt-to-equity: ~4.5x; highest leverage of any peer in this analysis',
+    ],
+    leaseStructure: [
+      'Customer contracts: reserved GPU capacity, typically 1–5 year take-or-pay',
+      'Power: long-term utility contracts and PPAs; customers do not pay power separately',
+      'Data center facilities: mix of long-term leases and owned (post-Core Scientific)',
+      'Contracts provide high revenue visibility ($55B+ backlog) but lock in commitment spend',
+      'No standard escalator model; pricing set at contract execution (risk: GPU price deflation)',
+    ],
+    customerMix: [
+      'Microsoft: 62% of FY2024 revenue (67% of FY2025); extreme concentration risk',
+      'Other named customers: Meta, CoreWeave has disclosed AI startup customers',
+      'Top 2 customers: >80% of revenue — material business risk',
+      'Backlog diversifying slightly as new AI lab and enterprise contracts signed in 2025',
+      'IPO S-1 disclosed material weakness in internal controls (later remediated)',
+    ],
+    geographic: [
+      'US-only operations (New Jersey, Texas, Washington State, Illinois primary)',
+      'No international data center footprint at IPO; US-first build strategy',
+      'Northern New Jersey campus: largest active cluster at time of IPO',
+      'Core Scientific acquisition expands to TX, ND, KY, GA (Bitcoin miner conversions)',
+      'No disclosed international expansion plans as of mid-2025',
+    ],
+    power: [
+      'No published renewable energy target; power-intensive GPU clusters (MW-scale per site)',
+      'PUE estimated at 1.2–1.3 for modern liquid-cooled GPU facilities',
+      'Power contracts: long-term utility agreements; exposure to spot power price risk',
+      'No material disclosed PPAs; power cost included in gross lease to customers',
+      'Post-Core Scientific: inherits ~1.3 GW power relationships with US utilities',
+    ],
+    devRisk: [
+      'Revenue concentration (Microsoft 62%): loss of contract could be existential',
+      'Debt-financed growth: $22.7B debt at 9–9.25% creates massive interest burden',
+      'GPU obsolescence risk: Blackwell → future NVIDIA generations may require costly fleet refresh',
+      'Material weakness in internal controls disclosed at IPO (significant red flag for governance)',
+      'Stock sank 10%+ on Q1 2026 earnings: weak guidance + increased CapEx raised investor concern',
+    ],
+    capMarkets: [
+      'Public since March 2025 (NASDAQ: CRWV); IPO price ~$40; volatile post-IPO trading',
+      'High-yield rated; cost of debt ~9.0–9.25% on public notes',
+      'No dividend; all cash flow consumed by CapEx and debt service',
+      '$2B of 9.25% senior notes (May 2025); $1.75B of 9.0% notes (July 2025)',
+      'Market cap: ~$25–35B range; valued on backlog/RPO rather than current earnings',
+    ],
+  },
+
+  NVDA: {
+    capacity: [
+      'N/A — NVIDIA is a fabless semiconductor company; no owned data center capacity',
+      'NVIDIA outsources manufacturing to TSMC (CoWoS packaging, 4nm/3nm nodes)',
+      'DGX Cloud: NVIDIA-branded cloud service hosted on hyperscaler infrastructure (leased)',
+      'NVIDIA research: leases HPC clusters at national labs and CSPs for internal AI training',
+      'Total PP&E FY2025 (Jan 2025): ~$5.5B net — minimal vs. hyperscaler/colo peers',
+    ],
+    revenue: [
+      'FY2025 (ended Jan 2025) revenue: ~$130.5B (+114% YoY)',
+      'Data Center segment revenue FY2025: ~$115.2B (88% of total revenue)',
+      'FY2024 (ended Jan 2024) revenue: $60.9B (+126% YoY); Data Center: +217%',
+      'Blackwell GPU ramp began Q4 FY2025; expected to be largest revenue product in history',
+      'Networking (InfiniBand, Spectrum-X) contributes ~$10B+ annualized revenue',
+    ],
+    profitability: [
+      'Gross margin FY2025: ~75%; FY2024: ~73% (structural expansion as Hopper matured)',
+      'Operating margin FY2025: ~65% (extraordinary for semiconductor company at scale)',
+      'Net income FY2025: ~$73B; EPS ~$2.94 (pre-split adjusted)',
+      'R&D expense FY2025: ~$12B; FY2024: $8.68B (18.5% of revenue)',
+      'FCF FY2024: ~$28B after $1.07B CapEx — asset-light model generates massive cash',
+    ],
+    capital: [
+      'FY2024 CapEx: $1.07B (fabless; minimal owned infrastructure)',
+      'Cash and marketable securities: $26B at FY2024 year-end; growing rapidly',
+      'Net cash position: strongly positive (effectively no debt relative to cash)',
+      'ROIC: extraordinary — >100% due to asset-light model and explosive margins',
+      'Buybacks: $10B+ authorized; accelerating as FCF compounds',
+    ],
+    leaseStructure: [
+      'N/A — NVIDIA leases office space and uses third-party fabs; no data center leases',
+      'TSMC foundry agreements: undisclosed multi-year capacity reservations (wafer starts)',
+      'CoWoS advanced packaging capacity: reserved through TSMC and proprietary supply',
+      'DGX Cloud: white-labeled GPU cloud capacity leased from Oracle, Azure, GCP, AWS',
+      'Customer delivery: most Hopper/Blackwell sales are direct to hyperscaler capex budgets',
+    ],
+    customerMix: [
+      'Top 4 cloud providers (Microsoft, Amazon, Google, Meta) = ~40–50% of revenue',
+      'Sovereign AI customers (governments) emerging as ~10–15% of GPU revenue',
+      'Enterprise AI: financial services, healthcare, automotive (DRIVE Orin) growing',
+      'Chinese market: ~15% of revenue pre-export control; declining post-H20 restrictions',
+      'CoreWeave: ~10% of revenue disclosed in CoreWeave S-1 from NVIDIA direct sales',
+    ],
+    geographic: [
+      'N/A (fabless) — products sold globally; manufactured at TSMC in Taiwan',
+      'Americas: ~45% of revenue; APAC ex-China: ~25%; China: ~15% (restricted)',
+      'EMEA: ~15% of revenue',
+      'NVIDIA HQ: Santa Clara CA; design centers in Austin TX, Durham NC, Tel Aviv',
+      'Export control restrictions on H100/H200/A100 sales to China/Russia',
+    ],
+    power: [
+      'N/A (fabless) — NVIDIA\'s direct data center power footprint is minimal',
+      'TSMC manufacturing: NVIDIA reports Scope 3 emissions from foundry supply chain',
+      'NVIDIA RTX and datacenter GPU efficiency: Hopper 3x inference/watt vs. prior gen',
+      'NVIDIA NVLink and NVSwitch enable 72-GPU DGX H100 systems at ~70 kW per rack',
+      'Blackwell GB200 NVL72: ~120 kW/rack; driving need for liquid cooling at customer sites',
+    ],
+    devRisk: [
+      'TSMC CoWoS packaging supply remains primary constraint on Blackwell shipment volume',
+      'US export controls: expanding restrictions on China sales risk ~$15B+ revenue',
+      'Customer concentration: top 4 hyperscalers cutting custom silicon (TPU, Trainium)',
+      'AMD MI300X gaining share in inference; could erode gross margin over 3–5 years',
+      'Gross margin risk if Blackwell pricing softens as supply/demand rebalances in 2026',
+    ],
+    capMarkets: [
+      'Aaa/AA+ equivalent credit quality; minimal debt ($8.5B); $75B+ cash and investments',
+      '$10B share buyback program; initiated dividend ($0.04/share quarterly)',
+      'Market cap: ~$3.3T (as of mid-2025); most valuable company by market cap',
+      'PE ratio: ~35x FY2026 estimates — priced for continued AI infrastructure dominance',
+      'FY2026 revenue consensus: ~$200B+ driven by Blackwell and next-gen Rubin platform',
+    ],
+  },
+
+  GMG: {
+    capacity: [
+      'Global power bank: 4.0 GW across 12 major cities at FY2024 (June 2024)',
+      'Secured power: 2.1 GW; further 1.9 GW in advanced procurement stages',
+      'Active development WIP: A$12.9B at FY2024; 37% data center (up from 27% prior year)',
+      'Data center WIP: 58% pre-committed; average lease term of 14 years',
+      'European data center partnership with CPP: A$14B joint venture announced 2025',
+    ],
+    revenue: [
+      'FY2024 operating profit: A$2.05B (+15% YoY); operating EPS +14%',
+      'Total AUM at June 2024: A$79.0B (external AUM: A$70.2B)',
+      'Development management fees and property income main revenue streams',
+      'Data center development now drives ~73% of total WIP value',
+      'Revenue visibility: 14-year average data center lease terms provide long-duration cashflow',
+    ],
+    profitability: [
+      'Operating profit margin: strong; FY2024 EPS growth of 14% ahead of guidance (11%)',
+      'Gearing: 8.4% balance sheet; 22.7% look-through — extremely low for a REIT/developer',
+      'Interest cover: 44.0x (balance sheet); 11.9x (look-through) at June 2024',
+      'S&P BBB+ rating; stable outlook; low leverage provides significant balance sheet capacity',
+      'Retained earnings largely reinvested; distributions per security growing in line with EPS',
+    ],
+    capital: [
+      'WIP: A$12.9B at FY2024; predominantly pre-committed data center projects',
+      'Build cost: A$10–15M/MW (AUD) for hyperscale data center development',
+      'European JV (CPP): A$14B vehicle to develop 1.5 GW+ across London, Amsterdam, Paris',
+      'Balance sheet gearing: 8.4% — significant headroom vs. A-REIT peers (typically 30%+)',
+      'ROIC on data center development: ~8–10% unlevered; JV structure enhances equity returns',
+    ],
+    leaseStructure: [
+      'Data center leases: 10–15+ year terms (average 14 years across WIP portfolio)',
+      'Hyperscale tenants: Google, Microsoft, Meta predominant in European and APAC pipeline',
+      'Net lease structure: tenants bear operating costs including power; Goodman retains land',
+      'Annual rent escalators: CPI-linked or fixed 2–3%; common in AU/EU data center leases',
+      'Pre-commitment required before construction commencement: minimizes spec development risk',
+    ],
+    customerMix: [
+      'Hyperscale-only strategy: Google, Microsoft, Meta, AWS primary disclosed tenants',
+      'No retail colocation; pure wholesale/hyperscale build-to-suit development model',
+      'Top 3 customers likely >70% of data center WIP (concentration typical for wholesale)',
+      'Logistics tenant base (~40% of WIP) provides diversification at group level',
+      'Long-term hyperscale relationships underpin 14-year average lease term',
+    ],
+    geographic: [
+      'Power bank by region: Europe/UK 1.5 GW; APAC (Tokyo, Osaka, HK) 300 MW delivered; ANZ 400 MW',
+      'Americas: 200 MW in Los Angeles; expanding US presence via CPP JV',
+      'Australia: Goodman\'s home market; Eastern Seaboard (Sydney, Melbourne, Brisbane)',
+      'New 2024–25: CPP European JV (Amsterdam, Frankfurt, Paris, London); US LA expansion',
+      'FY2024 development activity: 73% data centers globally; logistics 27%',
+    ],
+    power: [
+      'Net lease structure: tenants bear power cost directly (hyperscale manages own RE procurement)',
+      'Goodman targets 100% renewable energy for own operations; building-level NABERS ratings',
+      'Data center campuses designed for direct utility connection at 100–500 MW scale',
+      'Co-locating with renewable generation assets in site selection (Europe, Australia)',
+      'NABERS Energy 5+ star target across Australian portfolio; EU Taxonomy-aligned in Europe',
+    ],
+    devRisk: [
+      'Power interconnection delays: 24–36 month grid connection queues in London, Amsterdam, Paris',
+      'Rapid data center pivot from logistics: new competency risk (less experience than EQIX/DLR)',
+      'Hyperscale customer concentration: losing one hyperscale tenant would significantly impact WIP pipeline',
+      'Currency risk: AUD-reporting company with EUR, GBP, USD, JPY revenue exposure',
+      'CPP JV governance: $14B European vehicle adds complexity to capital allocation',
+    ],
+    capMarkets: [
+      'ASX: GMG; S&P/ASX 50 constituent; BBB+ rated; AUD cost of debt ~4.5–5.0%',
+      'Gearing: 8.4% (record low); $14B European JV is off-balance sheet (look-through: 22.7%)',
+      'Distribution: ~A$0.30/security; yield ~1% (low; valued on growth)',
+      'Market cap: ~A$60B+ (one of Australia\'s largest listed companies)',
+      'FY2025 guidance: EPS growth 9% (upgraded); data center pipeline expanding to A$17.5B WIP',
+    ],
+  },
+};
+
+const _SEC_TRACKER = {
+  EQIX: {
+    liveMW:    '~5,500',
+    devMW:     '~1,200',
+    preleased: '>85%',
+    util:      '~80%',
+    dkw:       '~$210/kW',
+    ebitdaMgn: '47%',
+    capexMW:   '$8-12M',
+    leverage:  '5.2x',
+    topCust:   '<5%',
+    power:     '~96% RE',
+    markets:   'Riyadh, KL, Seoul',
+  },
+  DLR: {
+    liveMW:    '~2,700',
+    devMW:     '~1,200',
+    preleased: '~61%',
+    util:      '~75%',
+    dkw:       '~$130/kW',
+    ebitdaMgn: '46%',
+    capexMW:   '$7-10M',
+    leverage:  '4.8x',
+    topCust:   '<10%',
+    power:     '~70% RE',
+    markets:   'Seoul, Chicago',
+  },
+  IRM: {
+    liveMW:    '~500',
+    devMW:     '~350',
+    preleased: '>80%',
+    util:      '~70%',
+    dkw:       '~$150/kW',
+    ebitdaMgn: '36%',
+    capexMW:   '$8-12M',
+    leverage:  '5.0x',
+    topCust:   '<5%',
+    power:     'Expanding RE',
+    markets:   'Richmond VA, Phoenix',
+  },
+  AMT: {
+    liveMW:    '~256',
+    devMW:     '~50',
+    preleased: '~85%',
+    util:      '~85%',
+    dkw:       '~$200/kW',
+    ebitdaMgn: '49%',
+    capexMW:   '$14-16M',
+    leverage:  '6.8x',
+    topCust:   '<5%',
+    power:     '~42% RE',
+    markets:   'Denver (JV), SV9',
+  },
+  MSFT: {
+    liveMW:    '5,000+',
+    devMW:     '~1,500',
+    preleased: 'N/A (captive)',
+    util:      'N/A (captive)',
+    dkw:       'N/A (captive)',
+    ebitdaMgn: '45% (Intelligent Cloud)',
+    capexMW:   'N/A',
+    leverage:  'Net Cash',
+    topCust:   'N/A (captive)',
+    power:     '>34 GW contracted',
+    markets:   'Malaysia, Poland, Italy',
+  },
+  AMZN: {
+    liveMW:    '~12,000+',
+    devMW:     '~3,800 added/yr',
+    preleased: 'N/A (captive)',
+    util:      'N/A (captive)',
+    dkw:       'N/A (captive)',
+    ebitdaMgn: '37% (AWS segment)',
+    capexMW:   'N/A',
+    leverage:  'Net Cash',
+    topCust:   'N/A (captive)',
+    power:     '100% RE (2023)',
+    markets:   'Malaysia, Thailand, NZ',
+  },
+  GOOGL: {
+    liveMW:    '~6,000+',
+    devMW:     '~2,000+',
+    preleased: 'N/A (captive)',
+    util:      'N/A (captive)',
+    dkw:       'N/A (captive)',
+    ebitdaMgn: '~30% (Alphabet)',
+    capexMW:   'N/A',
+    leverage:  'Net Cash',
+    topCust:   'N/A (captive)',
+    power:     '30+ GW / 24x7 CFE',
+    markets:   'Thailand, Malaysia, SA',
+  },
+  META: {
+    liveMW:    '~5,000+',
+    devMW:     'N/A (captive)',
+    preleased: 'N/A (captive)',
+    util:      'N/A (captive)',
+    dkw:       'N/A (captive)',
+    ebitdaMgn: '42% (operating margin)',
+    capexMW:   'N/A',
+    leverage:  'Net Cash',
+    topCust:   'N/A (captive)',
+    power:     '100% RE + 1.1 GW nuclear',
+    markets:   'DeKalb IL, Malaysia',
+  },
+  ORCL: {
+    liveMW:    '~2,000+',
+    devMW:     '~1,000+',
+    preleased: 'N/A (captive)',
+    util:      'N/A (captive)',
+    dkw:       'N/A (captive)',
+    ebitdaMgn: '~31% (non-GAAP op)',
+    capexMW:   'N/A',
+    leverage:  '~7x (net debt)',
+    topCust:   'N/A (captive)',
+    power:     '100% RE targeted',
+    markets:   'Saudi, UAE, India',
+  },
+  CRWV: {
+    liveMW:    '~420',
+    devMW:     '~1,180 contracted',
+    preleased: '~100% contracted',
+    util:      '~95%+',
+    dkw:       'N/A (GPU $/hr model)',
+    ebitdaMgn: '~17% (GAAP op)',
+    capexMW:   '~$20M+ (GPU-dense)',
+    leverage:  '>10x (net debt)',
+    topCust:   'MSFT 62%',
+    power:     'No RE target',
+    markets:   'US-only (NJ, TX, WA)',
+  },
+  NVDA: {
+    liveMW:    'N/A (fabless)',
+    devMW:     'N/A',
+    preleased: 'N/A',
+    util:      'N/A',
+    dkw:       'N/A',
+    ebitdaMgn: '~65% (op margin)',
+    capexMW:   'N/A',
+    leverage:  'Net Cash',
+    topCust:   'Hyperscalers ~45%',
+    power:     'Scope 3 (TSMC)',
+    markets:   'N/A (global sales)',
+  },
+  GMG: {
+    liveMW:    '~200 (ops)',
+    devMW:     '~4,000 (pipeline)',
+    preleased: '~58% (WIP)',
+    util:      'N/A (developer)',
+    dkw:       'N/A (developer)',
+    ebitdaMgn: 'N/A (prop dev model)',
+    capexMW:   'A$10-15M',
+    leverage:  '8.4% gearing',
+    topCust:   'Google/MSFT/Meta',
+    power:     'Tenant-managed RE',
+    markets:   'EU JV, LA expansion',
+  },
+};
+
+function renderSecTracker() {
+  const el = document.getElementById('sec-tracker-table');
+  if (!el) return;
+
+  const cols = [
+    { key: 'liveMW',    label: 'MW Live' },
+    { key: 'devMW',     label: 'In Dev' },
+    { key: 'preleased', label: 'Pre-Leased' },
+    { key: 'util',      label: 'Utilization' },
+    { key: 'dkw',       label: '$/kW' },
+    { key: 'ebitdaMgn', label: 'EBITDA %' },
+    { key: 'capexMW',   label: 'CapEx/MW' },
+    { key: 'leverage',  label: 'Net Debt/EBITDA' },
+    { key: 'topCust',   label: 'Top Cust %' },
+    { key: 'power',     label: 'Renewable' },
+    { key: 'markets',   label: 'New Markets' },
+  ];
+
+  const companyNames = {
+    EQIX: 'Equinix',
+    DLR:  'Digital Realty',
+    IRM:  'Iron Mountain',
+    AMT:  'American Tower / CoreSite',
+    MSFT: 'Microsoft Azure',
+    AMZN: 'Amazon AWS',
+    GOOGL:'Google Cloud',
+    META: 'Meta Infra',
+    ORCL: 'Oracle OCI',
+    CRWV: 'CoreWeave',
+    NVDA: 'NVIDIA',
+    GMG:  'Goodman Group',
+  };
+
+  function getLeverageStyle(leverageStr) {
+    var s = leverageStr.toLowerCase();
+    if (s.indexOf('net cash') !== -1 || s.indexOf('gearing') !== -1) {
+      return 'color:#4ade80;font-weight:600;';
+    }
+    var match = s.match(/([\d.]+)\s*x/);
+    if (match) {
+      var val = parseFloat(match[1]);
+      if (val < 4) return 'color:#4ade80;font-weight:600;';
+      if (val <= 6) return 'color:#facc15;font-weight:600;';
+      return 'color:#f87171;font-weight:600;';
+    }
+    if (s.indexOf('>10') !== -1) return 'color:#f87171;font-weight:600;';
+    return 'color:var(--text);';
+  }
+
+  var headerCells = '<th style="position:sticky;left:0;z-index:2;background:var(--card);padding:8px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);white-space:nowrap;">Company</th>';
+  cols.forEach(function(c) {
+    headerCells += '<th style="padding:8px 12px;text-align:left;font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);white-space:nowrap;">' + c.label + '</th>';
+  });
+
+  var rows = '';
+  var tickers = Object.keys(_SEC_TRACKER);
+  tickers.forEach(function(tk) {
+    var d = _SEC_TRACKER[tk];
+    var name = companyNames[tk] || tk;
+    var leverageStyle = getLeverageStyle(d.leverage);
+
+    var cells = '<td style="position:sticky;left:0;z-index:1;background:var(--card);padding:8px 12px;white-space:nowrap;border-bottom:1px solid var(--border);">'
+      + '<a href="#" onclick="document.getElementById(\'sec-panel-' + tk + '\')?.scrollIntoView({behavior:\'smooth\'});return false;" style="color:var(--accent);text-decoration:none;font-weight:600;font-size:12px;">'
+      + name
+      + '</a>'
+      + '<span style="display:block;font-size:10px;color:var(--muted);margin-top:2px;">' + tk + '</span>'
+      + '</td>';
+
+    cols.forEach(function(c) {
+      var val = d[c.key] || '—';
+      var style = 'padding:8px 12px;font-size:12px;color:var(--text);border-bottom:1px solid var(--border);white-space:nowrap;';
+      if (c.key === 'leverage') {
+        style += leverageStyle;
+      }
+      cells += '<td style="' + style + '">' + val + '</td>';
+    });
+
+    rows += '<tr style="transition:background 0.15s;" onmouseover="this.style.background=\'rgba(255,255,255,0.04)\'" onmouseout="this.style.background=\'transparent\'">' + cells + '</tr>';
+  });
+
+  el.innerHTML = '<div style="width:100%;overflow-x:auto;">'
+    + '<table style="width:100%;border-collapse:collapse;background:var(--card);font-family:inherit;">'
+    + '<thead><tr>' + headerCells + '</tr></thead>'
+    + '<tbody>' + rows + '</tbody>'
+    + '</table>'
+    + '</div>';
+}
+
+function renderSecMetricCards(tk) {
+  if (!_SEC_METRICS[tk]) return '';
+
+  var data = _SEC_METRICS[tk];
+  var categories = [
+    { key: 'capacity',      icon: '🏗',  label: 'Capacity' },
+    { key: 'revenue',       icon: '💰',  label: 'Revenue' },
+    { key: 'profitability', icon: '📊',  label: 'Profitability' },
+    { key: 'capital',       icon: '🔧',  label: 'Capital' },
+    { key: 'leaseStructure',icon: '📋',  label: 'Leases' },
+    { key: 'customerMix',   icon: '👥',  label: 'Customers' },
+    { key: 'geographic',    icon: '🗺',  label: 'Geographic' },
+    { key: 'power',         icon: '⚡',  label: 'Power' },
+    { key: 'devRisk',       icon: '⚠️', label: 'Dev Risk' },
+    { key: 'capMarkets',    icon: '📈',  label: 'Cap Markets' },
+  ];
+
+  var cards = '';
+  categories.forEach(function(cat) {
+    var bullets = data[cat.key];
+    if (!bullets || !bullets.length) return;
+
+    var bulletHtml = '';
+    bullets.forEach(function(b) {
+      bulletHtml += '<div style="font-size:11px;color:var(--secondary,var(--muted));padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.45;">• ' + b + '</div>';
+    });
+
+    cards += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;">'
+      + '<div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px;">'
+      + '<span>' + cat.icon + '</span>'
+      + '<span style="text-transform:uppercase;letter-spacing:0.05em;">' + cat.label + '</span>'
+      + '</div>'
+      + bulletHtml
+      + '</div>';
+  });
+
+  return '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;">' + cards + '</div>';
+}
+
 const _SEC_CO_COLORS = {
   MSFT:'#00bcd4', AMZN:'#ff9800', GOOGL:'#4caf50', META:'#2196f3',
   ORCL:'#f44336', CRWV:'#ab47bc', NVDA:'#c6ff00', EQIX:'#ff7043',
@@ -3072,48 +4250,8 @@ function renderSecDashboard() {
     }).filter(Boolean).join('');
   }
 
-  // ── Quarterly timeline chart ─────────────────────────────────────────────────
-  const quarterly = {};
-  _secResults.forEach(f => {
-    const date = (f.filedAt||'').slice(0,10);
-    if (!date) return;
-    const d = new Date(date);
-    const q = `${d.getFullYear()} Q${Math.ceil((d.getMonth()+1)/3)}`;
-    if (!quarterly[q]) quarterly[q] = {};
-    quarterly[q][f.ticker] = (quarterly[q][f.ticker]||0) + 1;
-  });
-
-  const sortedQ = Object.keys(quarterly).sort();
-  const activeTickers = [...new Set(_secResults.map(r=>r.ticker))].sort();
-
-  const ctx = document.getElementById('sec-timeline-chart')?.getContext('2d');
-  if (ctx) {
-    if (window._secChart) window._secChart.destroy();
-    window._secChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: sortedQ,
-        datasets: activeTickers.map(tk => ({
-          label: tk,
-          data: sortedQ.map(q => quarterly[q][tk]||0),
-          backgroundColor: _SEC_CO_COLORS[tk] || '#666',
-          borderRadius: 2,
-        })),
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position:'right', labels:{ color:'#aaa', boxWidth:10, padding:8, font:{size:10} } },
-          tooltip: { callbacks: { title: t => t[0].label, label: t => ` ${t.dataset.label}: ${t.raw} filing${t.raw!==1?'s':''}` } },
-        },
-        scales: {
-          x: { stacked:true, grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#888',font:{size:10},maxRotation:45} },
-          y: { stacked:true, grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#888',font:{size:10},stepSize:1} },
-        },
-      },
-    });
-  }
+  // ── Competitor tracker table ─────────────────────────────────────────────────
+  renderSecTracker();
 
   // ── Topic breakdown bar ───────────────────────────────────────────────────────
   const byTopic = {};
