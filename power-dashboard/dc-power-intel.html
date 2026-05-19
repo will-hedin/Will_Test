@@ -589,7 +589,7 @@
     <div class="sec-header">
       <div>
         <h3>SEC EDGAR Intelligence — Hyperscalers &amp; Public Data Center Companies</h3>
-        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · NVDA · EQIX · DLR · IRM · AMT · GMG · 15 topics · 3 years · Auto-loads</p>
+        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · NVDA · EQIX · DLR · IRM · AMT · GMG · 22 topics · 3 years · 10-K · 10-Q · 8-K · S-1 · 13F · 13D/G · Form 4 · Form D · ADV · N-PORT · X-17A-5</p>
       </div>
       <div class="sec-key-bar">
         <button class="ls-refresh-btn" id="sec-search-btn" onclick="loadSecFilings(true)">↻ Reload</button>
@@ -597,7 +597,7 @@
     </div>
 
     <!-- Company accordion panels — JS-rendered on init, populated after search -->
-    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR · 15 topics · all public companies · 3 years of filings…</div>
+    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR · 22 topics · 16 form types · all watched companies · 3 years of filings…</div>
     <div id="sec-error" class="ls-error hidden"></div>
     <div id="sec-prompt" class="sec-prompt hidden">
       Loading SEC EDGAR filing intelligence for all 10 companies…
@@ -616,31 +616,72 @@
           <select id="sec-co-filter" onchange="renderSecTable()"><option value="">All Companies</option></select>
           <select id="sec-topic-filter" onchange="renderSecTable()">
             <option value="">All Topics</option>
-            <option value="Capacity / MW">Capacity / MW</option>
-            <option value="Expansion / New Sites">Expansion / New Sites</option>
-            <option value="Leases / Customers">Leases / Customers</option>
-            <option value="Distress / Asset Sales">Distress / Asset Sales</option>
-            <option value="Power / Grid Delays">Power / Grid Delays</option>
-            <option value="CapEx / Investment">CapEx / Investment</option>
-            <option value="AI Infrastructure">AI Infrastructure</option>
-            <option value="Power & Sustainability">Power &amp; Sustainability</option>
-            <option value="M&A / Partnerships">M&amp;A / Partnerships</option>
-            <option value="Colocation Demand">Colocation Demand</option>
-            <option value="Cooling Technology">Cooling Technology</option>
-            <option value="Power Generation">Power Generation</option>
-            <option value="Grid Access">Grid Access</option>
-            <option value="Gov / Defense">Gov / Defense</option>
-            <option value="Hardware Supply">Hardware Supply</option>
+            <optgroup label="── Core DC Topics ──">
+              <option value="Capacity / MW">Capacity / MW</option>
+              <option value="Expansion / New Sites">Expansion / New Sites</option>
+              <option value="Leases / Customers">Leases / Customers</option>
+              <option value="Distress / Asset Sales">Distress / Asset Sales</option>
+              <option value="Power / Grid Delays">Power / Grid Delays</option>
+              <option value="CapEx / Investment">CapEx / Investment</option>
+              <option value="AI Infrastructure">AI Infrastructure</option>
+              <option value="Power &amp; Sustainability">Power &amp; Sustainability</option>
+              <option value="M&amp;A / Partnerships">M&amp;A / Partnerships</option>
+              <option value="Colocation Demand">Colocation Demand</option>
+              <option value="Cooling Technology">Cooling Technology</option>
+              <option value="Power Generation">Power Generation</option>
+              <option value="Grid Access">Grid Access</option>
+              <option value="Gov / Defense">Gov / Defense</option>
+              <option value="Hardware Supply">Hardware Supply</option>
+            </optgroup>
+            <optgroup label="── Governance &amp; Legal ──">
+              <option value="SEC Enforcement / Legal">SEC Enforcement / Legal</option>
+              <option value="Directors &amp; Board Changes">Directors &amp; Board Changes</option>
+              <option value="Auditor / Restatement">Auditor / Restatement</option>
+            </optgroup>
+            <optgroup label="── Capital Structure ──">
+              <option value="Shares &amp; Float">Shares &amp; Float</option>
+              <option value="Capital Raises / Offerings">Capital Raises / Offerings</option>
+            </optgroup>
+            <optgroup label="── Filing Intel ──">
+              <option value="Material Contracts">Material Contracts</option>
+              <option value="Press Releases / Reg FD">Press Releases / Reg FD</option>
+            </optgroup>
           </select>
           <select id="sec-form-filter" onchange="renderSecTable()">
             <option value="">All Forms</option>
-            <option value="10-K">10-K (Annual)</option>
-            <option value="10-K/A">10-K/A (Amendment)</option>
-            <option value="10-Q">10-Q (Quarterly)</option>
-            <option value="10-Q/A">10-Q/A (Amendment)</option>
-            <option value="8-K">8-K (Material Event)</option>
-            <option value="DEF 14A">DEF 14A (Proxy)</option>
-            <option value="8-K/A">8-K/A (Amendment)</option>
+            <optgroup label="── Periodic Reports ──">
+              <option value="10-K">10-K — Annual Report</option>
+              <option value="10-K/A">10-K/A — Annual Amendment</option>
+              <option value="10-Q">10-Q — Quarterly Report</option>
+              <option value="10-Q/A">10-Q/A — Quarterly Amendment</option>
+              <option value="8-K">8-K — Material Events</option>
+              <option value="8-K/A">8-K/A — Material Event Amendment</option>
+              <option value="DEF 14A">DEF 14A — Proxy Statement</option>
+            </optgroup>
+            <optgroup label="── Ownership &amp; Insider ──">
+              <option value="4">Form 4 — Insider Trading</option>
+              <option value="3">Form 3 — Initial Ownership</option>
+              <option value="5">Form 5 — Annual Ownership</option>
+              <option value="SC 13D">SC 13D — Beneficial Ownership &gt;5%</option>
+              <option value="SC 13G">SC 13G — Passive Ownership &gt;5%</option>
+              <option value="13F-HR">13F-HR — Portfolio Holdings</option>
+            </optgroup>
+            <optgroup label="── Offerings &amp; Capital ──">
+              <option value="S-1">S-1 — IPO Registration</option>
+              <option value="S-3">S-3 — Shelf Registration</option>
+              <option value="424B4">424B4 — Final Prospectus</option>
+              <option value="D">Form D — Private Placement</option>
+              <option value="1-A">Form 1-A — Reg A Offering</option>
+              <option value="1-K">Form 1-K — Reg A Annual</option>
+              <option value="C">Form C — Crowdfunding</option>
+            </optgroup>
+            <optgroup label="── Investment Funds ──">
+              <option value="N-PORT">N-PORT — Fund Holdings (Monthly)</option>
+              <option value="N-CEN">N-CEN — Fund Annual Report</option>
+              <option value="N-PX">N-PX — Proxy Voting Record</option>
+              <option value="ADV">Form ADV — Investment Advisor</option>
+              <option value="X-17A-5">X-17A-5 — FOCUS / Broker-Dealer</option>
+            </optgroup>
           </select>
         </div>
         <div style="overflow-x:auto">
@@ -659,7 +700,71 @@
       </div>
     </div>
     <div id="sec-footer" class="hidden" style="font-size:11px;color:var(--muted);margin-top:10px">
-      Source: <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · 10-K · 10-Q · 8-K · DEF 14A · 3 years · Extract Details fetches filing direct from EDGAR (free)
+      Source: <a href="https://www.sec.gov/cgi-bin/browse-edgar" target="_blank" rel="noopener" style="color:var(--accent)">SEC EDGAR</a> · 10-K · 10-Q · 8-K · S-1 · 13F · 13D/G · Form 4 · Form D · ADV · N-PORT · X-17A-5 · 3 years · Extract Details fetches filing direct from EDGAR (free)
+    </div>
+
+    <!-- Filing Browser: sec-api.io metadata search for specific form types -->
+    <div style="margin-top:22px;border-top:1px solid var(--border);padding-top:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;cursor:pointer" onclick="document.getElementById('sec-meta-inner').classList.toggle('hidden');this.querySelector('.sec-p-chev').style.transform=document.getElementById('sec-meta-inner').classList.contains('hidden')?'':'rotate(180deg)'">
+        <span style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px">Filing Browser — Form 4 · 13F · 13D/G · S-1 · Form D · ADV · N-PORT · X-17A-5 · All Forms</span>
+        <span class="sec-p-chev">▼</span>
+      </div>
+      <div id="sec-meta-inner" class="hidden">
+        <p style="font-size:11px;color:var(--muted);margin:0 0 10px">Search SEC EDGAR by company ticker and form type. Powered by sec-api.io metadata search.</p>
+        <div class="sec-filters" style="gap:8px">
+          <select id="sec-meta-ticker" style="min-width:160px">
+            <option value="">Any Company</option>
+            <option value="MSFT">MSFT — Microsoft</option>
+            <option value="AMZN">AMZN — Amazon / AWS</option>
+            <option value="GOOGL">GOOGL — Alphabet / Google</option>
+            <option value="META">META — Meta Platforms</option>
+            <option value="ORCL">ORCL — Oracle</option>
+            <option value="CRWV">CRWV — CoreWeave</option>
+            <option value="NVDA">NVDA — NVIDIA</option>
+            <option value="EQIX">EQIX — Equinix</option>
+            <option value="DLR">DLR — Digital Realty</option>
+            <option value="IRM">IRM — Iron Mountain</option>
+            <option value="AMT">AMT — American Tower</option>
+            <option value="GMG">GMG — Goodman Group</option>
+          </select>
+          <select id="sec-meta-form" style="min-width:220px">
+            <option value="">Any Form Type</option>
+            <optgroup label="── Periodic Reports ──">
+              <option value="10-K">10-K — Annual Report</option>
+              <option value="10-Q">10-Q — Quarterly Report</option>
+              <option value="8-K">8-K — Material Events</option>
+              <option value="DEF 14A">DEF 14A — Proxy</option>
+            </optgroup>
+            <optgroup label="── Ownership &amp; Insider ──">
+              <option value="4">Form 4 — Insider Trading</option>
+              <option value="3">Form 3 — Initial Ownership</option>
+              <option value="5">Form 5 — Annual Ownership</option>
+              <option value="SC 13D">SC 13D — Beneficial Ownership</option>
+              <option value="SC 13G">SC 13G — Passive Ownership</option>
+              <option value="13F-HR">13F-HR — Portfolio Holdings</option>
+            </optgroup>
+            <optgroup label="── Offerings &amp; Capital ──">
+              <option value="S-1">S-1 — IPO Registration</option>
+              <option value="S-3">S-3 — Shelf Registration</option>
+              <option value="424B4">424B4 — Final Prospectus</option>
+              <option value="D">Form D — Private Placement</option>
+              <option value="1-A">Form 1-A — Reg A Offering</option>
+              <option value="C">Form C — Crowdfunding</option>
+            </optgroup>
+            <optgroup label="── Funds &amp; Advisors ──">
+              <option value="N-PORT">N-PORT — Fund Holdings</option>
+              <option value="N-CEN">N-CEN — Fund Annual</option>
+              <option value="N-PX">N-PX — Proxy Voting</option>
+              <option value="ADV">Form ADV — Investment Advisor</option>
+              <option value="X-17A-5">X-17A-5 — FOCUS Report</option>
+            </optgroup>
+          </select>
+          <button id="sec-meta-btn" class="ls-refresh-btn" onclick="loadSecMetaFilings()">Search</button>
+        </div>
+        <div id="sec-meta-out" style="margin-top:10px">
+          <p style="color:var(--muted);font-size:12px">Select a company and/or form type, then click Search.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -2637,21 +2742,32 @@ const _SEC_COMPANIES = [
 ];
 
 const _SEC_QUERIES = [
-  { q:'"data center" AND ("new capacity" OR "megawatt" OR "additional capacity" OR "commissioned" OR "power capacity")',                        label:'Capacity / MW'         },
-  { q:'"data center" AND ("expansion" OR "new campus" OR "new facility" OR "under construction" OR "greenfield" OR "new site")',                label:'Expansion / New Sites' },
-  { q:'"data center" AND ("new lease" OR "leasing" OR "new customer" OR "pre-leased" OR "signed lease" OR "anchor tenant")',                    label:'Leases / Customers'    },
-  { q:'"data center" AND ("impairment" OR "write-down" OR "asset sale" OR "divestiture" OR "declining revenue" OR "headwinds" OR "offload")',   label:'Distress / Asset Sales'},
-  { q:'"data center" AND ("power delay" OR "grid constraint" OR "interconnection delay" OR "utility delay" OR "capacity constraints")',          label:'Power / Grid Delays'   },
-  { q:'"data center" AND ("capital expenditure" OR "capex" OR "capital investment" OR "strategic investment")',                                  label:'CapEx / Investment'    },
-  { q:'"data center" AND ("artificial intelligence" OR "GPU cluster" OR "NVIDIA" OR "accelerator" OR "inference" OR "large language model" OR "AI workload")', label:'AI Infrastructure'    },
-  { q:'"data center" AND ("power purchase agreement" OR "PPA" OR "renewable energy" OR "clean energy" OR "carbon neutral" OR "sustainability" OR "net zero")',  label:'Power & Sustainability'},
-  { q:'"data center" AND ("acquisition" OR "merger" OR "joint venture" OR "strategic partnership" OR "land acquisition" OR "campus acquisition")',              label:'M&A / Partnerships'   },
-  { q:'"data center" AND ("colocation" OR "colo lease" OR "wholesale lease" OR "hyperscale lease" OR "pre-lease" OR "build-to-suit" OR "turnkey")',             label:'Colocation Demand'    },
-  { q:'"data center" AND ("liquid cooling" OR "immersion cooling" OR "direct liquid" OR "coolant distribution" OR "thermal management" OR "heat reuse")',        label:'Cooling Technology'   },
-  { q:'"data center" AND ("nuclear" OR "small modular reactor" OR "SMR" OR "on-site generation" OR "behind the meter" OR "dedicated generation" OR "gas turbine")', label:'Power Generation' },
-  { q:'"data center" AND ("interconnection queue" OR "transmission" OR "substation upgrade" OR "utility agreement" OR "large load" OR "load growth" OR "grid access")', label:'Grid Access'   },
-  { q:'"data center" AND ("government" OR "federal" OR "Department of Defense" OR "DoD" OR "classified" OR "FedRAMP" OR "IL4" OR "IL5" OR "national security")', label:'Gov / Defense'        },
-  { q:'"data center" AND ("server" OR "rack" OR "H100" OR "GB200" OR "Blackwell" OR "hardware procurement" OR "chip supply" OR "semiconductor" OR "SMCI")',      label:'Hardware Supply'      },
+  // ── Core data center topics ──────────────────────────────────────────────────
+  { q:'"data center" AND ("new capacity" OR "megawatt" OR "additional capacity" OR "commissioned" OR "power capacity")',                        label:'Capacity / MW'          },
+  { q:'"data center" AND ("expansion" OR "new campus" OR "new facility" OR "under construction" OR "greenfield" OR "new site")',                label:'Expansion / New Sites'  },
+  { q:'"data center" AND ("new lease" OR "leasing" OR "new customer" OR "pre-leased" OR "signed lease" OR "anchor tenant")',                    label:'Leases / Customers'     },
+  { q:'"data center" AND ("impairment" OR "write-down" OR "asset sale" OR "divestiture" OR "declining revenue" OR "headwinds" OR "offload")',   label:'Distress / Asset Sales' },
+  { q:'"data center" AND ("power delay" OR "grid constraint" OR "interconnection delay" OR "utility delay" OR "capacity constraints")',          label:'Power / Grid Delays'    },
+  { q:'"data center" AND ("capital expenditure" OR "capex" OR "capital investment" OR "strategic investment")',                                  label:'CapEx / Investment'     },
+  { q:'"data center" AND ("artificial intelligence" OR "GPU cluster" OR "NVIDIA" OR "accelerator" OR "inference" OR "large language model" OR "AI workload")', label:'AI Infrastructure'     },
+  { q:'"data center" AND ("power purchase agreement" OR "PPA" OR "renewable energy" OR "clean energy" OR "carbon neutral" OR "sustainability" OR "net zero")',  label:'Power & Sustainability' },
+  { q:'"data center" AND ("acquisition" OR "merger" OR "joint venture" OR "strategic partnership" OR "land acquisition" OR "campus acquisition")',              label:'M&A / Partnerships'    },
+  { q:'"data center" AND ("colocation" OR "colo lease" OR "wholesale lease" OR "hyperscale lease" OR "pre-lease" OR "build-to-suit" OR "turnkey")',             label:'Colocation Demand'     },
+  { q:'"data center" AND ("liquid cooling" OR "immersion cooling" OR "direct liquid" OR "coolant distribution" OR "thermal management" OR "heat reuse")',        label:'Cooling Technology'    },
+  { q:'"data center" AND ("nuclear" OR "small modular reactor" OR "SMR" OR "on-site generation" OR "behind the meter" OR "dedicated generation" OR "gas turbine")', label:'Power Generation'  },
+  { q:'"data center" AND ("interconnection queue" OR "transmission" OR "substation upgrade" OR "utility agreement" OR "large load" OR "load growth" OR "grid access")', label:'Grid Access'    },
+  { q:'"data center" AND ("government" OR "federal" OR "Department of Defense" OR "DoD" OR "classified" OR "FedRAMP" OR "IL4" OR "IL5" OR "national security")', label:'Gov / Defense'         },
+  { q:'"data center" AND ("server" OR "rack" OR "H100" OR "GB200" OR "Blackwell" OR "hardware procurement" OR "chip supply" OR "semiconductor" OR "SMCI")',      label:'Hardware Supply'       },
+  // ── Corporate governance & legal ────────────────────────────────────────────
+  { q:'"SEC enforcement" OR "SEC investigation" OR "regulatory investigation" OR "litigation release" OR "cease and desist" OR "civil penalty" OR "administrative proceeding" OR "AAER"', label:'SEC Enforcement / Legal'   },
+  { q:'"director" AND ("resignation" OR "appointed" OR "elected to the board" OR "board member" OR "named to the board" OR "board composition" OR "executive officer change")',            label:'Directors & Board Changes' },
+  { q:'"restatement" OR "material weakness" OR "internal control" OR "non-reliance" OR "auditor change" OR "dismissed" OR "independent registered public accounting"',                    label:'Auditor / Restatement'     },
+  // ── Capital structure & ownership ───────────────────────────────────────────
+  { q:'"outstanding shares" OR "shares outstanding" OR "public float" OR "diluted shares" OR "weighted average shares" OR "share repurchase" OR "buyback"',                              label:'Shares & Float'            },
+  { q:'"capital raise" OR "public offering" OR "private placement" OR "senior notes" OR "convertible notes" OR "bond offering" OR "equity offering" OR "follow-on offering"',             label:'Capital Raises / Offerings' },
+  // ── Filings intel ────────────────────────────────────────────────────────────
+  { q:'"data center" AND ("material contract" OR "lease agreement" OR "colocation agreement" OR "power purchase agreement" OR "service agreement" OR "master services agreement")',        label:'Material Contracts'        },
+  { q:'"data center" AND ("press release" OR "earnings release" OR "guidance" OR "outlook" OR "forecast" OR "record revenue" OR "record bookings" OR "milestone")',                        label:'Press Releases / Reg FD'   },
 ];
 
 let _secResults   = [];
@@ -2661,13 +2777,14 @@ function secKeySave(v) { try { localStorage.setItem('sec_api_key', v.trim()); } 
 function secKeyLoad()  { try { return localStorage.getItem('sec_api_key') || _SEC_API_KEY; } catch(e) { return _SEC_API_KEY; } }
 
 function _secTopicCls(topic) {
-  if (topic.includes('Capacity'))                          return 'capacity';
-  if (topic.includes('Expansion'))                         return 'expansion';
-  if (topic.includes('Leases') || topic.includes('Colo'))  return 'leases';
-  if (topic.includes('Distress'))                          return 'distress';
+  if (topic.includes('Capacity'))                                                        return 'capacity';
+  if (topic.includes('Expansion') || topic.includes('AI') || topic.includes('Hardware')) return 'expansion';
+  if (topic.includes('Leases') || topic.includes('Colo') || topic.includes('Contracts') || topic.includes('Press')) return 'leases';
+  if (topic.includes('Distress') || topic.includes('Enforcement') || topic.includes('Restatement') || topic.includes('Auditor')) return 'distress';
   if (topic.includes('Power') || topic.includes('Sustain') || topic.includes('Grid') || topic.includes('Generation')) return 'power';
-  if (topic.includes('AI') || topic.includes('Hardware'))  return 'expansion';
-  if (topic.includes('M&A') || topic.includes('Partner') || topic.includes('Gov')) return 'leases';
+  if (topic.includes('M&A') || topic.includes('Partner') || topic.includes('Gov'))      return 'leases';
+  if (topic.includes('Shares') || topic.includes('Capital') || topic.includes('Offerings') || topic.includes('Float')) return 'capex';
+  if (topic.includes('Directors') || topic.includes('Board'))                            return 'capex';
   return 'capex';
 }
 
@@ -2728,7 +2845,7 @@ async function loadSecFilings(force = false) {
   const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
   const EFTS      = 'https://efts.sec.gov/LATEST/search-index';
-  const FORMS     = '10-K,10-K%2FA,10-Q,10-Q%2FA,8-K,8-K%2FA,DEF+14A';
+  const FORMS     = '10-K,10-K%2FA,10-Q,10-Q%2FA,8-K,8-K%2FA,DEF+14A,S-1,S-3,424B4,SC+13D,SC+13G,13F-HR,4,D,1-A';
   const seen = new Set(), results = [];
 
   for (const { q, label } of _SEC_QUERIES) {
@@ -3050,6 +3167,92 @@ function _secHighlight(text) {
   ];
   return terms.reduce((s, t) =>
     s.replace(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`), esc);
+}
+
+// =====================================================================
+// SEC META FILING BROWSER — sec-api.io metadata search by ticker + form type
+// Covers: Form 4 insider trading, 13F portfolio, 13D/13G ownership,
+//         S-1/424B4 IPOs, Form D private placements, X-17A-5 FOCUS,
+//         N-PORT funds, N-CEN annual, N-PX proxy voting, Form C, ADV
+// =====================================================================
+
+const _SEC_META_FORMS = [
+  { value:'4',        label:'Form 3/4/5 — Insider Trading'           },
+  { value:'SC 13D',   label:'Form 13D — Beneficial Ownership (>5%)'  },
+  { value:'SC 13G',   label:'Form 13G — Passive Ownership (>5%)'     },
+  { value:'13F-HR',   label:'13F-HR — Portfolio Holdings'            },
+  { value:'S-1',      label:'S-1 — IPO Registration'                 },
+  { value:'424B4',    label:'424B4 — Final IPO Prospectus'           },
+  { value:'D',        label:'Form D — Private Placement'             },
+  { value:'1-A',      label:'Form 1-A — Reg A Offering'              },
+  { value:'1-K',      label:'Form 1-K — Reg A Annual Report'         },
+  { value:'N-PORT',   label:'N-PORT — Fund Monthly Holdings'         },
+  { value:'N-CEN',    label:'N-CEN — Fund Annual Report'             },
+  { value:'N-PX',     label:'N-PX — Fund Proxy Voting'              },
+  { value:'X-17A-5',  label:'X-17A-5 — FOCUS / Broker-Dealer'       },
+  { value:'ADV',      label:'Form ADV — Investment Advisor'          },
+  { value:'C',        label:'Form C — Crowdfunding'                  },
+  { value:'8-K',      label:'8-K — Material Events (all)'            },
+  { value:'DEF 14A',  label:'DEF 14A — Proxy / Annual Meeting'       },
+  { value:'10-K',     label:'10-K — Annual Report'                   },
+  { value:'10-Q',     label:'10-Q — Quarterly Report'                },
+];
+
+let _secMetaResults = [];
+
+async function loadSecMetaFilings() {
+  const ticker   = (document.getElementById('sec-meta-ticker')?.value  || '').trim().toUpperCase();
+  const formType = (document.getElementById('sec-meta-form')?.value    || '').trim();
+  const elOut    = document.getElementById('sec-meta-out');
+  const elBtn    = document.getElementById('sec-meta-btn');
+  if (!elOut) return;
+  if (!ticker && !formType) { elOut.innerHTML = '<p style="color:var(--muted);font-size:12px">Select a company and/or form type, then click Search.</p>'; return; }
+
+  elOut.innerHTML = '<p style="color:var(--accent);font-size:12px">Searching sec-api.io…</p>';
+  if (elBtn) elBtn.disabled = true;
+
+  const key = secKeyLoad();
+  const queryParts = [];
+  if (ticker)   queryParts.push(`ticker:${ticker}`);
+  if (formType) queryParts.push(`formType:"${formType}"`);
+  const queryStr = queryParts.join(' AND ');
+
+  try {
+    const res = await fetch(`https://api.sec-api.io?token=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: { query_string: { query: queryStr } },
+        from: '0', size: '30',
+        sort: [{ filedAt: { order: 'desc' } }],
+      }),
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    const filings = data.filings || [];
+    if (!filings.length) {
+      elOut.innerHTML = `<p style="color:var(--muted);font-size:12px">No filings found for query: <code>${queryStr}</code></p>`;
+      return;
+    }
+    _secMetaResults = filings;
+    const rows = filings.map(f => {
+      const accUrl = f.linkToFilingDetails || (f.cik && f.accessionNo
+        ? `https://www.sec.gov/Archives/edgar/data/${f.cik}/${(f.accessionNo||'').replace(/-/g,'')}/`
+        : '#');
+      return `<div class="sec-frow">
+        <span class="sec-frow-form">${f.formType||'—'}</span>
+        <a class="sec-frow-link" href="${accUrl}" target="_blank" rel="noopener">${f.companyName||f.ticker||'—'} — ${f.formType||''}</a>
+        <span class="sec-frow-date">${(f.filedAt||'—').slice(0,10)}</span>
+      </div>`;
+    }).join('');
+    elOut.innerHTML = `
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${filings.length} filing${filings.length!==1?'s':''} found for <strong>${queryStr}</strong> · <a href="https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(queryStr)}" target="_blank" rel="noopener" style="color:var(--accent)">Open in EDGAR ↗</a></div>
+      <div class="sec-flist">${rows}</div>`;
+  } catch(e) {
+    elOut.innerHTML = `<p style="color:#f87171;font-size:12px">Error: ${e.message}</p>`;
+  } finally {
+    if (elBtn) elBtn.disabled = false;
+  }
 }
 
 // =====================================================================
