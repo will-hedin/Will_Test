@@ -375,6 +375,9 @@
   .sec-exc-body   { font-size:12px; color:var(--secondary); line-height:1.75; }
   .sec-exc-body mark { background:rgba(79,142,247,0.18); color:var(--text); padding:0 2px; border-radius:2px; }
   .sec-no-data    { color:var(--muted); font-size:12px; padding:4px 0; font-style:italic; }
+  /* Dashboard summary cards */
+  .sec-dash-card  { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:12px 14px; cursor:pointer; transition:border-color .15s,transform .1s; }
+  .sec-dash-card:hover { border-color:rgba(79,142,247,0.5); transform:translateY(-1px); }
 
   /* MARKET NAME CELL */
   .market-name-cell .name { font-weight: 600; font-size: 13px; }
@@ -597,11 +600,32 @@
     </div>
 
     <!-- Company accordion panels — JS-rendered on init, populated after search -->
-    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR · 22 topics · 16 form types · all watched companies · 3 years of filings…</div>
+    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR · 22 topics · all watched companies · 3 years of filings…</div>
     <div id="sec-error" class="ls-error hidden"></div>
     <div id="sec-prompt" class="sec-prompt hidden">
-      Loading SEC EDGAR filing intelligence for all 10 companies…
+      Loading SEC EDGAR filing intelligence for all 12 companies…
     </div>
+
+    <!-- Dashboard: summary cards + timeline chart + topic breakdown -->
+    <div id="sec-dashboard-wrap" class="hidden" style="margin-bottom:20px">
+      <!-- Summary stat cards -->
+      <div id="sec-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px"></div>
+
+      <!-- Timeline chart + topic breakdown side by side -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Quarterly Filing Activity — 3 Years</div>
+          <div style="height:220px;position:relative">
+            <canvas id="sec-timeline-chart"></canvas>
+          </div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Filings by Topic</div>
+          <div id="sec-topic-bars"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="sec-panels" id="sec-panels"></div>
 
     <!-- All-filings table (shown after search, collapsible) -->
@@ -2845,7 +2869,9 @@ async function loadSecFilings(force = false) {
   const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
   const endDate   = new Date().toISOString().slice(0,10);
   const EFTS      = 'https://efts.sec.gov/LATEST/search-index';
-  const FORMS     = '10-K,10-K%2FA,10-Q,10-Q%2FA,8-K,8-K%2FA,DEF+14A,S-1,S-3,424B4,SC+13D,SC+13G,13F-HR,4,D,1-A';
+  // Content-rich forms only — Form 4/13F/SC 13D etc. are structured XML with no narrative text,
+  // so they never match keyword queries. Those are handled by the Filing Browser below.
+  const FORMS     = '10-K,10-K%2FA,10-Q,10-Q%2FA,8-K,8-K%2FA,DEF+14A,S-1,S-3,424B4';
   const seen = new Set(), results = [];
 
   for (const { q, label } of _SEC_QUERIES) {
@@ -2900,6 +2926,7 @@ async function loadSecFilings(force = false) {
   const tickers = [...new Set(results.map(r => r.ticker).filter(Boolean))].sort();
   coEl.innerHTML = '<option value="">All Companies</option>' + tickers.map(t => `<option value="${t}">${t}</option>`).join('');
 
+  renderSecDashboard();
   renderSecPanels();
   renderSecTable();
   if (elAll) elAll.classList.remove('hidden');
@@ -3025,6 +3052,113 @@ function renderSecTable() {
   }).join('') || `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No filings match filters</td></tr>`;
   const cnt = document.getElementById('sec-count');
   if (cnt) cnt.textContent = `— ${filtered.length} of ${_secResults.length} filings`;
+}
+
+// ─── Dashboard: summary grid + quarterly timeline chart ───────────────────────
+
+const _SEC_CO_COLORS = {
+  MSFT:'#00bcd4', AMZN:'#ff9800', GOOGL:'#4caf50', META:'#2196f3',
+  ORCL:'#f44336', CRWV:'#ab47bc', NVDA:'#c6ff00', EQIX:'#ff7043',
+  DLR:'#78909c',  IRM:'#a1887f',  AMT:'#ec407a',  GMG:'#26a69a',
+};
+
+function renderSecDashboard() {
+  if (!_secResults.length) return;
+
+  // ── Summary stat cards per company ──────────────────────────────────────────
+  const byTk = {};
+  _secResults.forEach(f => {
+    if (!byTk[f.ticker]) byTk[f.ticker] = { total:0, topics:new Set(), latest:'' };
+    byTk[f.ticker].total++;
+    byTk[f.ticker].topics.add(f._topic);
+    if ((f.filedAt||'') > (byTk[f.ticker].latest||'')) byTk[f.ticker].latest = f.filedAt||'';
+  });
+
+  const gridEl = document.getElementById('sec-summary-grid');
+  if (gridEl) {
+    gridEl.innerHTML = _SEC_COMPANIES.map(c => {
+      const d = byTk[c.ticker];
+      if (!d) return '';
+      const color = _SEC_CO_COLORS[c.ticker] || '#888';
+      return `<div class="sec-dash-card" onclick="document.getElementById('sec-panel-${c.ticker}')?.classList.add('open');document.getElementById('sec-panel-${c.ticker}')?.scrollIntoView({behavior:'smooth',block:'center'})">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <span class="sec-p-ticker" style="color:${color}">${c.ticker}</span>
+          <span style="font-size:22px;font-weight:700;color:${color}">${d.total}</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${c.name.split('/')[0].trim()}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">${d.topics.size} topics · latest ${(d.latest||'').slice(0,10)||'—'}</div>
+        <div style="height:3px;border-radius:2px;margin-top:8px;background:${color};opacity:.6"></div>
+      </div>`;
+    }).filter(Boolean).join('');
+  }
+
+  // ── Quarterly timeline chart ─────────────────────────────────────────────────
+  const quarterly = {};
+  _secResults.forEach(f => {
+    const date = (f.filedAt||'').slice(0,10);
+    if (!date) return;
+    const d = new Date(date);
+    const q = `${d.getFullYear()} Q${Math.ceil((d.getMonth()+1)/3)}`;
+    if (!quarterly[q]) quarterly[q] = {};
+    quarterly[q][f.ticker] = (quarterly[q][f.ticker]||0) + 1;
+  });
+
+  const sortedQ = Object.keys(quarterly).sort();
+  const activeTickers = [...new Set(_secResults.map(r=>r.ticker))].sort();
+
+  const ctx = document.getElementById('sec-timeline-chart')?.getContext('2d');
+  if (ctx) {
+    if (window._secChart) window._secChart.destroy();
+    window._secChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: sortedQ,
+        datasets: activeTickers.map(tk => ({
+          label: tk,
+          data: sortedQ.map(q => quarterly[q][tk]||0),
+          backgroundColor: _SEC_CO_COLORS[tk] || '#666',
+          borderRadius: 2,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position:'right', labels:{ color:'#aaa', boxWidth:10, padding:8, font:{size:10} } },
+          tooltip: { callbacks: { title: t => t[0].label, label: t => ` ${t.dataset.label}: ${t.raw} filing${t.raw!==1?'s':''}` } },
+        },
+        scales: {
+          x: { stacked:true, grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#888',font:{size:10},maxRotation:45} },
+          y: { stacked:true, grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'#888',font:{size:10},stepSize:1} },
+        },
+      },
+    });
+  }
+
+  // ── Topic breakdown bar ───────────────────────────────────────────────────────
+  const byTopic = {};
+  _secResults.forEach(f => { byTopic[f._topic] = (byTopic[f._topic]||0)+1; });
+  const topicEl = document.getElementById('sec-topic-bars');
+  if (topicEl) {
+    const sorted = Object.entries(byTopic).sort((a,b)=>b[1]-a[1]);
+    const max = sorted[0]?.[1] || 1;
+    topicEl.innerHTML = sorted.map(([t,n]) => {
+      const cls = _secTopicCls(t);
+      const pct = Math.round(n/max*100);
+      const colors = {capacity:'#00bcd4',expansion:'#4caf50',leases:'#ab47bc',distress:'#f44336',power:'#ff9800',capex:'#78909c'};
+      const c = colors[cls]||'#888';
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+        <span style="font-size:10px;color:var(--muted);width:160px;text-align:right;flex-shrink:0">${t}</span>
+        <div style="flex:1;background:rgba(255,255,255,.07);border-radius:3px;height:14px;overflow:hidden">
+          <div style="width:${pct}%;height:100%;background:${c};opacity:.8;border-radius:3px"></div>
+        </div>
+        <span style="font-size:10px;color:#aaa;width:24px">${n}</span>
+      </div>`;
+    }).join('');
+  }
+
+  const wrap = document.getElementById('sec-dashboard-wrap');
+  if (wrap) wrap.classList.remove('hidden');
 }
 
 // ─── Extractor API: pulls Item 1, 2, 7 from 10-K or MD&A from 10-Q ──────────
