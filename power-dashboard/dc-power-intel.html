@@ -3096,7 +3096,7 @@ async function loadLegiScan(force = false) {
       for (let page = 1; page <= 3; page++) {
         const apiUrl = `https://api.legiscan.com/?key=${_LS_KEY}&op=getSearch&state=ALL` +
                        `&query=${encodeURIComponent(q)}&year=2&page=${page}`;
-        const res  = await fetch(CORS_PROXY + encodeURIComponent(apiUrl));
+        const res  = await fetch(apiUrl);
         const json = await res.json();
 
         if (json.status !== 'OK' || !json.searchresult) break;
@@ -3124,7 +3124,7 @@ async function loadLegiScan(force = false) {
   if (elRefresh) elRefresh.disabled = false;
 
   if (results.length === 0) {
-    elError.textContent = 'No results returned. The LegiScan API may be temporarily unavailable or the CORS proxy blocked the request.';
+    elError.textContent = 'No results returned. The LegiScan API may be temporarily unavailable — please try again in a moment.';
     elError.classList.remove('hidden');
     elStatus.textContent = 'Failed';
     return;
