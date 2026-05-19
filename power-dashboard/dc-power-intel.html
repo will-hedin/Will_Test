@@ -592,7 +592,7 @@
     <div class="sec-header">
       <div>
         <h3>SEC EDGAR Intelligence — Hyperscalers &amp; Public Data Center Companies</h3>
-        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · NVDA · EQIX · DLR · IRM · AMT · GMG · 22 topics · 3 years · 10-K · 10-Q · 8-K · S-1 · 13F · 13D/G · Form 4 · Form D · ADV · N-PORT · X-17A-5</p>
+        <p>MSFT · AMZN · GOOGL · META · ORCL · CRWV · NVDA · EQIX · DLR · IRM · AMT · 3 years · 10-K · 10-Q · 8-K · DEF 14A · S-1 · Auto-classified by filing type &amp; 8-K items</p>
       </div>
       <div class="sec-key-bar">
         <button class="ls-refresh-btn" id="sec-search-btn" onclick="loadSecFilings(true)">↻ Reload</button>
@@ -600,7 +600,7 @@
     </div>
 
     <!-- Company accordion panels — JS-rendered on init, populated after search -->
-    <div id="sec-loading" class="ls-loading hidden">Searching SEC EDGAR · 22 topics · all watched companies · 3 years of filings…</div>
+    <div id="sec-loading" class="ls-loading hidden">Loading filings from SEC EDGAR for all watched companies · 3 years · 10-K · 10-Q · 8-K · DEF 14A…</div>
     <div id="sec-error" class="ls-error hidden"></div>
     <div id="sec-prompt" class="sec-prompt hidden">
       Loading SEC EDGAR filing intelligence for all 12 companies…
@@ -640,35 +640,22 @@
           <select id="sec-co-filter" onchange="renderSecTable()"><option value="">All Companies</option></select>
           <select id="sec-topic-filter" onchange="renderSecTable()">
             <option value="">All Topics</option>
-            <optgroup label="── Core DC Topics ──">
-              <option value="Capacity / MW">Capacity / MW</option>
-              <option value="Expansion / New Sites">Expansion / New Sites</option>
-              <option value="Leases / Customers">Leases / Customers</option>
-              <option value="Distress / Asset Sales">Distress / Asset Sales</option>
-              <option value="Power / Grid Delays">Power / Grid Delays</option>
-              <option value="CapEx / Investment">CapEx / Investment</option>
-              <option value="AI Infrastructure">AI Infrastructure</option>
-              <option value="Power &amp; Sustainability">Power &amp; Sustainability</option>
-              <option value="M&amp;A / Partnerships">M&amp;A / Partnerships</option>
-              <option value="Colocation Demand">Colocation Demand</option>
-              <option value="Cooling Technology">Cooling Technology</option>
-              <option value="Power Generation">Power Generation</option>
-              <option value="Grid Access">Grid Access</option>
-              <option value="Gov / Defense">Gov / Defense</option>
-              <option value="Hardware Supply">Hardware Supply</option>
+            <optgroup label="── Periodic Reports ──">
+              <option value="Annual Report (10-K)">Annual Report (10-K)</option>
+              <option value="Quarterly Report (10-Q)">Quarterly Report (10-Q)</option>
+              <option value="Proxy Statement">Proxy Statement</option>
             </optgroup>
-            <optgroup label="── Governance &amp; Legal ──">
-              <option value="SEC Enforcement / Legal">SEC Enforcement / Legal</option>
+            <optgroup label="── 8-K Events ──">
+              <option value="Earnings Results">Earnings Results</option>
+              <option value="Press Releases / Reg FD">Press Releases / Reg FD</option>
+              <option value="Material Contracts">Material Contracts</option>
+              <option value="Material Events (8-K)">Material Events (8-K)</option>
               <option value="Directors &amp; Board Changes">Directors &amp; Board Changes</option>
               <option value="Auditor / Restatement">Auditor / Restatement</option>
+              <option value="Corporate Governance">Corporate Governance</option>
             </optgroup>
-            <optgroup label="── Capital Structure ──">
-              <option value="Shares &amp; Float">Shares &amp; Float</option>
+            <optgroup label="── Capital &amp; Offerings ──">
               <option value="Capital Raises / Offerings">Capital Raises / Offerings</option>
-            </optgroup>
-            <optgroup label="── Filing Intel ──">
-              <option value="Material Contracts">Material Contracts</option>
-              <option value="Press Releases / Reg FD">Press Releases / Reg FD</option>
             </optgroup>
           </select>
           <select id="sec-form-filter" onchange="renderSecTable()">
@@ -2801,15 +2788,15 @@ function secKeySave(v) { try { localStorage.setItem('sec_api_key', v.trim()); } 
 function secKeyLoad()  { try { return localStorage.getItem('sec_api_key') || _SEC_API_KEY; } catch(e) { return _SEC_API_KEY; } }
 
 function _secTopicCls(topic) {
-  if (topic.includes('Capacity'))                                                        return 'capacity';
-  if (topic.includes('Expansion') || topic.includes('AI') || topic.includes('Hardware')) return 'expansion';
-  if (topic.includes('Leases') || topic.includes('Colo') || topic.includes('Contracts') || topic.includes('Press')) return 'leases';
-  if (topic.includes('Distress') || topic.includes('Enforcement') || topic.includes('Restatement') || topic.includes('Auditor')) return 'distress';
-  if (topic.includes('Power') || topic.includes('Sustain') || topic.includes('Grid') || topic.includes('Generation')) return 'power';
-  if (topic.includes('M&A') || topic.includes('Partner') || topic.includes('Gov'))      return 'leases';
-  if (topic.includes('Shares') || topic.includes('Capital') || topic.includes('Offerings') || topic.includes('Float')) return 'capex';
-  if (topic.includes('Directors') || topic.includes('Board'))                            return 'capex';
-  return 'capex';
+  if (topic.includes('Annual'))                                          return 'capacity';
+  if (topic.includes('Quarterly'))                                       return 'expansion';
+  if (topic.includes('Earnings') || topic.includes('Press'))             return 'leases';
+  if (topic.includes('Auditor') || topic.includes('Restatement'))        return 'distress';
+  if (topic.includes('Directors') || topic.includes('Board') || topic.includes('Governance')) return 'power';
+  if (topic.includes('Capital') || topic.includes('Offerings'))          return 'capex';
+  if (topic.includes('Material Contracts'))                               return 'leases';
+  if (topic.includes('Proxy'))                                            return 'capex';
+  return 'expansion';
 }
 
 function initSecSection() {
@@ -2820,6 +2807,31 @@ function initSecSection() {
 
 function toggleSecPanel(ticker) {
   document.getElementById('sec-panel-' + ticker)?.classList.toggle('open');
+}
+
+// Company CIK map (padded to 10 digits for EDGAR submissions API)
+const _SEC_CIK_MAP = {
+  MSFT:'0000789019', AMZN:'0001018724', GOOGL:'0001652044', META:'0001326801',
+  ORCL:'0001341439', CRWV:'0002015610', NVDA:'0001045810', EQIX:'0001101239',
+  DLR:'0001297996',  IRM:'0001020569',  AMT:'0001053507',
+};
+
+function _classifySecTopic(form, items) {
+  const it = (items || '').toLowerCase();
+  if (form === '10-K' || form === '10-K/A')  return 'Annual Report (10-K)';
+  if (form === '10-Q' || form === '10-Q/A')  return 'Quarterly Report (10-Q)';
+  if (form === 'DEF 14A')                    return 'Proxy Statement';
+  if (form === 'S-1' || form === 'S-3' || form === '424B4') return 'Capital Raises / Offerings';
+  if (form === '8-K' || form === '8-K/A') {
+    if (it.includes('4.01') || it.includes('4.02')) return 'Auditor / Restatement';
+    if (it.includes('5.02'))                        return 'Directors & Board Changes';
+    if (it.includes('7.01') || it.includes('8.01')) return 'Press Releases / Reg FD';
+    if (it.includes('1.01'))                        return 'Material Contracts';
+    if (it.includes('2.02') || it.includes('2.01')) return 'Earnings Results';
+    if (it.includes('5.03') || it.includes('5.05')) return 'Corporate Governance';
+    return 'Material Events (8-K)';
+  }
+  return form;
 }
 
 async function loadSecFilings(force = false) {
@@ -2837,91 +2849,44 @@ async function loadSecFilings(force = false) {
   if (elPrompt) elPrompt.style.display = 'none';
   if (elBtn)    elBtn.disabled = true;
 
-  // CIK → ticker map (no leading zeros — strip them from s.ciks[0])
-  const _CIK_TICKER = {
-    '789019':'MSFT', '1018724':'AMZN', '1652044':'GOOGL', '1326801':'META',
-    '1341439':'ORCL', '2015610':'CRWV', '1045810':'NVDA', '1101239':'EQIX',
-    '1297996':'DLR', '1020569':'IRM', '1053507':'AMT',
-  };
-  const _NAME_TICKER = {
-    'microsoft':'MSFT', 'amazon com':'AMZN', 'amazon.com':'AMZN', 'alphabet':'GOOGL',
-    'meta platforms':'META', 'oracle':'ORCL', 'coreweave':'CRWV',
-    'nvidia':'NVDA', 'equinix':'EQIX', 'digital realty':'DLR',
-    'iron mountain':'IRM', 'american tower':'AMT', 'goodman':'GMG',
-  };
-  const _allowedTickers = new Set(_SEC_COMPANIES.map(c => c.ticker));
+  const cutoff  = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
+  const WANT    = new Set(['10-K','10-K/A','10-Q','10-Q/A','8-K','8-K/A','DEF 14A','S-1','S-3','424B4']);
+  const results = [];
 
-  // EFTS response shape (as of 2025):
-  //   _source.adsh          — accession number (was accession_no)
-  //   _source.file_type     — form type (was form_type)
-  //   _source.file_date     — filing date ✓
-  //   _source.ciks          — array of CIK strings with leading zeros e.g. ["0001018724"]
-  //   _source.display_names — array of strings: "Name  (TICK)  (CIK NNNN)"
-  function _parseDisplay(s) {
-    const str = ((s.display_names || [])[0] || '');
-    // Extract ticker: last occurrence of (XX) before (CIK
-    const tkM  = str.match(/\(([A-Z]{1,5})\)\s*\(CIK/);
-    const ticker = tkM ? tkM[1] : '';
-    const name  = str.split('  (')[0].trim() || str;
-    const cik   = ((s.ciks || [])[0] || '').replace(/^0+/, '');
-    return { ticker, name, cik };
-  }
+  for (const company of _SEC_COMPANIES) {
+    const cikPad = _SEC_CIK_MAP[company.ticker];
+    if (!cikPad) continue;
+    const cikNum = cikPad.replace(/^0+/, '');
+    try {
+      const res  = await fetch(`https://data.sec.gov/submissions/CIK${cikPad}.json`);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const r    = data.filings?.recent || {};
+      const forms = r.form         || [];
+      const dates = r.filingDate   || [];
+      const accs  = r.accessionNumber || [];
+      const items = r.items        || [];
+      const descs = r.primaryDocument || [];
 
-  function _resolveTicker(s) {
-    const { ticker, name, cik } = _parseDisplay(s);
-    // 1. ticker extracted directly from display_names string
-    if (ticker && _allowedTickers.has(ticker)) return ticker;
-    // 2. CIK map lookup
-    if (cik && _CIK_TICKER[cik]) return _CIK_TICKER[cik];
-    // 3. entity name fragment
-    const lname = name.toLowerCase();
-    for (const [frag, tk] of Object.entries(_NAME_TICKER)) {
-      if (lname.includes(frag)) return tk;
-    }
-    return null;
-  }
-
-  const startDate = new Date(Date.now() - 1095 * 86400000).toISOString().slice(0,10);
-  const endDate   = new Date().toISOString().slice(0,10);
-  const EFTS      = 'https://efts.sec.gov/LATEST/search-index';
-  // Content-rich forms only — Form 4/13F/SC 13D etc. are structured XML with no narrative text,
-  // so they never match keyword queries. Those are handled by the Filing Browser below.
-  const FORMS     = '10-K,10-K%2FA,10-Q,10-Q%2FA,8-K,8-K%2FA,DEF+14A,S-1,S-3,424B4';
-  const seen = new Set(), results = [];
-
-  for (const { q, label } of _SEC_QUERIES) {
-    for (const page of [0, 10]) {  // page offsets: 0=first 10, 10=next 10
-      try {
-        const url = `${EFTS}?q=${encodeURIComponent(q)}&forms=${FORMS}`
-          + `&dateRange=custom&startdt=${startDate}&enddt=${endDate}&from=${page}`;
-        const res  = await fetch(url);
-        const json = await res.json();
-        const hits = json.hits?.hits || [];
-        for (const h of hits) {
-          const s   = h._source || {};
-          const acc = s.adsh || h._id || '';       // EFTS uses .adsh, not .accession_no
-          if (!acc || seen.has(acc)) continue;
-          const ticker = _resolveTicker(s);
-          if (!ticker) continue;                   // not a watched company
-          seen.add(acc);
-          const { name: entityName, cik } = _parseDisplay(s);
-          const accClean = acc.replace(/-/g, '');
-          const filingUrl = cik
-            ? `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/`
-            : `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(acc)}`;
-          results.push({
-            accessionNo: acc, ticker, _topic: label,
-            companyNameLong: entityName || ticker,
-            formType: s.file_type || s.form || '', // EFTS uses .file_type, not .form_type
-            filedAt:  s.file_date || '',
-            filingUrl,
-          });
-        }
-        if (hits.length < 10) break;
-      } catch(e) {
-        console.error('[SEC EFTS]', label, e.message);
-        break;
+      for (let i = 0; i < forms.length; i++) {
+        const form = forms[i], date = dates[i], acc = accs[i];
+        if (!WANT.has(form) || date < cutoff) continue;
+        const accClean  = (acc || '').replace(/-/g, '');
+        const filingUrl = `https://www.sec.gov/Archives/edgar/data/${cikNum}/${accClean}/`;
+        results.push({
+          accessionNo:    acc,
+          ticker:         company.ticker,
+          _topic:         _classifySecTopic(form, items[i]),
+          companyNameLong: company.name,
+          formType:        form,
+          filedAt:         date,
+          filingUrl,
+          _cik:            cikNum,
+          _primaryDoc:     descs[i] || '',
+        });
       }
+    } catch(e) {
+      console.warn('[SEC]', company.ticker, e.message);
     }
   }
 
@@ -2929,14 +2894,14 @@ async function loadSecFilings(force = false) {
   if (elBtn) elBtn.disabled = false;
 
   if (!results.length) {
-    elErr.textContent = 'No filings found for watched companies — try ↻ Reload or check console (F12)';
+    elErr.textContent = 'Could not load SEC filings — check your connection and try ↻ Reload';
     elErr.classList.remove('hidden'); if (elPrompt) elPrompt.style.display = ''; return;
   }
 
   results.sort((a,b) => (b.filedAt||'').localeCompare(a.filedAt||''));
   _secResults = results; _secTimestamp = new Date();
 
-  // Populate All Filings dropdown
+  // Populate company filter dropdown
   const coEl = document.getElementById('sec-co-filter');
   const tickers = [...new Set(results.map(r => r.ticker).filter(Boolean))].sort();
   coEl.innerHTML = '<option value="">All Companies</option>' + tickers.map(t => `<option value="${t}">${t}</option>`).join('');
@@ -3197,37 +3162,38 @@ async function fetchSecDetails(ticker) {
   panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Fetching filing index from SEC EDGAR…</p>';
 
   try {
-    // Parse CIK from filingUrl: https://www.sec.gov/Archives/edgar/data/{cik}/{accClean}/
-    const cikMatch = filing.filingUrl.match(/\/edgar\/data\/(\d+)\//);
-    if (!cikMatch) throw new Error('Cannot resolve CIK for this filing — try the direct link below.');
-    const cik = cikMatch[1];
+    // CIK: prefer stored _cik, fall back to parsing filingUrl
+    const cik = filing._cik || (filing.filingUrl.match(/\/edgar\/data\/(\d+)\//) || [])[1] || '';
+    if (!cik) throw new Error('Cannot resolve CIK for this filing — try the direct link below.');
 
-    // Normalise accession number: ensure dashes in XXXXXXXXXX-YY-ZZZZZZ format
     const rawAcc = (filing.accessionNo || '').replace(/-/g,'');
     if (rawAcc.length !== 18) throw new Error('Unexpected accession number format: ' + filing.accessionNo);
-    const acc      = `${rawAcc.slice(0,10)}-${rawAcc.slice(10,12)}-${rawAcc.slice(12)}`; // with dashes
-    const accClean = rawAcc; // without dashes
+    const acc      = `${rawAcc.slice(0,10)}-${rawAcc.slice(10,12)}-${rawAcc.slice(12)}`;
+    const accClean = rawAcc;
 
-    // Fetch filing index JSON to find the primary document
-    const indexUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${acc}-index.json`;
-    panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Fetching document index…</p>';
-    const idxRes = await fetch(indexUrl);
-    if (!idxRes.ok) throw new Error(`Index fetch ${idxRes.status} — filing may not be available yet.`);
-    const idx = await idxRes.json();
+    // If we have the primary document filename from submissions API, use it directly
+    let docUrl = '';
+    if (filing._primaryDoc && /\.(htm|html)$/i.test(filing._primaryDoc)) {
+      docUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${filing._primaryDoc}`;
+    } else {
+      // Fall back: fetch the index to find the primary document
+      panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Fetching document index…</p>';
+      const indexUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${acc}-index.json`;
+      const idxRes = await fetch(indexUrl);
+      if (!idxRes.ok) throw new Error(`Index fetch ${idxRes.status}`);
+      const idx = await idxRes.json();
+      const docs = idx.documents || [];
+      const primaryDoc =
+        docs.find(d => d.type === filing.formType && /\.(htm|html)$/i.test(d.name)) ||
+        docs.find(d => /\.(htm|html)$/i.test(d.name) && d.type && !['XML','XBRL','EX-','R'].some(x => (d.type||'').startsWith(x))) ||
+        docs.find(d => /\.(htm|html)$/i.test(d.name)) || docs[0];
+      if (!primaryDoc?.name) throw new Error('No primary document found in filing index.');
+      docUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${primaryDoc.name}`;
+    }
 
-    // Pick primary document: match form type, then largest .htm, then first doc
-    const docs = idx.documents || [];
-    const primaryDoc =
-      docs.find(d => d.type === filing.formType && /\.(htm|html)$/i.test(d.name)) ||
-      docs.find(d => /\.(htm|html)$/i.test(d.name) && d.type && !['XML','XBRL','EX-','R'].some(x => (d.type||'').startsWith(x))) ||
-      docs.find(d => /\.(htm|html)$/i.test(d.name)) ||
-      docs[0];
+    if (!docUrl) throw new Error('Could not determine document URL.');
 
-    if (!primaryDoc?.name) throw new Error('No primary document found in filing index.');
-
-    const docUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/${primaryDoc.name}`;
     panel.innerHTML = '<p class="sec-no-data" style="color:var(--accent)">Downloading filing — large documents may take a moment…</p>';
-
     const docRes = await fetch(docUrl);
     if (!docRes.ok) throw new Error(`Document fetch ${docRes.status}`);
     const html = await docRes.text();
