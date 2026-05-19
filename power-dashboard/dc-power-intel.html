@@ -394,6 +394,16 @@
   .sec-metric-bullet { font-size:11px; color:var(--secondary); padding:3px 0; border-bottom:1px solid rgba(255,255,255,.04); line-height:1.4; }
   .sec-metric-bullet:last-child { border-bottom:none; }
   @media(max-width:700px) { .sec-metric-grid { grid-template-columns:1fr; } }
+  /* Comparison charts */
+  .sec-chart-card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:14px; }
+  .sec-chart-title { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; }
+  @media(max-width:800px) { .sec-chart-card { grid-column:1/-1; } }
+  /* Radar chart container in panel */
+  .sec-radar-wrap { display:flex; justify-content:center; margin:10px 0 14px; }
+  /* Progress bar cells in tracker */
+  .sec-pbar-wrap { display:flex; align-items:center; gap:6px; min-width:80px; }
+  .sec-pbar-bg   { flex:1; height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; min-width:40px; }
+  .sec-pbar-fill { height:100%; border-radius:3px; }
 
   /* MARKET NAME CELL */
   .market-name-cell .name { font-weight: 600; font-size: 13px; }
@@ -626,6 +636,26 @@
     <div id="sec-dashboard-wrap" class="hidden" style="margin-bottom:20px">
       <!-- Summary stat cards -->
       <div id="sec-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:18px"></div>
+
+      <!-- 4-chart comparison grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
+        <div class="sec-chart-card">
+          <div class="sec-chart-title">MW Capacity — Live vs. In Development</div>
+          <div style="position:relative;height:260px"><canvas id="sec-chart-mw"></canvas></div>
+        </div>
+        <div class="sec-chart-card">
+          <div class="sec-chart-title">EBITDA / Operating Margin %</div>
+          <div style="position:relative;height:260px"><canvas id="sec-chart-ebitda"></canvas></div>
+        </div>
+        <div class="sec-chart-card">
+          <div class="sec-chart-title">Net Debt / EBITDA (leverage)</div>
+          <div style="position:relative;height:260px"><canvas id="sec-chart-leverage"></canvas></div>
+        </div>
+        <div class="sec-chart-card">
+          <div class="sec-chart-title">Renewable Energy %</div>
+          <div style="position:relative;height:260px"><canvas id="sec-chart-power"></canvas></div>
+        </div>
+      </div>
 
       <!-- Competitor tracker table -->
       <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px">
@@ -2998,6 +3028,7 @@ function renderSecPanels() {
       </div>
       <div class="sec-panel-body" id="sec-body-${tk}">
         <div class="sec-stat-grid">${statCards}</div>
+        ${renderSecRadar(tk)}
         ${renderSecMetricCards(tk)}
         <div class="sec-flist">
           <h4>Recent Filings <span style="font-weight:400;color:var(--muted)">(${filings.length})</span></h4>
@@ -4158,10 +4189,21 @@ function renderSecTracker() {
     cols.forEach(function(c) {
       var val = d[c.key] || '—';
       var style = 'padding:8px 12px;font-size:12px;color:var(--text);border-bottom:1px solid var(--border);white-space:nowrap;';
-      if (c.key === 'leverage') {
+      var content = val;
+
+      // Progress bar cells
+      if (c.key === 'util' || c.key === 'preleased' || c.key === 'power') {
+        var pct = null;
+        if (c.key === 'power' && /100/i.test(val)) pct = 100;
+        else { var pm = val.match(/([\d.]+)/); pct = pm ? parseFloat(pm[1]) : null; }
+        if (pct !== null) {
+          var barColor = pct >= 80 ? '#4ade80' : pct >= 50 ? '#facc15' : '#f87171';
+          content = '<div class="sec-pbar-wrap"><div class="sec-pbar-bg"><div class="sec-pbar-fill" style="width:' + Math.min(100,pct) + '%;background:' + barColor + '"></div></div><span style="font-size:11px;min-width:34px">' + val + '</span></div>';
+        }
+      } else if (c.key === 'leverage') {
         style += leverageStyle;
       }
-      cells += '<td style="' + style + '">' + val + '</td>';
+      cells += '<td style="' + style + '">' + content + '</td>';
     });
 
     rows += '<tr style="transition:background 0.15s;" onmouseover="this.style.background=\'rgba(255,255,255,0.04)\'" onmouseout="this.style.background=\'transparent\'">' + cells + '</tr>';
@@ -4173,6 +4215,171 @@ function renderSecTracker() {
     + '<tbody>' + rows + '</tbody>'
     + '</table>'
     + '</div>';
+}
+
+// ─── Comparison charts ────────────────────────────────────────────────────────
+function renderSecCharts() {
+  // Parse helpers
+  function parseMW(s) {
+    if (!s || s === 'N/A' || s.toLowerCase().includes('n/a')) return null;
+    var m = (s + '').replace(/,/g,'').match(/([\d.]+)/);
+    return m ? parseFloat(m[1]) : null;
+  }
+  function parsePct(s) {
+    if (!s || s.toLowerCase().includes('n/a')) return null;
+    var m = (s + '').match(/([\d.]+)/);
+    return m ? parseFloat(m[1]) : null;
+  }
+  function parseLev(s) {
+    if (!s) return null;
+    if (/net cash/i.test(s)) return -0.5;
+    if (/gearing/i.test(s)) return 1;
+    var m = (s + '').match(/([\d.]+)\s*x/i);
+    return m ? parseFloat(m[1]) : null;
+  }
+
+  var tickers = Object.keys(_SEC_TRACKER);
+  var labels   = tickers.map(tk => tk);
+  var colors   = tickers.map(tk => _SEC_CO_COLORS[tk] || '#888');
+  var colorsA  = colors.map(c => c + 'cc');
+
+  // Chart 1: MW stacked bar (live + dev)
+  (function() {
+    var ctx = document.getElementById('sec-chart-mw')?.getContext('2d');
+    if (!ctx) return;
+    if (window._secChartMW) window._secChartMW.destroy();
+    window._secChartMW = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label:'MW Live',         data: tickers.map(tk => parseMW(_SEC_TRACKER[tk]?.liveMW)),  backgroundColor: colors,  borderRadius:3 },
+          { label:'In Development',  data: tickers.map(tk => parseMW(_SEC_TRACKER[tk]?.devMW)),   backgroundColor: colorsA, borderRadius:3 },
+        ],
+      },
+      options: _secChartOpts('MW', true),
+    });
+  })();
+
+  // Chart 2: EBITDA % horizontal
+  (function() {
+    var ctx = document.getElementById('sec-chart-ebitda')?.getContext('2d');
+    if (!ctx) return;
+    if (window._secChartEbitda) window._secChartEbitda.destroy();
+    var data = tickers.map(tk => parsePct(_SEC_TRACKER[tk]?.ebitdaMgn));
+    window._secChartEbitda = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: [{ label:'EBITDA %', data, backgroundColor: colors, borderRadius:3 }] },
+      options: _secChartOpts('%', false),
+    });
+  })();
+
+  // Chart 3: Leverage horizontal (color-coded)
+  (function() {
+    var ctx = document.getElementById('sec-chart-leverage')?.getContext('2d');
+    if (!ctx) return;
+    if (window._secChartLev) window._secChartLev.destroy();
+    var data = tickers.map(tk => { var v = parseLev(_SEC_TRACKER[tk]?.leverage); return v === null ? null : Math.max(0, v); });
+    var lColors = data.map(v => v === null ? '#666' : v < 0 ? '#4ade80' : v < 4 ? '#4ade80' : v <= 6 ? '#facc15' : '#f87171');
+    window._secChartLev = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: [{ label:'Net Debt/EBITDA', data, backgroundColor: lColors, borderRadius:3 }] },
+      options: _secChartOpts('x', false),
+    });
+  })();
+
+  // Chart 4: Renewable %
+  (function() {
+    var ctx = document.getElementById('sec-chart-power')?.getContext('2d');
+    if (!ctx) return;
+    if (window._secChartPower) window._secChartPower.destroy();
+    var data = tickers.map(tk => {
+      var s = (_SEC_TRACKER[tk]?.power || '');
+      if (/100/i.test(s)) return 100;
+      var m = s.match(/([\d.]+)/); return m ? parseFloat(m[1]) : null;
+    });
+    var pColors = data.map(v => v === null ? '#666' : v >= 90 ? '#4ade80' : v >= 50 ? '#facc15' : '#f87171');
+    window._secChartPower = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: [{ label:'Renewable %', data, backgroundColor: pColors, borderRadius:3 }] },
+      options: _secChartOpts('%', false),
+    });
+  })();
+}
+
+function _secChartOpts(unit, stacked) {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: stacked, position:'bottom', labels:{ color:'#aaa', boxWidth:10, padding:8, font:{size:10} } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw != null ? ctx.raw + unit : '—'}` } },
+    },
+    scales: {
+      x: { stacked, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#888',font:{size:9},maxRotation:40} },
+      y: { stacked, grid:{color:'rgba(255,255,255,.06)'}, ticks:{color:'#888',font:{size:10}}, beginAtZero:true },
+    },
+  };
+}
+
+// ─── Radar chart per company panel ───────────────────────────────────────────
+function renderSecRadar(tk) {
+  var d = _SEC_TRACKER[tk];
+  if (!d) return '';
+  var canvasId = 'sec-radar-' + tk;
+
+  // Schedule chart init after DOM insert
+  setTimeout(function() {
+    var ctx = document.getElementById(canvasId)?.getContext('2d');
+    if (!ctx) return;
+    if (window['_secRadar_' + tk]) window['_secRadar_' + tk].destroy();
+
+    function norm(val, max) { return val == null ? 0 : Math.min(100, Math.round(val / max * 100)); }
+    function parseMW(s) { var m = (s||'').replace(/,/g,'').match(/([\d.]+)/); return m ? parseFloat(m[1]) : 0; }
+    function parsePct(s) { var m = (s||'').match(/([\d.]+)/); return m ? parseFloat(m[1]) : 0; }
+    function parseLevInv(s) { // high leverage = low score
+      if (/net cash/i.test(s||'')) return 100;
+      var m = (s||'').match(/([\d.]+)\s*x/i); if (!m) return 50;
+      return Math.max(0, Math.round(100 - parseFloat(m[1]) * 10));
+    }
+    function parsePower(s) { if (/100/i.test(s||'')) return 100; var m=(s||'').match(/([\d.]+)/); return m?parseFloat(m[1]):0; }
+
+    var liveMW   = parseMW(d.liveMW);
+    var ebitda   = parsePct(d.ebitdaMgn);
+    var util     = parsePct(d.util);
+    var preLsd   = parsePct(d.preleased);
+    var levScore = parseLevInv(d.leverage);
+    var powerPct = parsePower(d.power);
+
+    window['_secRadar_' + tk] = new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Scale (MW)', 'EBITDA %', 'Utilization', 'Pre-Leased', 'Balance Sheet', 'Renewable'],
+        datasets: [{
+          label: tk,
+          data: [norm(liveMW,20000), norm(ebitda,80), norm(util,100), norm(preLsd,100), levScore, norm(powerPct,100)],
+          fill: true,
+          backgroundColor: (_SEC_CO_COLORS[tk]||'#4f8ef7') + '22',
+          borderColor:     _SEC_CO_COLORS[tk]||'#4f8ef7',
+          pointBackgroundColor: _SEC_CO_COLORS[tk]||'#4f8ef7',
+          borderWidth: 2, pointRadius: 3,
+        }],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{ display:false } },
+        scales: {
+          r: {
+            min:0, max:100, ticks:{ display:false, stepSize:25 },
+            grid:{ color:'rgba(255,255,255,.1)' },
+            angleLines:{ color:'rgba(255,255,255,.1)' },
+            pointLabels:{ color:'#aaa', font:{size:9} },
+          },
+        },
+      },
+    });
+  }, 80);
+
+  return '<div class="sec-radar-wrap"><div style="width:220px;height:200px;position:relative"><canvas id="' + canvasId + '"></canvas></div></div>';
 }
 
 function renderSecMetricCards(tk) {
@@ -4249,6 +4456,9 @@ function renderSecDashboard() {
       </div>`;
     }).filter(Boolean).join('');
   }
+
+  // ── Comparison charts ────────────────────────────────────────────────────────
+  renderSecCharts();
 
   // ── Competitor tracker table ─────────────────────────────────────────────────
   renderSecTracker();
