@@ -2837,31 +2837,46 @@ async function loadSecFilings(force = false) {
   if (elPrompt) elPrompt.style.display = 'none';
   if (elBtn)    elBtn.disabled = true;
 
-  // CIK → ticker map so EFTS results can be matched to watched companies
+  // CIK → ticker map (no leading zeros — strip them from s.ciks[0])
   const _CIK_TICKER = {
     '789019':'MSFT', '1018724':'AMZN', '1652044':'GOOGL', '1326801':'META',
     '1341439':'ORCL', '2015610':'CRWV', '1045810':'NVDA', '1101239':'EQIX',
     '1297996':'DLR', '1020569':'IRM', '1053507':'AMT',
   };
-  // Also match by entity name fragment for robustness
   const _NAME_TICKER = {
-    'microsoft':'MSFT', 'amazon':'AMZN', 'alphabet':'GOOGL', 'google':'GOOGL',
+    'microsoft':'MSFT', 'amazon com':'AMZN', 'amazon.com':'AMZN', 'alphabet':'GOOGL',
     'meta platforms':'META', 'oracle':'ORCL', 'coreweave':'CRWV',
     'nvidia':'NVDA', 'equinix':'EQIX', 'digital realty':'DLR',
     'iron mountain':'IRM', 'american tower':'AMT', 'goodman':'GMG',
   };
   const _allowedTickers = new Set(_SEC_COMPANIES.map(c => c.ticker));
 
+  // EFTS response shape (as of 2025):
+  //   _source.adsh          — accession number (was accession_no)
+  //   _source.file_type     — form type (was form_type)
+  //   _source.file_date     — filing date ✓
+  //   _source.ciks          — array of CIK strings with leading zeros e.g. ["0001018724"]
+  //   _source.display_names — array of strings: "Name  (TICK)  (CIK NNNN)"
+  function _parseDisplay(s) {
+    const str = ((s.display_names || [])[0] || '');
+    // Extract ticker: last occurrence of (XX) before (CIK
+    const tkM  = str.match(/\(([A-Z]{1,5})\)\s*\(CIK/);
+    const ticker = tkM ? tkM[1] : '';
+    const name  = str.split('  (')[0].trim() || str;
+    const cik   = ((s.ciks || [])[0] || '').replace(/^0+/, '');
+    return { ticker, name, cik };
+  }
+
   function _resolveTicker(s) {
-    // Try tickers array first
-    for (const t of (s.tickers || [])) { if (_allowedTickers.has(t)) return t; }
-    // Try CIK lookup
-    const cik = (s.display_names || [])[0]?.entity_id || '';
-    if (_CIK_TICKER[cik] && _allowedTickers.has(_CIK_TICKER[cik])) return _CIK_TICKER[cik];
-    // Try entity name
-    const name = (s.entity_name || '').toLowerCase();
+    const { ticker, name, cik } = _parseDisplay(s);
+    // 1. ticker extracted directly from display_names string
+    if (ticker && _allowedTickers.has(ticker)) return ticker;
+    // 2. CIK map lookup
+    if (cik && _CIK_TICKER[cik]) return _CIK_TICKER[cik];
+    // 3. entity name fragment
+    const lname = name.toLowerCase();
     for (const [frag, tk] of Object.entries(_NAME_TICKER)) {
-      if (name.includes(frag) && _allowedTickers.has(tk)) return tk;
+      if (lname.includes(frag)) return tk;
     }
     return null;
   }
@@ -2884,20 +2899,20 @@ async function loadSecFilings(force = false) {
         const hits = json.hits?.hits || [];
         for (const h of hits) {
           const s   = h._source || {};
-          const acc = s.accession_no || h._id || '';
+          const acc = s.adsh || h._id || '';       // EFTS uses .adsh, not .accession_no
           if (!acc || seen.has(acc)) continue;
           const ticker = _resolveTicker(s);
-          if (!ticker) continue;  // not a watched company
+          if (!ticker) continue;                   // not a watched company
           seen.add(acc);
-          const cik     = (s.display_names || [])[0]?.entity_id || '';
+          const { name: entityName, cik } = _parseDisplay(s);
           const accClean = acc.replace(/-/g, '');
           const filingUrl = cik
             ? `https://www.sec.gov/Archives/edgar/data/${cik}/${accClean}/`
             : `https://efts.sec.gov/LATEST/search-index?q=${encodeURIComponent(acc)}`;
           results.push({
             accessionNo: acc, ticker, _topic: label,
-            companyNameLong: s.entity_name || (s.display_names||[])[0]?.name || ticker,
-            formType: s.form_type || '',
+            companyNameLong: entityName || ticker,
+            formType: s.file_type || s.form || '', // EFTS uses .file_type, not .form_type
             filedAt:  s.file_date || '',
             filingUrl,
           });
