@@ -405,6 +405,28 @@
   .sec-pbar-bg   { flex:1; height:6px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; min-width:40px; }
   .sec-pbar-fill { height:100%; border-radius:3px; }
 
+  /* MarketScreener Financial Ratios Section */
+  .sec-fin-tab { padding:8px 14px; border:none; background:none; color:var(--muted); font-size:12px; font-weight:500; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.15s; font-family:inherit; }
+  .sec-fin-tab:hover { color:var(--text); }
+  .sec-fin-tab.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+  .sec-fin-panel { display:none; }
+  .sec-fin-panel.active { display:block; }
+  .sec-fin-co-btn { padding:3px 9px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:10px; font-weight:700; cursor:pointer; transition:all 0.15s; font-family:inherit; }
+  .sec-fin-co-btn:hover { color:var(--text); border-color:var(--secondary); }
+  .sec-fin-co-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(79,142,247,0.1); }
+  .ms-tbl { width:100%; border-collapse:collapse; font-size:12px; }
+  .ms-tbl th { color:var(--muted); font-size:11px; font-weight:700; padding:6px 14px; text-align:right; border-bottom:2px solid var(--border); white-space:nowrap; }
+  .ms-tbl th.ms-lbl-hdr { text-align:left; font-style:italic; font-weight:400; }
+  .ms-tbl th.ms-cur, .ms-tbl td.ms-cur { background:rgba(79,142,247,0.07); }
+  .ms-tbl td { padding:6px 14px; text-align:right; border-bottom:1px solid rgba(255,255,255,0.03); color:var(--text); white-space:nowrap; }
+  .ms-tbl td.ms-lbl { text-align:left; color:var(--secondary); }
+  .ms-tbl tr.ms-grp td { padding:10px 14px 5px; font-weight:700; color:var(--text); font-size:12px; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:rgba(255,255,255,0.018); }
+  .ms-tbl tr.ms-chg td { font-size:10px; color:var(--muted); }
+  .ms-tbl tr.ms-chg td.ms-lbl { padding-left:22px; }
+  .ms-tbl tr:not(.ms-grp):hover td { background:rgba(255,255,255,0.025); }
+  .sec-fin-chart-wrap { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:12px; }
+  .sec-fin-tbl-wrap { background:var(--card); border:1px solid var(--border); border-radius:8px; overflow-x:auto; margin-bottom:12px; }
+
   /* MARKET NAME CELL */
   .market-name-cell .name { font-weight: 600; font-size: 13px; }
   .market-name-cell .sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
@@ -666,6 +688,37 @@
       <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
         <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Recent Filings by Type</div>
         <div id="sec-topic-bars"></div>
+      </div>
+    </div>
+
+    <!-- MarketScreener-style Financial Data Section -->
+    <div id="sec-fin-section" style="margin-top:22px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Financial Data — Historical Metrics &amp; Ratios</div>
+        <div id="sec-fin-co-tabs" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+      </div>
+      <div style="display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:16px">
+        <button class="sec-fin-tab active" onclick="switchSecFinTab('income',this)">Income Statement</button>
+        <button class="sec-fin-tab" onclick="switchSecFinTab('ratios',this)">Financial Ratios</button>
+        <button class="sec-fin-tab" onclick="switchSecFinTab('compare',this)">Cross-Company</button>
+      </div>
+      <div id="sec-fin-loading" style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0;display:none">↻ Loading XBRL financial data from SEC EDGAR (10–30s for large companies)…</div>
+      <div id="sec-fin-error" style="color:#f87171;font-size:12px;padding:8px 0;display:none"></div>
+      <!-- Income Statement -->
+      <div id="sec-fin-income" class="sec-fin-panel active">
+        <div class="sec-fin-chart-wrap">
+          <div id="sec-fin-chart-title" style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px">Published Financial Data</div>
+          <div style="position:relative;height:260px"><canvas id="sec-fin-chart"></canvas></div>
+        </div>
+        <div class="sec-fin-tbl-wrap" id="sec-fin-income-wrap"></div>
+      </div>
+      <!-- Financial Ratios -->
+      <div id="sec-fin-ratios" class="sec-fin-panel">
+        <div class="sec-fin-tbl-wrap" id="sec-fin-ratios-wrap"></div>
+      </div>
+      <!-- Cross-Company Comparison -->
+      <div id="sec-fin-compare" class="sec-fin-panel">
+        <div class="sec-fin-tbl-wrap" id="sec-fin-compare-wrap"></div>
       </div>
     </div>
 
@@ -1403,7 +1456,7 @@ function switchTab(id, btn) {
   btn.classList.add('active');
   if (id === 'map' && !window._mapInit) initLeafletMap();
   else if (id === 'map' && window._leafletMap) setTimeout(() => window._leafletMap.invalidateSize(), 50);
-  else if (id === 'markets' && !window._secInit) { window._secInit = true; loadSecFilings(); }
+  else if (id === 'markets') { if(!window._secInit){window._secInit=true;loadSecFilings();} if(!window._secFinInit){window._secFinInit=true;initSecFinSection();} }
   else if (id === 'usgrid' && !window._usGridInit) {
     window._usGridInit = true;
     initTransmissionFilters();
@@ -4662,6 +4715,333 @@ const _SEC_META_FORMS = [
 ];
 
 let _secMetaResults = [];
+
+// ── MarketScreener-style XBRL Financial Section ────────────────────────────────
+const _XBRL_CACHE = {};
+let _secFinTk = 'MSFT';
+let _secFinChartInst = null;
+
+const _XBRL_TAGS = {
+  rv:  ['RevenueFromContractWithCustomerExcludingAssessedTax','Revenues','SalesRevenueNet'],
+  ni:  ['NetIncomeLoss','ProfitLoss'],
+  oi:  ['OperatingIncomeLoss'],
+  gp:  ['GrossProfit'],
+  as:  ['Assets'],
+  eq:  ['StockholdersEquity','StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest'],
+  cx:  ['PaymentsToAcquirePropertyPlantAndEquipment','PaymentsForCapitalImprovements'],
+  da:  ['DepreciationDepletionAndAmortization','DepreciationAmortizationAndAccretionNet'],
+  ocf: ['NetCashProvidedByUsedInOperatingActivities'],
+  cs:  ['CashAndCashEquivalentsAtCarryingValue','CashCashEquivalentsAndShortTermInvestments','CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents'],
+  ld:  ['LongTermDebt','LongTermDebtNoncurrent','LongTermDebtAndCapitalLeaseObligations'],
+};
+
+function _xbrlAnnual(facts, tags) {
+  const ns = (facts && facts['us-gaap']) || {};
+  for (const tag of tags) {
+    const concept = ns[tag];
+    if (!concept) continue;
+    const unitKey = Object.keys(concept.units || {})[0];
+    if (!unitKey) continue;
+    const allArr = concept.units[unitKey] || [];
+    // Prefer fp=FY, form=10-K
+    let arr = allArr.filter(r => r.form === '10-K' && r.fp === 'FY');
+    if (!arr.length) {
+      // fallback: 10-K with ~365-day period
+      arr = allArr.filter(r => {
+        if (r.form !== '10-K' || !r.start || !r.end) return false;
+        const days = (new Date(r.end) - new Date(r.start)) / 86400000;
+        return days > 300 && days < 400;
+      });
+    }
+    if (!arr.length) continue;
+    const byYr = {};
+    arr.forEach(r => {
+      const yr = r.fy ? String(r.fy) : (r.end || '').slice(0,4);
+      if (!yr) return;
+      if (!byYr[yr] || r.filed > byYr[yr].filed) byYr[yr] = r;
+    });
+    return Object.fromEntries(Object.entries(byYr).map(([y,r]) => [y, r.val]));
+  }
+  return {};
+}
+
+async function _fetchXbrl(ticker) {
+  if (_XBRL_CACHE[ticker]) return _XBRL_CACHE[ticker];
+  const cik = _SEC_CIK_MAP[ticker];
+  if (!cik) throw new Error('No CIK for ' + ticker);
+  const r = await fetch(`https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`);
+  if (!r.ok) throw new Error(`EDGAR XBRL: HTTP ${r.status}`);
+  const {facts} = await r.json();
+  const raw = {};
+  for (const [k, tags] of Object.entries(_XBRL_TAGS)) raw[k] = _xbrlAnnual(facts, tags);
+  raw.years = Object.keys(raw.rv).filter(y => y >= '2019' && y <= '2025').sort();
+  _XBRL_CACHE[ticker] = raw;
+  return raw;
+}
+
+function _xMetrics(d, yr) {
+  const rv  = d.rv[yr]  ?? null;
+  const ni  = d.ni[yr]  ?? null;
+  const oi  = d.oi[yr]  ?? null;
+  const gp  = d.gp[yr]  ?? null;
+  const da  = d.da[yr]  ?? null;
+  const ocf = d.ocf[yr] ?? null;
+  const as  = d.as[yr]  ?? null;
+  const eq  = d.eq[yr]  ?? null;
+  const cs  = d.cs[yr]  ?? null;
+  const ld  = d.ld[yr]  ?? null;
+  const cx  = d.cx[yr]  != null ? Math.abs(d.cx[yr]) : null;
+  const ebitda  = oi != null && da != null ? oi + da : null;
+  const fcf     = ocf != null && cx != null ? ocf - cx : null;
+  const netDebt = ld  != null && cs != null ? ld  - cs : null;
+  return {
+    rv, ni, oi, gp, da, cx, ocf, as, eq, cs, ld, ebitda, fcf, netDebt,
+    grossMgn:  rv && gp     != null ? gp/rv      : null,
+    ebitdaMgn: rv && ebitda != null ? ebitda/rv  : null,
+    ebitMgn:   rv && oi     != null ? oi/rv      : null,
+    netMgn:    rv && ni     != null ? ni/rv      : null,
+    fcfMgn:    rv && fcf    != null ? fcf/rv     : null,
+    roa:       as && ni     != null ? ni/as      : null,
+    roe:       eq && ni     != null ? ni/eq      : null,
+    leverage:  ebitda && netDebt != null ? netDebt/ebitda : null,
+    capexRev:  rv && cx     != null ? cx/rv      : null,
+  };
+}
+
+function _fmtB(v) {
+  if (v == null) return '—';
+  const b = v / 1e9;
+  return (b < 0 ? '-$' : '$') + Math.abs(b).toFixed(1) + 'B';
+}
+function _fmtPct(v) { return v != null ? `${(v*100).toFixed(1)}%` : '—'; }
+function _fmtX(v) {
+  if (v == null) return '—';
+  const s = v.toFixed(2) + 'x';
+  if (v < 0) return `<span style="color:#22c55e">${s}</span>`;
+  if (v > 5)  return `<span style="color:#f87171">${s}</span>`;
+  if (v > 3)  return `<span style="color:#f59e0b">${s}</span>`;
+  return s;
+}
+
+function _msHead(years, curYr) {
+  return `<thead><tr>
+    <th class="ms-lbl-hdr" style="min-width:190px">Fiscal Period</th>
+    ${years.map(y => `<th${y===curYr?' class="ms-cur"':''}>${y}</th>`).join('')}
+  </tr></thead>`;
+}
+
+function _msRow(label, years, curYr, valFn, isChange=false) {
+  const cells = years.map(y => {
+    const v = valFn(y);
+    return `<td${y===curYr?' class="ms-cur"':''}>${v ?? '—'}</td>`;
+  }).join('');
+  const chgCls = isChange ? ' class="ms-chg"' : '';
+  const indent  = isChange ? ' style="padding-left:22px"' : '';
+  return `<tr${chgCls}><td class="ms-lbl"${indent}>${label}</td>${cells}</tr>`;
+}
+
+function _msSect(label, n) {
+  return `<tr class="ms-grp"><td colspan="${n+1}">${label}</td></tr>`;
+}
+
+async function initSecFinSection() {
+  const el = document.getElementById('sec-fin-co-tabs');
+  if (el && !el.children.length) {
+    el.innerHTML = _SEC_COMPANIES.map(c =>
+      `<button class="sec-fin-co-btn${c.ticker===_secFinTk?' active':''}" onclick="selectSecFinCo('${c.ticker}')">${c.ticker}</button>`
+    ).join('');
+  }
+  await _loadRenderFin(_secFinTk);
+}
+
+async function selectSecFinCo(tk) {
+  _secFinTk = tk;
+  document.querySelectorAll('.sec-fin-co-btn').forEach(b => b.classList.toggle('active', b.textContent.trim()===tk));
+  await _loadRenderFin(tk);
+}
+
+function switchSecFinTab(tab, btn) {
+  document.querySelectorAll('.sec-fin-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.sec-fin-panel').forEach(p => p.classList.remove('active'));
+  const p = document.getElementById('sec-fin-' + tab);
+  if (p) p.classList.add('active');
+  if (tab === 'compare') _renderFinCompare();
+}
+
+async function _loadRenderFin(tk) {
+  const loadEl = document.getElementById('sec-fin-loading');
+  const errEl  = document.getElementById('sec-fin-error');
+  if (loadEl) loadEl.style.display = 'block';
+  if (errEl)  { errEl.style.display = 'none'; errEl.textContent = ''; }
+  try {
+    const d = await _fetchXbrl(tk);
+    const titleEl = document.getElementById('sec-fin-chart-title');
+    if (titleEl) titleEl.textContent = `Published Financial Data: ${tk}`;
+    _renderFinChart(d, tk);
+    _renderFinIncomeTable(d, tk);
+    _renderFinRatiosTable(d, tk);
+  } catch(e) {
+    if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Could not load XBRL data: ' + e.message; }
+  } finally {
+    if (loadEl) loadEl.style.display = 'none';
+  }
+}
+
+function _renderFinChart(d, tk) {
+  const ctx = document.getElementById('sec-fin-chart');
+  if (!ctx) return;
+  if (_secFinChartInst) { _secFinChartInst.destroy(); _secFinChartInst = null; }
+  const yrs = d.years;
+  const toB  = obj => yrs.map(y => obj[y] != null ? obj[y]/1e9 : null);
+  const ebitdaM = yrs.map(y => { const m=_xMetrics(d,y); return m.ebitdaMgn!=null ? m.ebitdaMgn*100 : null; });
+  const netM    = yrs.map(y => { const m=_xMetrics(d,y); return m.netMgn!=null ? m.netMgn*100 : null; });
+  _secFinChartInst = new Chart(ctx, {
+    data: { labels: yrs, datasets: [
+      { type:'bar',  label:'Total Revenue',    data:toB(d.rv), backgroundColor:'rgba(100,116,139,0.7)',  yAxisID:'y',  order:3 },
+      { type:'bar',  label:'Operating Income', data:toB(d.oi), backgroundColor:'rgba(234,179,8,0.8)',    yAxisID:'y',  order:2 },
+      { type:'bar',  label:'Net Income',       data:toB(d.ni), backgroundColor:'rgba(34,197,94,0.8)',    yAxisID:'y',  order:1 },
+      { type:'line', label:'EBITDA Margin %',  data:ebitdaM,   borderColor:'#f59e0b', pointBackgroundColor:'#f59e0b', backgroundColor:'transparent', yAxisID:'y2', tension:0.3, pointRadius:4, borderWidth:2, order:0 },
+      { type:'line', label:'Net Margin %',     data:netM,      borderColor:'#22c55e', pointBackgroundColor:'#22c55e', backgroundColor:'transparent', yAxisID:'y2', tension:0.3, pointRadius:4, borderWidth:2, order:0 },
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ position:'bottom', labels:{ color:'#94a3b8', font:{size:11}, boxWidth:12, padding:16 } },
+        tooltip:{ callbacks:{ label: c => {
+          const v = c.parsed.y;
+          if (v==null) return null;
+          return c.dataset.yAxisID==='y2' ? `${c.dataset.label}: ${v.toFixed(1)}%` : `${c.dataset.label}: $${v.toFixed(1)}B`;
+        }}}
+      },
+      scales:{
+        x:  { ticks:{color:'#94a3b8',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)',borderDash:[3,3]} },
+        y:  { position:'left',  ticks:{color:'#94a3b8',font:{size:10},callback:v=>`$${v.toFixed(0)}B`}, grid:{color:'rgba(255,255,255,0.04)'}, title:{display:true,text:'USD Billions',color:'#64748b',font:{size:10}} },
+        y2: { position:'right', ticks:{color:'#94a3b8',font:{size:10},callback:v=>`${v.toFixed(0)}%`},  grid:{display:false}, title:{display:true,text:'%',color:'#64748b',font:{size:10}} },
+      }
+    }
+  });
+}
+
+function _renderFinIncomeTable(d, tk) {
+  const wrap = document.getElementById('sec-fin-income-wrap');
+  if (!wrap) return;
+  const yrs = d.years;
+  if (!yrs.length) { wrap.innerHTML = `<p style="padding:16px;color:var(--muted);font-size:12px">No XBRL annual data found for ${tk}</p>`; return; }
+  const curYr = yrs[yrs.length-1];
+  const n = yrs.length;
+
+  const yoyChg = (obj, y) => {
+    const i = yrs.indexOf(y);
+    if (i < 1) return null;
+    const prev = obj[yrs[i-1]], cur = obj[y];
+    if (prev == null || cur == null || prev === 0) return null;
+    return (cur - prev) / Math.abs(prev);
+  };
+
+  const bRow = (label, obj) => _msRow(label, yrs, curYr, y => _fmtB(obj[y]));
+  const chgRow = (label, obj) => _msRow(label, yrs, curYr, y => {
+    const v = yoyChg(obj, y);
+    if (v == null) return '—';
+    const col = v >= 0 ? '#22c55e' : '#f87171';
+    return `<span style="color:${col}">${v>=0?'+':''}${(v*100).toFixed(1)}%</span>`;
+  }, true);
+
+  const absCx  = Object.fromEntries(yrs.map(y => [y, d.cx[y] != null ? Math.abs(d.cx[y]) : null]));
+  const fcfMap = Object.fromEntries(yrs.map(y => [y, _xMetrics(d,y).fcf]));
+
+  wrap.innerHTML = `<table class="ms-tbl">
+    ${_msHead(yrs, curYr)}
+    <tbody>
+      ${_msSect('Revenue &amp; Profitability', n)}
+      ${bRow('Total Revenue', d.rv)}
+      ${chgRow('Change', d.rv)}
+      ${bRow('Operating Income (EBIT)', d.oi)}
+      ${chgRow('Change', d.oi)}
+      ${bRow('Net Income', d.ni)}
+      ${chgRow('Change', d.ni)}
+      ${bRow('Gross Profit', d.gp)}
+      ${_msSect('Cash Flow', n)}
+      ${bRow('Operating Cash Flow', d.ocf)}
+      ${_msRow('Capital Expenditure', yrs, curYr, y => _fmtB(absCx[y]))}
+      ${bRow('Free Cash Flow', fcfMap)}
+    </tbody>
+  </table>`;
+}
+
+function _renderFinRatiosTable(d, tk) {
+  const wrap = document.getElementById('sec-fin-ratios-wrap');
+  if (!wrap) return;
+  const yrs = d.years;
+  if (!yrs.length) { wrap.innerHTML = ''; return; }
+  const curYr = yrs[yrs.length-1];
+  const n = yrs.length;
+
+  const pRow = (label, fn) => _msRow(label, yrs, curYr, y => _fmtPct(fn(_xMetrics(d,y))));
+  const xRow = (label, fn) => _msRow(label, yrs, curYr, y => _fmtX(fn(_xMetrics(d,y))));
+
+  wrap.innerHTML = `<table class="ms-tbl">
+    ${_msHead(yrs, curYr)}
+    <tbody>
+      ${_msSect('Profitability', n)}
+      ${pRow('Return on Assets (ROA) %',  m => m.roa)}
+      ${pRow('Return on Equity (ROE) %',  m => m.roe)}
+      ${_msSect('Margin Analysis', n)}
+      ${pRow('Gross Profit Margin %',     m => m.grossMgn)}
+      ${pRow('EBITDA Margin %',           m => m.ebitdaMgn)}
+      ${pRow('EBIT Margin %',             m => m.ebitMgn)}
+      ${pRow('Net Income Margin %',       m => m.netMgn)}
+      ${pRow('FCF Margin %',              m => m.fcfMgn)}
+      ${_msSect('Capital Intensity', n)}
+      ${pRow('CAPEX / Revenue %',         m => m.capexRev)}
+      ${xRow('Net Debt / EBITDA',         m => m.leverage)}
+    </tbody>
+  </table>`;
+}
+
+async function _renderFinCompare() {
+  const wrap = document.getElementById('sec-fin-compare-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px">Loading XBRL data for all companies… (30–60s)</div>';
+  const tks = _SEC_COMPANIES.map(c => c.ticker);
+  const res = {};
+  await Promise.allSettled(tks.map(async tk => {
+    try { res[tk] = await _fetchXbrl(tk); } catch(e) { res[tk] = null; }
+  }));
+  const yr = '2024';
+  const metricDefs = [
+    { label:'Revenue ($B)',       fn:(d,y) => _fmtB(d.rv[y]) },
+    { label:'Net Income ($B)',    fn:(d,y) => _fmtB(_xMetrics(d,y).ni) },
+    { label:'EBITDA Margin %',    fn:(d,y) => _fmtPct(_xMetrics(d,y).ebitdaMgn) },
+    { label:'EBIT Margin %',      fn:(d,y) => _fmtPct(_xMetrics(d,y).ebitMgn) },
+    { label:'Net Margin %',       fn:(d,y) => _fmtPct(_xMetrics(d,y).netMgn) },
+    { label:'FCF Margin %',       fn:(d,y) => _fmtPct(_xMetrics(d,y).fcfMgn) },
+    { label:'ROA %',              fn:(d,y) => _fmtPct(_xMetrics(d,y).roa) },
+    { label:'ROE %',              fn:(d,y) => _fmtPct(_xMetrics(d,y).roe) },
+    { label:'Net Debt / EBITDA',  fn:(d,y) => _fmtX(_xMetrics(d,y).leverage) },
+    { label:'CAPEX / Revenue %',  fn:(d,y) => _fmtPct(_xMetrics(d,y).capexRev) },
+  ];
+  const ths = tks.map(tk => {
+    const col = _SEC_CO_COLORS[tk] || '#888';
+    return `<th style="color:${col};text-align:right;font-size:11px;font-weight:700;white-space:nowrap;padding:6px 10px;border-bottom:2px solid var(--border)">${tk}</th>`;
+  }).join('');
+  const rows = metricDefs.map(({label,fn}) => {
+    const cells = tks.map(tk => {
+      const d = res[tk];
+      return `<td style="text-align:right;font-size:11px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,0.03);white-space:nowrap">${d ? fn(d,yr) : '—'}</td>`;
+    }).join('');
+    return `<tr><td style="color:var(--secondary);font-size:11px;white-space:nowrap;padding:6px 14px;border-bottom:1px solid rgba(255,255,255,0.03)">${label}</td>${cells}</tr>`;
+  }).join('');
+  wrap.innerHTML = `<div style="font-size:11px;color:var(--muted);padding:10px 14px 6px">Fiscal Year ${yr} · Source: SEC EDGAR XBRL · <em>Companies without ${yr} 10-K XBRL data show —</em></div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="text-align:left;color:var(--muted);font-size:10px;font-weight:400;font-style:italic;padding:6px 14px;border-bottom:2px solid var(--border);min-width:160px">Metric</th>
+        ${ths}
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
 
 async function loadSecMetaFilings() {
   const ticker   = (document.getElementById('sec-meta-ticker')?.value  || '').trim().toUpperCase();
