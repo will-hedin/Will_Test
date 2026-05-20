@@ -4735,32 +4735,37 @@ const _XBRL_TAGS = {
   ld:  ['LongTermDebt','LongTermDebtNoncurrent','LongTermDebtAndCapitalLeaseObligations'],
 };
 
-function _xbrlAnnual(facts, tags) {
-  const ns = (facts && facts['us-gaap']) || {};
-  for (const tag of tags) {
-    const concept = ns[tag];
-    if (!concept) continue;
-    const unitKey = Object.keys(concept.units || {})[0];
-    if (!unitKey) continue;
-    const allArr = concept.units[unitKey] || [];
-    // Prefer fp=FY, form=10-K
-    let arr = allArr.filter(r => r.form === '10-K' && r.fp === 'FY');
-    if (!arr.length) {
-      // fallback: 10-K with ~365-day period
-      arr = allArr.filter(r => {
-        if (r.form !== '10-K' || !r.start || !r.end) return false;
-        const days = (new Date(r.end) - new Date(r.start)) / 86400000;
-        return days > 300 && days < 400;
-      });
-    }
-    if (!arr.length) continue;
-    const byYr = {};
-    arr.forEach(r => {
-      const yr = r.fy ? String(r.fy) : (r.end || '').slice(0,4);
-      if (!yr) return;
-      if (!byYr[yr] || r.filed > byYr[yr].filed) byYr[yr] = r;
+function _extractAnnual(unitArr) {
+  let arr = unitArr.filter(r => r.form === '10-K' && r.fp === 'FY');
+  if (!arr.length) {
+    arr = unitArr.filter(r => {
+      if (r.form !== '10-K' || !r.start || !r.end) return false;
+      const days = (new Date(r.end) - new Date(r.start)) / 86400000;
+      return days > 300 && days < 400;
     });
-    return Object.fromEntries(Object.entries(byYr).map(([y,r]) => [y, r.val]));
+  }
+  if (!arr.length) return {};
+  const byYr = {};
+  arr.forEach(r => {
+    const yr = r.fy ? String(r.fy) : (r.end || '').slice(0,4);
+    if (!yr) return;
+    if (!byYr[yr] || r.filed > byYr[yr].filed) byYr[yr] = r;
+  });
+  return Object.fromEntries(Object.entries(byYr).map(([y,r]) => [y, r.val]));
+}
+
+async function _fetchOneConcept(cik, tags) {
+  // companyconcept API: ~100KB per metric, much smaller than 8MB companyfacts
+  for (const tag of tags) {
+    try {
+      const r = await fetch(`https://data.sec.gov/api/xbrl/companyconcept/CIK${cik}/us-gaap/${tag}.json`);
+      if (!r.ok) continue;
+      const data = await r.json();
+      const unitKey = Object.keys(data.units || {})[0];
+      if (!unitKey) continue;
+      const extracted = _extractAnnual(data.units[unitKey] || []);
+      if (Object.keys(extracted).length > 0) return extracted;
+    } catch(e) { continue; }
   }
   return {};
 }
@@ -4769,12 +4774,15 @@ async function _fetchXbrl(ticker) {
   if (_XBRL_CACHE[ticker]) return _XBRL_CACHE[ticker];
   const cik = _SEC_CIK_MAP[ticker];
   if (!cik) throw new Error('No CIK for ' + ticker);
-  const r = await fetch(`https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`);
-  if (!r.ok) throw new Error(`EDGAR XBRL: HTTP ${r.status}`);
-  const {facts} = await r.json();
-  const raw = {};
-  for (const [k, tags] of Object.entries(_XBRL_TAGS)) raw[k] = _xbrlAnnual(facts, tags);
-  raw.years = Object.keys(raw.rv).filter(y => y >= '2019' && y <= '2025').sort();
+  // Fetch each metric in parallel via companyconcept endpoint
+  const entries = await Promise.all(
+    Object.entries(_XBRL_TAGS).map(([key, tags]) =>
+      _fetchOneConcept(cik, tags).then(d => [key, d])
+    )
+  );
+  const raw = Object.fromEntries(entries);
+  raw.years = Object.keys(raw.rv || {}).filter(y => y >= '2019' && y <= '2025').sort();
+  if (!raw.years.length) throw new Error('No annual 10-K data found for ' + ticker);
   _XBRL_CACHE[ticker] = raw;
   return raw;
 }
@@ -5003,12 +5011,14 @@ function _renderFinRatiosTable(d, tk) {
 async function _renderFinCompare() {
   const wrap = document.getElementById('sec-fin-compare-wrap');
   if (!wrap) return;
-  wrap.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:16px">Loading XBRL data for all companies… (30–60s)</div>';
   const tks = _SEC_COMPANIES.map(c => c.ticker);
   const res = {};
-  await Promise.allSettled(tks.map(async tk => {
+  wrap.innerHTML = `<div style="color:var(--muted);font-size:12px;padding:16px">Loading XBRL data for all companies (0/${tks.length})…</div>`;
+  // Sequential fetch to respect SEC rate limits (10 req/s)
+  for (const tk of tks) {
     try { res[tk] = await _fetchXbrl(tk); } catch(e) { res[tk] = null; }
-  }));
+    wrap.innerHTML = `<div style="color:var(--muted);font-size:12px;padding:16px">Loading XBRL data… ${Object.keys(res).length}/${tks.length} companies</div>`;
+  }
   const yr = '2024';
   const metricDefs = [
     { label:'Revenue ($B)',       fn:(d,y) => _fmtB(d.rv[y]) },
