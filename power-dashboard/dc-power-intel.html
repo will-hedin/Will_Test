@@ -622,13 +622,12 @@
           <th onclick="sortTable(2)" data-col="2">ISO/RTO <span class="sort-icon"></span></th>
           <th onclick="sortTable(3)" data-col="3">Queue Depth <span class="sort-icon"></span></th>
           <th onclick="sortTable(4)" data-col="4">Wait <span class="sort-icon"></span></th>
-          <th onclick="sortTable(5)" data-col="5">Est. Online <span class="sort-icon"></span></th>
-          <th onclick="sortTable(6)" data-col="6">Status <span class="sort-icon"></span></th>
-          <th onclick="sortTable(7)" data-col="7">Min Load <span class="sort-icon"></span></th>
-          <th onclick="sortTable(8)" data-col="8">Take-or-Pay <span class="sort-icon"></span></th>
-          <th onclick="sortTable(9)" data-col="9">Collateral/MW <span class="sort-icon"></span></th>
-          <th onclick="sortTable(10)" data-col="10">Term <span class="sort-icon"></span></th>
-          <th onclick="sortTable(11)" data-col="11">Trend <span class="sort-icon"></span></th>
+          <th onclick="sortTable(5)" data-col="5">Status <span class="sort-icon"></span></th>
+          <th onclick="sortTable(6)" data-col="6">Min Load <span class="sort-icon"></span></th>
+          <th onclick="sortTable(7)" data-col="7">Take-or-Pay <span class="sort-icon"></span></th>
+          <th onclick="sortTable(8)" data-col="8">Collateral/MW <span class="sort-icon"></span></th>
+          <th onclick="sortTable(9)" data-col="9">Term <span class="sort-icon"></span></th>
+          <th onclick="sortTable(10)" data-col="10">Trend <span class="sort-icon"></span></th>
           <th></th>
         </tr>
       </thead>
@@ -2655,10 +2654,22 @@ function getOpStatusClass(s) {
   return 'op-iq';
 }
 
-function renderOperators(ops) {
+function opEstOnline(status, waitText) {
+  if (status === 'Operational') return 'Online';
+  if (status === 'Under Construction') return '~Q3 2027';
+  const m = waitText && waitText.match(/^(\d+)[\-–]?(\d+)?(\+)?/);
+  if (!m) return '—';
+  if (status === 'Expanding') return `Q2 ${2026 + parseInt(m[1])}`;
+  const hi = m[2] ? parseInt(m[2]) : parseInt(m[1]);
+  const plus = m[3] ? '+' : '';
+  return `Q2 ${2026 + parseInt(m[1])}–Q2 ${2026 + hi}${plus}`;
+}
+
+function renderOperators(ops, waitText) {
   return ops.map(op => `
     <div class="operator-item">
       <span>${op.n} <strong style="color:var(--text)">${op.mw}</strong></span>
+      <span style="font-size:10px;color:var(--secondary);white-space:nowrap">${opEstOnline(op.s, waitText)}</span>
       <span class="op-status ${getOpStatusClass(op.s)}">${op.s}</span>
     </div>
   `).join('');
@@ -2713,8 +2724,8 @@ function buildRows() {
 
   if (sortCol >= 0) {
     filtered = filtered.slice().sort((a, b) => {
-      const vals = [a.name, a.tier, a.iso, a.qDepth, a.waitText, parseWaitToOnline(a.waitText), a.availClass, policyData[a.id]?.minLoad||'', policyData[a.id]?.takeOrPay||'', policyData[a.id]?.collateral||'', policyData[a.id]?.term||'', a.trend];
-      const vb = [b.name, b.tier, b.iso, b.qDepth, b.waitText, parseWaitToOnline(b.waitText), b.availClass, policyData[b.id]?.minLoad||'', policyData[b.id]?.takeOrPay||'', policyData[b.id]?.collateral||'', policyData[b.id]?.term||'', b.trend];
+      const vals = [a.name, a.tier, a.iso, a.qDepth, a.waitText, a.availClass, policyData[a.id]?.minLoad||'', policyData[a.id]?.takeOrPay||'', policyData[a.id]?.collateral||'', policyData[a.id]?.term||'', a.trend];
+      const vb = [b.name, b.tier, b.iso, b.qDepth, b.waitText, b.availClass, policyData[b.id]?.minLoad||'', policyData[b.id]?.takeOrPay||'', policyData[b.id]?.collateral||'', policyData[b.id]?.term||'', b.trend];
       return sortDir * vals[sortCol].localeCompare(vb[sortCol]);
     });
   }
@@ -2738,7 +2749,6 @@ function buildRows() {
       <td style="color:var(--secondary);font-size:12px">${m.iso}</td>
       <td style="font-size:12px"><strong>${m.qDepth}</strong><br><span style="color:var(--muted);font-size:11px">${m.qSub}</span></td>
       <td><span class="wait-dot" style="background:#${m.waitColor}"></span>${m.waitText}</td>
-      <td style="font-size:11px;white-space:nowrap;color:var(--secondary)">${parseWaitToOnline(m.waitText)}</td>
       <td><span class="avail-badge ${m.availClass}">${m.availClass.replace('avail-','').toUpperCase()}</span></td>
       <td style="font-size:12px">${p.minLoad || '—'}</td>
       <td style="font-size:12px">${p.takeOrPay || '—'}</td>
@@ -2755,11 +2765,11 @@ function buildRows() {
     exTr.className = 'expand-row';
     exTr.id = 'expand-' + m.id;
     exTr.style.display = 'none';
-    exTr.innerHTML = `<td colspan="13">
+    exTr.innerHTML = `<td colspan="12">
       <div class="expand-panel">
         <div class="expand-half">
           <h4>Interconnection Queue — Who's Ahead</h4>
-          ${renderOperators(m.operators)}
+          ${renderOperators(m.operators, m.waitText)}
           <div style="margin-top:10px;font-size:11px;color:var(--muted);font-style:italic">${m.dev}</div>
         </div>
         <div class="expand-half">
