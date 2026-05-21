@@ -597,7 +597,7 @@
     <span class="colo-count" id="county-count"></span>
   </div>
   <div class="map-search-row">
-    <input type="text" id="map-search-input" class="map-search-input" placeholder="Search address or location…" onkeydown="if(event.key==='Enter') geocodeAddress()">
+    <input type="text" id="map-search-input" class="map-search-input" placeholder="Address, place, or lat, lon…" onkeydown="if(event.key==='Enter') geocodeAddress()">
     <button class="map-search-btn" onclick="geocodeAddress()">Go</button>
     <span id="map-search-status" class="map-search-status"></span>
   </div>
@@ -1490,6 +1490,24 @@ async function geocodeAddress() {
   if (!q) return;
   const map = window._leafletMap;
   if (!map) { if (status) status.textContent = 'Map not loaded yet.'; return; }
+
+  // Detect "lat, lon" or "lat lon" input (e.g. "37.7749, -122.4194")
+  const latLonMatch = q.match(/^(-?\d+(?:\.\d+)?)[,\s]+(-?\d+(?:\.\d+)?)$/);
+  if (latLonMatch) {
+    const lat = parseFloat(latLonMatch[1]);
+    const lon = parseFloat(latLonMatch[2]);
+    if (lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+      const latlng = [lat, lon];
+      map.flyTo(latlng, 13, { duration: 1.2 });
+      if (_searchMarker) map.removeLayer(_searchMarker);
+      _searchMarker = L.marker(latlng)
+        .addTo(map)
+        .bindPopup(`<div class="popup-title">${lat.toFixed(5)}, ${lon.toFixed(5)}</div>`)
+        .openPopup();
+      if (status) status.textContent = '';
+      return;
+    }
+  }
 
   if (status) status.textContent = 'Searching…';
   try {
