@@ -160,7 +160,9 @@
   .expand-half { padding: 16px 18px; }
   .expand-half:first-child { border-right: 1px solid var(--border); }
   .expand-half h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--secondary); margin-bottom: 10px; }
-  .operator-item { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(45,49,72,0.5); font-size: 12px; }
+  .operator-item { display: grid; grid-template-columns: 1fr 110px 110px; align-items: center; padding: 5px 0; border-bottom: 1px solid rgba(45,49,72,0.5); font-size: 12px; }
+  .operator-item .op-date { text-align: center; }
+  .operator-item .op-status-wrap { text-align: right; }
   .operator-item:last-child { border-bottom: none; }
   .op-status { font-size: 10px; padding: 2px 7px; border-radius: 8px; font-weight: 600; white-space: nowrap; }
   .op-expanding { background: rgba(245,158,11,0.15); color: #fcd34d; }
@@ -2669,8 +2671,8 @@ function renderOperators(ops, waitText) {
   return ops.map(op => `
     <div class="operator-item">
       <span>${op.n} <strong style="color:var(--text)">${op.mw}</strong></span>
-      <span style="font-size:10px;color:var(--secondary);white-space:nowrap">${opEstOnline(op.s, waitText)}</span>
-      <span class="op-status ${getOpStatusClass(op.s)}">${op.s}</span>
+      <span class="op-date" style="font-size:10px;color:var(--secondary);white-space:nowrap">${opEstOnline(op.s, waitText)}</span>
+      <span class="op-status-wrap"><span class="op-status ${getOpStatusClass(op.s)}">${op.s}</span></span>
     </div>
   `).join('');
 }
