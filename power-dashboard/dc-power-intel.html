@@ -622,12 +622,13 @@
           <th onclick="sortTable(2)" data-col="2">ISO/RTO <span class="sort-icon"></span></th>
           <th onclick="sortTable(3)" data-col="3">Queue Depth <span class="sort-icon"></span></th>
           <th onclick="sortTable(4)" data-col="4">Wait <span class="sort-icon"></span></th>
-          <th onclick="sortTable(5)" data-col="5">Status <span class="sort-icon"></span></th>
-          <th onclick="sortTable(6)" data-col="6">Min Load <span class="sort-icon"></span></th>
-          <th onclick="sortTable(7)" data-col="7">Take-or-Pay <span class="sort-icon"></span></th>
-          <th onclick="sortTable(8)" data-col="8">Collateral/MW <span class="sort-icon"></span></th>
-          <th onclick="sortTable(9)" data-col="9">Term <span class="sort-icon"></span></th>
-          <th onclick="sortTable(10)" data-col="10">Trend <span class="sort-icon"></span></th>
+          <th onclick="sortTable(5)" data-col="5">Est. Online <span class="sort-icon"></span></th>
+          <th onclick="sortTable(6)" data-col="6">Status <span class="sort-icon"></span></th>
+          <th onclick="sortTable(7)" data-col="7">Min Load <span class="sort-icon"></span></th>
+          <th onclick="sortTable(8)" data-col="8">Take-or-Pay <span class="sort-icon"></span></th>
+          <th onclick="sortTable(9)" data-col="9">Collateral/MW <span class="sort-icon"></span></th>
+          <th onclick="sortTable(10)" data-col="10">Term <span class="sort-icon"></span></th>
+          <th onclick="sortTable(11)" data-col="11">Trend <span class="sort-icon"></span></th>
           <th></th>
         </tr>
       </thead>
@@ -2687,6 +2688,19 @@ function trendClass(t) {
   return 'trend-flat';
 }
 
+function parseWaitToOnline(waitText) {
+  if (!waitText || waitText === '—') return '—';
+  const lower = waitText.toLowerCase();
+  if (lower.includes('tbd') || lower.includes('off-grid')) return 'TBD';
+  const m = waitText.match(/^(\d+)[\-–](\d+)(\+)?/);
+  if (!m) return '—';
+  const baseYear = 2026;
+  const loYear = baseYear + parseInt(m[1]);
+  const hiYear = baseYear + parseInt(m[2]);
+  const plus = m[3] ? '+' : '';
+  return `Q2 ${loYear}–Q2 ${hiYear}${plus}`;
+}
+
 function buildRows() {
   let filtered = markets.filter(m => {
     if (currentFilter !== 'all' && m.tier !== currentFilter) return false;
@@ -2699,8 +2713,8 @@ function buildRows() {
 
   if (sortCol >= 0) {
     filtered = filtered.slice().sort((a, b) => {
-      const vals = [a.name, a.tier, a.iso, a.qDepth, a.waitText, a.availClass, policyData[a.id]?.minLoad||'', policyData[a.id]?.takeOrPay||'', policyData[a.id]?.collateral||'', policyData[a.id]?.term||'', a.trend];
-      const vb = [b.name, b.tier, b.iso, b.qDepth, b.waitText, b.availClass, policyData[b.id]?.minLoad||'', policyData[b.id]?.takeOrPay||'', policyData[b.id]?.collateral||'', policyData[b.id]?.term||'', b.trend];
+      const vals = [a.name, a.tier, a.iso, a.qDepth, a.waitText, parseWaitToOnline(a.waitText), a.availClass, policyData[a.id]?.minLoad||'', policyData[a.id]?.takeOrPay||'', policyData[a.id]?.collateral||'', policyData[a.id]?.term||'', a.trend];
+      const vb = [b.name, b.tier, b.iso, b.qDepth, b.waitText, parseWaitToOnline(b.waitText), b.availClass, policyData[b.id]?.minLoad||'', policyData[b.id]?.takeOrPay||'', policyData[b.id]?.collateral||'', policyData[b.id]?.term||'', b.trend];
       return sortDir * vals[sortCol].localeCompare(vb[sortCol]);
     });
   }
@@ -2724,6 +2738,7 @@ function buildRows() {
       <td style="color:var(--secondary);font-size:12px">${m.iso}</td>
       <td style="font-size:12px"><strong>${m.qDepth}</strong><br><span style="color:var(--muted);font-size:11px">${m.qSub}</span></td>
       <td><span class="wait-dot" style="background:#${m.waitColor}"></span>${m.waitText}</td>
+      <td style="font-size:11px;white-space:nowrap;color:var(--secondary)">${parseWaitToOnline(m.waitText)}</td>
       <td><span class="avail-badge ${m.availClass}">${m.availClass.replace('avail-','').toUpperCase()}</span></td>
       <td style="font-size:12px">${p.minLoad || '—'}</td>
       <td style="font-size:12px">${p.takeOrPay || '—'}</td>
@@ -2740,7 +2755,7 @@ function buildRows() {
     exTr.className = 'expand-row';
     exTr.id = 'expand-' + m.id;
     exTr.style.display = 'none';
-    exTr.innerHTML = `<td colspan="12">
+    exTr.innerHTML = `<td colspan="13">
       <div class="expand-panel">
         <div class="expand-half">
           <h4>Interconnection Queue — Who's Ahead</h4>
