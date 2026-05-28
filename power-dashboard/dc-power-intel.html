@@ -4917,7 +4917,7 @@ async function _fetchXbrl(ticker) {
     )
   );
   const raw = Object.fromEntries(entries);
-  raw.years = Object.keys(raw.rv || {}).filter(y => y >= '2019' && y <= '2025').sort();
+  raw.years = Object.keys(raw.rv || {}).filter(y => y >= '2019' && y <= String(new Date().getFullYear())).sort();
   if (!raw.years.length) throw new Error('No annual 10-K data found for ' + ticker);
   _XBRL_CACHE[ticker] = raw;
   return raw;
@@ -4991,7 +4991,7 @@ function _msSect(label, n) {
 async function initSecFinSection() {
   const el = document.getElementById('sec-fin-co-tabs');
   if (el && !el.children.length) {
-    el.innerHTML = _SEC_COMPANIES.map(c =>
+    el.innerHTML = _SEC_COMPANIES.filter(c => _SEC_CIK_MAP[c.ticker]).map(c =>
       `<button class="sec-fin-co-btn${c.ticker===_secFinTk?' active':''}" onclick="selectSecFinCo('${c.ticker}')">${c.ticker}</button>`
     ).join('');
   }
@@ -5147,7 +5147,7 @@ function _renderFinRatiosTable(d, tk) {
 async function _renderFinCompare() {
   const wrap = document.getElementById('sec-fin-compare-wrap');
   if (!wrap) return;
-  const tks = _SEC_COMPANIES.map(c => c.ticker);
+  const tks = _SEC_COMPANIES.filter(c => _SEC_CIK_MAP[c.ticker]).map(c => c.ticker);
   const res = {};
   wrap.innerHTML = `<div style="color:var(--muted);font-size:12px;padding:16px">Loading XBRL data for all companies (0/${tks.length})…</div>`;
   // Sequential fetch to respect SEC rate limits (10 req/s)
@@ -5155,7 +5155,7 @@ async function _renderFinCompare() {
     try { res[tk] = await _fetchXbrl(tk); } catch(e) { res[tk] = null; }
     wrap.innerHTML = `<div style="color:var(--muted);font-size:12px;padding:16px">Loading XBRL data… ${Object.keys(res).length}/${tks.length} companies</div>`;
   }
-  const yr = '2024';
+  const yr = '2025';
   const metricDefs = [
     { label:'Revenue ($B)',       fn:(d,y) => _fmtB(d.rv[y]) },
     { label:'Net Income ($B)',    fn:(d,y) => _fmtB(_xMetrics(d,y).ni) },
