@@ -4856,7 +4856,7 @@ function _extractAnnual(unitArr) {
   if (!arr.length) return {};
   const byYr = {};
   arr.forEach(r => {
-    const yr = r.fy ? String(r.fy) : (r.end || '').slice(0,4);
+    const yr = r.end ? r.end.slice(0, 4) : String(r.fy || '');
     if (!yr) return;
     if (!byYr[yr] || r.filed > byYr[yr].filed) byYr[yr] = r;
   });
@@ -4883,13 +4883,13 @@ async function _fetchXbrl(ticker) {
   if (_XBRL_CACHE[ticker]) return _XBRL_CACHE[ticker];
   const cik = _SEC_CIK_MAP[ticker];
   if (!cik) throw new Error('No CIK for ' + ticker);
-  // Fetch each metric in parallel via companyconcept endpoint
-  const entries = await Promise.all(
-    Object.entries(_XBRL_TAGS).map(([key, tags]) =>
-      _fetchOneConcept(cik, tags).then(d => [key, d])
-    )
-  );
-  const raw = Object.fromEntries(entries);
+  // Sequential fetches with a small delay to stay under SEC's 10 req/s rate limit
+  const raw = {};
+  const _pause = ms => new Promise(res => setTimeout(res, ms));
+  for (const [key, tags] of Object.entries(_XBRL_TAGS)) {
+    raw[key] = await _fetchOneConcept(cik, tags);
+    await _pause(120);
+  }
   raw.years = Object.keys(raw.rv || {}).filter(y => y >= '2019' && y <= String(new Date().getFullYear())).sort();
   if (!raw.years.length) throw new Error('No annual 10-K data found for ' + ticker);
   _XBRL_CACHE[ticker] = raw;
