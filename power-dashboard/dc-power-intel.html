@@ -694,11 +694,6 @@
         <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Competitor Intelligence Tracker — MW · Utilization · Pricing · Margins · Leverage</div>
         <div id="sec-tracker-table" style="overflow-x:auto"></div>
       </div>
-      <!-- Topic breakdown -->
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Recent Filings by Type</div>
-        <div id="sec-topic-bars"></div>
-      </div>
     </div>
 
     <!-- MarketScreener-style Financial Data Section -->
@@ -4651,28 +4646,6 @@ function renderSecDashboard() {
 
   // ── Competitor tracker table ─────────────────────────────────────────────────
   renderSecTracker();
-
-  // ── Topic breakdown bar ───────────────────────────────────────────────────────
-  const byTopic = {};
-  _secResults.forEach(f => { byTopic[f._topic] = (byTopic[f._topic]||0)+1; });
-  const topicEl = document.getElementById('sec-topic-bars');
-  if (topicEl) {
-    const sorted = Object.entries(byTopic).sort((a,b)=>b[1]-a[1]);
-    const max = sorted[0]?.[1] || 1;
-    topicEl.innerHTML = sorted.map(([t,n]) => {
-      const cls = _secTopicCls(t);
-      const pct = Math.round(n/max*100);
-      const colors = {capacity:'#00bcd4',expansion:'#4caf50',leases:'#ab47bc',distress:'#f44336',power:'#ff9800',capex:'#78909c'};
-      const c = colors[cls]||'#888';
-      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-        <span style="font-size:10px;color:var(--muted);width:160px;text-align:right;flex-shrink:0">${t}</span>
-        <div style="flex:1;background:rgba(255,255,255,.07);border-radius:3px;height:14px;overflow:hidden">
-          <div style="width:${pct}%;height:100%;background:${c};opacity:.8;border-radius:3px"></div>
-        </div>
-        <span style="font-size:10px;color:#aaa;width:24px">${n}</span>
-      </div>`;
-    }).join('');
-  }
 
   const wrap = document.getElementById('sec-dashboard-wrap');
   if (wrap) wrap.classList.remove('hidden');
