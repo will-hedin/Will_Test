@@ -673,19 +673,19 @@
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
         <div class="sec-chart-card">
           <div class="sec-chart-title">MW Capacity — Live vs. In Development</div>
-          <div style="position:relative;height:260px"><canvas id="sec-chart-mw"></canvas></div>
+          <div style="position:relative;height:330px"><canvas id="sec-chart-mw"></canvas></div>
         </div>
         <div class="sec-chart-card">
           <div class="sec-chart-title">EBITDA / Operating Margin %</div>
-          <div style="position:relative;height:260px"><canvas id="sec-chart-ebitda"></canvas></div>
+          <div style="position:relative;height:330px"><canvas id="sec-chart-ebitda"></canvas></div>
         </div>
         <div class="sec-chart-card">
           <div class="sec-chart-title">Net Debt / EBITDA (leverage)</div>
-          <div style="position:relative;height:260px"><canvas id="sec-chart-leverage"></canvas></div>
+          <div style="position:relative;height:330px"><canvas id="sec-chart-leverage"></canvas></div>
         </div>
         <div class="sec-chart-card">
           <div class="sec-chart-title">Renewable Energy %</div>
-          <div style="position:relative;height:260px"><canvas id="sec-chart-power"></canvas></div>
+          <div style="position:relative;height:330px"><canvas id="sec-chart-power"></canvas></div>
         </div>
       </div>
 
@@ -4427,7 +4427,7 @@ function renderSecCharts() {
   var colors   = tickers.map(tk => _SEC_CO_COLORS[tk] || '#888');
   var colorsA  = colors.map(c => c + 'cc');
 
-  // Chart 1: MW stacked bar (live + dev)
+  // Chart 1: MW — horizontal stacked lollipop
   (function() {
     var ctx = document.getElementById('sec-chart-mw')?.getContext('2d');
     if (!ctx) return;
@@ -4437,15 +4437,15 @@ function renderSecCharts() {
       data: {
         labels,
         datasets: [
-          { label:'MW Live',         data: tickers.map(tk => parseMW(_SEC_TRACKER[tk]?.liveMW)),  backgroundColor: colors,  borderRadius:3 },
-          { label:'In Development',  data: tickers.map(tk => parseMW(_SEC_TRACKER[tk]?.devMW)),   backgroundColor: colorsA, borderRadius:3 },
+          { label:'MW Live',        data: tickers.map(tk => parseMW(_SEC_TRACKER[tk]?.liveMW)), backgroundColor: colors,  borderRadius:4, barThickness:10 },
+          { label:'In Development', data: tickers.map(tk => parseMW(_SEC_TRACKER[tk]?.devMW)),  backgroundColor: colorsA, borderRadius:4, barThickness:10 },
         ],
       },
-      options: _secChartOpts('MW', true),
+      options: _secChartOpts('MW', true, true),
     });
   })();
 
-  // Chart 2: EBITDA % horizontal
+  // Chart 2: EBITDA % — horizontal lollipop
   (function() {
     var ctx = document.getElementById('sec-chart-ebitda')?.getContext('2d');
     if (!ctx) return;
@@ -4453,26 +4453,26 @@ function renderSecCharts() {
     var data = tickers.map(tk => parsePct(_SEC_TRACKER[tk]?.ebitdaMgn));
     window._secChartEbitda = new Chart(ctx, {
       type: 'bar',
-      data: { labels, datasets: [{ label:'EBITDA %', data, backgroundColor: colors, borderRadius:3 }] },
-      options: _secChartOpts('%', false),
+      data: { labels, datasets: [{ label:'EBITDA Margin', data, backgroundColor: colors, borderRadius:4, barThickness:10 }] },
+      options: _secChartOpts('%', false, true),
     });
   })();
 
-  // Chart 3: Leverage horizontal (color-coded)
+  // Chart 3: Leverage — horizontal lollipop, traffic-light colors
   (function() {
     var ctx = document.getElementById('sec-chart-leverage')?.getContext('2d');
     if (!ctx) return;
     if (window._secChartLev) window._secChartLev.destroy();
     var data = tickers.map(tk => { var v = parseLev(_SEC_TRACKER[tk]?.leverage); return v === null ? null : Math.max(0, v); });
-    var lColors = data.map(v => v === null ? '#666' : v < 0 ? '#4ade80' : v < 4 ? '#4ade80' : v <= 6 ? '#facc15' : '#f87171');
+    var lColors = data.map(v => v === null ? '#555' : v < 4 ? '#4ade80' : v <= 6 ? '#facc15' : '#f87171');
     window._secChartLev = new Chart(ctx, {
       type: 'bar',
-      data: { labels, datasets: [{ label:'Net Debt/EBITDA', data, backgroundColor: lColors, borderRadius:3 }] },
-      options: _secChartOpts('x', false),
+      data: { labels, datasets: [{ label:'Net Debt / EBITDA', data, backgroundColor: lColors, borderRadius:4, barThickness:10 }] },
+      options: _secChartOpts('x', false, true),
     });
   })();
 
-  // Chart 4: Renewable %
+  // Chart 4: Renewable % — horizontal lollipop, traffic-light colors
   (function() {
     var ctx = document.getElementById('sec-chart-power')?.getContext('2d');
     if (!ctx) return;
@@ -4482,27 +4482,36 @@ function renderSecCharts() {
       if (/100/i.test(s)) return 100;
       var m = s.match(/([\d.]+)/); return m ? parseFloat(m[1]) : null;
     });
-    var pColors = data.map(v => v === null ? '#666' : v >= 90 ? '#4ade80' : v >= 50 ? '#facc15' : '#f87171');
+    var pColors = data.map(v => v === null ? '#555' : v >= 90 ? '#4ade80' : v >= 50 ? '#facc15' : '#f87171');
     window._secChartPower = new Chart(ctx, {
       type: 'bar',
-      data: { labels, datasets: [{ label:'Renewable %', data, backgroundColor: pColors, borderRadius:3 }] },
-      options: _secChartOpts('%', false),
+      data: { labels, datasets: [{ label:'Renewable %', data, backgroundColor: pColors, borderRadius:4, barThickness:10 }] },
+      options: _secChartOpts('%', false, true),
     });
   })();
 }
 
-function _secChartOpts(unit, stacked) {
-  return {
+function _secChartOpts(unit, stacked, horizontal) {
+  var base = {
     responsive: true, maintainAspectRatio: false,
     plugins: {
       legend: { display: stacked, position:'bottom', labels:{ color:'#aaa', boxWidth:10, padding:8, font:{size:10} } },
       tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.raw != null ? ctx.raw + unit : '—'}` } },
     },
-    scales: {
+  };
+  if (horizontal) {
+    base.indexAxis = 'y';
+    base.scales = {
+      x: { stacked, grid:{color:'rgba(255,255,255,.06)'}, ticks:{color:'#888',font:{size:10}}, beginAtZero:true },
+      y: { stacked, grid:{display:false}, ticks:{color:'#ccc',font:{size:10},mirror:false} },
+    };
+  } else {
+    base.scales = {
       x: { stacked, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#888',font:{size:9},maxRotation:40} },
       y: { stacked, grid:{color:'rgba(255,255,255,.06)'}, ticks:{color:'#888',font:{size:10}}, beginAtZero:true },
-    },
-  };
+    };
+  }
+  return base;
 }
 
 // ─── Radar chart per company panel ───────────────────────────────────────────
