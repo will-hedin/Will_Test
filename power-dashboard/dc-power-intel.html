@@ -707,7 +707,7 @@
         <button class="sec-fin-tab" onclick="switchSecFinTab('ratios',this)">Financial Ratios</button>
         <button class="sec-fin-tab" onclick="switchSecFinTab('compare',this)">Cross-Company</button>
       </div>
-      <div id="sec-fin-loading" style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0;display:none">↻ Loading XBRL financial data from SEC EDGAR (10–30s for large companies)…</div>
+      <div id="sec-fin-loading" style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0;display:none">↻ Loading XBRL financial data from SEC EDGAR (~5s)…</div>
       <div id="sec-fin-error" style="color:#f87171;font-size:12px;padding:8px 0;display:none"></div>
       <!-- Income Statement -->
       <div id="sec-fin-income" class="sec-fin-panel active">
@@ -4883,13 +4883,24 @@ async function _fetchXbrl(ticker) {
   if (_XBRL_CACHE[ticker]) return _XBRL_CACHE[ticker];
   const cik = _SEC_CIK_MAP[ticker];
   if (!cik) throw new Error('No CIK for ' + ticker);
-  // Sequential fetches with a small delay to stay under SEC's 10 req/s rate limit
+  // Single companyfacts request — one ~5MB download vs 11 parallel requests that trigger SEC rate limits
+  const r = await fetch(`https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`);
+  if (!r.ok) throw new Error(`SEC EDGAR ${r.status} for ${ticker}`);
+  const facts = await r.json();
+  const gaap = (facts.facts || {})['us-gaap'] || {};
+  const getMetric = tags => {
+    for (const tag of tags) {
+      const concept = gaap[tag];
+      if (!concept) continue;
+      const unitKey = Object.keys(concept.units || {})[0];
+      if (!unitKey) continue;
+      const extracted = _extractAnnual(concept.units[unitKey] || []);
+      if (Object.keys(extracted).length > 0) return extracted;
+    }
+    return {};
+  };
   const raw = {};
-  const _pause = ms => new Promise(res => setTimeout(res, ms));
-  for (const [key, tags] of Object.entries(_XBRL_TAGS)) {
-    raw[key] = await _fetchOneConcept(cik, tags);
-    await _pause(120);
-  }
+  for (const [key, tags] of Object.entries(_XBRL_TAGS)) raw[key] = getMetric(tags);
   raw.years = Object.keys(raw.rv || {}).filter(y => y >= '2019' && y <= String(new Date().getFullYear())).sort();
   if (!raw.years.length) throw new Error('No annual 10-K data found for ' + ticker);
   _XBRL_CACHE[ticker] = raw;
