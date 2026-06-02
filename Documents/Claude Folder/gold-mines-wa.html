@@ -211,7 +211,7 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 <div class="header">
   <div class="header-title">⛏ Australian Gold Mines Tracker</div>
   <div class="header-meta">
-    <span class="badge">Last Updated: 18 May 2026</span>
+    <span class="badge">Last Updated: 2 Jun 2026</span>
     <span class="badge badge-gold" id="kpi-source-count">— Sources</span>
     <span class="badge badge-wa">AU · All States</span>
   </div>
@@ -286,7 +286,7 @@ tr.detail-row td{background:#0d1117;padding:0;border-bottom:2px solid #2d3148}
 <!-- SOURCES SECTION -->
 <div class="sources-section">
   <div class="section-title">All Sources</div>
-  <div style="font-size:.8rem;color:#8b949e;margin-bottom:12px">Sources referenced across all entries (all-Australia scope; major updates 18 May 2026: Ora Banda "DRIVE to 300" 300koz/yr strategy + 3Mtpa mill FEED, Westgold Higginsville FID ($145M, 2.6Mtpa), Genesis 18.9Moz resource update + Gwalia drilling, Catalyst Cinnamon deposit strike +75%, Pantoro Redpath UG contractor (May 2026), Savannah Big Reef EA granted + TSF Phase 1 expansion). Header badge shows live source count.</div>
+  <div style="font-size:.8rem;color:#8b949e;margin-bottom:12px">Sources referenced across all entries (all-Australia scope; major updates 2 Jun 2026: new entries Kaiser Reef A1 Mine VIC C&M, Matsa Resources Lake Carey WA C&M, Monument Mining Burnakura WA C&M, Greatland Resources Telfer+Havieron watch list; Wiluna June 11 shareholder meeting; Bellevue FY27 guidance 175–195koz; Savannah Agate Creek EA decision July 13; GoldArc A$7.2M raise May 2026; Norwest Bulgera ML approved; Telfer ownership updated to Greatland Resources ASX:GGP). Header badge shows live source count.</div>
   <div class="sources-grid" id="all-sources-grid"></div>
 </div>
 </div><!-- /#main-tab-mines -->
@@ -604,6 +604,7 @@ const distressedMines = [
       'Apr 2026: AIM Mining Corporation (>5% shareholder) calls a general shareholder meeting for 16 April 2026 to discuss alternative restructure proposals — creates uncertainty around IPO timeline',
       'Apr 2026: Positive feedback received from ASX regarding relisting progress; IPO expected Q3 2026 (revised from June 2026 capital raise deadline)',
       '1 May 2026: Victor Rajasooriar appointed Managing Director (MD), commencing 1 May 2026; Byrnecut secured loan to be repaid from IPO proceeds',
+      'Jun 2026: General shareholder meeting (convened by AIM Mining) scheduled for 11 June 2026 at Celtic Club, West Perth — to discuss capital structure and IPO preparations. ASX gave positive feedback; A$100M float target confirmed. Takeovers Panel declined AIM Mining\'s application (TP26-001) to conduct proceedings blocking Wiluna\'s meeting motions — AIM\'s attempt to limit the IPO resolutions failed.'
     ],
     contacts: `Deed Administrators: Michael Ryan, Kathryn Warwick, Daniel Woodhouse, Ian Francis — FTI Consulting<br>FTI Creditors Portal: <a href="https://www.fticonsulting.com/creditors/wiluna-group" target="_blank">fticonsulting.com/creditors/wiluna-group</a>`,
     secFilings: `private`,
@@ -865,6 +866,7 @@ const distressedMines = [
       'Apr 2026: Record underlying free cash flow A$158M in Q3 (up from A$62M Dec quarter); cash balance A$181M',
       'Apr 2026: FY26 FYTD ~102koz; guidance 130–150koz maintained; Deacon North high-grade area targeted June 2026 quarter',
       'Apr 2026: Plant expansion to 1.6Mtpa paused (A$75M capex saving); strategic review ongoing — no formal bid received',
+      'May/Jun 2026: FY2027 guidance issued — 175,000–195,000 oz at improved AISC; strategic review still ongoing with advisors UBS, Lisle Group, and King & Wood Mallesons in place; no formal takeover offer received as of 2 Jun 2026'
     ],
     contacts: `Bellevue Gold Limited | ASX:BGL | bellevuegold.com.au<br>Strategic advisors: UBS, Lisle Group, King & Wood Mallesons`,
     secFilings: `asx`,
@@ -1015,7 +1017,8 @@ const distressedMines = [
       'Apr 2026: Company share price +25% on production update (2 April 2026)',
       'May 2026: Big Reef Environmental Authority (EA) GRANTED by QLD Government — key milestone enabling larger-scale Big Reef extraction and sustained plant feed',
       'May 2026: TSF (Tailings Storage Facility) Phase 1 expansion approved — increases Georgetown plant storage capacity for higher throughput rates',
-      'May 2026: Agate Creek EA amendment still pending Q2 2026 — once granted, the 460kt @ 2.5 g/t ore reserve will transform project economics to ~A$50M EBITDA/yr'
+      'May 2026: Agate Creek EA amendment still pending Q2 2026 — once granted, the 460kt @ 2.5 g/t ore reserve will transform project economics to ~A$50M EBITDA/yr',
+      'Jun 2026: Agate Creek Environmental Authority (EA) decision formally scheduled for 13 July 2026 — QLD Government has locked in the decision date. Early site works at Agate Creek already underway in anticipation of approval. This is the key transformational catalyst for the project economics.'
     ],
     contacts: `Savannah Goldfields Limited (ASX:SVG)<br>Website: <a href="https://savannahgoldfields.com/georgetown-gold-project/" target="_blank">savannahgoldfields.com</a>`,
     secFilings: `asx`,
@@ -1084,6 +1087,138 @@ const distressedMines = [
       {type:'News', title:'Hellyer Mine money laundering allegations — Discovery Alert', url:'https://discoveryalert.com.au/hellyer-mine-money-laundering-tasmania-2026/', date:'2026'},
       {type:'News', title:'Hellyer Gold moves to restart operations as liquidator named — Resources Review', url:'https://resourcesreview.com.au/news_article/hellyer-gold-moves-to-restart-operations-as-liquidator-named-for-former-mine-owner/', date:'Jan 2026'},
       {type:'News', title:'Hellyer mine in the crosshairs again — Mining Monthly', url:'https://www.miningmonthly.com/management/news-analysis/4529411/hellyer-crosshairs', date:'Apr 2026'},
+    ]
+  },
+  {
+    id: 'd12',
+    name: 'A1 Gold Mine',
+    state: 'VIC',
+    company: 'Kaiser Reef (ASX:KAU)',
+    region: 'Central Victoria',
+    status: 'Care & Maintenance',
+    statusClass: 's-cm',
+    resourceOz: '600,000+ (historical)',
+    resourceOzNum: 600000,
+    grade: '5.0',
+    gradeNum: 5.0,
+    area: 'Alexandra, Central Victoria',
+    processing: 'Underground CIL (C&M)',
+    price: 'Not for sale (KAU asset)',
+    sourcesCount: 2,
+    lastUpdated: 'Jun 2026',
+    overview: `The A1 Gold Mine, located 23km southeast of Jamieson in Central Victoria's high-grade gold belt, was placed on care and maintenance by Kaiser Reef (ASX:KAU) in September 2025 following a strategic review. The decision came after the company encountered lower-than-expected gold production in the Nova Zone of the mine. The A1 lode is historically one of Victoria's richest gold reefs — producing over 600,000 oz since discovery. Kaiser Reef had been advancing A1 as its flagship project through 2024 before the Nova Zone geological results proved disappointing. C&M transition was confirmed in an ASX announcement in February 2026. As of June 2026, no restart timeline has been announced. Kaiser Reef is evaluating strategic options including potential restart or divestment of the mine. The mine is located within Central Victoria's historically significant gold province, ~150km NE of Melbourne.`,
+    jorc: `Historical production: 600,000+ oz Au since discovery. The A1 lode has historically yielded grades exceeding 10 g/t Au in selective underground mining. No current JORC 2012-compliant resource estimate publicly available post-C&M transition. The previous resource was reported under Kaiser Reef's ASX filings; the Nova Zone underperformance may have impacted the current resource base.`,
+    production: `Kaiser Reef commenced underground mining at A1 in recent years, reporting quarterly production. Operations placed on C&M September 2025 after Nova Zone encountered lower-than-expected gold. C&M maintained through Feb–Jun 2026. No production since September 2025.`,
+    processing_detail: `Underground CIL processing plant on care and maintenance. Location: ~23km SE of Jamieson, Central Victoria (~150km NE of Melbourne). Mine infrastructure includes shaft access, underground development levels, processing plant, and associated infrastructure.`,
+    tenements: `Mining licence and exploration licences in the Central Victoria gold belt near Jamieson. Kaiser Reef (ASX:KAU) 100% holder. Tenements in the Mansfield/Jamieson gold district.`,
+    distressTimeline: [
+      'Pre-2025: Kaiser Reef (ASX:KAU) operates A1 Mine underground in Central Victoria, reporting quarterly gold production',
+      'H1 2025: Nova Zone encountered in underground development; lower-than-expected gold production identified',
+      'Sep 2025: Strategic review concludes; A1 Mine placed on care and maintenance by Kaiser Reef',
+      'Feb 2026: C&M status confirmed in ASX announcement; company evaluating strategic options',
+      'Jun 2026: Mine remains on C&M; no restart timeline announced; strategic review ongoing'
+    ],
+    contacts: `Kaiser Reef Limited (ASX:KAU)<br>Victoria<br>Website: <a href="https://www.kaiserreef.com.au" target="_blank">kaiserreef.com.au</a>`,
+    secFilings: `asx`,
+    secData: {
+      exchange: 'ASX',
+      ticker: 'KAU',
+      latestAnnual: {date:'2025', period:'FY2025', url:'https://announcements.asx.com.au/'},
+      goingConcern: 'Not identified in searches',
+      cash: 'Small cap — limited disclosure',
+      debt: 'Not disclosed',
+      prodGuidance: 'C&M — no production guidance issued',
+      aisc: 'N/A (C&M)',
+      impairments: 'Likely — Nova Zone underperformance; not quantified in searches',
+      hedging: 'N/A',
+      riskFactors: 'Nova Zone geological underperformance; C&M costs; restart capex required; small-cap funding constraints'
+    },
+    sources: [
+      {type:'ASX Filing', title:'Kaiser Reef — A1 Mine care and maintenance announcement — ASX Feb 2026', url:'https://announcements.asx.com.au/asxpdf/20260211/pdf/06w5zbwcwv062p.pdf', date:'Feb 2026'},
+      {type:'News', title:'Kaiser Reef puts A1 Mine on care and maintenance — City Investors Circle', url:'http://www.city-investors-circle.com/kaiser-reef-puts-the-a1-mine-on-care-and-maintenance/', date:'2025'},
+    ]
+  },
+  {
+    id: 'd13',
+    name: 'Lake Carey Gold Project (Red October, Fortitude)',
+    state: 'WA',
+    company: 'Matsa Resources (ASX:MAT)',
+    region: 'Eastern Goldfields',
+    status: 'Care & Maintenance',
+    statusClass: 's-cm',
+    resourceOz: 'Not publicly disclosed',
+    resourceOzNum: 0,
+    grade: 'Not disclosed',
+    gradeNum: 0,
+    area: 'Lake Carey district, ~100km N of Kalgoorlie',
+    processing: 'Red October underground (C&M); Fortitude open pit (C&M); Devon open pit (restarted Jun 2025)',
+    price: 'Not for sale',
+    sourcesCount: 1,
+    lastUpdated: 'Jun 2026',
+    overview: `Matsa Resources (ASX:MAT) operates the Lake Carey Gold Project in WA's Eastern Goldfields district, approximately 100km north of Kalgoorlie. The project comprises three gold deposits: Red October underground (on care & maintenance), Fortitude open pit (on care & maintenance), and Devon open pit. Devon restarted mining in June 2025 and achieved its maiden gold pour in September 2025. However, the Red October underground and Fortitude open pit remain on care and maintenance as of 2026. The Lake Carey complex represents a multi-asset C&M portfolio where Matsa is selectively reactivating mines as economics and permitting allow. Red October is the highest-profile asset — a high-grade underground mine. The C&M status of Red October and Fortitude presents a potential two-mine acquisition opportunity in a single WA Goldfields tenement package. Matsa is conducting resource expansion drilling across the Lake Carey district in 2026 to support eventual restart decisions.`,
+    jorc: `No recently published JORC 2012-compliant resource estimate was found in searches. The Lake Carey district is within the Eastern Goldfields gold province, historically significant. Red October, Fortitude, and Devon all have underground/open pit development histories. Resource upgrade drilling was underway as of 2026.`,
+    production: `Red October: historical high-grade underground gold producer; placed on C&M during 2023/2024. Fortitude: open pit, placed on C&M 2023/2024. Devon: open pit mining restarted June 2025; maiden gold pour September 2025; producing as of 2026. Red October and Fortitude remain non-producing.`,
+    processing_detail: `Red October: high-grade underground mine, C&M. Fortitude: open pit CIL, C&M. Devon: open pit, first gold September 2025. Lake Carey district: ~100km north of Kalgoorlie, WA. Historical mining infrastructure across multiple deposits.`,
+    tenements: `Multiple mining leases and exploration licences in the Lake Carey district, Eastern Goldfields WA. Matsa Resources (ASX:MAT) is 100% holder of all tenements.`,
+    distressTimeline: [
+      'Pre-2023: Matsa Resources operates multiple Lake Carey gold mines including Red October underground',
+      '2023–2024: Red October underground placed on care & maintenance',
+      '2023–2024: Fortitude open pit placed on care & maintenance',
+      'Jun 2025: Devon open pit mining restarts',
+      'Sep 2025: Maiden gold pour from Devon open pit — confirms selective restart strategy',
+      '2026: Red October and Fortitude remain on C&M; aggressive exploration drilling underway; no restart timeline announced'
+    ],
+    contacts: `Matsa Resources Limited (ASX:MAT)<br>Website: <a href="https://www.matsa.com.au/projects/lake-carey-gold-project/" target="_blank">matsa.com.au/lake-carey-gold-project</a>`,
+    secFilings: `asx`,
+    secData: {
+      exchange: 'ASX',
+      ticker: 'MAT',
+      latestAnnual: {date:'2025', period:'FY2025', url:'https://matsa.com.au/investor-centre/'},
+      goingConcern: 'Not identified in searches',
+      cash: 'Small cap — limited disclosure',
+      debt: 'Not disclosed',
+      prodGuidance: 'Devon producing; Red October + Fortitude C&M — no restart guidance',
+      aisc: 'Not guided',
+      impairments: 'Not disclosed',
+      hedging: 'N/A',
+      riskFactors: 'C&M holding costs; small-cap funding constraints; restart capex for Red October/Fortitude; resource base requires upgrade drilling'
+    },
+    sources: [
+      {type:'Company', title:'Matsa Resources — Red October Gold Mine (Lake Carey Gold Project)', url:'https://www.matsa.com.au/projects/lake-carey-gold-project/red-october-gold-mine/', date:'2026'},
+    ]
+  },
+  {
+    id: 'd14',
+    name: 'Burnakura / Murchison Gold Project',
+    state: 'WA',
+    company: 'Monument Mining (TSX-V:MMY)',
+    region: 'Murchison',
+    status: 'Care & Maintenance',
+    statusClass: 's-cm',
+    resourceOz: 'Not publicly disclosed',
+    resourceOzNum: 0,
+    grade: 'Not disclosed',
+    gradeNum: 0,
+    area: 'Murchison region, WA',
+    processing: 'Historical plant (C&M); processing alternatives under evaluation',
+    price: 'Not for sale',
+    sourcesCount: 1,
+    lastUpdated: 'Jun 2026',
+    overview: `Monument Mining (TSX-V:MMY) holds the Burnakura / Murchison Gold Project in WA's Murchison region. The processing plant has been on care and maintenance for several years. As of June 2026 (Q3 FY2026 results announced 1 June 2026), Monument is actively evaluating processing plant alternatives for a potential restart. Monument Mining is a Canadian-listed company (TSX-V:MMY) focused exclusively on WA gold. The Burnakura area within the Murchison goldfield has been a gold-mining district since the 1890s. The project is proximate to Westgold's active Murchison Hub operations (Meekatharra, Fortnum, Cue) — creating strategic value as a potential bolt-on acquisition or toll-milling offtake arrangement. If Monument's restart evaluation concludes that restart is uneconomic at the current scale, the tenements and plant infrastructure could be marketed for sale or JV. This is a pre-existing C&M situation now entering a restart evaluation phase, making it a monitored acquisition candidate.`,
+    jorc: `No current JORC 2012-compliant resource estimate publicly available in recent searches. Monument Mining's TSX-V filings include historical resource data for the Murchison project. The Burnakura area within the Murchison goldfield has historical production. Monument would need to provide updated resource and reserve data for any restart feasibility study.`,
+    production: `Historical gold producer in the Murchison region, WA. Processing plant placed on care and maintenance several years ago. No current production. Restart evaluation underway per June 2026 Q3 results.`,
+    processing_detail: `Processing plant on care and maintenance in the Murchison region, WA. Monument is evaluating processing plant alternatives — including potentially replacing or upgrading the existing plant. Proximity to Westgold's Murchison Hub (Cue, Meekatharra mills) creates toll-treatment options.`,
+    tenements: `Mining leases and exploration licences in the Murchison goldfield, WA. Monument Mining Limited (TSX-V:MMY) is the holder. The Burnakura lease area has been held by Monument for multiple years.`,
+    distressTimeline: [
+      'Pre-2020: Monument Mining operates Burnakura / Murchison Gold Project, WA',
+      '2020+: Processing plant placed on care & maintenance following cessation of operations',
+      'Ongoing: Company maintains tenements and plant while evaluating strategic options',
+      '1 Jun 2026: Monument Q3 FY2026 results confirm evaluation of processing plant alternatives for restart — indicates restart intention but no FID made'
+    ],
+    contacts: `Monument Mining Limited (TSX-V:MMY)<br>Website: <a href="https://www.monumentmining.com" target="_blank">monumentmining.com</a>`,
+    secFilings: `private`,
+    sources: [
+      {type:'Company', title:'Monument Mining Q3 FY2026 Results — Globe Newswire (1 Jun 2026)', url:'https://www.globenewswire.com/news-release/2026/06/01/3304769/0/en/Monument-Reports-Third-Quarter-Fiscal-2026-Results.html', date:'1 Jun 2026'},
     ]
   }
 ];
@@ -1182,7 +1317,7 @@ const watchlistMines = [
     cash: 'Not disclosed (tailings + toll milling revenue)',
     reserveLife: '<2 yrs (tailings only)',
     sharePriceDelta: 'Delisted',
-    overview: `Wiluna Mining Corporation entered administration July 2022, delisted from ASX April 2024. The DOCA fully effectuated on 31 December 2025. IPO now expected Q3 2026 — positive feedback from ASX. Victor Rajasooriar appointed Managing Director (commenced 1 May 2026). ASIC settlement reached: Wiluna and ASIC will jointly apply to Federal Court for declarations re Corporations Act contraventions; Wiluna contributes A$34K to ASIC legal costs; ASIC continues pursuing former directors Jerkovic and Malone separately. Risk: AIM Mining Corporation (>5% shareholder) called a general meeting April 16, 2026 to discuss alternative restructure proposals, creating uncertainty around the IPO timeline. Key backers: Byrnecut Group (secured loan to be repaid from IPO proceeds), Delphi Group (Deutsche Balaton AG / 2Invest AG), Franco-Nevada. The company survives on tailings reprocessing (~24,226 oz FY2025) and toll milling. Feb 2024 PFS outlined a hard-rock restart — no development decision made. Restart remains 12–24+ months after IPO. The 7 Moz @ 2.38 g/t resource base remains exceptional. Critical catalyst: Q3 2026 IPO completion — if AIM Mining's alternative proposal derails the IPO, the company remains in limbo.`,
+    overview: `Wiluna Mining Corporation entered administration July 2022, delisted from ASX April 2024. The DOCA fully effectuated on 31 December 2025. IPO now expected Q3 2026 — positive feedback from ASX and A$100M float target confirmed. Victor Rajasooriar appointed Managing Director (commenced 1 May 2026). ASIC settlement reached: Wiluna and ASIC will jointly apply to Federal Court for declarations re Corporations Act contraventions; Wiluna contributes A$34K to ASIC legal costs; ASIC continues pursuing former directors Jerkovic and Malone separately. UPDATE Jun 2026: A general shareholder meeting (convened by AIM Mining Corporation) is scheduled for 11 June 2026 at Celtic Club, West Perth to resolve capital structure and IPO preparation resolutions. The Takeovers Panel declined AIM Mining's application (TP26-001) to conduct proceedings blocking Wiluna's meeting motions — AIM's attempt to limit the IPO resolutions failed. Key backers: Byrnecut Group (secured loan to be repaid from IPO proceeds), Delphi Group (Deutsche Balaton AG / 2Invest AG), Franco-Nevada. The company survives on tailings reprocessing (~24,226 oz FY2025) and toll milling. Feb 2024 PFS outlined a hard-rock restart — no development decision made. Restart remains 12–24+ months after IPO. The 7 Moz @ 2.38 g/t resource base remains exceptional.`,
     signals: [
       {signal:'Declining production (oz YoY)', weight:'HIGH', status:'FIRING', detail:'Underground mining ceased Dec 2022; only tailings reprocessing ~24,000 oz/year (FY2025)', class:'signal-fire'},
       {signal:'Rising AISC vs gold price', weight:'HIGH', status:'FIRING', detail:'AISC not formally guided; tailings-only production is high-cost relative to resource potential', class:'signal-fire'},
@@ -1408,7 +1543,7 @@ const watchlistMines = [
     prodTrend: 'up',
     cash: 'A$181M (end Q3FY26, Apr 2026)',
     reserveLife: '~8 yrs (resource)',
-    sharePriceDelta: '-30%',
+    sharePriceDelta: '-30% (recovering)',
     overview: `Bellevue Gold (BGL) triggered a trading halt in March 2025 after Q1 FY2025 production of ~25,700 oz severely undershot the ~40,000+ oz expectation. Root cause: stopes at orebody edges underperforming geological models plus grade dilution. Cash fell 39.5% in one quarter. An emergency A$156.5M equity raise in April 2025 closed the hedge book (losses ~A$52M H1 FY2025) and stabilised the balance sheet. New COO Peter Ganza commenced January 2026 (replacing Bill Stirling). CONFIRMED Q3 FY2026 (March quarter, 22 Apr 2026): gold production 40,745 oz; gold sold 39,754 oz at AISC A$2,578/oz — down 14% QoQ from A$2,989/oz, now within the A$2,600–2,900/oz guidance range for the first time. Underlying free cash flow A$158M (record; up from A$62M in Dec quarter). Cash A$181M. FY26 FYTD ~102koz (73% of midpoint 140koz); guidance 130–150koz maintained. Plant expansion to 1.6Mtpa paused (saving A$75M capex). Deacon North high-grade area targeted June 2026 quarter. Strategic review still ongoing — unsolicited takeover interest received but no formal bid. Remaining hedge book: 91.7koz at AISC A$2,932/oz with no deliveries until Dec 2026 quarter. ~90% power from renewables. The company is executing a genuine operational turnaround. Macquarie Outperform, target AUD 2.10. MACQUARIE FORECASTS (8 Apr 2026 Flashnote): FY2026E Revenue A$797.2M, EBITDA A$444.1M, Adjusted Profit A$159.5M, EPS adj 10.5¢; FY2027E Revenue A$924.6M, EBITDA A$536.8M. Macquarie analysts: Adam Baker (+61 467 070 016), Rob Stein (+61 400 108 528), Austin Yun CFA (+61 457 429 116), Gabriel Harlan (+61 418 397 648).`,
     signals: [
       {signal:'Declining production (oz YoY)', weight:'HIGH', status:'CAUTION', detail:'Q1 FY25 miss severe; Q3FY26 confirmed 40,745 oz beat (+11%/8% vs estimates); FY26 FYTD ~102koz on track', class:'signal-warn'},
@@ -1810,19 +1945,19 @@ const watchlistMines = [
     probClass: 'prob-high',
     aisc: 'N/A (exploration only)',
     prodTrend: 'flat',
-    cash: 'Very limited (going concern flagged)',
+    cash: 'A$7.2M raised May 2026 (near-term funded)',
     reserveLife: 'Not established',
     sharePriceDelta: 'Not available',
-    overview: `GoldArc Resources (ASX:GA8, formerly Asra Minerals ASX:ASR) holds the Leonora North and Mt Stirling gold projects in WA's Eastern Goldfields, near Leonora. The company renamed itself from Asra Minerals to GoldArc Resources in September 2025 (ticker change to GA8). A going concern material uncertainty was flagged in the half-year financial report for H1 FY2025 (period ending June 2025): net cash outflows from operations were A$889,636 plus A$2,802,964 in exploration payments — approximately A$1.85M/quarter burn rate. The going concern qualification stated "material uncertainty which may cast significant doubt as to whether the consolidated entity will continue as a going concern." A A$3.25M placement at A$0.02/share (162.5M new shares) was completed to bridge near-term funding. Trading was halted in January 2026 ahead of key Leonora drilling results. The company is a pure explorer with no production revenue, fully dependent on continued equity raises and exploration success. On the high-risk watch list for potential tenement surrender or enforced cash conservancy.`,
+    overview: `GoldArc Resources (ASX:GA8, formerly Asra Minerals ASX:ASR) holds the Leonora North, Leonora South and Mt Stirling gold projects in WA's Eastern Goldfields, near Leonora. The company renamed itself from Asra Minerals to GoldArc Resources in September 2025 (ticker change to GA8). A going concern material uncertainty was flagged in the half-year financial report for H1 FY2025: net cash outflows from operations were A$889,636 plus A$2,802,964 in exploration payments — approximately A$1.85M/quarter burn rate. A A$3.25M placement at A$0.02/share was completed in Sep 2025 to bridge near-term funding. In January 2026, GoldArc called a trading halt ahead of Leonora drilling results. UPDATE May 2026: GoldArc completed a A$7.2M placement to accelerate drilling across the Leonora North and South projects. Eclipse prospect results include 4m @ 9.43 g/t Au and 9m @ 2.54 g/t Au. Total resource: 200,000 oz at 1.82 g/t Au. Mt Stirling S1–S7 RC program scheduled July 2026; Yttria prospect drilling September 2026. Going concern risk partially bridged by the May 2026 raise, but further capital will be required if exploration does not lead to a resource upgrade. On the high-risk watch list for execution risk and dilution.`,
     signals: [
       {signal:'Declining production (oz YoY)', weight:'HIGH', status:'N/A', detail:'Exploration only — no production', class:'signal-na'},
       {signal:'Rising AISC vs gold price', weight:'HIGH', status:'N/A', detail:'No production', class:'signal-na'},
       {signal:'Cash burn / negative OCF', weight:'HIGH', status:'FIRING', detail:'H1 FY2025: A$889k operations + A$2.8M exploration outflows; ~A$1.85M/qtr burn; going concern flagged', class:'signal-fire'},
-      {signal:'Going concern opinion', weight:'HIGH', status:'FIRING', detail:'Going concern material uncertainty confirmed in H1 FY2025 report: "may cast significant doubt as to whether entity will continue"', class:'signal-fire'},
+      {signal:'Going concern opinion', weight:'HIGH', status:'WARN', detail:'Going concern material uncertainty in H1 FY2025 report; partially bridged by A$7.2M raise May 2026 — further capital required for ongoing exploration', class:'signal-warn'},
       {signal:'Debt covenant breach', weight:'HIGH', status:'N/A', detail:'No bank debt identified', class:'signal-na'},
       {signal:'D/E ratio >1.0', weight:'MEDIUM', status:'OK', detail:'No significant debt — pure equity-funded explorer', class:'signal-ok'},
       {signal:'Hedging losses', weight:'MEDIUM', status:'N/A', detail:'Not applicable', class:'signal-na'},
-      {signal:'Repeated capital raises', weight:'MEDIUM', status:'FIRING', detail:'A$3.25M placement Sep 2025 at A$0.02/share — micro-cap raise; prior raises likely given going concern history', class:'signal-fire'},
+      {signal:'Repeated capital raises', weight:'MEDIUM', status:'FIRING', detail:'A$3.25M placement Sep 2025 at A$0.02/share; A$7.2M placement May 2026 — serial raises at micro-cap scale needed to fund exploration', class:'signal-fire'},
       {signal:'Grade decline', weight:'MEDIUM', status:'N/A', detail:'No production; exploration drilling stage', class:'signal-na'},
       {signal:'Reserve/resource impairment', weight:'MEDIUM', status:'N/A', detail:'No formal JORC resource published for Leonora North post-rename; Mt Stirling project tenements held', class:'signal-na'},
       {signal:'Reserve life <3 years', weight:'MEDIUM', status:'FIRING', detail:'No resource or reserve established; purely exploration stage', class:'signal-fire'},
@@ -1833,7 +1968,8 @@ const watchlistMines = [
     sources: [
       {type:'ASX Filing', title:'GoldArc Resources (Asra Minerals) Half-Year Financial Report — ASX PDF Sep 2025', url:'https://announcements.asx.com.au/asxpdf/20250911/pdf/06p3pcff25j2gc.pdf', date:'Sep 2025'},
       {type:'News', title:'GoldArc Resources halts ASX trading ahead of Leonora drilling results — TipRanks', url:'https://tipranks.com/news/company-announcements/goldarc-halts-asx-trading-ahead-of-leonora-drilling-results', date:'Jan 2026'},
-      {type:'News', title:'Auris Minerals going concern and ASX query — Smallcaps.com.au', url:'https://smallcaps.com.au/article/auris-minerals-responds-to-asx-query-amidst-going-concern-uncertainty-annual-report-details-exploration-and-impairments', date:'2025'},
+      {type:'News', title:'GoldArc secures A$7.2M funding for Leonora drilling — mining.com.au', url:'https://mining.com.au/goldarc-secures-funding-for-leonora-drilling/', date:'May 2026'},
+      {type:'News', title:'GoldArc Leonora North drilling results — Eclipse prospect 4m @ 9.43 g/t — Discovery Alert', url:'https://discoveryalert.com.au/goldarc-rock-chip-results-leonora-north-targets/', date:'2026'},
     ]
   },
   {
@@ -1886,7 +2022,7 @@ const watchlistMines = [
     cash: 'Very limited (A$4.85M market cap)',
     reserveLife: 'Not established',
     sharePriceDelta: '-14.29% (23 Mar 2026)',
-    overview: `Norwest Minerals (ASX:NWM) holds the Bulgera Gold Project on the Plutonic Well Greenstone Belt in WA's Murchison region — the same belt hosting the historic Plutonic Gold Mine (~7 Moz historical production). Total JORC resource: 288,400 oz at the Bulgera deposit. The company disclosed "capital and funding risk is material, with limited cash reserves." Market cap as of April 2025: A$4.85M. Share price fell 14.29% on 23 March 2026 during the broader gold-sector weakness. No formal going concern opinion found in searches, but the "material funding risk" disclosure and very low market cap signal elevated risk. The company is exploration-stage only with no production revenue and is entirely dependent on continued equity funding to advance the Bulgera resource. The Bulgera deposit's proximity to Catalyst Metals' Plutonic Gold Belt operations represents a strategic acquisition interest — Catalyst is actively drilling the same belt and expanding. On the high-risk watch list for tenement relinquishment or distressed sale of Bulgera tenements to a better-capitalised operator.`,
+    overview: `Norwest Minerals (ASX:NWM) holds the Bulgera Gold Project on the Plutonic Well Greenstone Belt in WA's Murchison region — the same belt hosting the historic Plutonic Gold Mine (~7 Moz historical production). Total JORC resource: 288,400 oz at the Bulgera deposit. The company disclosed "capital and funding risk is material, with limited cash reserves." Market cap as of April 2025: A$4.85M. Share price fell 14.29% on 23 March 2026 during the broader gold-sector weakness. UPDATE Jan–Jun 2026: Norwest issued 51.4 million new shares via its At-the-Market (ATM) facility in January 2026 to fund drilling. A key regulatory milestone was achieved — the road to a mining lease for the Bulgera Gold Project is now clear after securing a key approval (per Stockhead, 2026). Updated Bulgera Mineral Resource Estimate and Marymia East assay results were expected; Mt Stirling and Arunta West (Dales Gossan) drilling programs progressing. Despite the positive milestone, the company remains a micro-cap explorer dependent on continued equity raises. The Bulgera deposit's proximity to Catalyst Metals' Plutonic Gold Belt operations represents a strategic acquisition interest.`,
     signals: [
       {signal:'Declining production (oz YoY)', weight:'HIGH', status:'N/A', detail:'Exploration only — no production', class:'signal-na'},
       {signal:'Rising AISC vs gold price', weight:'HIGH', status:'N/A', detail:'No production', class:'signal-na'},
@@ -1905,6 +2041,7 @@ const watchlistMines = [
     ],
     sources: [
       {type:'News', title:'Why Norwest Minerals (ASX:NWM) stock is moving today — Kalkine', url:'https://kalkine.com.au/news/general-news/why-norwest-mineralsasxnwm-stock-is-moving-today-gold-explorer-faces-march-2026-sector-weakness', date:'Mar 2026'},
+      {type:'News', title:'Road to mining lease for Bulgera Gold Project now clear after key approval — Stockhead', url:'https://stockhead.com.au/resources/road-to-mining-lease-for-norwests-bulgera-gold-project-now-clear-after-securing-key-approval/', date:'2026'},
     ]
   },
   {
@@ -1942,6 +2079,43 @@ const watchlistMines = [
       {type:'Company', title:'AngloGold Ashanti — Tropicana Mine Overview', url:'https://www.anglogoldashanti.com/portfolio/australia/tropicana/', date:'2024'},
       {type:'News', title:'AngloGold completes Australia\'s largest hybrid power system at Tropicana — Mining Weekly', url:'https://www.miningweekly.com/article/anglogold-completes-australias-largest-hybrid-power-system-at-tropicana-2025-03-31', date:'Mar 2025'},
     ]
+  },
+  {
+    id: 'w24',
+    name: 'Telfer Gold-Copper Mine + Havieron Project',
+    state: 'WA',
+    company: 'Greatland Resources (ASX:GGP)',
+    region: 'Pilbara (Great Sandy Desert)',
+    probLabel: 'Moderate',
+    probPct: 48,
+    probClass: 'prob-moderate',
+    aisc: 'A$2,056 (Q1 FY26 actual)',
+    prodTrend: 'down',
+    cash: 'A$1.2B+ (post-listing)',
+    reserveLife: '10+ yrs (with Havieron)',
+    sharePriceDelta: '-24% (post-listing guidance cut)',
+    overview: `Greatland Resources (ASX:GGP) was formed when Newmont Corporation divested the Telfer Gold-Copper Mine and adjacent Havieron development project to a new ASX-listed entity in 2025. Within weeks of ASX listing in July 2025, GGP was forced to cut FY2026 gold production guidance from 300,000–340,000 oz (prospectus) to 260,000–310,000 oz — a cut that triggered ASX censure, a ~24% share price drop, and >A$1 billion in market cap destruction in a single event. Root cause: unexpected variability in Telfer ore grades and stockpile quality inherited from Newmont. Concurrently, FY2026 growth capital was revised from A$80M to up to A$260M — more than 3× the original figure. By the March 2026 quarter (Q1 FY26 — Greatland's first full quarter), the company produced 82,723 oz at AISC A$2,056/oz, tracking the upper end of revised guidance. GGP holds A$1.2B+ cash and has a A$500M new debt package approved to fund the Final Investment Decision (FID) for the Havieron underground development — one of Australia's most significant new gold-copper projects, targeting ~300,000 oz equivalent per year at full production. Havieron FID expected late 2026. The company is on the watch list because: (1) the post-listing disclosure failure history signals execution risk; (2) Telfer's open-pit reserve life is declining (legacy issue from Newmont); (3) Havieron capex is material and execution risk is real. GGP is not a financial distress candidate but is a high-profile new ASX company with operational and disclosure risk warranting close monitoring.`,
+    signals: [
+      {signal:'Declining production (oz YoY)', weight:'HIGH', status:'FIRING', detail:'FY2026 guidance cut from 300–340koz to 260–310koz within weeks of ASX listing; underlying Telfer ore grade variability is the root cause', class:'signal-fire'},
+      {signal:'Rising AISC vs gold price', weight:'HIGH', status:'OK', detail:'AISC A$2,056/oz Q1 FY26 actual — competitive; gold ~A$5,000+/oz gives healthy margin; not a cost concern currently', class:'signal-ok'},
+      {signal:'Cash burn / negative OCF', weight:'HIGH', status:'OK', detail:'A$1.2B+ cash position post-listing; well-funded; positive OCF at current gold prices', class:'signal-ok'},
+      {signal:'Going concern opinion', weight:'HIGH', status:'OK', detail:'None — A$1.2B cash; A$500M debt package for Havieron FID approved; well-capitalised', class:'signal-ok'},
+      {signal:'Debt covenant breach', weight:'HIGH', status:'OK', detail:'No covenant issues identified at listing stage; new company', class:'signal-ok'},
+      {signal:'D/E ratio >1.0', weight:'MEDIUM', status:'OK', detail:'Low starting leverage post-listing; manageable even with Havieron debt drawdown', class:'signal-ok'},
+      {signal:'Hedging losses', weight:'MEDIUM', status:'N/A', detail:'Not materially disclosed at listing stage', class:'signal-na'},
+      {signal:'Repeated capital raises', weight:'MEDIUM', status:'OK', detail:'No dilutive raises post-listing; funded to production and Havieron FID', class:'signal-ok'},
+      {signal:'Grade decline', weight:'MEDIUM', status:'FIRING', detail:'Unexpected Telfer ore grade variability vs prospectus assumptions — triggered production downgrade, ASX censure, and >A$1B market cap destruction post-listing', class:'signal-fire'},
+      {signal:'Reserve/resource impairment', weight:'MEDIUM', status:'WARN', detail:'Telfer open pit reserve base declining (legacy issue from Newmont); Havieron addition is critical for long-term reserve replenishment', class:'signal-warn'},
+      {signal:'Reserve life <3 years', weight:'MEDIUM', status:'OK', detail:'10+ year reserve life with Havieron development included; Telfer open pit declining but Havieron pipeline strong', class:'signal-ok'},
+      {signal:'Management turnover', weight:'LOW-MED', status:'OK', detail:'New management team post-demerger from Newmont; monitoring performance in first year', class:'signal-ok'},
+      {signal:'Delayed milestones', weight:'LOW-MED', status:'WARN', detail:'Growth capex blew out from A$80M to A$260M in first quarter; Havieron FID expected late 2026 — any delay extends capex uncertainty', class:'signal-warn'},
+      {signal:'Share price -50% from 12M high', weight:'LOW', status:'FIRING', detail:'Down ~24% within weeks of listing following guidance cut and ASX censure — significant early destruction of shareholder value from a prominent post-listing event', class:'signal-fire'},
+    ],
+    sources: [
+      {type:'News', title:'ASX slams Greatland Resources over post-listing gold output downgrade — Mining.com', url:'https://www.mining.com/asx-slams-greatland-over-post-listing-gold-output-downgrade/', date:'Jul 2025'},
+      {type:'News', title:'Greatland (ASX:GGP) drops 24% after guidance cut — Stocks Down Under', url:'https://stocksdownunder.com/greatland-asx-ggp-share-price-dives/', date:'2025'},
+      {type:'Company', title:'Greatland Resources March 2026 Quarterly Activities Report', url:'https://www.share-talk.com/greatland-resources-ltd-aim-ggp-asx-ggp-march-2026-quarterly-activities-report/', date:'Apr 2026'},
+    ]
   }
 ];
 
@@ -1958,11 +2132,11 @@ const activeMines = [
   { id:'a6', name:'Granny Smith Gold Mine', company:'Gold Fields (JSE/NYSE:GFI)', asx:'', state:'WA', region:'Laverton', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:296000, aisc:0, processing:'Underground CIL', overview:`Granny Smith is an underground gold mine near Laverton, WA, operated by Gold Fields. Q4 2025 production 74,000 oz (annualised ~296,000 oz/yr). Wall underground deposit drives the mine, supplemented by satellite sources.`, sources:[{type:'News', title:'Gold Fields Q4 2025 Results — Market Screener', url:'https://www.marketscreener.com/news/19-february-2026-a-gold-fields-q4-2025-results-ce7e5ddcd88cf225', date:'Feb 2026'}] },
   { id:'a7', name:'Gruyere Gold Mine', company:'Gold Fields (JSE/NYSE:GFI) — 100% owner since Oct 2025 (ex-Gold Road ASX:GOR)', asx:'', state:'WA', region:'Yamarna (Laverton)', category:'Active', resourceOz:6200000, resourceOzNum:6200000, grade:1.3, gradeNum:1.3, prodOzYr:320000, aisc:2500, processing:'Open pit CIL (10 Mtpa)', overview:`Gruyere is a large open pit gold mine in the remote Yamarna region, 200km east of Laverton WA. Originally a 50/50 JV between Gold Road Resources (ASX:GOR) and Gold Fields, Gold Fields acquired 100% of the mine via a scheme of arrangement for Gold Road. Gold Road was delisted from ASX on 26 September 2025 and the scheme of arrangement was implemented on 14 October 2025, making Gold Fields the sole owner and operator. Resource 6.2 Moz at ~1.3 g/t. FY2026 guidance ~320,000 oz at AISC A$2,400–2,600/oz. 10+ year mine life. Largest producing mine in the Yamarna Belt. Gold Road shareholders received A$3.40 per share via the takeover — the transaction valued Gold Road at approximately A$3.7B.`, sources:[{type:'News', title:'Gold Road Resources delisted after takeover by Gold Fields — ShareCafe', url:'https://www.sharecafe.com.au/2025/09/26/gold-road-resources-delisted-after-takeover/', date:'Sep 2025'},{type:'Company', title:'Gold Road Scheme of Arrangement implemented — Gold Road ASX Release', url:'https://goldroad.com.au/wp-content/uploads/2025/10/20251014-Scheme-of-Arrangement-has-been-Implemented.pdf', date:'Oct 2025'}] },
   { id:'a8', name:'Boddington Gold Mine', company:'Newmont Corporation (NYSE:NEM)', asx:'', state:'WA', region:'Boddington', category:'Active', resourceOz:10200000, resourceOzNum:10200000, grade:0.8, gradeNum:0.8, prodOzYr:287000, aisc:1680, processing:'Open pit CIL + Cu flotation (35 Mtpa)', overview:`Boddington is one of Australia's largest open pit gold-copper mines, ~120km SE of Perth, operated by Newmont (100%). FY2026 guidance ~275,000–300,000 oz gold plus significant copper. Reserve 10.2 Moz. Operates at very large scale (~35 Mtpa) compensating for a low grade of ~0.8 g/t. Among the world's lowest AISC operations for gold.`, sources:[{type:'News', title:'Newmont Q4 2025 Results and 2026 Guidance — Business Wire', url:'https://www.businesswire.com/news/home/20260219222644/en/Newmont-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Provides-2026-Guidance-and-Announces-Enhanced-Capital-Allocation-Framework', date:'Feb 2026'}] },
-  { id:'a9', name:'Telfer Gold-Copper Mine', company:'Newmont Corporation (NYSE:NEM)', asx:'', state:'WA', region:'Pilbara (Great Sandy Desert)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:190000, aisc:0, processing:'Open pit & underground CIL', overview:`Telfer is a remote gold-copper mine in WA's Great Sandy Desert ~400km SE of Port Hedland, operated by Newmont. The mine has been transitioning from open pit to underground ore sources as the Main Dome and West Dome open pits deplete. Production declining profile; future dependent on underground extensions and gold price economics.`, sources:[{type:'News', title:'Newmont Q4 2025 Results and 2026 Guidance — Business Wire', url:'https://www.businesswire.com/news/home/20260219222644/en/Newmont-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Provides-2026-Guidance-and-Announces-Enhanced-Capital-Allocation-Framework', date:'Feb 2026'}] },
+  { id:'a9', name:'Telfer Gold-Copper Mine', company:'Greatland Resources (ASX:GGP, ex-Newmont)', asx:'GGP', state:'WA', region:'Pilbara (Great Sandy Desert)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:260000, aisc:2056, processing:'Open pit & underground CIL', overview:`Telfer is a remote gold-copper mine in WA's Great Sandy Desert ~400km SE of Port Hedland, formerly operated by Newmont Corporation. Newmont divested Telfer (and the adjacent Havieron project) to the newly-formed Greatland Resources (ASX:GGP) via an IPO in 2025. Within weeks of ASX listing, GGP cut FY2026 production guidance from 300,000–340,000 oz to 260,000–310,000 oz — triggering ASX censure, a ~24% share price drop, and >A$1B market cap destruction. Root cause: unexpected Telfer ore grade variability vs prospectus assumptions. Growth capex also blew out from A$80M to up to A$260M. By March 2026 quarter, GGP produced 82,723 oz at AISC A$2,056/oz — tracking upper end of revised guidance. Company holds A$1.2B+ cash and has a A$500M debt package approved for the Havieron FID (expected late 2026). Telfer's open-pit reserve base is declining; the Havieron underground project (~300,000 oz/yr equivalent) is critical for long-term sustainability. On the watch list for post-listing disclosure failure history, Telfer grade variability, and Havieron capex execution risk.`, sources:[{type:'News', title:'ASX slams Greatland over post-listing gold output downgrade — Mining.com', url:'https://www.mining.com/asx-slams-greatland-over-post-listing-gold-output-downgrade/', date:'Jul 2025'},{type:'News', title:'Greatland (ASX:GGP) drops 24% after guidance cut — Stocks Down Under', url:'https://stocksdownunder.com/greatland-asx-ggp-share-price-dives/', date:'2025'},{type:'Company', title:'Greatland Resources March 2026 Quarterly Activities Report', url:'https://www.share-talk.com/greatland-resources-ltd-aim-ggp-asx-ggp-march-2026-quarterly-activities-report/', date:'Apr 2026'}] },
   { id:'a10', name:'Tropicana Gold Mine', company:'AngloGold Ashanti (AGG) 70% / Regis Resources (ASX:RRL) 30%', asx:'', state:'WA', region:'Fraser Range (NE Goldfields)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:313000, aisc:1297, processing:'Open pit & Havana underground CIL', overview:`Tropicana is a large gold mine ~330km NE of Kalgoorlie in the remote Fraser Range, operated by AngloGold Ashanti (70%) with Regis Resources (30%). 2024 production 313,000 oz at low AISC A$1,297/oz — one of Australia's most profitable gold mines. Transitioning from Grand Côte open pit to Havana underground, with underground production ramping from 2027.`, sources:[{type:'Company', title:'AngloGold Ashanti — Tropicana Mine', url:'https://www.anglogoldashanti.com/portfolio/australia/tropicana/', date:'2024'}] },
   { id:'a11', name:'Karlawinda Gold Mine', company:'Capricorn Metals (ASX:CMM)', asx:'CMM', state:'WA', region:'Pilbara (Newman)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:120000, aisc:0, processing:'Open pit CIL', overview:`Karlawinda gold mine is operated by Capricorn Metals near Newman in WA's Pilbara region. FY2026 guidance 115,000–125,000 oz. Low-cost open pit operation. Capricorn is also advancing the nearby Mt Gibson Gold project (development stage, 2.74 Moz reserves). Strong production track record since commencement.`, sources:[{type:'News', title:'Capricorn Metals Q3 FY26 Gold Production Update — Motley Fool', url:'https://www.fool.com.au/2026/04/07/capricorn-metals-delivers-solid-q3-fy26-gold-production-and-growth-update/', date:'Apr 2026'}] },
   { id:'a12', name:'Mungari Gold Operations', company:'Evolution Mining (ASX:EVN)', asx:'EVN', state:'WA', region:'Kalgoorlie', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:150000, aisc:0, processing:'Open pit & underground CIL', overview:`Mungari Gold Operations are located near Kalgoorlie, WA, acquired by Evolution Mining from OceanaGold in 2022. Includes the Mungari mill (4.2 Mtpa), Castle Hill underground, and several open pits. A major contributor to EVN's group production. Ongoing underground development growing the resource base.`, sources:[{type:'News', title:'Evolution Mining Q3 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-evolution-mining-q3-2026-sees-strong-cash-flow-stock-surges-93CH-4614175', date:'Apr 2026'}] },
-  { id:'a13', name:'Norseman Gold Project', company:'Pantoro (ASX:PNR)', asx:'PNR', state:'WA', region:'Eastern Goldfields', category:'Active', resourceOz:4600000, resourceOzNum:4600000, grade:3.3, gradeNum:3.3, prodOzYr:89000, aisc:3204, processing:'Underground CIL (Scotia, Bullen, OK UG + Gladstone open pit)', overview:`Pantoro (ASX:PNR) operates the historic Norseman gold project in WA's Eastern Goldfields, ~720km ESE of Perth. Q3 FY2026 (March quarter, released 28 April 2026): Gold production 17,757 oz — impacted by wet weather and cyclone flooding at Scotia mine. Gold sold 20,016 oz at A$6,916/oz. EBITDA A$88.4M. Cash and gold A$250.3M (debt-free). AISC A$3,204/oz (elevated due to weather impacts; expected to improve Q4). FY2026 guidance maintained 86,000–92,000 oz at AISC A$1,950–2,250/oz. First ore at Gladstone Mining Centre commenced April 2026 — adds a new open pit ore source to supplement underground operations. Consolidated Mineral Resource (2025): 43.19 Mt @ 3.3 g/t Au for 4.60 Moz. Ore Reserve: 12.78 Mt @ 2.1 g/t = 859,000 oz. Cash grew A$72M YoY without any equity raises. No going concern issues. Operations: Scotia UG, Bullen UG, OK UG (248,000 oz at 12.3 g/t), Princess Royal open pit, Gladstone Mining Centre. UPDATE (May 2026): Redpath Australia appointed as the sole underground mining contractor from 1 May 2026. Development of the 3rd underground mine at Norseman has commenced under Redpath. First ore from the 3rd UG mine is targeted for late 2026, which will further increase total underground production capacity at Norseman.`, sources:[{type:'News', title:'Pantoro Gold posts $88M quarterly EBITDA — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1091277/pantoro-gold-posts-88m-quarterly-ebitda-as-norseman-growth-pipeline-builds-momentum-1091277.html', date:'Apr 2026'},{type:'News', title:'Pantoro stronger half-year result as Norseman production drives earnings — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1088582/pantoro-posts-stronger-half-year-result-as-norseman-production-drives-earnings-1088582.html', date:'Apr 2026'},{type:'News', title:'Pantoro builds cash as Norseman growth drilling gains momentum — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1086050/pantoro-gold-builds-cash-as-norseman-production-and-growth-drilling-gain-momentum-1086050.html', date:'2025'},{type:'News', title:'Pantoro appoints Redpath Australia as sole UG contractor, 3rd underground mine development commences — Pantoro ASX Release', url:'https://www.pantoro.com.au/investor-centre/asx-announcements/', date:'May 2026'}] },
+  { id:'a13', name:'Norseman Gold Project', company:'Pantoro (ASX:PNR)', asx:'PNR', state:'WA', region:'Eastern Goldfields', category:'Active', resourceOz:4600000, resourceOzNum:4600000, grade:3.3, gradeNum:3.3, prodOzYr:89000, aisc:3204, processing:'Underground CIL (Scotia, Bullen, OK UG + Gladstone open pit)', overview:`⚠ WATCH LIST — HIGH DISTRESS SIGNALS: Pantoro (ASX:PNR) operates the historic Norseman gold project in WA's Eastern Goldfields, ~720km ESE of Perth. DISTRESS CONTEXT (May/Jun 2026): Pantoro has issued two guidance cuts in FY2026, the latest reducing production to 86,000–92,000 oz — an ~18% cut. AISC hit A$3,204/oz in the March 2026 quarter (up from A$1,991/oz in September quarter — a 61% blowout), driven by cyclone flooding at Scotia underground, wet weather halting Gladstone open pit haulage, and contractor transition disruption (WestAuz Mining replaced by Redpath Australia at OK Underground from 1 May 2026). Share price fell ~32% in seven trading days following the February 2026 guidance cut. YTD decline ~30% as of May 2026. Despite these stress signals, cash and gold on hand is A$250.3M (debt-free) and Q3 EBITDA was A$88.4M — the company is NOT in financial distress (no going concern, no debt) but is experiencing operational distress. Mine life is long: Consolidated Mineral Resource 43.19 Mt @ 3.3 g/t Au for 4.60 Moz; Ore Reserve 12.78 Mt @ 2.1 g/t = 859,000 oz. Q4 FY2026 expected to improve as Redpath ramps at OK UG, Gladstone weather clears, and 3rd underground mine (development commenced May 2026, first ore late 2026) adds production. FY2026 guidance maintained 86,000–92,000 oz at AISC A$1,950–2,250/oz group guidance.`, sources:[{type:'News', title:'Pantoro Gold posts $88M quarterly EBITDA — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1091277/pantoro-gold-posts-88m-quarterly-ebitda-as-norseman-growth-pipeline-builds-momentum-1091277.html', date:'Apr 2026'},{type:'News', title:'Pantoro stronger half-year result as Norseman production drives earnings — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1088582/pantoro-posts-stronger-half-year-result-as-norseman-production-drives-earnings-1088582.html', date:'Apr 2026'},{type:'News', title:'Pantoro builds cash as Norseman growth drilling gains momentum — Proactive Investors', url:'https://www.proactiveinvestors.com.au/companies/news/1086050/pantoro-gold-builds-cash-as-norseman-production-and-growth-drilling-gain-momentum-1086050.html', date:'2025'},{type:'News', title:'Pantoro appoints Redpath Australia as sole UG contractor, 3rd underground mine development commences — Pantoro ASX Release', url:'https://www.pantoro.com.au/investor-centre/asx-announcements/', date:'May 2026'},{type:'News', title:'Pantoro Gold crashes on flood-hit guidance cut — Stocks Down Under', url:'https://stocksdownunder.com/pantoro-gold-crashes-on-flood-hit-guidance-cut/', date:'2026'},{type:'News', title:'Pantoro Gold shares dive as production guidance lowered — The Bull', url:'https://thebull.com.au/news/pantoro-gold-shares-dive-as-production-guidance-lowered/', date:'2026'}] },
   // --- NSW ACTIVE ---
   { id:'a14', name:'Cadia Valley Operations', company:'Newmont Corporation (NYSE:NEM)', asx:'', state:'NSW', region:'Orange (Central West NSW)', category:'Active', resourceOz:0, resourceOzNum:0, grade:0, gradeNum:0, prodOzYr:270000, aisc:0, processing:'Block cave underground CIL (large-scale)', overview:`Cadia Valley Operations are located ~25km south of Orange, NSW (~250km west of Sydney), operated by Newmont (formerly Newcrest). FY2026 guidance ~270,000 oz gold plus major copper byproduct. One of Australia's largest underground gold-copper mines — panel caving and block caving operations. Cave 2 expansion is underway, targeting increased throughput.`, sources:[{type:'News', title:'Newmont Q4 2025 Results and 2026 Guidance — Business Wire', url:'https://www.businesswire.com/news/home/20260219222644/en/Newmont-Reports-Fourth-Quarter-and-Full-Year-2025-Results-Provides-2026-Guidance-and-Announces-Enhanced-Capital-Allocation-Framework', date:'Feb 2026'}] },
   { id:'a15', name:'Cowal Gold Operations', company:'Evolution Mining (ASX:EVN)', asx:'EVN', state:'NSW', region:'Forbes (Central West NSW)', category:'Active', resourceOz:3000000, resourceOzNum:3000000, grade:1.2, gradeNum:1.2, prodOzYr:200000, aisc:0, processing:'Open pit & underground CIL', overview:`Cowal is Evolution Mining's flagship NSW operation, near Forbes (~400km west of Sydney). Open pit and underground mining (E42 underground) feeds a large CIL plant. Resource ~3 Moz. A major cash flow driver for EVN — strong quarterly operating cash generation. Underground development extending mine life well into the 2030s.`, sources:[{type:'News', title:'Evolution Mining Q3 FY2026 Earnings Call — Investing.com', url:'https://www.investing.com/news/transcripts/earnings-call-transcript-evolution-mining-q3-2026-sees-strong-cash-flow-stock-surges-93CH-4614175', date:'Apr 2026'}] },
@@ -2094,6 +2268,23 @@ const allSources = [
   {title:'Pantoro appoints Redpath Australia as sole UG contractor; 3rd underground mine development commences at Norseman — Pantoro ASX Release', url:'https://www.pantoro.com.au/investor-centre/asx-announcements/', date:'May 2026', type:'Company'},
   {title:'Savannah Goldfields Big Reef EA granted by QLD Government; TSF Phase 1 expansion approved — Australian Mining', url:'https://www.australianmining.com.au/savannah-goldfields-big-reef-ea-approved/', date:'May 2026', type:'News'},
   {title:'Macquarie Research: Bellevue Gold Flashnote — BGL 3QFY26 Production Beat — FY26E EBITDA A$444M, FY27E EBITDA A$537M, Outperform target AUD 2.10', url:'https://www.macquarie.com/au/en/markets/research.html', date:'8 Apr 2026', type:'Research'},
+  // 2 Jun 2026 update sources
+  {title:'Kaiser Reef A1 Mine — care and maintenance announcement — ASX Feb 2026', url:'https://announcements.asx.com.au/asxpdf/20260211/pdf/06w5zbwcwv062p.pdf', date:'Feb 2026', type:'ASX Filing'},
+  {title:'Kaiser Reef puts A1 Mine on care and maintenance — City Investors Circle', url:'http://www.city-investors-circle.com/kaiser-reef-puts-the-a1-mine-on-care-and-maintenance/', date:'2025', type:'News'},
+  {title:'Matsa Resources — Red October Gold Mine (Lake Carey Gold Project)', url:'https://www.matsa.com.au/projects/lake-carey-gold-project/red-october-gold-mine/', date:'2026', type:'Company'},
+  {title:'Monument Mining Q3 FY2026 Results — Globe Newswire (1 Jun 2026)', url:'https://www.globenewswire.com/news-release/2026/06/01/3304769/0/en/Monument-Reports-Third-Quarter-Fiscal-2026-Results.html', date:'1 Jun 2026', type:'Company'},
+  {title:'ASX slams Greatland Resources over post-listing gold output downgrade — Mining.com', url:'https://www.mining.com/asx-slams-greatland-over-post-listing-gold-output-downgrade/', date:'Jul 2025', type:'News'},
+  {title:'Greatland (ASX:GGP) drops 24% after guidance cut — Stocks Down Under', url:'https://stocksdownunder.com/greatland-asx-ggp-share-price-dives/', date:'2025', type:'News'},
+  {title:'Greatland Resources March 2026 Quarterly Activities Report', url:'https://www.share-talk.com/greatland-resources-ltd-aim-ggp-asx-ggp-march-2026-quarterly-activities-report/', date:'Apr 2026', type:'Company'},
+  {title:'Pantoro Gold crashes on flood-hit guidance cut — Stocks Down Under', url:'https://stocksdownunder.com/pantoro-gold-crashes-on-flood-hit-guidance-cut/', date:'2026', type:'News'},
+  {title:'Pantoro Gold shares dive as production guidance lowered — The Bull', url:'https://thebull.com.au/news/pantoro-gold-shares-dive-as-production-guidance-lowered/', date:'2026', type:'News'},
+  {title:'GoldArc Resources secures A$7.2M funding for Leonora drilling — mining.com.au', url:'https://mining.com.au/goldarc-secures-funding-for-leonora-drilling/', date:'May 2026', type:'News'},
+  {title:'GoldArc Leonora North Eclipse prospect drilling results 4m @ 9.43 g/t — Discovery Alert', url:'https://discoveryalert.com.au/goldarc-rock-chip-results-leonora-north-targets/', date:'2026', type:'News'},
+  {title:'Road to mining lease for Bulgera Gold Project now clear after key approval — Stockhead', url:'https://stockhead.com.au/resources/road-to-mining-lease-for-norwests-bulgera-gold-project-now-clear-after-securing-key-approval/', date:'2026', type:'News'},
+  {title:'Savannah Goldfields Agate Creek EA decision formally scheduled 13 July 2026 — Discovery Alert', url:'https://discoveryalert.com.au/savannah-goldfields-agate-creek-environmental-approval-decision/', date:'Jun 2026', type:'News'},
+  {title:'Wiluna Mining — June 2026 shareholder meeting (AIM Mining convened) — Business News WA', url:'https://www.businessnews.com.au/article/Wiluna-Mining-shareholders-give-thumbs-up-as-administrators-eye-100m-float', date:'Jun 2026', type:'News'},
+  {title:'Takeovers Panel TP26-001 — declines AIM Mining application re Wiluna shareholder meeting', url:'https://takeovers.gov.au/media-releases/tp26-001', date:'Jun 2026', type:'Regulatory'},
+  {title:'Bellevue Gold March 2026 Quarterly Production Update — Listcorp', url:'https://www.listcorp.com/asx/bgl/bellevue-gold-limited/news/march-2026-quarterly-production-update-3337143.html', date:'Apr 2026', type:'ASX Filing'},
 ];
 
 // =====================================================================
