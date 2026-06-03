@@ -313,6 +313,13 @@ async function renderCountyMap(stateId, generators) {
       weight:      0.8,
     }),
     onEachFeature: (feature, layer) => {
+      const name = countyNames[feature.id] || '';
+      if (name) {
+        layer.bindTooltip(name, {
+          permanent: true, direction: 'center',
+          className: 'county-name-label', opacity: 1,
+        });
+      }
       layer.on({
         mousemove: e  => _countyTooltipHandler(e.originalEvent, feature),
         mouseout:  () => hideCountyTooltip(),
