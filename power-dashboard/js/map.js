@@ -295,6 +295,15 @@ async function renderCountyMap(stateId, generators) {
     { maxZoom: 18, attribution: '&copy; Esri' }
   ).addTo(_leafletMap);
 
+  // Re-add interstates below choropleth (tile layer → always under GeoJSON)
+  _interstatesLayer = null;
+  if (_countyOvActive.interstates) _addCountyOverlay('interstates');
+
+  // Pane for city labels so they render above the semi-transparent county fill
+  _leafletMap.createPane('labelsPane');
+  _leafletMap.getPane('labelsPane').style.zIndex = 450;
+  _leafletMap.getPane('labelsPane').style.pointerEvents = 'none';
+
   // Semi-transparent county choropleth over satellite
   _countyGeoJsonLayer = L.geoJSON(countyFC, {
     style: feature => ({
@@ -312,6 +321,10 @@ async function renderCountyMap(stateId, generators) {
   }).addTo(_leafletMap);
 
   _leafletMap.fitBounds(_countyGeoJsonLayer.getBounds(), { padding: [10, 10] });
+
+  // Re-add cities above choropleth via labelsPane
+  _citiesLayer = null;
+  if (_countyOvActive.cities) _addCountyOverlay('cities');
 
   // Generator markers
   _generatorLayerGroup = L.layerGroup().addTo(_leafletMap);
@@ -534,6 +547,38 @@ let _countyMapMode     = 'generators';
 let _countyGenMWRaw    = {};
 let _countyStatePeakMW = 0;
 let _countyUtilData    = {};
+
+let _citiesLayer      = null;
+let _interstatesLayer = null;
+let _countyOvActive   = { cities: false, interstates: false };
+
+function _addCountyOverlay(name) {
+  if (!_leafletMap) return;
+  if (name === 'interstates') {
+    _interstatesLayer = L.tileLayer(
+      'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 18, opacity: 0.85, attribution: '© Esri' }
+    ).addTo(_leafletMap);
+  } else if (name === 'cities') {
+    _citiesLayer = L.tileLayer(
+      'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 18, opacity: 0.9, pane: 'labelsPane', attribution: '© Esri' }
+    ).addTo(_leafletMap);
+  }
+}
+
+function toggleCountyOverlay(name) {
+  _countyOvActive[name] = !_countyOvActive[name];
+  const btn = document.getElementById('county-ov-btn-' + name);
+  if (btn) btn.classList.toggle('active', _countyOvActive[name]);
+  if (!_leafletMap) return;
+  if (!_countyOvActive[name]) {
+    if (name === 'cities' && _citiesLayer)      { _leafletMap.removeLayer(_citiesLayer);      _citiesLayer = null; }
+    if (name === 'interstates' && _interstatesLayer) { _leafletMap.removeLayer(_interstatesLayer); _interstatesLayer = null; }
+  } else {
+    _addCountyOverlay(name);
+  }
+}
 
 // Called by app.js after fetchStateTransmission resolves
 function addTransmissionToCountyMap(lines, substations) {

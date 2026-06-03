@@ -1211,6 +1211,11 @@
           <button class="tx-filter active" data-kv="345" style="--c:#f59e0b">345 kV</button>
           <button class="tx-filter active" data-kv="500" style="--c:#f97316">500+ kV</button>
         </div>
+        <div class="tx-filters" id="county-overlay-filters">
+          <span class="tx-filter-label">Overlay:</span>
+          <button class="tx-filter" id="county-ov-btn-interstates" onclick="toggleCountyOverlay('interstates')" style="--c:#94a3b8">🛣 Interstates</button>
+          <button class="tx-filter" id="county-ov-btn-cities"      onclick="toggleCountyOverlay('cities')"      style="--c:#94a3b8">🏙 Cities</button>
+        </div>
         <div class="map-wrapper" id="county-map-wrapper">
           <div id="county-loading" class="loading-spinner">Loading map data…</div>
           <div id="county-map"></div>
