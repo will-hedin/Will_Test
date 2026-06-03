@@ -527,6 +527,8 @@
     <span class="layer-divider">·</span>
     <button class="layer-btn" id="btn-rail"         onclick="toggleMapLayer('rail')">🚂 Railways</button>
     <button class="layer-btn" id="btn-rail-elec"    onclick="toggleMapLayer('rail-elec')">⚡ Electrified Rail</button>
+    <button class="layer-btn" id="btn-interstates"  onclick="toggleMapLayer('interstates')">🛣 Interstates</button>
+    <button class="layer-btn" id="btn-cities"       onclick="toggleMapLayer('cities')">🏙 Cities</button>
     <button class="layer-btn" id="btn-substations"  onclick="toggleMapLayer('substations')">🔌 Substations</button>
     <button class="layer-btn" id="btn-powerplants"  onclick="toggleMapLayer('powerplants')">🏭 Power Plants</button>
     <span class="layer-divider">·</span>
@@ -1816,6 +1818,24 @@ function toggleMapLayer(name) {
   } else if (name === 'powerplants') {
     _showFilterGroup('plant-filter-group');
     _loadPowerPlants('ALL', stat);
+
+  } else if (name === 'interstates') {
+    if (!_ovLayers.interstates) {
+      _ovLayers.interstates = L.tileLayer(
+        'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',
+        { maxZoom: 19, opacity: 0.85, attribution: '© Esri' }
+      );
+    }
+    _ovLayers.interstates.addTo(map);
+
+  } else if (name === 'cities') {
+    if (!_ovLayers.cities) {
+      _ovLayers.cities = L.tileLayer(
+        'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
+        { maxZoom: 19, opacity: 0.9, subdomains: 'abcd', attribution: '© CARTO' }
+      );
+    }
+    _ovLayers.cities.addTo(map);
 
   } else if (name === 'counties') {
     _showCountyFilterRow();
