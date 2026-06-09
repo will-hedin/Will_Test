@@ -175,6 +175,14 @@ const OWNER_COLORS = {
   'Google':    '#22c55e',
   'xAI':       '#a855f7',
   'Apple':     '#e5e7eb',
+  'CoreWeave': '#ec4899',
+  'Oracle':    '#ef4444',
+  'Softbank':  '#eab308',
+  'Nscale':    '#14b8a6',
+  'G42':       '#8b5cf6',
+  'Fluidstack':'#f43f5e',
+  'SpaceXAI':  '#64748b',
+  'Alibaba':   '#fb923c',
 };
 
 function ownerColor(owner) {
